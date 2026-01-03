@@ -1,34 +1,3 @@
-"""
-for reference only
-from pydantic import BaseModel, TypeAdapter
-from enum import StrEnum
-
-
-class TaskStatus(StrEnum):
-    PENDING = "pending"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-
-class RootTaskModel(BaseModel):
-    id: str
-    description: str
-    complexity: int | float
-    type: str
-    context: str
-
-
-class TaskModel(BaseModel):
-    id: str
-    description: str
-    context: str = ""  # Made optional with default empty string
-    complexity: int = 0
-    parent: str = ""
-    dependencies: list[str] = []
-    type: str
-    status: TaskStatus = TaskStatus.PENDING
-"""
-
 from typing import Any
 from pydantic import BaseModel, field_serializer
 from enum import StrEnum
@@ -44,7 +13,8 @@ class Task(BaseModel):
     id: str
     description: str
     context: str
-    complexity: str
+    # ideally int but could be a string if the model is stupid
+    complexity: int | str
     type: str
     dependencies: list[str] = []
     prompt: "LlamaResponse | None" = None
@@ -91,6 +61,39 @@ class LlamaResponse(BaseModel):
 
     def get_first_response(self) -> str:
         return self.choices[0].message.content
+
+
+class DecompositionHistory(BaseModel):
+    user_input: str
+    decomposition_prompt: str
+    decomposition_response: LlamaResponse
+    initial_tasks: list[Task]
+
+
+class TaskExecutionResults(BaseModel):
+    task_id: str
+    task_prompt: LlamaResponse
+    execution_response: LlamaResponse
+
+
+class TaskSynthesisHistory(BaseModel):
+    prompt: str
+    result: LlamaResponse
+
+
+class TaskPromptHistory(BaseModel):
+    task: Task
+    generate_prompt: str
+    task_prompt: LlamaResponse
+
+
+
+class OrchestrationHistory(BaseModel):
+    user_input: str
+    decomposition_history: DecompositionHistory
+    prompt_history: list[TaskPromptHistory]
+    execution_results: list[TaskExecutionResults] = []
+    synthesis_history: TaskSynthesisHistory
 
 #
 # class SubTaskHistoryItem(BaseModel):

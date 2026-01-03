@@ -1,7 +1,8 @@
 from .schemas import Task, LlamaResponse
 from .llama_utils import LlamaRunner
 import json
-
+import logging
+logger = logging.getLogger(__name__)
 
 GENERATE_SUB_TASK_PROMPT = """
 You are an expert prompt generator.
@@ -24,11 +25,12 @@ Rules for creating the instruction prompt:
 
 
 class TaskPromptGenerator:
-    def __init__(self, llm: LlamaRunner):
+    def __init__(self, llm: LlamaRunner, history: list | None = None):
         self.llm = llm
+        self.history = [] if history is None else history
 
     def generate_sub_task_prompt(
-        self, user_input, task: Task, tasks: list[Task]
+            self, user_input, task: Task, tasks: list[Task]
     ) -> LlamaResponse:
         prompt = GENERATE_SUB_TASK_PROMPT.format(
             user_input=user_input,
@@ -47,4 +49,15 @@ class TaskPromptGenerator:
                 indent=2,
             ),
         )
-        return self.llm(prompt)
+        logger.debug('generating prompt for task %s', task.id)
+        task_prompt = self.llm(prompt)
+
+        self.history.append(
+            {
+                'task': task.model_dump(),
+                'prompt': prompt,
+                'task_prompt': task_prompt.model_dump()
+            }
+        )
+        logger.debug('generated prompt for task %s', task.id)
+        return task_prompt

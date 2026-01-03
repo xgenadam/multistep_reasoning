@@ -1,3 +1,4 @@
+import logging
 from typing import Self
 
 from llama_cpp import Llama
@@ -10,6 +11,9 @@ from .result_synthesiser import ResultSynthesiser
 from .boolean_decider import BooleanDecider
 from .llama_utils import llama_container, LlamaRunner
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class TaskOrchestrator:
     def __init__(
@@ -20,6 +24,7 @@ class TaskOrchestrator:
         result_synthesiser: ResultSynthesiser,
         boolean_decider: BooleanDecider,
         llm: Llama,
+        history: list|None = None,
     ):
         self.decomposer = decomposer
         self.task_prompt_generator = task_prompt_generator
@@ -27,6 +32,7 @@ class TaskOrchestrator:
         self.result_synthesiser = result_synthesiser
         self.boolean_decider = boolean_decider
         self.llm = llm
+        self.history = [] if history is None else history
 
     def query(
         self, user_input: str, return_sub_tasks: bool = False
@@ -52,12 +58,14 @@ class TaskOrchestrator:
         sub_tasks = self.decomposer.generate_sub_tasks(user_input)
 
         # step 4
+        logger.debug(f'generating sub task prompts for {len(sub_tasks)} tasks')
         for sub_task in sub_tasks:
             sub_task.prompt = self.task_prompt_generator.generate_sub_task_prompt(
                 user_input=user_input, task=sub_task, tasks=sub_tasks
             )
 
         # step 5
+        logger.debug('executing sub tasks')
         sub_task_execution_results = self.agent_executor.execute_sub_tasks(
             sub_tasks=sub_tasks
         )
@@ -65,6 +73,15 @@ class TaskOrchestrator:
         # step 6
         synthesised_results = self.result_synthesiser.synthesise_results(
             user_input, sub_task_execution_results
+        )
+        self.history.append(
+            {
+                'user_input': user_input,
+                'decomposition_history': self.decomposer.history,
+                'prompt_history': self.task_prompt_generator.history,
+                'execution_results': self.agent_executor.history,
+                'synthesis_history': self.result_synthesiser.history,
+            }
         )
         if return_sub_tasks:
             return (synthesised_results, sub_task_execution_results)

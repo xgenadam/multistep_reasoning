@@ -1,5 +1,7 @@
 import json
 
+import logging
+
 from .schemas import Task, LlamaResponse
 from .llama_utils import LlamaRunner
 
@@ -26,8 +28,9 @@ Please provide a well-structured, coherent final answer based on the subtask res
 
 
 class ResultSynthesiser:
-    def __init__(self, llm: LlamaRunner):
+    def __init__(self, llm: LlamaRunner, history: dict|None = None):
         self.llm = llm
+        self.history = history if history is not None else {}
 
     def synthesise_results(
         self, user_input: str, completed_sub_tasks: Iterable[Task]
@@ -52,4 +55,10 @@ class ResultSynthesiser:
             user_input=user_input,
             completed_tasks=completed_sub_task_str,
         )
-        return self.llm(synthesis_prompt)
+        logging.debug('beginning synthesis')
+        synthesis_result = self.llm(synthesis_prompt)
+
+        self.history['prompt'] = synthesis_prompt
+        self.history['result'] = synthesis_result.model_dump()
+        logging.debug('finished synthesis')
+        return synthesis_result
