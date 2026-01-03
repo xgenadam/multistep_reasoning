@@ -1,0 +1,20 @@
+{
+  "reasoning_model": {
+    "model_path": "/mnt/myraid/workspace/open_source/source_code/AI/text-generation-webui/user_data/models/Devstral-2-123B-Instruct-2512-Q3_K_M-00001-of-00002.gguf",
+    "n_gpu_layers": 89,
+    "n_batch": 256,
+    "n_ubatch": 256,
+    "n_threads": 0,
+    "n_threads_batch": 0,
+    "type_k": 1,
+    "type_v": 1,
+    "n_ctx": 31072,
+    "split_mode": 2,
+    "flash_attn": true,
+    "offload_kqv": false,
+    "verbose": true
+},
+  "binary_decision_model": {
+    "model_path": "/mnt/myraid/workspace/open_source/models/LLM/hf/deberta-v3-large_boolq/"
+  }
+}
