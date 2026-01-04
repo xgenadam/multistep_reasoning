@@ -77,7 +77,7 @@ Please provide a well-structured, coherent final answer based on the subtask res
 """
 
 
-CHECK_TASKS_DEPENDENCIES_PROMPT = '''
+CHECK_TASKS_DEPENDENCIES_PROMPT = """
 You are a task dependency expert. Given an overall task, and two subtasks. 
 Your job is to determine if one task is dependent on the other.
 The overall task is:
@@ -102,4 +102,4 @@ Rules for dependencies:
 1. A task is only dependent on another task if actions from the other task are relevant to the tasks completion
 2. Tasks cannot be mutually dependent
 3. ONLY reply with YES or NO
-'''
+"""

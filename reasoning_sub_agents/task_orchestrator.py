@@ -3,15 +3,14 @@ from typing import Self
 
 from llama_cpp import Llama
 
+from .boolean_decider import BooleanDecider
+from .exectutor import AgentExecutor
+from .llama_utils import LlamaRunner, llama_container
+from .prompt_generator import TaskPromptGenerator
+from .result_synthesiser import ResultSynthesiser
 from .schemas import LlamaResponse, Task
 from .task_decomposition import TaskDecomposer
-from .prompt_generator import TaskPromptGenerator
-from .exectutor import AgentExecutor
-from .result_synthesiser import ResultSynthesiser
-from .boolean_decider import BooleanDecider
-from .llama_utils import llama_container, LlamaRunner
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -24,7 +23,7 @@ class TaskOrchestrator:
         result_synthesiser: ResultSynthesiser,
         boolean_decider: BooleanDecider,
         llm: Llama,
-        history: list|None = None,
+        history: list | None = None,
     ):
         self.decomposer = decomposer
         self.task_prompt_generator = task_prompt_generator
@@ -58,14 +57,14 @@ class TaskOrchestrator:
         sub_tasks = self.decomposer.generate_sub_tasks(user_input)
 
         # step 4
-        logger.debug(f'generating sub task prompts for {len(sub_tasks)} tasks')
+        logger.debug(f"generating sub task prompts for {len(sub_tasks)} tasks")
         for sub_task in sub_tasks:
             sub_task.prompt = self.task_prompt_generator.generate_sub_task_prompt(
                 user_input=user_input, task=sub_task, tasks=sub_tasks
             )
 
         # step 5
-        logger.debug('executing sub tasks')
+        logger.debug("executing sub tasks")
         sub_task_execution_results = self.agent_executor.execute_sub_tasks(
             sub_tasks=sub_tasks
         )
@@ -76,11 +75,11 @@ class TaskOrchestrator:
         )
         self.history.append(
             {
-                'user_input': user_input,
-                'decomposition_history': self.decomposer.history,
-                'prompt_history': self.task_prompt_generator.history,
-                'execution_results': self.agent_executor.history,
-                'synthesis_history': self.result_synthesiser.history,
+                "user_input": user_input,
+                "decomposition_history": self.decomposer.history,
+                "prompt_history": self.task_prompt_generator.history,
+                "execution_results": self.agent_executor.history,
+                "synthesis_history": self.result_synthesiser.history,
             }
         )
         if return_sub_tasks:

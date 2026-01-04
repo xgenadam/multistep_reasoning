@@ -1,5 +1,5 @@
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 class BooleanDecider:
@@ -9,7 +9,7 @@ class BooleanDecider:
             model_path
         ).cuda()
 
-    def get_confidences(self, question: str, context:str) -> tuple[float, float]:
+    def get_confidences(self, question: str, context: str) -> tuple[float, float]:
         inputs = self.tokenizer(
             question, context, return_tensors="pt", truncation=True, padding=True
         ).to(self.model.device)
@@ -24,6 +24,6 @@ class BooleanDecider:
         return yes_prob > no_prob
 
     def is_affirmative(self, response: str) -> bool:
-        question = 'The following is a response to a yes or not question, does the response say yes, or something like it?'
+        question = "The following is a response to a yes or not question, does the response say yes, or something like it?"
         decision = self.get_decision(question, response)
         return decision

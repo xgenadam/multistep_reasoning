@@ -8,7 +8,7 @@
     "n_threads_batch": 0,
     "type_k": 1,
     "type_v": 1,
-    "n_ctx": 71072,
+    "n_ctx": 100072,
     "split_mode": 2,
     "flash_attn": true,
     "offload_kqv": false,

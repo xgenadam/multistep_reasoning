@@ -1,16 +1,19 @@
 from contextlib import contextmanager
-from typing import Callable, Union, ContextManager
+from typing import Callable, ContextManager, Union
 
 from llama_cpp import Llama, LlamaState
 
 from .schemas import LlamaResponse
 
-
-LlamaRunner = Callable[[str, Union[LlamaState, None], Union[float, None]], LlamaResponse]
+LlamaRunner = Callable[
+    [str, Union[LlamaState, None], Union[float, None]], LlamaResponse
+]
 
 
 @contextmanager
-def llama_manager(llm: Llama, state: Union[LlamaState, None] = None) -> ContextManager[Llama]:
+def llama_manager(
+    llm: Llama, state: Union[LlamaState, None] = None
+) -> ContextManager[Llama]:
     """Context manager to temporarily manage and restore Llama model states."""
     # current_state = llm.save_state()
     # llm.reset()
@@ -25,9 +28,7 @@ def llama_manager(llm: Llama, state: Union[LlamaState, None] = None) -> ContextM
         # llm.load_state(current_state)
 
 
-def llama_container(
-    llm: Llama, **default_kwargs
-) -> LlamaRunner:
+def llama_container(llm: Llama, **default_kwargs) -> LlamaRunner:
     """Factory function to create a Llama runner with preset model and temperature."""
 
     def llama_runner(

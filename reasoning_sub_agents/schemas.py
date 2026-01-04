@@ -1,6 +1,7 @@
-from typing import Any
-from pydantic import BaseModel, field_serializer
 from enum import StrEnum
+from typing import Any
+
+from pydantic import BaseModel, field_serializer
 
 
 class TaskStatus(StrEnum):
@@ -87,29 +88,9 @@ class TaskPromptHistory(BaseModel):
     task_prompt: LlamaResponse
 
 
-
 class OrchestrationHistory(BaseModel):
     user_input: str
     decomposition_history: DecompositionHistory
     prompt_history: list[TaskPromptHistory]
     execution_results: list[TaskExecutionResults] = []
     synthesis_history: TaskSynthesisHistory
-
-#
-# class SubTaskHistoryItem(BaseModel):
-#     prompt: LlamaMessage
-#     response: LlamaResponse
-#
-#
-# class SubTaskHistory(BaseModel):
-#     history: list[SubTaskHistoryItem]
-#     task_id: str
-#
-#
-# class UserQueryHistory(BaseModel):
-#     user_query: str | None = None
-#     decompose_prompt: str | None = None
-#     decompose_response: LlamaResponse | None = None
-#     initial_sub_task_histories: list[SubTaskHistory] = []
-#     # counter_argument_history
-#     # finalised_sub_task_history
