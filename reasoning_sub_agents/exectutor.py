@@ -15,7 +15,7 @@ class AgentExecutor:
     def execute_sub_tasks(self, sub_tasks: list[Task]) -> list[Task]:
         completed_tasks = {}
         uncompleted_tasks = {task.id: task for task in sub_tasks}
-        logger.debug(f"executing sub tasks")
+        logger.debug("executing sub tasks")
         while uncompleted_tasks:
             # get tasks without completed dependencies
             ready_tasks = self.get_agents_without_remaining_dependencies(

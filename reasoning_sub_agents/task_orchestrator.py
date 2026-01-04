@@ -5,7 +5,7 @@ from llama_cpp import Llama
 
 from .boolean_decider import BooleanDecider
 from .exectutor import AgentExecutor
-from .llama_utils import LlamaRunner, llama_container
+from .llama_utils import llama_container
 from .prompt_generator import TaskPromptGenerator
 from .result_synthesiser import ResultSynthesiser
 from .schemas import LlamaResponse, Task

@@ -35,7 +35,7 @@ def llama_container(llm: Llama, **default_kwargs) -> LlamaRunner:
         prompt: str,
         state: Union[LlamaState, None] = None,
         temperature: Union[float, None] = None,
-        **kwargs
+        **kwargs,
     ) -> LlamaResponse:
         """Run a chat completion on the Llama model with the given prompt and state."""
         effective_kwargs = {**default_kwargs, **kwargs}

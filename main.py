@@ -11,11 +11,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 prompt = f"""
 I have the following project, here is its structure and contents:
-{generate_structure('./reasoning_sub_agents', '.py', 'venv')}
+{generate_structure("./reasoning_sub_agents", ".py", "venv")}
 
 Here is an example history output of the project:
 ```json
-{json.load(Path('history_6.json').open())}
+{json.load(Path("history_6.json").open())}
 ```
 
 The aim of the project is to add deeper reasoning to llm responses, and it tries this by breaking user input down into sub tasks and executing those independently
