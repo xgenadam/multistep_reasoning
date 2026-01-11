@@ -1,14 +1,14 @@
 import logging
 from typing import Self
 
-from llama_cpp import Llama
+from openai import OpenAI
+from openai.types.chat import ChatCompletionMessage
 
-from .boolean_decider import BooleanDecider
 from .exectutor import AgentExecutor
-from .llama_utils import llama_container
+from .llama_utils import create_llama_client, extract_message
 from .prompt_generator import TaskPromptGenerator
 from .result_synthesiser import ResultSynthesiser
-from .schemas import LlamaResponse, Task
+from .schemas import Task
 from .task_decomposition import TaskDecomposer
 
 logger = logging.getLogger(__name__)
@@ -21,21 +21,22 @@ class TaskOrchestrator:
         task_prompt_generator: TaskPromptGenerator,
         agent_executor: AgentExecutor,
         result_synthesiser: ResultSynthesiser,
-        boolean_decider: BooleanDecider,
-        llm: Llama,
+        llm_client: OpenAI,
         history: list | None = None,
     ):
         self.decomposer = decomposer
         self.task_prompt_generator = task_prompt_generator
         self.agent_executor = agent_executor
         self.result_synthesiser = result_synthesiser
-        self.boolean_decider = boolean_decider
-        self.llm = llm
+        self.llm_client = llm_client
         self.history = [] if history is None else history
 
     def query(
         self, user_input: str, return_sub_tasks: bool = False
-    ) -> LlamaResponse | tuple[LlamaResponse, list[Task]]:
+    ) -> (
+        ChatCompletionMessage
+        | tuple[ChatCompletionMessage, list[Task]]
+    ):
         # this is our entrypoint post initialization
         # user input should be the most recent user input
         # history is still TBD regarding structure, but the current assumption
@@ -58,10 +59,11 @@ class TaskOrchestrator:
 
         # step 4
         logger.debug(f"generating sub task prompts for {len(sub_tasks)} tasks")
+        prompts = self.task_prompt_generator.generate_sub_task_prompt(
+            user_input=user_input, tasks=sub_tasks
+        )
         for sub_task in sub_tasks:
-            sub_task.prompt = self.task_prompt_generator.generate_sub_task_prompt(
-                user_input=user_input, task=sub_task, tasks=sub_tasks
-            )
+            sub_task.prompt = extract_message(prompts[sub_task.task_id])
 
         # step 5
         logger.debug("executing sub tasks")
@@ -83,25 +85,25 @@ class TaskOrchestrator:
             }
         )
         if return_sub_tasks:
-            return (synthesised_results, sub_task_execution_results)
+            return synthesised_results, sub_task_execution_results
         return synthesised_results
 
     @classmethod
-    def instantiate(cls, config: dict) -> Self:
-        reasoning_config = config["reasoning_model"]
-        binary_decision_config = config["binary_decision_model"]
-        llm = Llama(**reasoning_config)
-        llama_runner = llama_container(llm=llm)
-        boolean_decider = BooleanDecider(binary_decision_config["model_path"])
-        decomposer = TaskDecomposer(llm=llama_runner, boolean_decider=boolean_decider)
-        task_prompt_generator = TaskPromptGenerator(llm=llama_runner)
-        agent_executor = AgentExecutor(llm=llama_runner)
-        result_synthesiser = ResultSynthesiser(llm=llama_runner)
+    def instantiate(cls, *, config: dict | None=None, llm_client: OpenAI | None=None) -> Self:
+        if config is None and llm_client is None:
+            raise ValueError("Neither config nor llm_client provided")
+        if config and llm_client:
+            raise ValueError("Cannot provide both config and llm_client")
+        if config:
+            llm_client = create_llama_client(config)
+        decomposer = TaskDecomposer(llm_client=llm_client)
+        task_prompt_generator = TaskPromptGenerator(llm_client=llm_client)
+        agent_executor = AgentExecutor(llm_client=llm_client)
+        result_synthesiser = ResultSynthesiser(llm_client=llm_client)
         return cls(
             decomposer=decomposer,
             task_prompt_generator=task_prompt_generator,
             agent_executor=agent_executor,
             result_synthesiser=result_synthesiser,
-            boolean_decider=boolean_decider,
-            llm=llm,
+            llm_client=llm_client,
         )

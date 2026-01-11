@@ -1,8 +1,9 @@
 import json
 import logging
 
-from .llama_utils import LlamaRunner
-from .schemas import LlamaResponse, Task
+from openai import OpenAI
+from .llama_utils import ChatResponse, generate_simple_llm_input, stream_conversation, run_multi_concurrent, extract_content
+from .schemas import Task
 
 logger = logging.getLogger(__name__)
 
@@ -27,39 +28,47 @@ Rules for creating the instruction prompt:
 
 
 class TaskPromptGenerator:
-    def __init__(self, llm: LlamaRunner, history: list | None = None):
-        self.llm = llm
+    def __init__(self, llm_client: OpenAI, history: list | None = None):
+        self.llm_client = llm_client
         self.history = [] if history is None else history
 
     def generate_sub_task_prompt(
-        self, user_input, task: Task, tasks: list[Task]
-    ) -> LlamaResponse:
-        prompt = GENERATE_SUB_TASK_PROMPT.format(
-            user_input=user_input,
-            sub_tasks=json.dumps(
-                [
+        self, user_input, tasks: list[Task]
+    ) -> dict[str, ChatResponse]:
+        llm_inputs = {}
+        for task in tasks:
+            prompt = GENERATE_SUB_TASK_PROMPT.format(
+                user_input=user_input,
+                sub_tasks=json.dumps(
+                    [
+                        task.model_dump(
+                            include=["description", "context", "type", "complexity"]
+                        )
+                        for task in tasks
+                    ],
+                    indent=4
+                ),
+                sub_task=json.dumps(
                     task.model_dump(
                         include=["description", "context", "type", "complexity"]
-                    )
-                    for task in tasks
-                ]
-            ),
-            sub_task=json.dumps(
-                task.model_dump(
-                    include=["description", "context", "type", "complexity"]
+                    ),
+                    indent=4,
                 ),
-                indent=2,
-            ),
+            )
+            llm_inputs[task.task_id] = generate_simple_llm_input(prompt)
+        logger.debug("generating prompts for tasks")
+        responses = run_multi_concurrent(
+            llama_client=self.llm_client,
+            llm_inputs=llm_inputs,
+            processor=stream_conversation
         )
-        logger.debug("generating prompt for task %s", task.id)
-        task_prompt = self.llm(prompt)
-
-        self.history.append(
-            {
-                "task": task.model_dump(),
-                "prompt": prompt,
-                "task_prompt": task_prompt.model_dump(),
-            }
-        )
-        logger.debug("generated prompt for task %s", task.id)
-        return task_prompt
+        for task_id, response in responses.items():
+            self.history.append(
+                {
+                    "task": task.model_dump(),
+                    "prompt": llm_inputs[task_id].model_dump(),
+                    "task_prompt": extract_content(response),
+                }
+            )
+        logger.debug("generated prompts for tasks")
+        return responses
