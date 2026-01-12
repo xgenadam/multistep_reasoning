@@ -236,8 +236,8 @@ class TaskDecomposer:
            - Keeps the first occurrence of non-dependency fields (from TaskBase).
            - Merges dependencies: union of all dependencies, taking the maximum strength for any duplicate dependency edges.
         2. Removing circular dependencies by finding the topological ordering that maximizes the total kept dependence_strength
-           (i.e., minimizes the total strength of removed edges). This is solved exactly via brute-force over all permutations
-           (feasible since max 10 tasks → 10! = 3.6M permutations, runs in ~5–30 seconds on typical hardware depending on edge count).
+           (i.e., minimizes the total strength of removed edges). This is solved exactly via bitmask DP in O(2^k * k^2) time
+           (for k≤10 this is ~10k operations, essentially instantaneous).
 
         Returns a new cleaned TaskIDDecomposeResponse with the same 'reason' field.
         """
@@ -299,40 +299,57 @@ class TaskDecomposer:
             (node_to_idx[p], node_to_idx[d], s) for p, d, s in edges
         ]
 
-        # Step 2: Find the best topological ordering (maximize kept strength)
-        best_score = -float("inf")
-        best_order: tuple[int, ...] | None = None
+        # Step 2: Find the best topological ordering via bitmask DP (maximize kept strength)
+        # Precompute weight matrix: weight[i][j] = strength if i → j (prereq i before dependent j)
+        weight = [[0.0 for _ in range(k)] for _ in range(k)]
+        for i_prereq, i_dependent, s in edges_idx:
+            weight[i_prereq][i_dependent] = s
 
-        for perm in permutations(
-            range(k)
-        ):  # perm is the order of indices: early → late
-            # Build position array: pos[idx] = position in order (smaller = earlier)
-            pos = [0] * k
-            for position, node_idx in enumerate(perm):
-                pos[node_idx] = position
+        # DP: dp[mask] = max kept strength for subset mask
+        # (1 << k) is essentialy k^2 but faster
+        dp = [float('-inf')] * (1 << k)
+        dp[0] = 0.0
 
-            score = 0.0
-            for i_prereq, i_dependent, s in edges_idx:
-                if pos[i_prereq] < pos[i_dependent]:  # forward edge → keep
-                    score += s
+        # Track last node for reconstruction
+        last_node = [-1] * (1 << k)
 
-            if score > best_score:
-                best_score = score
-                best_order = perm
+        for mask in range(1, 1 << k):
+            for v in range(k):
+                if (mask & (1 << v)) == 0:
+                    continue
+                prev_mask = mask ^ (1 << v)
+                if dp[prev_mask] == float('-inf'):
+                    continue
+                # Incoming strength from nodes already in the ordering (prev_mask) to v
+                incoming = sum(weight[u][v] for u in range(k) if (prev_mask & (1 << u)))
+                new_score = dp[prev_mask] + incoming
+                if new_score > dp[mask]:
+                    dp[mask] = new_score
+                    last_node[mask] = v
+
+        # Reconstruct optimal order (early → late)
+        best_order: list[int] = []
+        current_mask = (1 << k) - 1
+        while current_mask != 0:
+            v = last_node[current_mask]
+            if v == -1:
+                # Should never happen if graph is valid
+                raise RuntimeError("Failed to reconstruct optimal ordering")
+            best_order.append(v)
+            current_mask ^= (1 << v)
+        best_order.reverse()  # now early → late
+
+        # Build positions (smaller = earlier)
+        pos = [0] * k
+        for position, node_idx in enumerate(best_order):
+            pos[node_idx] = position
 
         # Build kept edge set using best order
-        if best_order is None:
-            kept_edges: set[tuple[str, str]] = set()
-        else:
-            pos = [0] * k
-            for position, node_idx in enumerate(best_order):
-                pos[node_idx] = position
-
-            kept_edges = {
-                (nodes[i_prereq], nodes[i_dependent])
-                for i_prereq, i_dependent, _ in edges_idx
-                if pos[i_prereq] < pos[i_dependent]
-            }
+        kept_edges: set[tuple[str, str]] = {
+            (nodes[i_prereq], nodes[i_dependent])
+            for i_prereq, i_dependent, _ in edges_idx
+            if pos[i_prereq] < pos[i_dependent]
+        }
 
         # Create cleaned items with only kept dependencies
         new_items: list[DecomposeItemResponse] = []

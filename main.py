@@ -11,6 +11,9 @@ from project_serializer import generate_structure
 
 logging.basicConfig(level=logging.DEBUG)
 
+# with open('project_text.txt') as f:
+#     PROJECT_TEXT = f.read()
+
 prompt = f"""
 I have the following project, here is its structure and contents:
 {generate_structure("./reasoning_sub_agents", ".py", "venv")}
@@ -88,7 +91,7 @@ def main():
         json.dump(task_orchestrator.history, f, indent=4)
     with open(f"results_{results_idx}.json", "w") as f:
         json.dump(response_dict, f, indent=4)
-    print(extract_message(response))
+    print(response.content)
 
 
 if __name__ == "__main__":

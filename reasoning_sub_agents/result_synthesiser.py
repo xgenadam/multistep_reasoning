@@ -10,20 +10,25 @@ from openai.types.chat import ChatCompletionMessage
 
 SYNTHESIS_PROMPT = """
 ### Final Synthesis ###
-Original User Request: {user_input}
+Original User Request: 
+{user_input}
 
 Completed Subtasks and Results:
 {completed_tasks}
 
 **Instructions for Synthesis:**
-1. **Thoroughly analyze** all subtask results to identify key findings.
-2. **Resolve any contradictions** or inconsistencies between results.
-3. **Combine information** from all subtasks to form a comprehensive answer.
-4. **Structure the response** logically, highlighting important points.
-5. **Ensure completeness** by addressing all aspects of the original request.
-6. **Maintain clarity** and conciseness in the final output.
-
-Please provide a well-structured, coherent final answer based on the subtask results.
+1. **Thoroughly analyze** all subtask results to identify key findings, including technical details, code snippets, and structured data.
+2. **Resolve any contradictions** or inconsistencies between results, ensuring logical coherence.
+3. **Combine information** from all subtasks to form a comprehensive answer, explicitly preserving:
+   - Code blocks or snippets (include verbatim with proper formatting).
+   - Technical specifications, formulas, or structured data (e.g., tables, JSON).
+   - Complex findings or nuanced insights (do not simplify or omit).
+4. **Structure the response** logically, grouping related details (e.g., code under a "Implementation" section, analysis under "Findings").
+5. **Validate completeness** by cross-referencing the final output with sub-task results:
+   - Flag any missing critical details (e.g., "Note: Subtask X mentioned [specific detail] not included above").
+   - Ensure all actionable outputs (e.g., scripts, configurations) are retained.
+6. **Maintain clarity** and conciseness, but prioritize accuracy and completeness over brevity.
+7. **Highlight high-value content** (e.g., "Key Implementation: [code block]") to ensure visibility.
 """
 
 
