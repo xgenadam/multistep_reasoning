@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Iterator, List, Union, Literal
+from typing import List, Union, Literal
 
 from openai.types.chat import ChatCompletion, ChatCompletionChunk, \
     ChatCompletionMessage

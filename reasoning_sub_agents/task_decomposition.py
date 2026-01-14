@@ -1,7 +1,6 @@
 import json
 import logging
 from copy import deepcopy
-from itertools import permutations
 from typing import Literal
 
 from openai import OpenAI
