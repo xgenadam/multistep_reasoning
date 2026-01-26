@@ -1,6 +1,7 @@
 import logging
 import threading
-from typing import Any, Callable, Iterator, TypeVar
+from collections.abc import Callable, Iterator
+from typing import Any, TypeVar
 
 import instructor
 from openai import OpenAI
@@ -11,7 +12,7 @@ from .schemas import BooleanResponse, ChatResponse, LLMInput, LLMMessage
 
 logger = logging.getLogger(__name__)
 
-R = TypeVar("R")
+R = TypeVar('R')
 Processor = Callable[[OpenAI, LLMInput], R]
 
 
@@ -31,31 +32,31 @@ def create_llama_client(
         client = create_llama_client(host="127.0.0.1", port=5000)
     """
     if config is not None:
-        host = config["key_word_args"].get("--host", "127.0.0.1")
-        port_str = config["key_word_args"].get("--port")
+        host = config['key_word_args'].get('--host', '127.0.0.1')
+        port_str = config['key_word_args'].get('--port')
         if port_str is None:
             raise ValueError("--port not specified in config['key_word_args']")
         try:
             port = int(port_str)
         except ValueError:
-            raise ValueError(f"Invalid --port value in config: {port_str}")
+            raise ValueError(f'Invalid --port value in config: {port_str}')
 
     if host is None:
-        host = "127.0.0.1"
+        host = '127.0.0.1'
     if port is None:
         port = 5000
 
-    base_url = f"http://{host}:{port}/v1"
-    logger.info("Creating OpenAI client for server at %s", base_url)
+    base_url = f'http://{host}:{port}/v1'
+    logger.info('Creating OpenAI client for server at %s', base_url)
 
-    client = OpenAI(base_url=base_url, api_key="sk-no-key-needed")
+    client = OpenAI(base_url=base_url, api_key='sk-no-key-needed')
     return client
 
 
 def generate_simple_llm_input(prompt: str) -> LLMInput:
     messages = [
-        LLMMessage(**{"role": "system", "content": "You are a helpful assistant."}),
-        LLMMessage(**{"role": "user", "content": prompt}),
+        LLMMessage(**{'role': 'system', 'content': 'You are a helpful assistant.'}),
+        LLMMessage(**{'role': 'user', 'content': prompt}),
     ]
     return LLMInput(messages=messages)
 
@@ -69,12 +70,12 @@ def extract_content(response: ChatResponse) -> str:
 
     Returns the complete content string.
     """
-    content = ""
+    content = ''
 
-    if isinstance(response, ChatCompletion):
-        # Non-streaming case: direct access
+    # Duck typing: check if it has choices with message (non-streaming)
+    if hasattr(response, 'choices') and len(response.choices) > 0:
         choice = response.choices[0]
-        if choice.message.content:
+        if hasattr(choice, 'message') and choice.message.content:
             content = choice.message.content
         return content.strip()
 
@@ -100,11 +101,12 @@ def extract_message(response: ChatResponse) -> ChatCompletionMessage:
 
     For streaming, accumulates deltas into a single message.
     """
-    if isinstance(response, ChatCompletion):
+    # Duck typing: check if it has choices with message (non-streaming)
+    if hasattr(response, 'choices') and len(response.choices) > 0 and hasattr(response.choices[0], 'message'):
         return response.choices[0].message
 
     # Streaming accumulation
-    accumulated = ChatCompletionMessage(role="assistant", content="")
+    accumulated = ChatCompletionMessage(role='assistant', content='')
     # tool_calls = []  # If you need tool_calls accumulation, expand here
 
     chunks = response if isinstance(response, list) else response
@@ -113,7 +115,7 @@ def extract_message(response: ChatResponse) -> ChatCompletionMessage:
         if delta.content is not None:
             accumulated.content += delta.content
         # Handle tool_calls delta accumulation if needed
-        if delta.tool_calls:
+        if hasattr(delta, 'tool_calls') and delta.tool_calls:
             # Tool call accumulation is more complex (index-based merging)
             # See OpenAI docs/cookbook for full example if you use tools
             pass
@@ -122,61 +124,51 @@ def extract_message(response: ChatResponse) -> ChatCompletionMessage:
     return accumulated
 
 
-def get_streamed_json_response(
+T = TypeVar("T")
+
+def get_streamed_json_response[T](
     llama_client: OpenAI,
-    response_model: R,
+    response_model: Any,
     llm_input: LLMInput,
-    partial_callbacks: list[Callable[[BaseModel], None]] | None = None,
-    max_retries=5,
+    partial_callbacks: list[Callable[[Any], None]] | None = None,
+    max_retries: int = 5,
     instructor_kwargs: dict[str, Any] | None = None,
-) -> R:
-    """
-    Streams a structured JSON response using instructor.
-    Calls partial_callbacks on each partial model for real-time processing.
-    Returns the final complete/validated model.
-    """
+) -> T:
     if partial_callbacks is None:
         partial_callbacks = []
 
-    # Patch client for structured output (JSON_SCHEMA for strict enforcement)
     instr_client = instructor.from_openai(
         llama_client,
-        # Recommended for reliability with llama.cpp
-        mode=instructor.Mode.JSON_SCHEMA,
+        mode=instructor.Mode.JSON,
     )
-    # TODO: streaming isnt working, might be because it expects the model type to be list[R]
-    # and breaks when there is only a single model
+
     messages = [msg.model_dump() for msg in llm_input.messages]
-    instructor_kwargs = instructor_kwargs if instructor_kwargs else {}
-    # TODO: timeout = none is not ideal, but when we send lots of tasks and they
-    #  get processed sequentially this causes a timeout. for now setting it to None
-    #  is good enough
-    final_model = instr_client.create(
-        model="llama",  # Arbitrary; ignored by local server
+    instructor_kwargs = instructor_kwargs or {}
+
+    stream = instr_client.create(
+        model='llama',
         messages=messages,
         response_model=response_model,
-        # stream=True,
+        stream=True,
         max_retries=max_retries,
         timeout=3600,
         **instructor_kwargs,
     )
-    return final_model
 
-    # final_model: R | None = None
-    # for partial_model in stream:
-    #     # Real-time callbacks on partial models
-    #     for callback in partial_callbacks:
-    #         try:
-    #             callback(partial_model)
-    #         except Exception as e:
-    #             print(f"Partial callback error: {e}")  # Or log properly
-    #
-    #     final_model = partial_model  # Last one is complete
-    #
-    # if final_model is None:
-    #     raise ValueError("Stream completed without any output")
-    #
-    # return final_model
+    final_model: Any = None
+    for partial_model in stream:
+        for callback in partial_callbacks:
+            try:
+                callback(partial_model)
+            except Exception as e:
+                print(f"Partial callback error: {e}")
+
+        final_model = partial_model
+
+    if final_model is None:
+        raise ValueError("Stream completed without any output")
+
+    return final_model
 
 
 def get_streamed_boolean_decision(
@@ -224,7 +216,7 @@ def stream_conversation(
     #  get processed sequentially this causes a timeout. for now setting it to None
     #  is good enough
     stream = llama_client.chat.completions.create(
-        model="llama", messages=standard_messages, stream=True, timeout=3600
+        model='llama', messages=standard_messages, stream=True, timeout=3600
     )
 
     chunks: list[ChatCompletionChunk] = []
@@ -235,14 +227,14 @@ def stream_conversation(
                 callback(chunk)
             except Exception as e:
                 # Optional: log or ignore callback errors to not interrupt streaming
-                print(f"Callback error: {e}")
+                print(f'Callback error: {e}')
 
         chunks.append(chunk)
 
     return chunks
 
 
-def run_multi_concurrent(
+def run_multi_concurrent[R](
     llama_client: OpenAI,
     llm_inputs: dict[str, LLMInput],
     processor: Processor[R],

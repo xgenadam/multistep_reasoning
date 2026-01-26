@@ -1,18 +1,16 @@
 from collections import deque
 from typing import Iterable, List, Optional, Union
 
-
 # Minimal mock objects that mimic the structure used in most codebases
 class MockDelta:
-    def __init__(self, content: Optional[str] = None):
+    def __init__(self, content: Optional[str] = None, tool_calls: Optional[list] = None):
         self.content = content
-
+        self.tool_calls = tool_calls or []
 
 class MockMessage:
     def __init__(self, content: str, role: str = "assistant"):
         self.content = content
         self.role = role
-
 
 class MockChoice:
     def __init__(
@@ -25,7 +23,6 @@ class MockChoice:
         self.delta = delta
         self.finish_reason = finish_reason
 
-
 class MockChatCompletion:
     def __init__(self, choices: List[MockChoice]):
         self.choices = choices
@@ -34,11 +31,9 @@ class MockChatCompletion:
         # self.id = "mock-id"
         # self.created = 0
 
-
 class MockChatCompletionChunk:
     def __init__(self, choices: List[MockChoice]):
         self.choices = choices
-
 
 class MockCompletions:
     def __init__(self, mock_client):
@@ -107,11 +102,9 @@ class MockCompletions:
             # Assume user provided a pre-built MockChatCompletion object
             return response_data
 
-
 class MockChat:
     def __init__(self, mock_client):
         self.completions = MockCompletions(mock_client)
-
 
 class MockOpenAI:
     """
