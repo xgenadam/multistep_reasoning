@@ -92,5 +92,5 @@ class TaskDecomposer:
 
     def create_sub_tasks(self, decomposed_sub_tasks: list[DecomposeSubTask]) -> list[
         SubTask]:
-        return [SubTask(decomposed_sub_task=decomposed_sub_task) for
+        return [SubTask(meta_type='sub_task', decomposed_sub_task=decomposed_sub_task) for
                 decomposed_sub_task in decomposed_sub_tasks]

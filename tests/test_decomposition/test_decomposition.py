@@ -1,0 +1,435 @@
+"""Test suite for reasoning_sub_agents.task_decomposition module."""
+
+import json
+import pytest
+
+from reasoning_sub_agents.task_decomposition import TaskDecomposer
+from reasoning_sub_agents.schemas import SubTask, DecomposeReset, DecomposeSubTask
+from tests.mock_openai import MockOpenAI
+
+def test_task_decomposer_initialization():
+    """Test TaskDecomposer initialization with default and custom history."""
+    mock_client = MockOpenAI()
+
+    # Test with default history
+    decomposer_default = TaskDecomposer(llm_client=mock_client)
+    assert decomposer_default.history == {}
+    assert decomposer_default.llm_client == mock_client
+
+    # Test with custom history
+    custom_history = {'test_key': 'test_value'}
+    decomposer_custom = TaskDecomposer(llm_client=mock_client, history=custom_history)
+    assert decomposer_custom.history == custom_history
+    assert decomposer_custom.llm_client == mock_client
+
+def test_generate_sub_tasks_integration(mock_openai_client):
+    """Test the full generate_sub_tasks flow with mock responses."""
+    # Set up mock response with DecomposeSubTask items
+    decompose_sub_task_1 = {
+        'meta_type': 'sub_task_detail',
+        'name': 'Research competitors',
+        'type': 'research',
+        'description': 'Research main competitors in the market',
+        'context': 'Understand competitive landscape',
+        'complexity': 3,
+        'prompt': 'Research the top 3 competitors and their market share'
+    }
+
+    decompose_sub_task_2 = {
+        'meta_type': 'sub_task_detail',
+        'name': 'Analyze findings',
+        'type': 'analysis',
+        'description': 'Analyze research findings',
+        'context': 'Extract insights from competitor research',
+        'complexity': 2,
+        'prompt': 'Create a summary analysis of competitor strengths and weaknesses'
+    }
+
+    # Mock response that would be parsed by instructor
+    mock_response_data = [decompose_sub_task_1, decompose_sub_task_2]
+    mock_openai_client.set_return_values(json.dumps(mock_response_data))
+
+    # Initialize decomposer
+    decomposer = TaskDecomposer(llm_client=mock_openai_client)
+    user_input = "Research competitors and analyze findings"
+
+    # Call the method
+    result = decomposer.generate_sub_tasks(user_input=user_input)
+
+    # Verify results
+    assert isinstance(result, list)
+    assert len(result) == 2
+    assert all(isinstance(task, SubTask) for task in result)
+
+    # Verify sub_tasks have correct decomposed_sub_task
+    assert result[0].decomposed_sub_task.name == 'Research competitors'
+    assert result[1].decomposed_sub_task.name == 'Analyze findings'
+
+    # Verify history is updated
+    assert 'user_input' in decomposer.history
+    assert decomposer.history['user_input'] == user_input
+    assert 'initial_tasks' in decomposer.history
+    assert len(decomposer.history['initial_tasks']) == 2
+
+def test_generate_initial_sub_tasks(mock_openai_client):
+    """Test generate_initial_sub_tasks method."""
+    # Set up mock response
+    decompose_sub_task = {
+        'meta_type': 'sub_task_detail',
+        'name': 'Write report',
+        'type': 'writing',
+        'description': 'Write a market research report',
+        'context': 'Create comprehensive market analysis',
+        'complexity': 4,
+        'prompt': 'Write a detailed market research report with insights'
+    }
+
+    mock_response_data = [decompose_sub_task]
+    mock_openai_client.set_return_values(json.dumps(mock_response_data))
+
+    # Initialize decomposer
+    decomposer = TaskDecomposer(llm_client=mock_openai_client)
+    user_input = "Write a comprehensive market research report"
+
+    # Call the method
+    result = decomposer.generate_initial_sub_tasks(user_input=user_input)
+
+    # Verify results
+    assert isinstance(result, list)
+    assert len(result) == 1
+    assert isinstance(result[0], SubTask)
+    assert result[0].decomposed_sub_task.name == 'Write report'
+
+    # Verify history is updated
+    assert 'user_input' in decomposer.history
+    assert 'decomposition_prompt' in decomposer.history
+    assert 'decompose_response' in decomposer.history
+    assert 'initial_tasks' in decomposer.history
+
+def test_filter_decompose_response_no_reset():
+    """Test filter_decompose_response when no reset items are present."""
+    decomposer = TaskDecomposer(llm_client=MockOpenAI())
+
+    # Create test data with only sub tasks
+    sub_task_1 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 1',
+        type='research',
+        description='First task',
+        context='Context 1',
+        complexity=1,
+        prompt='Prompt 1'
+    )
+
+    sub_task_2 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 2',
+        type='analysis',
+        description='Second task',
+        context='Context 2',
+        complexity=2,
+        prompt='Prompt 2'
+    )
+
+    decomposition_response = [sub_task_1, sub_task_2]
+
+    # Call the method
+    result = decomposer.filter_decompose_response(decomposition_response)
+
+    # Should return both sub tasks
+    assert len(result) == 2
+    assert all(isinstance(item, DecomposeSubTask) for item in result)
+    assert result[0].name == 'Task 1'
+    assert result[1].name == 'Task 2'
+
+def test_filter_decompose_response_with_reset():
+    """Test filter_decompose_response when reset items are present."""
+    decomposer = TaskDecomposer(llm_client=MockOpenAI())
+
+    # Create test data with reset in the middle
+    sub_task_1 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Old Task 1',
+        type='research',
+        description='Old first task',
+        context='Old context 1',
+        complexity=1,
+        prompt='Old prompt 1'
+    )
+
+    reset_item = DecomposeReset(
+        meta_type='reset',
+        reasoning='Need to restart decomposition'
+    )
+
+    sub_task_2 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 2',
+        type='analysis',
+        description='Second task',
+        context='Context 2',
+        complexity=2,
+        prompt='Prompt 2'
+    )
+
+    sub_task_3 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 3',
+        type='writing',
+        description='Third task',
+        context='Context 3',
+        complexity=3,
+        prompt='Prompt 3'
+    )
+
+    decomposition_response = [sub_task_1, reset_item, sub_task_2, sub_task_3]
+
+    # Call the method
+    result = decomposer.filter_decompose_response(decomposition_response)
+
+    # Should return only tasks after the last reset
+    assert len(result) == 2
+    assert all(isinstance(item, DecomposeSubTask) for item in result)
+    assert result[0].name == 'Task 2'
+    assert result[1].name == 'Task 3'
+
+def test_filter_decompose_response_multiple_resets():
+    """Test filter_decompose_response with multiple reset items."""
+    decomposer = TaskDecomposer(llm_client=MockOpenAI())
+
+    # Create test data with multiple resets
+    sub_task_1 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Old Task 1',
+        type='research',
+        description='Old first task',
+        context='Old context 1',
+        complexity=1,
+        prompt='Old prompt 1'
+    )
+
+    reset_item_1 = DecomposeReset(
+        meta_type='reset',
+        reasoning='First reset'
+    )
+
+    sub_task_2 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 2',
+        type='analysis',
+        description='Second task',
+        context='Context 2',
+        complexity=2,
+        prompt='Prompt 2'
+    )
+
+    reset_item_2 = DecomposeReset(
+        meta_type='reset',
+        reasoning='Second reset'
+    )
+
+    sub_task_3 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 3',
+        type='writing',
+        description='Third task',
+        context='Context 3',
+        complexity=3,
+        prompt='Prompt 3'
+    )
+
+    sub_task_4 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Task 4',
+        type='review',
+        description='Fourth task',
+        context='Context 4',
+        complexity=2,
+        prompt='Prompt 4'
+    )
+
+    decomposition_response = [sub_task_1, reset_item_1, sub_task_2, reset_item_2, sub_task_3, sub_task_4]
+
+    # Call the method
+    result = decomposer.filter_decompose_response(decomposition_response)
+
+    # Should return only tasks after the last reset
+    assert len(result) == 2
+    assert all(isinstance(item, DecomposeSubTask) for item in result)
+    assert result[0].name == 'Task 3'
+    assert result[1].name == 'Task 4'
+
+def test_filter_decompose_response_no_reset_items():
+    """Test filter_decompose_response when no reset items exist in response."""
+    decomposer = TaskDecomposer(llm_client=MockOpenAI())
+
+    # Test when ValueError is raised (no reset items)
+    decomposition_response = []  # Empty list, no reset items
+
+    # This should not raise an error, just return empty list
+    result = decomposer.filter_decompose_response(decomposition_response)
+    assert len(result) == 0
+
+def test_create_sub_tasks():
+    """Test create_sub_tasks method."""
+    decomposer = TaskDecomposer(llm_client=MockOpenAI())
+
+    # Create test decomposed sub tasks
+    decomposed_sub_task_1 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Research',
+        type='research',
+        description='Conduct market research',
+        context='Market analysis context',
+        complexity=3,
+        prompt='Research the market thoroughly'
+    )
+
+    decomposed_sub_task_2 = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Analysis',
+        type='analysis',
+        description='Analyze research data',
+        context='Data analysis context',
+        complexity=2,
+        prompt='Analyze the collected data'
+    )
+
+    decomposed_sub_tasks = [decomposed_sub_task_1, decomposed_sub_task_2]
+
+    # Call the method
+    result = decomposer.create_sub_tasks(decomposed_sub_tasks)
+
+    # Verify results
+    assert isinstance(result, list)
+    assert len(result) == 2
+    assert all(isinstance(task, SubTask) for task in result)
+    assert result[0].decomposed_sub_task.name == 'Research'
+    assert result[1].decomposed_sub_task.name == 'Analysis'
+    assert result[0].meta_type == 'sub_task'  # Check meta_type
+    assert result[1].meta_type == 'sub_task'  # Check meta_type
+    assert result[0].status == 'pending'  # Default status
+    assert result[1].status == 'pending'  # Default status
+
+def test_decomposition_prompt_generation(mock_openai_client):
+    """Test that the decomposition prompt is correctly generated."""
+    mock_openai_client.set_return_values('[]')  # Empty response
+
+    decomposer = TaskDecomposer(llm_client=mock_openai_client)
+    user_input = "Test user input"
+
+    # Call generate_initial_decomposition to trigger prompt generation
+    try:
+        decomposer.generate_initial_decomposition(user_input=user_input)
+    except Exception:
+        pass  # We're just testing prompt generation, not the full flow
+
+    # Verify the prompt was generated and stored in history
+    assert 'decomposition_prompt' in decomposer.history
+    prompt = decomposer.history['decomposition_prompt']
+
+    # Verify prompt contains expected elements
+    assert "Test user input" in prompt
+    assert "Break it down into atomic subtasks" in prompt
+    assert "json Definitions" in prompt  # Should contain JSON schema
+
+def test_history_update_during_decomposition(mock_openai_client):
+    """Test that history is properly updated during decomposition."""
+    # Set up mock response
+    decompose_sub_task = {
+        'meta_type': 'sub_task_detail',
+        'name': 'Test Task',
+        'type': 'test',
+        'description': 'Test description',
+        'context': 'Test context',
+        'complexity': 1,
+        'prompt': 'Test prompt'
+    }
+
+    mock_response_data = [decompose_sub_task]
+    mock_openai_client.set_return_values(json.dumps(mock_response_data))
+
+    # Initialize decomposer
+    decomposer = TaskDecomposer(llm_client=mock_openai_client)
+    user_input = "Test decomposition"
+
+    # Call the method
+    decomposer.generate_initial_sub_tasks(user_input=user_input)
+
+    # Verify all expected history entries
+    assert 'user_input' in decomposer.history
+    assert decomposer.history['user_input'] == user_input
+
+    assert 'decomposition_prompt' in decomposer.history
+    assert isinstance(decomposer.history['decomposition_prompt'], str)
+
+    assert 'decompose_response' in decomposer.history
+    assert isinstance(decomposer.history['decompose_response'], list)
+
+    assert 'initial_tasks' in decomposer.history
+    assert isinstance(decomposer.history['initial_tasks'], list)
+    assert len(decomposer.history['initial_tasks']) == 1
+
+def test_empty_decomposition_response(mock_openai_client):
+    """Test handling of empty decomposition response."""
+    mock_openai_client.set_return_values('[]')  # Empty JSON array
+
+    decomposer = TaskDecomposer(llm_client=mock_openai_client)
+    user_input = "Test empty response"
+
+    # Call the method
+    result = decomposer.generate_initial_sub_tasks(user_input=user_input)
+
+    # Should return empty list
+    assert isinstance(result, list)
+    assert len(result) == 0
+
+    # History should still be updated
+    assert 'user_input' in decomposer.history
+    assert 'decomposition_prompt' in decomposer.history
+    assert 'decompose_response' in decomposer.history
+    assert decomposer.history['decompose_response'] == []
+
+def test_decomposition_with_mixed_items(mock_openai_client):
+    """Test filtering when decomposition response contains mixed item types."""
+    decomposer = TaskDecomposer(llm_client=mock_openai_client)
+
+    # Create mixed items (including non-DecomposeSubTask items)
+    sub_task_1 = {
+        'meta_type': 'sub_task_detail',
+        'name': 'Task 1',
+        'type': 'research',
+        'description': 'First task',
+        'context': 'Context 1',
+        'complexity': 1,
+        'prompt': 'Prompt 1'
+    }
+
+    # This would be filtered out by filter_decompose_response
+    reset_item = {
+        'meta_type': 'reset',
+        'reasoning': 'Test reset'
+    }
+
+    sub_task_2 = {
+        'meta_type': 'sub_task_detail',
+        'name': 'Task 2',
+        'type': 'analysis',
+        'description': 'Second task',
+        'context': 'Context 2',
+        'complexity': 2,
+        'prompt': 'Prompt 2'
+    }
+
+    mock_response_data = [sub_task_1, reset_item, sub_task_2]
+    mock_openai_client.set_return_values(json.dumps(mock_response_data))
+
+    # Call the method that goes through the full flow
+    result = decomposer.generate_initial_sub_tasks(user_input="Test mixed items")
+
+    # Should only get sub tasks after filtering
+    assert len(result) == 1  # sub_task_2 (after reset)
+    assert result[0].decomposed_sub_task.name == 'Task 2'
+
+if __name__ == "__main__":
+    pytest.main([__file__])
