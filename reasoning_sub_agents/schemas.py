@@ -75,7 +75,7 @@ class DecomposeReset(BaseModel):
 
 
 DecomposeItem = Annotated[
-    DecomposeSubTask | DecomposeThinkingStep | DecompositionPause | DecomposeReset, Field(discriminator='type')
+    DecomposeSubTask | DecomposeThinkingStep | DecompositionPause | DecomposeReset, Field(discriminator='meta_type')
 ]
 
 
