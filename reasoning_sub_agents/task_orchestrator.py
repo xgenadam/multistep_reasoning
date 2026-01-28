@@ -33,10 +33,7 @@ class TaskOrchestrator:
 
     def query(
         self, user_input: str, return_sub_tasks: bool = False
-    ) -> (
-        ChatCompletionMessage
-        | tuple[ChatCompletionMessage, list[Task]]
-    ):
+    ) -> ChatCompletionMessage | tuple[ChatCompletionMessage, list[Task]]:
         # this is our entrypoint post initialization
         # user input should be the most recent user input
         # history is still TBD regarding structure, but the current assumption
@@ -49,7 +46,9 @@ class TaskOrchestrator:
         #     subtasks
         #  3. given the results from 1 and 2, generate refined subtasks
         #  4. should then build prompts for each subtask, subtasks should not have
-        #     access to the history, the context they need should be part of the prompt
+        #     access to the history, the context they need should be part of the objective
+        #     Note: currently the objective is being handled as part of step 1, this is
+        #     subject to change
         #  5. execute all subtasks
         #  6. given the output of all subtasks aggregate the result
 
@@ -57,16 +56,7 @@ class TaskOrchestrator:
         # TODO: just to get running the decomposer is currently only doing step 1
         sub_tasks = self.decomposer.generate_sub_tasks(user_input)
 
-        # step 4
-        logger.debug(f"generating sub task prompts for {len(sub_tasks)} tasks")
-        prompts = self.task_prompt_generator.generate_sub_task_prompt(
-            user_input=user_input, tasks=sub_tasks
-        )
-        for sub_task in sub_tasks:
-            sub_task.prompt = extract_message(prompts[sub_task.task_id])
-
-        # step 5
-        logger.debug("executing sub tasks")
+        logger.debug('executing sub tasks')
         sub_task_execution_results = self.agent_executor.execute_sub_tasks(
             sub_tasks=sub_tasks
         )
@@ -77,11 +67,11 @@ class TaskOrchestrator:
         )
         self.history.append(
             {
-                "user_input": user_input,
-                "decomposition_history": self.decomposer.history,
-                "prompt_history": self.task_prompt_generator.history,
-                "execution_results": self.agent_executor.history,
-                "synthesis_history": self.result_synthesiser.history,
+                'user_input': user_input,
+                'decomposition_history': self.decomposer.history,
+                'prompt_history': self.task_prompt_generator.history,
+                'execution_results': self.agent_executor.history,
+                'synthesis_history': self.result_synthesiser.history,
             }
         )
         if return_sub_tasks:
@@ -89,11 +79,13 @@ class TaskOrchestrator:
         return synthesised_results
 
     @classmethod
-    def instantiate(cls, *, config: dict | None=None, llm_client: OpenAI | None=None) -> Self:
+    def instantiate(
+        cls, *, config: dict | None = None, llm_client: OpenAI | None = None
+    ) -> Self:
         if config is None and llm_client is None:
-            raise ValueError("Neither config nor llm_client provided")
+            raise ValueError('Neither config nor llm_client provided')
         if config and llm_client:
-            raise ValueError("Cannot provide both config and llm_client")
+            raise ValueError('Cannot provide both config and llm_client')
         if config:
             llm_client = create_llama_client(config)
         decomposer = TaskDecomposer(llm_client=llm_client)

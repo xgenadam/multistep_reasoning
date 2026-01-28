@@ -141,7 +141,7 @@ class ResultSynthesiser:
             llm_input=llm_input,
         ))
 
-        self.history["prompt"] = llm_input.model_dump()
+        self.history["objective"] = llm_input.model_dump()
         self.history["result"] = synthesis_result.model_dump()
         self.history["retrieved_context"] = retrieved_context
         return synthesis_result
@@ -247,9 +247,11 @@ class VerificationAgent:
 ```
 
 **Updated `executor.py`:**
+
 ```python
 class AgentExecutor:
-    def __init__(self, llm_client: OpenAI, verification_agent: VerificationAgent, history: list | None = None):
+    def __init__(self, llm_client: OpenAI, verification_agent: VerificationAgent,
+                 history: list | None = None):
         self.llm_client = llm_client
         self.verification_agent = verification_agent
         self.history = [] if history is None else history
@@ -293,7 +295,7 @@ class AgentExecutor:
         Please revise your response addressing all feedback points.
         """
 
-        task.prompt = generate_simple_llm_input(regeneration_prompt)
+        task.objective = generate_simple_llm_input(regeneration_prompt)
         return task
 ```
 
@@ -336,11 +338,15 @@ class TaskDecomposer:
 ```
 
 **Updated `task_orchestrator.py`:**
+
 ```python
 class TaskOrchestrator:
-    def __init__(self, decomposer: TaskDecomposer, task_prompt_generator: TaskPromptGenerator,
-                 agent_executor: AgentExecutor, result_synthesiser: ResultSynthesiser,
-                 llm_client: OpenAI, neo4j_manager: Optional[Neo4jContextManager] = None,
+    def __init__(self, decomposer: TaskDecomposer,
+                 task_prompt_generator: TaskPromptGenerator,
+                 agent_executor: AgentExecutor,
+                 result_synthesiser: ResultSynthesiser,
+                 llm_client: OpenAI,
+                 neo4j_manager: Optional[Neo4jContextManager] = None,
                  history: list | None = None):
         self.decomposer = decomposer
         self.task_prompt_generator = task_prompt_generator
@@ -376,7 +382,7 @@ class TaskOrchestrator:
         )
 
         for sub_task in sub_tasks:
-            sub_task.prompt = extract_message(prompts[sub_task.task_id])
+            sub_task.objective = extract_message(prompts[sub_task.task_id])
 
         # Execute with verification
         sub_task_results = self.agent_executor.execute_sub_tasks(sub_tasks)
@@ -390,8 +396,9 @@ class TaskOrchestrator:
         return final_result
 
     @classmethod
-    def instantiate(cls, *, config: dict | None=None, llm_client: OpenAI | None=None,
-                   neo4j_config: dict | None=None) -> Self:
+    def instantiate(cls, *, config: dict | None = None,
+                    llm_client: OpenAI | None = None,
+                    neo4j_config: dict | None = None) -> Self:
         if config is None and llm_client is None:
             raise ValueError("Neither config nor llm_client provided")
         if config and llm_client:
@@ -434,6 +441,7 @@ class TaskOrchestrator:
 - Integrate web search/API calls
 
 **Updated `executor.py`:**
+
 ```python
 class AgentExecutor:
     def __init__(self, llm_client: OpenAI, verification_agent: VerificationAgent,
@@ -444,14 +452,15 @@ class AgentExecutor:
         self.external_retriever = external_retriever
         self.history = [] if history is None else history
 
-    def _execute_ready_tasks(self, ready_tasks: dict[str, Task]) -> dict[str, ChatResponse]:
+    def _execute_ready_tasks(self, ready_tasks: dict[str, Task]) -> dict[
+        str, ChatResponse]:
         results = {}
         for task_id, task in ready_tasks.items():
             if self._needs_external_info(task):
                 task = self._enrich_with_external_info(task)
 
             # Execute the task
-            llm_input = generate_simple_llm_input(task.prompt.content)
+            llm_input = generate_simple_llm_input(task.objective.content)
             response = stream_conversation(
                 llama_client=self.llm_client,
                 llm_input=llm_input
@@ -462,19 +471,21 @@ class AgentExecutor:
 
     def _needs_external_info(self, task: Task) -> bool:
         # Check for markers indicating need for external data
-        return "NEEDS_EXTERNAL_INFO" in task.context or len(task.context.split()) < 20
+        return "NEEDS_EXTERNAL_INFO" in task.context or len(
+            task.context.split()) < 20
 
     def _enrich_with_external_info(self, task: Task) -> Task:
         if not self.external_retriever:
-            raise RuntimeError("External retrieval requested but no retriever configured")
+            raise RuntimeError(
+                "External retrieval requested but no retriever configured")
 
         query = f"{task.description} {task.context}"
         external_data = self.external_retriever.fetch(query)
 
         if external_data:
             task.context += f"\n\nExternal Information:\n{external_data}"
-            task.prompt = generate_simple_llm_input(
-                f"{task.prompt.content}\n\nAdditional Context:\n{external_data}"
+            task.objective = generate_simple_llm_input(
+                f"{task.objective.content}\n\nAdditional Context:\n{external_data}"
             )
 
         return task

@@ -1,16 +1,16 @@
 import json
 import logging
-from typing import Iterable
+from collections.abc import Iterable
 
-from .llama_utils import generate_simple_llm_input, stream_conversation, \
-    extract_message
-from .schemas import Task
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessage
 
+from .llama_utils import extract_message, generate_simple_llm_input, stream_conversation
+from .schemas import SubTask
+
 SYNTHESIS_PROMPT = """
 ### Final Synthesis ###
-Original User Request: 
+Original User Request:
 {user_input}
 
 Completed Subtasks and Results:
@@ -38,18 +38,18 @@ class ResultSynthesiser:
         self.history = history if history is not None else {}
 
     def synthesise_results(
-            self, user_input: str, completed_sub_tasks: Iterable[Task]
+        self, user_input: str, completed_sub_tasks: Iterable[Task]
     ) -> ChatCompletionMessage:
         completed_sub_task_str = json.dumps(
             [
                 task.model_dump(
                     include={
-                        "context",
-                        "description",
-                        "complexity",
-                        "type",
-                        "result",
-                        "status",
+                        'context',
+                        'description',
+                        'complexity',
+                        'type',
+                        'result',
+                        'status',
                     }
                 )
                 for task in completed_sub_tasks
@@ -61,13 +61,15 @@ class ResultSynthesiser:
             completed_tasks=completed_sub_task_str,
         )
         llm_input = generate_simple_llm_input(synthesis_prompt)
-        logging.debug("beginning synthesis")
-        synthesis_result = extract_message(stream_conversation(
-            llama_client=self.llm_client,
-            llm_input=llm_input,
-        ))
+        logging.debug('beginning synthesis')
+        synthesis_result = extract_message(
+            stream_conversation(
+                llama_client=self.llm_client,
+                llm_input=llm_input,
+            )
+        )
 
-        self.history["prompt"] = llm_input.model_dump()
-        self.history["result"] = synthesis_result.model_dump()
-        logging.debug("finished synthesis")
+        self.history['objective'] = llm_input.model_dump()
+        self.history['result'] = synthesis_result.model_dump()
+        logging.debug('finished synthesis')
         return synthesis_result

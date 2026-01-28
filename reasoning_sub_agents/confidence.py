@@ -1,5 +1,5 @@
 class ConfidenceSubAgent:
-    # The purpose of this model, is to take a text prompt that has a question,
+    # The purpose of this model, is to take a text objective that has a question,
     # feed it into an LLM and have that llm_client either output a confidence value.
     # The idea being that this confidence value then allows us to make a boolean
     # decision

@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Annotated, Literal, Union
+from typing import Annotated, Literal, Union, Self
 from pydantic import field_validator
 
 from openai.types.chat import (
@@ -11,8 +11,8 @@ from pydantic import BaseModel, Field
 
 ChatResponse = Union[ChatCompletion, list[ChatCompletionChunk]]
 
-prompt_description = '''
-The prompt for the taskRules for creating the instruction prompt:
+objective_description = '''
+The objective for the taskRules for creating the instruction objective:
 1. Keep only to the scope of the sub task
 2. Provide information relevant to the completion of the sub task
 3. if there is ambiguity, highlight this but provide your best guess
@@ -27,7 +27,7 @@ class DecomposeSubTask(BaseModel):
         description='The context for the task, how it relates to the overall goal'
     )
     complexity: int = Field(description='The complexity of the task. Match complexity to subtask estimate (range: 1-5)')
-    prompt: str = Field(description=prompt_description)
+    objective: str = Field(description=objective_description)
 
 
 thinking_description = '''
@@ -86,28 +86,21 @@ class TaskStatus(StrEnum):
 
 
 class SubTaskResult(BaseModel):
-    meta_type: Literal['sub_task_result']
+    meta_type: Literal['sub_task_result'] = 'sub_task_result'
     chat_response: ChatCompletionMessage | None = None
-
-    @field_validator('chat_response', mode='before')
-    @classmethod
-    def convert_sub_task_result(cls, v) ->ChatCompletionMessage | None:
-        if v:
-            from .llama_utils import extract_message
-            return extract_message(v)
-        return None
 
 
 class SubTask(BaseModel):
-    meta_type: Literal['sub_task']
+    meta_type: Literal['sub_task'] = ('sub_task'
+                                      '')
     decomposed_sub_task: DecomposeSubTask
     sub_task_result: SubTaskResult | None = None
     status: TaskStatus = TaskStatus.PENDING
 
 
 class AccumulatedResult(BaseModel):
-    meta_type: Literal['accumulated_result']
-    previous_sub_tasks: list[SubTask]
+    meta_type: Literal['accumulated_result'] = 'accumulated_result'
+    previous_results: list[Self]
     current_task: SubTask
     synthesis_prompt: ChatCompletionMessage
     chat_response: ChatCompletionMessage
@@ -116,6 +109,9 @@ class AccumulatedResult(BaseModel):
     @classmethod
     def convert_sub_task_result(cls, v) -> ChatCompletionMessage:
         from .llama_utils import extract_message
+        # If it's already a ChatCompletionMessage, return it as-is
+        if isinstance(v, ChatCompletionMessage):
+            return v
         return extract_message(v)
 
 
@@ -136,7 +132,7 @@ class LLMInput(BaseModel):
 # #
 # # class Task(TaskBase):
 # #     task_id: str
-# #     prompt: ChatCompletionMessage | None = None
+# #     objective: ChatCompletionMessage | None = None
 # #     result: ChatResponse | None = None
 # #     status: TaskStatus = TaskStatus.PENDING
 # #     dependencies: list[TaskDependency] = Field(default_factory=list)
@@ -167,7 +163,7 @@ class LLMInput(BaseModel):
 #
 #
 # class TaskSynthesisHistory(BaseModel):
-#     prompt: str
+#     objective: str
 #     result: ChatResponse
 #
 #

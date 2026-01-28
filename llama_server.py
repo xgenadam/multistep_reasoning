@@ -1,8 +1,9 @@
 import logging
 import subprocess
 import time
-import requests
 from threading import Thread
+
+import requests
 
 logger = logging.getLogger(__name__)
 

@@ -22,7 +22,7 @@ def build_tree_string(node, indent=""):
     dirs = sorted([k for k, v in node.items() if isinstance(v, dict)])
     files = sorted([k for k, v in node.items() if not isinstance(v, dict)])
     items = dirs + files
-    for i, key in enumerate(items):
+    for _i, key in enumerate(items):
         is_dir = key in dirs
         line = indent + "- " + key
         if is_dir:
@@ -59,7 +59,7 @@ def generate_structure(root_dir, suffix, exclude=None):
         full_path = os.path.join(root_dir, rel)
         output.append(f"Path: {rel}")
         try:
-            with open(full_path, "r", encoding="utf-8") as file:
+            with open(full_path, encoding="utf-8") as file:
                 content = file.read()
             output.append("```python")
             output.append(content)
