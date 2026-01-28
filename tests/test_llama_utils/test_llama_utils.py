@@ -76,7 +76,7 @@ def test_create_llama_client_invalid_port():
         create_llama_client(config=config)
 
 def test_generate_simple_llm_input():
-    """Test generating simple LLM input with prompt."""
+    """Test generating simple LLM input with objective."""
     prompt = "Hello, how are you?"
     llm_input = generate_simple_llm_input(prompt)
 
@@ -229,7 +229,7 @@ def test_stream_conversation_with_callbacks(mock_openai_client):
 
     chunks = stream_conversation(
         llama_client=mock_openai_client,
-        llm_input=generate_simple_llm_input("Test prompt"),
+        llm_input=generate_simple_llm_input("Test objective"),
         callbacks=[test_callback]
     )
 

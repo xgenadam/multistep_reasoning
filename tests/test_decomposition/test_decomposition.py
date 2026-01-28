@@ -38,7 +38,7 @@ def test_generate_sub_tasks_integration(mock_openai_client):
         description='Research main competitors in the market',
         context='Understand competitive landscape',
         complexity=3,
-        prompt='Research the top 3 competitors and their market share'
+        objective='Research the top 3 competitors and their market share'
     )
 
     decompose_sub_task_2 = DecomposeSubTask(
@@ -48,7 +48,7 @@ def test_generate_sub_tasks_integration(mock_openai_client):
         description='Analyze research findings',
         context='Extract insights from competitor research',
         complexity=2,
-        prompt='Create a summary analysis of competitor strengths and weaknesses'
+        objective='Create a summary analysis of competitor strengths and weaknesses'
     )
 
     # Mock the instructor call by patching the function where it's used
@@ -91,7 +91,7 @@ def test_generate_initial_sub_tasks(mock_openai_client):
         description='Write a market research report',
         context='Create comprehensive market analysis',
         complexity=4,
-        prompt='Write a detailed market research report with insights'
+        objective='Write a detailed market research report with insights'
     )
 
     # Mock the instructor call by patching the function where it's used
@@ -129,7 +129,7 @@ def test_filter_decompose_response_no_reset():
         description='First task',
         context='Context 1',
         complexity=1,
-        prompt='Prompt 1'
+        objective='Prompt 1'
     )
 
     sub_task_2 = DecomposeSubTask(
@@ -139,7 +139,7 @@ def test_filter_decompose_response_no_reset():
         description='Second task',
         context='Context 2',
         complexity=2,
-        prompt='Prompt 2'
+        objective='Prompt 2'
     )
 
     decomposition_response = [sub_task_1, sub_task_2]
@@ -165,7 +165,7 @@ def test_filter_decompose_response_with_reset():
         description='Old first task',
         context='Old context 1',
         complexity=1,
-        prompt='Old prompt 1'
+        objective='Old objective 1'
     )
 
     reset_item = DecomposeReset(
@@ -180,7 +180,7 @@ def test_filter_decompose_response_with_reset():
         description='Second task',
         context='Context 2',
         complexity=2,
-        prompt='Prompt 2'
+        objective='Prompt 2'
     )
 
     sub_task_3 = DecomposeSubTask(
@@ -190,7 +190,7 @@ def test_filter_decompose_response_with_reset():
         description='Third task',
         context='Context 3',
         complexity=3,
-        prompt='Prompt 3'
+        objective='Prompt 3'
     )
 
     decomposition_response = [sub_task_1, reset_item, sub_task_2, sub_task_3]
@@ -216,7 +216,7 @@ def test_filter_decompose_response_multiple_resets():
         description='Old first task',
         context='Old context 1',
         complexity=1,
-        prompt='Old prompt 1'
+        objective='Old objective 1'
     )
 
     reset_item_1 = DecomposeReset(
@@ -231,7 +231,7 @@ def test_filter_decompose_response_multiple_resets():
         description='Second task',
         context='Context 2',
         complexity=2,
-        prompt='Prompt 2'
+        objective='Prompt 2'
     )
 
     reset_item_2 = DecomposeReset(
@@ -246,7 +246,7 @@ def test_filter_decompose_response_multiple_resets():
         description='Third task',
         context='Context 3',
         complexity=3,
-        prompt='Prompt 3'
+        objective='Prompt 3'
     )
 
     sub_task_4 = DecomposeSubTask(
@@ -256,7 +256,7 @@ def test_filter_decompose_response_multiple_resets():
         description='Fourth task',
         context='Context 4',
         complexity=2,
-        prompt='Prompt 4'
+        objective='Prompt 4'
     )
 
     decomposition_response = [sub_task_1, reset_item_1, sub_task_2, reset_item_2, sub_task_3, sub_task_4]
@@ -293,7 +293,7 @@ def test_create_sub_tasks():
         description='Conduct market research',
         context='Market analysis context',
         complexity=3,
-        prompt='Research the market thoroughly'
+        objective='Research the market thoroughly'
     )
 
     decomposed_sub_task_2 = DecomposeSubTask(
@@ -303,7 +303,7 @@ def test_create_sub_tasks():
         description='Analyze research data',
         context='Data analysis context',
         complexity=2,
-        prompt='Analyze the collected data'
+        objective='Analyze the collected data'
     )
 
     decomposed_sub_tasks = [decomposed_sub_task_1, decomposed_sub_task_2]
@@ -323,7 +323,7 @@ def test_create_sub_tasks():
     assert result[1].status == 'pending'  # Default status
 
 def test_decomposition_prompt_generation(mock_openai_client):
-    """Test that the decomposition prompt is correctly generated."""
+    """Test that the decomposition objective is correctly generated."""
     import unittest.mock
 
     # Mock the instructor call by patching the function where it's used
@@ -333,14 +333,14 @@ def test_decomposition_prompt_generation(mock_openai_client):
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
         user_input = "Test user input"
 
-        # Call generate_initial_decomposition to trigger prompt generation
+        # Call generate_initial_decomposition to trigger objective generation
         decomposer.generate_initial_decomposition(user_input=user_input)
 
-        # Verify the prompt was generated and stored in history
+        # Verify the objective was generated and stored in history
         assert 'decomposition_prompt' in decomposer.history
         prompt = decomposer.history['decomposition_prompt']
 
-        # Verify prompt contains expected elements
+        # Verify objective contains expected elements
         assert "Test user input" in prompt
         assert "Break it down into atomic subtasks" in prompt
         assert "json array" in prompt  # Should contain JSON array reference
@@ -359,7 +359,7 @@ def test_history_update_during_decomposition(mock_openai_client):
         description='Test description',
         context='Test context',
         complexity=1,
-        prompt='Test prompt'
+        objective='Test objective'
     )
 
     # Mock the instructor call by patching the function where it's used
@@ -428,7 +428,7 @@ def test_decomposition_with_mixed_items(mock_openai_client):
             description='First task',
             context='Context 1',
             complexity=1,
-            prompt='Prompt 1'
+            objective='Prompt 1'
         )
 
         # This would be filtered out by filter_decompose_response
@@ -444,7 +444,7 @@ def test_decomposition_with_mixed_items(mock_openai_client):
             description='Second task',
             context='Context 2',
             complexity=2,
-            prompt='Prompt 2'
+            objective='Prompt 2'
         )
 
         mock_get_streamed_json_response.return_value = [sub_task_1, reset_item, sub_task_2]
