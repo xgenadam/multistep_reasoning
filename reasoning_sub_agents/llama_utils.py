@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 import instructor
 from openai import OpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionChunk, ChatCompletionMessage
-from pydantic import BaseModel
 
 from .schemas import BooleanResponse, ChatResponse, LLMInput, LLMMessage
 
@@ -102,7 +101,11 @@ def extract_message(response: ChatResponse) -> ChatCompletionMessage:
     For streaming, accumulates deltas into a single message.
     """
     # Duck typing: check if it has choices with message (non-streaming)
-    if hasattr(response, 'choices') and len(response.choices) > 0 and hasattr(response.choices[0], 'message'):
+    if (
+        hasattr(response, 'choices')
+        and len(response.choices) > 0
+        and hasattr(response.choices[0], 'message')
+    ):
         return response.choices[0].message
 
     # Streaming accumulation
@@ -124,7 +127,8 @@ def extract_message(response: ChatResponse) -> ChatCompletionMessage:
     return accumulated
 
 
-T = TypeVar("T")
+T = TypeVar('T')
+
 
 def get_streamed_json_response[T](
     llama_client: OpenAI,
@@ -161,12 +165,12 @@ def get_streamed_json_response[T](
             try:
                 callback(partial_model)
             except Exception as e:
-                print(f"Partial callback error: {e}")
+                print(f'Partial callback error: {e}')
 
         final_model = partial_model
 
     if final_model is None:
-        raise ValueError("Stream completed without any output")
+        raise ValueError('Stream completed without any output')
 
     return final_model
 

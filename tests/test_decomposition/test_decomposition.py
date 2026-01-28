@@ -1,11 +1,10 @@
 """Test suite for reasoning_sub_agents.task_decomposition module."""
 
-import json
 import pytest
-
+from reasoning_sub_agents.schemas import DecomposeReset, DecomposeSubTask, SubTask
 from reasoning_sub_agents.task_decomposition import TaskDecomposer
-from reasoning_sub_agents.schemas import SubTask, DecomposeReset, DecomposeSubTask
 from tests.mock_openai import MockOpenAI
+
 
 def test_task_decomposer_initialization():
     """Test TaskDecomposer initialization with default and custom history."""
@@ -22,13 +21,13 @@ def test_task_decomposer_initialization():
     assert decomposer_custom.history == custom_history
     assert decomposer_custom.llm_client == mock_client
 
+
 def test_generate_sub_tasks_integration(mock_openai_client):
     """Test the full generate_sub_tasks flow with mock responses."""
     # Import necessary models
-    from reasoning_sub_agents.schemas import DecomposeSubTask, DecomposeItem
-    from pydantic import TypeAdapter
     import unittest.mock
-    from reasoning_sub_agents import llama_utils
+
+    from reasoning_sub_agents.schemas import DecomposeSubTask
 
     # Set up mock response with DecomposeSubTask items
     decompose_sub_task_1 = DecomposeSubTask(
@@ -38,7 +37,7 @@ def test_generate_sub_tasks_integration(mock_openai_client):
         description='Research main competitors in the market',
         context='Understand competitive landscape',
         complexity=3,
-        objective='Research the top 3 competitors and their market share'
+        objective='Research the top 3 competitors and their market share',
     )
 
     decompose_sub_task_2 = DecomposeSubTask(
@@ -48,16 +47,21 @@ def test_generate_sub_tasks_integration(mock_openai_client):
         description='Analyze research findings',
         context='Extract insights from competitor research',
         complexity=2,
-        objective='Create a summary analysis of competitor strengths and weaknesses'
+        objective='Create a summary analysis of competitor strengths and weaknesses',
     )
 
     # Mock the instructor call by patching the function where it's used
-    with unittest.mock.patch('reasoning_sub_agents.task_decomposition.get_streamed_json_response') as mock_get_streamed_json_response:
-        mock_get_streamed_json_response.return_value = [decompose_sub_task_1, decompose_sub_task_2]
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
+        mock_get_streamed_json_response.return_value = [
+            decompose_sub_task_1,
+            decompose_sub_task_2,
+        ]
 
         # Initialize decomposer
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
-        user_input = "Research competitors and analyze findings"
+        user_input = 'Research competitors and analyze findings'
 
         # Call the method
         result = decomposer.generate_sub_tasks(user_input=user_input)
@@ -77,11 +81,13 @@ def test_generate_sub_tasks_integration(mock_openai_client):
         assert 'initial_tasks' in decomposer.history
         assert len(decomposer.history['initial_tasks']) == 2
 
+
 def test_generate_initial_sub_tasks(mock_openai_client):
     """Test generate_initial_sub_tasks method."""
     # Import necessary models
-    from reasoning_sub_agents.schemas import DecomposeSubTask
     import unittest.mock
+
+    from reasoning_sub_agents.schemas import DecomposeSubTask
 
     # Set up mock response
     decompose_sub_task = DecomposeSubTask(
@@ -91,16 +97,18 @@ def test_generate_initial_sub_tasks(mock_openai_client):
         description='Write a market research report',
         context='Create comprehensive market analysis',
         complexity=4,
-        objective='Write a detailed market research report with insights'
+        objective='Write a detailed market research report with insights',
     )
 
     # Mock the instructor call by patching the function where it's used
-    with unittest.mock.patch('reasoning_sub_agents.task_decomposition.get_streamed_json_response') as mock_get_streamed_json_response:
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
         mock_get_streamed_json_response.return_value = [decompose_sub_task]
 
         # Initialize decomposer
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
-        user_input = "Write a comprehensive market research report"
+        user_input = 'Write a comprehensive market research report'
 
         # Call the method
         result = decomposer.generate_initial_sub_tasks(user_input=user_input)
@@ -117,6 +125,7 @@ def test_generate_initial_sub_tasks(mock_openai_client):
         assert 'initial_tasks' in decomposer.history
         # user_input is NOT stored by generate_initial_sub_tasks, only by generate_sub_tasks
 
+
 def test_filter_decompose_response_no_reset():
     """Test filter_decompose_response when no reset items are present."""
     decomposer = TaskDecomposer(llm_client=MockOpenAI())
@@ -129,7 +138,7 @@ def test_filter_decompose_response_no_reset():
         description='First task',
         context='Context 1',
         complexity=1,
-        objective='Prompt 1'
+        objective='Prompt 1',
     )
 
     sub_task_2 = DecomposeSubTask(
@@ -139,7 +148,7 @@ def test_filter_decompose_response_no_reset():
         description='Second task',
         context='Context 2',
         complexity=2,
-        objective='Prompt 2'
+        objective='Prompt 2',
     )
 
     decomposition_response = [sub_task_1, sub_task_2]
@@ -153,6 +162,7 @@ def test_filter_decompose_response_no_reset():
     assert result[0].name == 'Task 1'
     assert result[1].name == 'Task 2'
 
+
 def test_filter_decompose_response_with_reset():
     """Test filter_decompose_response when reset items are present."""
     decomposer = TaskDecomposer(llm_client=MockOpenAI())
@@ -165,12 +175,11 @@ def test_filter_decompose_response_with_reset():
         description='Old first task',
         context='Old context 1',
         complexity=1,
-        objective='Old objective 1'
+        objective='Old objective 1',
     )
 
     reset_item = DecomposeReset(
-        meta_type='reset',
-        reasoning='Need to restart decomposition'
+        meta_type='reset', reasoning='Need to restart decomposition'
     )
 
     sub_task_2 = DecomposeSubTask(
@@ -180,7 +189,7 @@ def test_filter_decompose_response_with_reset():
         description='Second task',
         context='Context 2',
         complexity=2,
-        objective='Prompt 2'
+        objective='Prompt 2',
     )
 
     sub_task_3 = DecomposeSubTask(
@@ -190,7 +199,7 @@ def test_filter_decompose_response_with_reset():
         description='Third task',
         context='Context 3',
         complexity=3,
-        objective='Prompt 3'
+        objective='Prompt 3',
     )
 
     decomposition_response = [sub_task_1, reset_item, sub_task_2, sub_task_3]
@@ -204,6 +213,7 @@ def test_filter_decompose_response_with_reset():
     assert result[0].name == 'Task 2'
     assert result[1].name == 'Task 3'
 
+
 def test_filter_decompose_response_multiple_resets():
     """Test filter_decompose_response with multiple reset items."""
     decomposer = TaskDecomposer(llm_client=MockOpenAI())
@@ -216,13 +226,10 @@ def test_filter_decompose_response_multiple_resets():
         description='Old first task',
         context='Old context 1',
         complexity=1,
-        objective='Old objective 1'
+        objective='Old objective 1',
     )
 
-    reset_item_1 = DecomposeReset(
-        meta_type='reset',
-        reasoning='First reset'
-    )
+    reset_item_1 = DecomposeReset(meta_type='reset', reasoning='First reset')
 
     sub_task_2 = DecomposeSubTask(
         meta_type='sub_task_detail',
@@ -231,13 +238,10 @@ def test_filter_decompose_response_multiple_resets():
         description='Second task',
         context='Context 2',
         complexity=2,
-        objective='Prompt 2'
+        objective='Prompt 2',
     )
 
-    reset_item_2 = DecomposeReset(
-        meta_type='reset',
-        reasoning='Second reset'
-    )
+    reset_item_2 = DecomposeReset(meta_type='reset', reasoning='Second reset')
 
     sub_task_3 = DecomposeSubTask(
         meta_type='sub_task_detail',
@@ -246,7 +250,7 @@ def test_filter_decompose_response_multiple_resets():
         description='Third task',
         context='Context 3',
         complexity=3,
-        objective='Prompt 3'
+        objective='Prompt 3',
     )
 
     sub_task_4 = DecomposeSubTask(
@@ -256,10 +260,17 @@ def test_filter_decompose_response_multiple_resets():
         description='Fourth task',
         context='Context 4',
         complexity=2,
-        objective='Prompt 4'
+        objective='Prompt 4',
     )
 
-    decomposition_response = [sub_task_1, reset_item_1, sub_task_2, reset_item_2, sub_task_3, sub_task_4]
+    decomposition_response = [
+        sub_task_1,
+        reset_item_1,
+        sub_task_2,
+        reset_item_2,
+        sub_task_3,
+        sub_task_4,
+    ]
 
     # Call the method
     result = decomposer.filter_decompose_response(decomposition_response)
@@ -269,6 +280,7 @@ def test_filter_decompose_response_multiple_resets():
     assert all(isinstance(item, DecomposeSubTask) for item in result)
     assert result[0].name == 'Task 3'
     assert result[1].name == 'Task 4'
+
 
 def test_filter_decompose_response_no_reset_items():
     """Test filter_decompose_response when no reset items exist in response."""
@@ -280,6 +292,7 @@ def test_filter_decompose_response_no_reset_items():
     # This should not raise an error, just return empty list
     result = decomposer.filter_decompose_response(decomposition_response)
     assert len(result) == 0
+
 
 def test_create_sub_tasks():
     """Test create_sub_tasks method."""
@@ -293,7 +306,7 @@ def test_create_sub_tasks():
         description='Conduct market research',
         context='Market analysis context',
         complexity=3,
-        objective='Research the market thoroughly'
+        objective='Research the market thoroughly',
     )
 
     decomposed_sub_task_2 = DecomposeSubTask(
@@ -303,7 +316,7 @@ def test_create_sub_tasks():
         description='Analyze research data',
         context='Data analysis context',
         complexity=2,
-        objective='Analyze the collected data'
+        objective='Analyze the collected data',
     )
 
     decomposed_sub_tasks = [decomposed_sub_task_1, decomposed_sub_task_2]
@@ -322,16 +335,19 @@ def test_create_sub_tasks():
     assert result[0].status == 'pending'  # Default status
     assert result[1].status == 'pending'  # Default status
 
+
 def test_decomposition_prompt_generation(mock_openai_client):
     """Test that the decomposition objective is correctly generated."""
     import unittest.mock
 
     # Mock the instructor call by patching the function where it's used
-    with unittest.mock.patch('reasoning_sub_agents.task_decomposition.get_streamed_json_response') as mock_get_streamed_json_response:
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
         mock_get_streamed_json_response.return_value = []
 
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
-        user_input = "Test user input"
+        user_input = 'Test user input'
 
         # Call generate_initial_decomposition to trigger objective generation
         decomposer.generate_initial_decomposition(user_input=user_input)
@@ -341,15 +357,17 @@ def test_decomposition_prompt_generation(mock_openai_client):
         prompt = decomposer.history['decomposition_prompt']
 
         # Verify objective contains expected elements
-        assert "Test user input" in prompt
-        assert "Break it down into atomic subtasks" in prompt
-        assert "json array" in prompt  # Should contain JSON array reference
+        assert 'Test user input' in prompt
+        assert 'Break it down into atomic subtasks' in prompt
+        assert 'json array' in prompt  # Should contain JSON array reference
+
 
 def test_history_update_during_decomposition(mock_openai_client):
     """Test that history is properly updated during decomposition."""
     # Import necessary models
-    from reasoning_sub_agents.schemas import DecomposeSubTask
     import unittest.mock
+
+    from reasoning_sub_agents.schemas import DecomposeSubTask
 
     # Set up mock response
     decompose_sub_task = DecomposeSubTask(
@@ -359,16 +377,18 @@ def test_history_update_during_decomposition(mock_openai_client):
         description='Test description',
         context='Test context',
         complexity=1,
-        objective='Test objective'
+        objective='Test objective',
     )
 
     # Mock the instructor call by patching the function where it's used
-    with unittest.mock.patch('reasoning_sub_agents.task_decomposition.get_streamed_json_response') as mock_get_streamed_json_response:
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
         mock_get_streamed_json_response.return_value = [decompose_sub_task]
 
         # Initialize decomposer
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
-        user_input = "Test decomposition"
+        user_input = 'Test decomposition'
 
         # Call the method that stores user_input in history
         decomposer.generate_sub_tasks(user_input=user_input)
@@ -387,16 +407,19 @@ def test_history_update_during_decomposition(mock_openai_client):
         assert isinstance(decomposer.history['initial_tasks'], list)
         assert len(decomposer.history['initial_tasks']) == 1
 
+
 def test_empty_decomposition_response(mock_openai_client):
     """Test handling of empty decomposition response."""
     import unittest.mock
 
     # Mock the instructor call by patching the function where it's used
-    with unittest.mock.patch('reasoning_sub_agents.task_decomposition.get_streamed_json_response') as mock_get_streamed_json_response:
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
         mock_get_streamed_json_response.return_value = []
 
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
-        user_input = "Test empty response"
+        user_input = 'Test empty response'
 
         # Call the method that stores user_input in history
         result = decomposer.generate_sub_tasks(user_input=user_input)
@@ -412,14 +435,18 @@ def test_empty_decomposition_response(mock_openai_client):
         assert 'decompose_response' in decomposer.history
         assert decomposer.history['decompose_response'] == []
 
+
 def test_decomposition_with_mixed_items(mock_openai_client):
     """Test filtering when decomposition response contains mixed item types."""
     # Import necessary models
-    from reasoning_sub_agents.schemas import DecomposeSubTask, DecomposeReset
     import unittest.mock
 
+    from reasoning_sub_agents.schemas import DecomposeReset, DecomposeSubTask
+
     # Mock the instructor call by patching the function where it's used
-    with unittest.mock.patch('reasoning_sub_agents.task_decomposition.get_streamed_json_response') as mock_get_streamed_json_response:
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
         # Create mixed items (including non-DecomposeSubTask items)
         sub_task_1 = DecomposeSubTask(
             meta_type='sub_task_detail',
@@ -428,14 +455,11 @@ def test_decomposition_with_mixed_items(mock_openai_client):
             description='First task',
             context='Context 1',
             complexity=1,
-            objective='Prompt 1'
+            objective='Prompt 1',
         )
 
         # This would be filtered out by filter_decompose_response
-        reset_item = DecomposeReset(
-            meta_type='reset',
-            reasoning='Test reset'
-        )
+        reset_item = DecomposeReset(meta_type='reset', reasoning='Test reset')
 
         sub_task_2 = DecomposeSubTask(
             meta_type='sub_task_detail',
@@ -444,19 +468,24 @@ def test_decomposition_with_mixed_items(mock_openai_client):
             description='Second task',
             context='Context 2',
             complexity=2,
-            objective='Prompt 2'
+            objective='Prompt 2',
         )
 
-        mock_get_streamed_json_response.return_value = [sub_task_1, reset_item, sub_task_2]
+        mock_get_streamed_json_response.return_value = [
+            sub_task_1,
+            reset_item,
+            sub_task_2,
+        ]
 
         decomposer = TaskDecomposer(llm_client=mock_openai_client)
 
         # Call the method that goes through the full flow
-        result = decomposer.generate_initial_sub_tasks(user_input="Test mixed items")
+        result = decomposer.generate_initial_sub_tasks(user_input='Test mixed items')
 
         # Should only get sub tasks after filtering
         assert len(result) == 1  # sub_task_2 (after reset)
         assert result[0].decomposed_sub_task.name == 'Task 2'
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     pytest.main([__file__])

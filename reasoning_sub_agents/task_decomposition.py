@@ -5,7 +5,7 @@ from openai import OpenAI
 from pydantic import TypeAdapter
 
 from .llama_utils import generate_simple_llm_input, get_streamed_json_response
-from .schemas import DecomposeItem, SubTask, DecomposeReset, DecomposeSubTask
+from .schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +26,9 @@ Rules for decomposition:
 
 class TaskDecomposer:
     def __init__(
-            self,
-            llm_client: OpenAI,
-            history: dict | None = None,
+        self,
+        llm_client: OpenAI,
+        history: dict | None = None,
     ):
         self.llm_client = llm_client
         self.history = {} if history is None else history
@@ -55,15 +55,17 @@ class TaskDecomposer:
         )
         sub_tasks = self.create_sub_tasks(decomposed_tasks)
         logger.debug(f'generated {len(sub_tasks)} sub tasks')
-        self.history['initial_tasks'] = TypeAdapter(list[SubTask]).dump_python(sub_tasks)
+        self.history['initial_tasks'] = TypeAdapter(list[SubTask]).dump_python(
+            sub_tasks
+        )
         return sub_tasks
 
     def generate_initial_decomposition(self, user_input: str) -> list[DecomposeItem]:
         initial_decompose_prompt = DECOMPOSE_TASK_PROMPT.format(
             user_input=user_input,
             json_definition=json.dumps(
-                TypeAdapter(list[DecomposeItem]).json_schema(),
-                indent=4)
+                TypeAdapter(list[DecomposeItem]).json_schema(), indent=4
+            ),
         )
         self.history['decomposition_prompt'] = initial_decompose_prompt
         decompose_response = get_streamed_json_response(
@@ -72,25 +74,29 @@ class TaskDecomposer:
             response_model=list[DecomposeItem],
         )
         self.history['decompose_response'] = TypeAdapter(
-            list[DecomposeItem]).dump_python(decompose_response)
+            list[DecomposeItem]
+        ).dump_python(decompose_response)
         return decompose_response
 
     def filter_decompose_response(
-            self, decomposition_response: list[DecomposeItem]
+        self, decomposition_response: list[DecomposeItem]
     ) -> list[DecomposeSubTask]:
         try:
             last_reset_index = max(
-                i for i, item in enumerate(decomposition_response)
+                i
+                for i, item in enumerate(decomposition_response)
                 if isinstance(item, DecomposeReset)
             )
-            items = decomposition_response[last_reset_index + 1:]
+            items = decomposition_response[last_reset_index + 1 :]
         except ValueError:
             items = decomposition_response
-        decompose_tasks = [item for item in items if
-                           isinstance(item, DecomposeSubTask)]
+        decompose_tasks = [item for item in items if isinstance(item, DecomposeSubTask)]
         return decompose_tasks
 
-    def create_sub_tasks(self, decomposed_sub_tasks: list[DecomposeSubTask]) -> list[
-        SubTask]:
-        return [SubTask(meta_type='sub_task', decomposed_sub_task=decomposed_sub_task) for
-                decomposed_sub_task in decomposed_sub_tasks]
+    def create_sub_tasks(
+        self, decomposed_sub_tasks: list[DecomposeSubTask]
+    ) -> list[SubTask]:
+        return [
+            SubTask(meta_type='sub_task', decomposed_sub_task=decomposed_sub_task)
+            for decomposed_sub_task in decomposed_sub_tasks
+        ]

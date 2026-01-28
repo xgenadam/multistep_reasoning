@@ -1,5 +1,4 @@
 import pytest
-
 from mock_openai import MockOpenAI
 
 

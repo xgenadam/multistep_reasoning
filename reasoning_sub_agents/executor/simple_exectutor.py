@@ -1,27 +1,23 @@
-from copy import deepcopy
 import logging
 
 from openai import OpenAI
+
+from ..execution_synthesiser.base import ExecutorSynthesiserBase
 from ..llama_utils import (
     extract_message,
     generate_simple_llm_input,
-    run_multi_concurrent,
     stream_conversation,
 )
-from ..schemas import SubTask, TaskStatus, AccumulatedResult, SubTaskResult
-
+from ..schemas import AccumulatedResult, SubTask, SubTaskResult, TaskStatus
 from .base import ExecutorBase
-from ..execution_synthesiser.base import ExecutorSynthesiserBase
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.DEBUG)
 
 
-ACCUMULATED_PROMPT_PART = '''
-'''
 
 
-PROMPT = '''
+PROMPT = """
 You are an expert sub task execution agent.
 
 This is the relevant context of the task which you are assigned:
@@ -29,7 +25,7 @@ This is the relevant context of the task which you are assigned:
 
 This is your objective:
 {objective}
-'''
+"""
 
 
 class SimpleAgentExecutor(ExecutorBase):
@@ -38,18 +34,23 @@ class SimpleAgentExecutor(ExecutorBase):
         self.history = [] if history is None else history
 
     def execute_sub_tasks(
-            self,
-            sub_tasks: list[SubTask],
-            synthesiser: ExecutorSynthesiserBase
+        self, sub_tasks: list[SubTask], synthesiser: ExecutorSynthesiserBase
     ) -> AccumulatedResult:
         accumulated_results: list[AccumulatedResult] = []
 
         for idx, sub_task in enumerate(sub_tasks):
-            prompt = generate_simple_llm_input(PROMPT.format(context=sub_task.decomposed_sub_task.context,
-                                   objective=sub_task.decomposed_sub_task.objective))
-            execution_response = stream_conversation(llama_client=self.llm_client,
-                                                  llm_input=prompt)
-            sub_task_result = SubTaskResult(chat_response=extract_message(execution_response))
+            prompt = generate_simple_llm_input(
+                PROMPT.format(
+                    context=sub_task.decomposed_sub_task.context,
+                    objective=sub_task.decomposed_sub_task.objective,
+                )
+            )
+            execution_response = stream_conversation(
+                llama_client=self.llm_client, llm_input=prompt
+            )
+            sub_task_result = SubTaskResult(
+                chat_response=extract_message(execution_response)
+            )
             sub_task.sub_task_result = sub_task_result
             sub_task.status = TaskStatus.COMPLETED
             accumulated_result = synthesiser.synthesize(
@@ -62,7 +63,9 @@ class SimpleAgentExecutor(ExecutorBase):
 
         # If no sub_tasks were processed, return a default empty result
         if not accumulated_results:
-            raise RuntimeError('something went wrong here, if this gets raised it '
-                               'means no sub tasks were executed!')
+            raise RuntimeError(
+                'something went wrong here, if this gets raised it '
+                'means no sub tasks were executed!'
+            )
 
         return accumulated_result
