@@ -4,8 +4,9 @@ import os
 
 from project_serializer import generate_structure
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator
+from llama_server import start_llama_server
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # with open('project_text.txt') as f:
 #     PROJECT_TEXT = f.read()
@@ -31,6 +32,7 @@ I know there are ways to improve speed and efficiency, but I care about those le
 After you have finished the analysis, please output the full new files that you have changed.
 """
 
+prompt = "please write a short story about a cat eating a spider. make it fun and quirky!"
 
 def get_max_index(directory: str, prefix: str) -> int | None:
     """

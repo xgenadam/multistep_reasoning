@@ -7,21 +7,11 @@ from ..llama_utils import generate_simple_llm_input, stream_conversation, \
 from ..schemas import AccumulatedResult, SubTask
 from .base import ExecutorSynthesiserBase
 
+import logging
 
-PROMPT = """
-You are an expert task synthesiser.
-You take the results of a sub task, and the results of previous sub tasks, and combine the results such that the original user request is fulfilled.
+logger = logging.getLogger()
 
-This is the original user request:
-================================================================================
-{user_request}
-================================================================================
-
-
-This request has been broken down into these sub tasks:
-================================================================================
-{sub_tasks}
-================================================================================
+PREVIOUS_RESULT_SUB_PROMPT = """
 
 Of these sub tasks, the following have been completed:
 ================================================================================
@@ -34,6 +24,22 @@ This is the previous result:
 {previous_result}
 ================================================================================
 
+"""
+
+PROMPT = """
+You are an expert task synthesiser.
+You take the results of a sub task, and the results of previous sub tasks, and combine the results such that the original user request is fulfilled.
+
+This is the original user request:
+================================================================================
+{user_request}
+================================================================================
+
+This request has been broken down into these sub tasks:
+================================================================================
+{sub_tasks}
+================================================================================
+{previous_result_sub_prompt}
 This is the current sub task:
 ================================================================================
 {current_sub_task}
@@ -68,14 +74,20 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
         current_sub_task: SubTask,
         sub_tasks: list[SubTask],
     ) -> AccumulatedResult:
+        logger.debug(f'sythesizing {current_sub_task.model_dump()}')
         sub_tasks_str = json.dumps([sub_task.decomposed_sub_task.model_dump() for sub_task in sub_tasks])
         completed_sub_tasks_str = json.dumps([sub_task.decomposed_sub_task.model_dump() for sub_task in completed_sub_tasks])
-        previous_result_str = accumulated_results[-1].chat_response.content
+        try:
+            previous_result_str = PREVIOUS_RESULT_SUB_PROMPT.format(
+                previous_result=accumulated_results[-1].chat_response.content,
+                completed_sub_tasks=completed_sub_tasks_str,
+            )
+        except IndexError:
+            previous_result_str = ''
         prompt_str = PROMPT.format(
             user_request=user_request,
             sub_tasks=sub_tasks_str,
-            completed_sub_tasks=completed_sub_tasks_str,
-            previous_result=previous_result_str,
+            previous_result_sub_prompt=previous_result_str,
             current_sub_task=current_sub_task.model_dump(),
             current_result=current_sub_task.sub_task_result.chat_response.content,
         )
@@ -88,5 +100,6 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
             synthesis_prompt=prompt_str,
             chat_response=synthesis_result,
         )
-        self.history.append(AccumulatedResult.model_dump())
+        self.history.append(accumulated_result.model_dump())
+        logger.debug(f'completed synthesis')
         return accumulated_result

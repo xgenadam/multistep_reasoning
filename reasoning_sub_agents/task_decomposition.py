@@ -10,17 +10,19 @@ from .schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
 logger = logging.getLogger(__name__)
 
 DECOMPOSE_TASK_PROMPT = """
-You are a task decomposition expert. Analyze this root task:
-{user_input}
-Break it down into atomic subtasks in a JSON array.
-The definition of the json array is here:
+You are a task decomposition expert, that breaks tasks down into sub tasks.
+This is the json format you can output
 ```
 {json_definition}
 ```
+Generate sub tasks that will lead to a response that suitable responds to the following user query
+{user_input}
+
 Rules for decomposition:
 1. Ensure tasks are small enough to complete in one LLM operation
 2. Maintain logical sequence flow
-4. ONLY output JSON as described above
+3. ONLY output JSON as described above
+4. There must be a minimum of 1 sub task
 """
 
 
@@ -45,7 +47,7 @@ class TaskDecomposer:
         return initial_tasks
 
     def generate_initial_sub_tasks(self, user_input: str) -> list[SubTask]:
-        logger.debug('generating initial sub tasks')
+        logger.info('generating initial sub tasks')
 
         initial_decomposed_tasks = self.generate_initial_decomposition(
             user_input=user_input
@@ -54,7 +56,7 @@ class TaskDecomposer:
             decomposition_response=initial_decomposed_tasks
         )
         sub_tasks = self.create_sub_tasks(decomposed_tasks)
-        logger.debug(f'generated {len(sub_tasks)} sub tasks')
+        logger.info(f'generated {len(sub_tasks)} sub tasks')
         self.history['initial_tasks'] = TypeAdapter(list[SubTask]).dump_python(
             sub_tasks
         )
@@ -73,6 +75,11 @@ class TaskDecomposer:
             llm_input=generate_simple_llm_input(initial_decompose_prompt),
             response_model=list[DecomposeItem],
         )
+        # this is a workaround for a known bug where if there is a single item
+        # returned, it will not be returned as a list
+        if not isinstance(decompose_response, list):
+            decompose_response = [decompose_response]
+
         self.history['decompose_response'] = TypeAdapter(
             list[DecomposeItem]
         ).dump_python(decompose_response)

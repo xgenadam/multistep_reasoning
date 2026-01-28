@@ -11,20 +11,21 @@ from ..llama_utils import (
 from ..schemas import AccumulatedResult, SubTask, SubTaskResult, TaskStatus
 from .base import ExecutorBase
 
-logger = logging.getLogger(__name__)
-logger.setLevel(level=logging.DEBUG)
-
-
+logger = logging.getLogger()
 
 
 PROMPT = """
 You are an expert sub task execution agent.
 
 This is the relevant context of the task which you are assigned:
+================================================================================
 {context}
+================================================================================
 
 This is your objective:
+================================================================================
 {objective}
+================================================================================
 """
 
 
@@ -39,6 +40,7 @@ class SimpleAgentExecutor(ExecutorBase):
         accumulated_results: list[AccumulatedResult] = []
 
         for idx, sub_task in enumerate(sub_tasks):
+            logger.debug(f'Executing sub_task {idx}')
             prompt_str = PROMPT.format(
                     context=sub_task.decomposed_sub_task.context,
                     objective=sub_task.decomposed_sub_task.objective,
@@ -51,6 +53,7 @@ class SimpleAgentExecutor(ExecutorBase):
                 chat_response=extract_message(execution_response)
             )
             sub_task.sub_task_result = sub_task_result
+            logger.debug(f'completed sub_task {idx}, result: {sub_task_result.chat_response.content}')
             sub_task.status = TaskStatus.COMPLETED
             accumulated_result = synthesiser.synthesize(
                 user_request=user_request,
@@ -66,6 +69,7 @@ class SimpleAgentExecutor(ExecutorBase):
                     'accumulated_result': accumulated_result.model_dump()
                 }
             )
+            logger.debug(f'completed sub_task {idx}, result: {accumulated_result.chat_response.content}')
             accumulated_result.previous_results = accumulated_results.copy()
             accumulated_results.append(accumulated_result)
 

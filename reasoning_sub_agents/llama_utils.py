@@ -143,7 +143,7 @@ def get_streamed_json_response[T](
 
     instr_client = instructor.from_openai(
         llama_client,
-        mode=instructor.Mode.JSON,
+        # mode=instructor.Mode.JSON,
     )
 
     messages = [msg.model_dump() for msg in llm_input.messages]
@@ -153,7 +153,7 @@ def get_streamed_json_response[T](
         model='llama',
         messages=messages,
         response_model=response_model,
-        stream=True,
+        # stream=True,
         max_retries=max_retries,
         timeout=3600,
         **instructor_kwargs,
@@ -165,7 +165,7 @@ def get_streamed_json_response[T](
             try:
                 callback(partial_model)
             except Exception as e:
-                print(f'Partial callback error: {e}')
+                logger.error(f'Partial callback error: {e}')
 
         final_model = partial_model
 
@@ -186,7 +186,7 @@ def get_streamed_boolean_decision(
     Returns the final boolean value.
     """
     final_model = get_streamed_json_response(
-        client=llama_client,
+        llama_client=llama_client,
         response_model=BooleanResponse,
         llm_input=llm_input,
         partial_callbacks=partial_callbacks or [],

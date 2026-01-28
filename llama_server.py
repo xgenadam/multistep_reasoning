@@ -94,7 +94,6 @@ def start_llama_server(config: dict) -> None:
         try:
             resp = requests.get(models_url, timeout=5)
             if resp.status_code == 200:
-                import pdb; pdb.set_trace()
                 logger.info("Server is ready!")
                 logger.debug("Models response: %s", resp.json())
                 return

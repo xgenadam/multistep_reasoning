@@ -4,12 +4,13 @@ from typing import Self
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessage
 
-from .exectutor import AgentExecutor
-from .llama_utils import create_llama_client, extract_message
-from .prompt_generator import TaskPromptGenerator
-from .result_synthesiser import ResultSynthesiser
-from .schemas import Task
+from .llama_utils import create_llama_client
+from .schemas import AccumulatedResult
 from .task_decomposition import TaskDecomposer
+from .execution_synthesiser.base import ExecutorSynthesiserBase
+from .execution_synthesiser.simple_synthesiser import SimpleSynthesiser
+from .executor.base import ExecutorBase
+from .executor.simple_exectutor import SimpleAgentExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +19,12 @@ class TaskOrchestrator:
     def __init__(
         self,
         decomposer: TaskDecomposer,
-        task_prompt_generator: TaskPromptGenerator,
-        agent_executor: AgentExecutor,
-        result_synthesiser: ResultSynthesiser,
+        agent_executor: ExecutorBase,
+        result_synthesiser: ExecutorSynthesiserBase,
         llm_client: OpenAI,
         history: list | None = None,
     ):
         self.decomposer = decomposer
-        self.task_prompt_generator = task_prompt_generator
         self.agent_executor = agent_executor
         self.result_synthesiser = result_synthesiser
         self.llm_client = llm_client
@@ -33,7 +32,7 @@ class TaskOrchestrator:
 
     def query(
         self, user_input: str, return_sub_tasks: bool = False
-    ) -> ChatCompletionMessage | tuple[ChatCompletionMessage, list[Task]]:
+    ) -> ChatCompletionMessage | tuple[ChatCompletionMessage, AccumulatedResult]:
         # this is our entrypoint post initialization
         # user input should be the most recent user input
         # history is still TBD regarding structure, but the current assumption
@@ -57,26 +56,23 @@ class TaskOrchestrator:
         sub_tasks = self.decomposer.generate_sub_tasks(user_input)
 
         logger.debug('executing sub tasks')
-        sub_task_execution_results = self.agent_executor.execute_sub_tasks(
-            sub_tasks=sub_tasks
+        sub_task_execution_result = self.agent_executor.execute_sub_tasks(
+            user_request=user_input,
+            sub_tasks=sub_tasks,
+            synthesiser=self.result_synthesiser,
         )
 
-        # step 6
-        synthesised_results = self.result_synthesiser.synthesise_results(
-            user_input, sub_task_execution_results
-        )
         self.history.append(
             {
                 'user_input': user_input,
                 'decomposition_history': self.decomposer.history,
-                'prompt_history': self.task_prompt_generator.history,
                 'execution_results': self.agent_executor.history,
                 'synthesis_history': self.result_synthesiser.history,
             }
         )
         if return_sub_tasks:
-            return synthesised_results, sub_task_execution_results
-        return synthesised_results
+            return sub_task_execution_result.chat_response, sub_task_execution_result
+        return sub_task_execution_result.chat_response
 
     @classmethod
     def instantiate(
@@ -89,12 +85,10 @@ class TaskOrchestrator:
         if config:
             llm_client = create_llama_client(config)
         decomposer = TaskDecomposer(llm_client=llm_client)
-        task_prompt_generator = TaskPromptGenerator(llm_client=llm_client)
-        agent_executor = AgentExecutor(llm_client=llm_client)
-        result_synthesiser = ResultSynthesiser(llm_client=llm_client)
+        agent_executor = SimpleAgentExecutor(llm_client=llm_client)
+        result_synthesiser = SimpleSynthesiser(llm_client=llm_client)
         return cls(
             decomposer=decomposer,
-            task_prompt_generator=task_prompt_generator,
             agent_executor=agent_executor,
             result_synthesiser=result_synthesiser,
             llm_client=llm_client,
