@@ -58,6 +58,12 @@ class SimpleAgentExecutor(ExecutorBase):
                 current_sub_task=sub_task,
                 upcoming_sub_tasks=sub_tasks[idx:],
             )
+            self.history.append(
+                {
+                    'completed_sub_task': sub_task.model_dump(),
+                    'accumulated_result': accumulated_result.model_dump()
+                }
+            )
             accumulated_result.previous_results = accumulated_results.copy()
             accumulated_results.append(accumulated_result)
 

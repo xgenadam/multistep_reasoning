@@ -226,17 +226,3 @@ def test_executor_synthesiser_interaction(
     assert result.previous_results[0].current_task == test_sub_tasks[0]
     assert result.previous_results[1].current_task == test_sub_tasks[1]
     assert result.current_task == test_sub_tasks[2]
-
-
-def test_executor_history_instance_variable(mock_openai_client, mock_synthesiser):
-    """Test that the history instance variable is used properly."""
-    mock_openai_client.set_return_values('Test response')
-
-    sub_task = create_test_sub_task('History Test')
-    executor = SimpleAgentExecutor(
-        llm_client=mock_openai_client, history=['existing_item']
-    )
-
-    # Execute should not modify the history (it's not used in execute_sub_tasks currently)
-    executor.execute_sub_tasks([sub_task], mock_synthesiser)
-    assert executor.history == ['existing_item']
