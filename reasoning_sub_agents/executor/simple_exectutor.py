@@ -34,17 +34,16 @@ class SimpleAgentExecutor(ExecutorBase):
         self.history = [] if history is None else history
 
     def execute_sub_tasks(
-        self, sub_tasks: list[SubTask], synthesiser: ExecutorSynthesiserBase
+        self, user_request: str, sub_tasks: list[SubTask], synthesiser: ExecutorSynthesiserBase
     ) -> AccumulatedResult:
         accumulated_results: list[AccumulatedResult] = []
 
         for idx, sub_task in enumerate(sub_tasks):
-            prompt = generate_simple_llm_input(
-                PROMPT.format(
+            prompt_str = PROMPT.format(
                     context=sub_task.decomposed_sub_task.context,
                     objective=sub_task.decomposed_sub_task.objective,
                 )
-            )
+            prompt = generate_simple_llm_input(prompt_str)
             execution_response = stream_conversation(
                 llama_client=self.llm_client, llm_input=prompt
             )
@@ -54,13 +53,16 @@ class SimpleAgentExecutor(ExecutorBase):
             sub_task.sub_task_result = sub_task_result
             sub_task.status = TaskStatus.COMPLETED
             accumulated_result = synthesiser.synthesize(
+                user_request=user_request,
+                completed_sub_tasks=sub_tasks[:idx],
                 accumulated_results=accumulated_results,
                 current_sub_task=sub_task,
-                upcoming_sub_tasks=sub_tasks[idx:],
+                sub_tasks=sub_tasks
             )
             self.history.append(
                 {
                     'completed_sub_task': sub_task.model_dump(),
+                    'full_prompt': prompt_str,
                     'accumulated_result': accumulated_result.model_dump()
                 }
             )

@@ -105,7 +105,7 @@ class AccumulatedResult(BaseModel):
     meta_type: Literal['accumulated_result'] = 'accumulated_result'
     previous_results: list[Self]
     current_task: SubTask
-    synthesis_prompt: ChatCompletionMessage
+    synthesis_prompt: str
     chat_response: ChatCompletionMessage
 
     @field_validator('chat_response', mode='before')

@@ -20,17 +20,17 @@ class MockSynthesiser(ExecutorSynthesiserBase):
 
     def synthesize(
         self,
+        user_request: str,
+        completed_sub_tasks: list[SubTask],
         accumulated_results: list[AccumulatedResult],
         current_sub_task: SubTask,
-        upcoming_sub_tasks: list[SubTask],
+        sub_tasks: list[SubTask],
     ) -> AccumulatedResult:
         # Create a simple accumulated result based on the current sub_task
         return AccumulatedResult(
             previous_results=accumulated_results,
             current_task=current_sub_task,
-            synthesis_prompt=ChatCompletionMessage(
-                role='assistant', content='Synthesized'
-            ),
+            synthesis_prompt='Synthesized',
             chat_response=ChatCompletionMessage(
                 role='assistant',
                 content=f'Synthesis for {current_sub_task.decomposed_sub_task.name}',
@@ -94,7 +94,7 @@ def test_execute_single_sub_task(mock_openai_client, mock_synthesiser):
 
     # Execute
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
-    result = executor.execute_sub_tasks([sub_task], mock_synthesiser)
+    result = executor.execute_sub_tasks("test user request", [sub_task], mock_synthesiser)
 
     # Verify sub_task was modified correctly
     assert sub_task.status == TaskStatus.COMPLETED
@@ -121,7 +121,7 @@ def test_execute_multiple_sub_tasks(
     )
 
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
-    result = executor.execute_sub_tasks(test_sub_tasks, mock_synthesiser)
+    result = executor.execute_sub_tasks("test user request", test_sub_tasks, mock_synthesiser)
 
     # Verify all sub_tasks were processed
     for i, sub_task in enumerate(test_sub_tasks):
@@ -147,7 +147,7 @@ def test_executor_prompt_generation(mock_openai_client, mock_synthesiser):
         'Prompt Test', context='Test Context', objective='Test Objective'
     )
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
-    executor.execute_sub_tasks([sub_task], mock_synthesiser)
+    executor.execute_sub_tasks("test user request", [sub_task], mock_synthesiser)
 
     # The prompt should contain the context and objective
     # We can't directly check the prompt, but we can verify the response was processed
@@ -161,7 +161,7 @@ def test_executor_sub_task_immonutability(mock_openai_client, mock_synthesiser):
 
     mock_openai_client.set_return_values('Test response')
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
-    executor.execute_sub_tasks([sub_task_copy], mock_synthesiser)
+    executor.execute_sub_tasks("test user request", [sub_task_copy], mock_synthesiser)
 
     # Original should remain unchanged
     assert original_sub_task.status == TaskStatus.PENDING
@@ -179,7 +179,7 @@ def test_executor_empty_sub_tasks(mock_openai_client, mock_synthesiser):
     # This should not raise an exception and should return something sensible
     # Since there are no tasks, the synthesiser won't be called
     with pytest.raises(RuntimeError):  # Will try to access accumulated_results[0]
-        executor.execute_sub_tasks([], mock_synthesiser)
+        executor.execute_sub_tasks("", [], mock_synthesiser)
 
 
 def test_executor_streaming_response(mock_openai_client, mock_synthesiser):
@@ -189,7 +189,7 @@ def test_executor_streaming_response(mock_openai_client, mock_synthesiser):
 
     sub_task = create_test_sub_task('Streaming Test')
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
-    executor.execute_sub_tasks([sub_task], mock_synthesiser)
+    executor.execute_sub_tasks("test user request", [sub_task], mock_synthesiser)
 
     # Should combine streaming chunks into single response
     assert sub_task.sub_task_result.chat_response.content == 'Streaming response chunks'
@@ -204,7 +204,7 @@ def test_executor_error_handling(mock_openai_client, mock_synthesiser):
 
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
     with pytest.raises(ValueError, match='API error'):
-        executor.execute_sub_tasks([sub_task], mock_synthesiser)
+        executor.execute_sub_tasks("test user request", [sub_task], mock_synthesiser)
 
     # Sub_task should remain in pending state if execution fails
     assert sub_task.status == TaskStatus.PENDING
@@ -218,7 +218,7 @@ def test_executor_synthesiser_interaction(
     mock_openai_client.set_return_values('Response 1', 'Response 2', 'Response 3')
 
     executor = SimpleAgentExecutor(llm_client=mock_openai_client)
-    result = executor.execute_sub_tasks(test_sub_tasks, mock_synthesiser)
+    result = executor.execute_sub_tasks("test user request", test_sub_tasks, mock_synthesiser)
 
     # Verify that accumulated results are properly passed to synthesiser
     # The final result should have 2 previous results (for the 3 tasks)
