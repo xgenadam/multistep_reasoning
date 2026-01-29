@@ -4,29 +4,53 @@ import logging
 from openai import OpenAI
 from pydantic import TypeAdapter
 
-from .llama_utils import generate_simple_llm_input, get_streamed_json_response
-from .schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
+from ..llama_utils import generate_simple_llm_input, get_streamed_json_response
+from ..schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
+from .base import TaskDecomposerBase
 
 logger = logging.getLogger(__name__)
 
 DECOMPOSE_TASK_PROMPT = """
-You are a task decomposition expert, that breaks tasks down into sub tasks.
-This is the json format you can output
+You are a world-class task decomposition expert with perfect intuition for breaking complex requests into atomic sub-tasks.
+This is the json format you MUST output (always as a list):
 ```
 {json_definition}
 ```
-Generate sub tasks that will lead to a response that suitable responds to the following user query
-{user_input}
 
-Rules for decomposition:
-1. Ensure tasks are small enough to complete in one LLM operation
-2. Maintain logical sequence flow
-3. ONLY output JSON as described above
-4. There must be a minimum of 1 sub task
+For the following user query, generate 3-5 sub-tasks that completely fulfill the request when combined.
+**CRITICAL INSTRUCTION:** ANY request requiring more than one logical action must be broken into multiple sub-tasks. 
+**EXAMPLE TRIGGERS (MUST DECOMPOSE ANY TIME THESE OR SIMILAR PATTERNS APPEAR):**
+- Any request containing 'write', 'create', 'design', 'analyze', 'guide me'
+- Any multi-step process (e.g., 'Plan an event: research venues first, then budget, then schedule')
+- Any request requiring different types of work (research → writing → synthesis)
+
+**STRONG DECOMPOSITION RULES:**
+1. FOR ANY request with sequential dependencies, generate between 3-5 sub-tasks
+2. Each sub-task must:
+   - Start with an action verb ("Research", "Create", "Validate", etc.)
+   - Have a concrete, verifiable deliverable (e.g., "Draft of report introduction")
+   - Be completable in a single LLM response
+3. IMPOSSIBLE EXCEPTION: You may only return a single sub-task if:
+   - The request is a straightforward factual question with a definitive yes/no answer
+   - The task can literally be completed in under 30 words of context
+
+**ILLUSTRATIVE EXAMPLE:**
+User query: "Design a website about climate change"
+Sub-tasks:
+1. Research key climate change statistics and impacts
+2. Outline website structure including home, about, and resources pages
+3. Draft homepage content incorporating researched statistics
+4. Create wireframe for website layout visuals
+
+**PROOF:**
+If your response has fewer than 3 sub-tasks but involves more than one logical stage, you have failed this critical instruction.
+
+This is the user query:
+{user_input}
 """
 
 
-class TaskDecomposer:
+class SimpleTaskDecomposer(TaskDecomposerBase):
     def __init__(
         self,
         llm_client: OpenAI,

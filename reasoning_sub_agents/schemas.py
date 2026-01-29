@@ -29,7 +29,7 @@ class DecomposeSubTask(BaseModel):
         description='The context for the task, how it relates to the overall goal'
     )
     complexity: int = Field(
-        description='The complexity of the task. Match complexity to subtask estimate (range: 1-5)'
+        description='The complexity of the task. Match complexity to subtask estimate (range: 1-5). Try to break tasks down such that the average complexity is 3.'
     )
     objective: str = Field(description=objective_description)
 
