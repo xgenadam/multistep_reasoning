@@ -2,3 +2,6 @@
 *__pycache__
 venv
 llama_cpp_server
+*.json
+*.md
+

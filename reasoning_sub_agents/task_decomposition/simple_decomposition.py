@@ -7,12 +7,13 @@ from pydantic import TypeAdapter
 from ..llama_utils import generate_simple_llm_input, get_streamed_json_response
 from ..schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
 from .base import TaskDecomposerBase
+from .temp_schemas import DecomposeItemContainer
 
 logger = logging.getLogger(__name__)
 
 DECOMPOSE_TASK_PROMPT = """
 You are a world-class task decomposition expert with perfect intuition for breaking complex requests into atomic sub-tasks.
-This is the json format you MUST output (always as a list):
+This is the json format of items you MUST output:
 ```
 {json_definition}
 ```
@@ -60,14 +61,8 @@ class SimpleTaskDecomposer(TaskDecomposerBase):
         self.history = {} if history is None else history
 
     def generate_sub_tasks(self, user_input: str) -> list[SubTask]:
-        # given user input
-        #  1. break down into relevant subtasks, with only relevant context
-        #  2. run devil's advocate on the subtasks, find any potential issues in
-        #     subtasks
-        #  3. given the results from 1 and 2, generate refined subtasks
         self.history['user_input'] = user_input
         initial_tasks = self.generate_initial_sub_tasks(user_input=user_input)
-        # TODO: steps 2-3
         return initial_tasks
 
     def generate_initial_sub_tasks(self, user_input: str) -> list[SubTask]:
@@ -101,6 +96,7 @@ class SimpleTaskDecomposer(TaskDecomposerBase):
         )
         # this is a workaround for a known bug where if there is a single item
         # returned, it will not be returned as a list
+        # decompose_response = decompose_response.decompose_items
         if not isinstance(decompose_response, list):
             decompose_response = [decompose_response]
 

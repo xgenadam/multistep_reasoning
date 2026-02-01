@@ -32,22 +32,22 @@ logging.basicConfig(level=logging.INFO)
 # After you have finished the analysis, please output the full new files that you have changed.
 # """
 #
-# prompt = ("Please write a Harry Potter fanfiction book, this should be a reimagining "
-#           "of the first book but with Hermione taking on Harry's role.\n"
-#           "Please write the entire book, at least 10 chapters with 30 paragraphs per"
-#           " chapter. Make it a full book length, of a similar size to the bible!"
-#           "There is no source text, just write and write and write, chapter by chapter!")
+prompt = ("Please write a Harry Potter fanfiction book, this should be a reimagining "
+          "of the first book but with Hermione taking on Harry's role.\n"
+          "Please write the entire book, at least 10 chapters with 30 paragraphs per"
+          " chapter. Make it a full book length, of a similar size to the bible!"
+          "There is no source text, just write and write and write, chapter by chapter!")
 
-prompt = f"""
-I have the following project, here is its structure and contents:
-{generate_structure("./reasoning_sub_agents", ".py", "venv")}
-
-The aim of the project is to add deeper reasoning to llm responses, and it tries this by breaking user input down into sub tasks and executing those independently
-
-For some reason, there is only ever a single sub task generated during the decomposition step. Why is this?
-I have given it other prompts too, such as tasking it to write a book, and it only ever writes the plan for writing the book, it doesnt actually get on with it.
-Whats going on, why isn't it doing what I want?
-"""
+# prompt = f"""
+# I have the following project, here is its structure and contents:
+# {generate_structure("./reasoning_sub_agents", ".py", "venv")}
+#
+# The aim of the project is to add deeper reasoning to llm responses, and it tries this by breaking user input down into sub tasks and executing those independently
+#
+# For some reason, there is only ever a single sub task generated during the decomposition step. Why is this?
+# I have given it other prompts too, such as tasking it to write a book, and it only ever writes the plan for writing the book, it doesnt actually get on with it.
+# Whats going on, why isn't it doing what I want?
+# """
 
 def get_max_index(directory: str, prefix: str) -> int | None:
     """
@@ -104,9 +104,8 @@ def main():
         json.dump(task_orchestrator.history, f, indent=4)
     with open(f"results_{results_idx}.json", "w") as f:
         json.dump(response_dict, f, indent=4)
-    with open(f"output_{results_idx}.md"
-              f"", "w") as f:
-        json.dump(response_dict, f, indent=4)
+    with open(f"output_{results_idx}.md", "w") as f:
+        f.write(response.content)
     print(response.content)
 
 

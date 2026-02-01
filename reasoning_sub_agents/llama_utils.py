@@ -2,6 +2,7 @@ import logging
 import threading
 from collections.abc import Callable, Iterator
 from typing import Any, TypeVar
+import types
 
 import instructor
 from openai import OpenAI
@@ -143,13 +144,13 @@ def get_streamed_json_response[T](
 
     instr_client = instructor.from_openai(
         llama_client,
-        # mode=instructor.Mode.JSON,
+        mode=instructor.Mode.JSON,
     )
 
     messages = [msg.model_dump() for msg in llm_input.messages]
     instructor_kwargs = instructor_kwargs or {}
 
-    stream = instr_client.create(
+    response = instr_client.create(
         model='llama',
         messages=messages,
         response_model=response_model,
@@ -159,18 +160,26 @@ def get_streamed_json_response[T](
         **instructor_kwargs,
     )
 
-    final_model: Any = None
-    for partial_model in stream:
+    if isinstance(response, types.GeneratorType):
+        final_model: Any = None
+        for partial_model in response:
+            for callback in partial_callbacks:
+                try:
+                    callback(partial_model)
+                except Exception as e:
+                    logger.error(f'Partial callback error: {e}')
+
+            final_model = partial_model
+
+        if final_model is None:
+            raise ValueError('Stream completed without any output')
+    else:
+        final_model = response
         for callback in partial_callbacks:
             try:
-                callback(partial_model)
+                callback(final_model)
             except Exception as e:
-                logger.error(f'Partial callback error: {e}')
-
-        final_model = partial_model
-
-    if final_model is None:
-        raise ValueError('Stream completed without any output')
+                logger.error(f'Full model callback error: {e}')
 
     return final_model
 

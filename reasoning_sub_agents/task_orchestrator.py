@@ -6,7 +6,9 @@ from openai.types.chat import ChatCompletionMessage
 
 from .llama_utils import create_llama_client
 from .schemas import AccumulatedResult
-from .task_decomposition import TaskDecomposer
+from .task_decomposition.base import TaskDecomposerBase
+from .task_decomposition.simple_decomposition import SimpleTaskDecomposer
+from .task_decomposition.self_critique_decomposition import SelfCritiquingDecomposition
 from .execution_synthesiser.base import ExecutorSynthesiserBase
 from .execution_synthesiser.simple_synthesiser import SimpleSynthesiser
 from .executor.base import ExecutorBase
@@ -18,7 +20,7 @@ logger = logging.getLogger(__name__)
 class TaskOrchestrator:
     def __init__(
         self,
-        decomposer: TaskDecomposer,
+        decomposer: TaskDecomposerBase,
         agent_executor: ExecutorBase,
         result_synthesiser: ExecutorSynthesiserBase,
         llm_client: OpenAI,
@@ -84,7 +86,7 @@ class TaskOrchestrator:
             raise ValueError('Cannot provide both config and llm_client')
         if config:
             llm_client = create_llama_client(config)
-        decomposer = TaskDecomposer(llm_client=llm_client)
+        decomposer = SelfCritiquingDecomposition(llm_client=llm_client)
         agent_executor = SimpleAgentExecutor(llm_client=llm_client)
         result_synthesiser = SimpleSynthesiser(llm_client=llm_client)
         return cls(

@@ -40,7 +40,7 @@ class SimpleAgentExecutor(ExecutorBase):
         accumulated_results: list[AccumulatedResult] = []
 
         for idx, sub_task in enumerate(sub_tasks):
-            logger.debug(f'Executing sub_task {idx}')
+            logger.info(f'Executing sub task {idx} of {len(sub_tasks)}')
             prompt_str = PROMPT.format(
                     context=sub_task.decomposed_sub_task.context,
                     objective=sub_task.decomposed_sub_task.objective,
@@ -53,7 +53,7 @@ class SimpleAgentExecutor(ExecutorBase):
                 chat_response=extract_message(execution_response)
             )
             sub_task.sub_task_result = sub_task_result
-            logger.debug(f'completed sub_task {idx}, result: {sub_task_result.chat_response.content}')
+            logger.info(f'completed sub_task {idx}, result: {sub_task_result.chat_response.content}')
             sub_task.status = TaskStatus.COMPLETED
             accumulated_result = synthesiser.synthesize(
                 user_request=user_request,
@@ -69,7 +69,7 @@ class SimpleAgentExecutor(ExecutorBase):
                     'accumulated_result': accumulated_result.model_dump()
                 }
             )
-            logger.debug(f'completed sub_task {idx}, result: {accumulated_result.chat_response.content}')
+            logger.info(f'completed sub_task {idx}, result: {accumulated_result.chat_response.content}')
             accumulated_result.previous_results = accumulated_results.copy()
             accumulated_results.append(accumulated_result)
 
