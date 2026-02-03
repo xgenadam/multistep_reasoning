@@ -7,7 +7,6 @@ from pydantic import TypeAdapter
 from ..llama_utils import generate_simple_llm_input, get_streamed_json_response
 from ..schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
 from .base import TaskDecomposerBase
-from .temp_schemas import DecomposeItemContainer
 
 logger = logging.getLogger(__name__)
 
