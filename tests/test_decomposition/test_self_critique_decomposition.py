@@ -195,8 +195,8 @@ def test_generate_sub_tasks_with_insufficient_initial_decomposition(mock_openai_
         # Verify initial decomposition was called
         mock_initial_decomposition.assert_called_once()
 
-        # Verify critique and decision were called
-        mock_decision.assert_called_once()
+        # Verify critique was called, but decision should NOT be called (short-circuit for < 3 sub-tasks)
+        mock_decision.assert_not_called()
 
         # Verify revised decomposition was called (regeneration)
         mock_revised_decomposition.assert_called_once()
