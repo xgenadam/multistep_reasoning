@@ -64,7 +64,6 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
     def __init__(self, llm_client: OpenAI, history: list | None = None, exclude_individual_sub_task_results: bool = True):
         self.llm_client = llm_client
         self.history = history if history is not None else []
-        self.exclude_individual_sub_task_results = exclude_individual_sub_task_results
 
     def synthesize(
         self,
@@ -74,7 +73,7 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
         current_sub_task: SubTask,
         sub_tasks: list[SubTask],
     ) -> AccumulatedResult:
-        logger.debug(f'sythesizing {current_sub_task.model_dump()}')
+        logger.info(f'sythesizing {current_sub_task.model_dump()}')
         sub_tasks_str = json.dumps([sub_task.decomposed_sub_task.model_dump() for sub_task in sub_tasks])
         completed_sub_tasks_str = json.dumps([sub_task.decomposed_sub_task.model_dump() for sub_task in completed_sub_tasks])
         try:
@@ -98,7 +97,7 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
             previous_results=accumulated_results,
             current_task=current_sub_task,
             synthesis_prompt=prompt_str,
-            chat_response=synthesis_result,
+            result=synthesis_result.content,
         )
         self.history.append(accumulated_result.model_dump())
         logger.debug(f'completed synthesis')

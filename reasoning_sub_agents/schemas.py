@@ -133,62 +133,32 @@ class LLMInput(BaseModel):
     messages: list[LLMMessage]
 
 
-# #
-# # class Task(TaskBase):
-# #     task_id: str
-# #     objective: ChatCompletionMessage | None = None
-# #     result: ChatResponse | None = None
-# #     status: TaskStatus = TaskStatus.PENDING
-# #     dependencies: list[TaskDependency] = Field(default_factory=list)
-#
-#
-# class LlamaRoles(StrEnum):
-#     SYSTEM = 'system'
-#     USER = 'user'
-#     ASSISTANT = 'assistant'
-#
-#
-# class LlamaMessage(BaseModel):
-#     role: Literal['system', 'user', 'assistant']
-#     content: str
-#
-#
-# class DecompositionHistory(BaseModel):
-#     user_input: str
-#     decomposition_prompt: str
-#     decomposition_response: ChatResponse
-#     initial_tasks: list[Task]
-#
-#
-# class TaskExecutionResults(BaseModel):
-#     task_id: str
-#     task_prompt: ChatResponse
-#     execution_response: ChatResponse
-#
-#
-# class TaskSynthesisHistory(BaseModel):
-#     objective: str
-#     result: ChatResponse
-#
-#
-# class TaskPromptHistory(BaseModel):
-#     task: Task
-#     generate_prompt: str
-#     task_prompt: ChatResponse
-#
-#
-# class OrchestrationHistory(BaseModel):
-#     user_input: str
-#     decomposition_history: DecompositionHistory
-#     prompt_history: list[TaskPromptHistory]
-#     execution_results: list[TaskExecutionResults] = []
-#     synthesis_history: TaskSynthesisHistory
-#
-#
-# class LLMMessage(BaseModel):
-#     content: str
-#     role: Literal['system', 'user', 'assistant']
-#
-#
-# class LLMInput(BaseModel):
-#     messages: list[LLMMessage]
+class FunctionCall(BaseModel):
+    """Represents a single function/tool call."""
+    name: str = Field(..., description="The name of the tool/function to call")
+    arguments: str = Field(
+        ...,
+        description="The arguments to pass to the function as a valid JSON string "
+                    "(do not use JSON5 or any other format, only strict JSON)",
+    )
+
+
+class ToolCall(BaseModel):
+    """OpenAI-compatible tool call structure (supports parallel tool calls)."""
+    id: str = Field(..., description="Unique ID for this tool call (e.g., 'call_abc123')")
+    type: Literal["function"] = "function"
+    function: FunctionCall
+
+
+class AssistantResponse(BaseModel):
+    """Top-level model for an assistant response that may contain multiple parallel tool calls."""
+    content: str | None = Field(
+        None,
+        description="A brief description of the overall objective of the tool calls",
+    )
+    tool_calls: list[ToolCall] | None = Field(
+        None,
+        description="List of tool/function calls the model wants to make in parallel. "
+                    "If present, the model is requesting tool execution instead of (or in addition to) a text response.",
+    )
+
