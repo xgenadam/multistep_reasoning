@@ -5,7 +5,7 @@ Unit tests for SimpleAgentExecutor.
 import pytest
 from openai.types.chat import ChatCompletionMessage
 from reasoning_sub_agents.execution_synthesiser.base import ExecutorSynthesiserBase
-from reasoning_sub_agents.executor.simple_exectutor import SimpleAgentExecutor
+from reasoning_sub_agents.executor.simple_executor import SimpleAgentExecutor
 from reasoning_sub_agents.schemas import (
     AccumulatedResult,
     DecomposeSubTask,

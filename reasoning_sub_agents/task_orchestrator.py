@@ -12,7 +12,7 @@ from .task_decomposition.self_critique_decomposition import SelfCritiquingDecomp
 from .execution_synthesiser.base import ExecutorSynthesiserBase
 from .execution_synthesiser.simple_synthesiser import SimpleSynthesiser
 from .executor.base import ExecutorBase
-from .executor.simple_exectutor import SimpleAgentExecutor
+from .executor.simple_executor import SimpleAgentExecutor
 
 logger = logging.getLogger(__name__)
 
