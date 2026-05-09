@@ -54,7 +54,6 @@ class TaskOrchestrator:
         #  6. given the output of all subtasks aggregate the result
 
         # decomposer handles steps 1-3
-        # TODO: just to get running the decomposer is currently only doing step 1
         sub_tasks = self.decomposer.generate_sub_tasks(user_input)
 
         logger.debug('executing sub tasks')
