@@ -108,6 +108,7 @@ class AccumulatedResult(BaseModel):
     current_task: SubTask
     synthesis_prompt: str
     chat_response: ChatCompletionMessage
+    document_snapshot: dict | None = None
 
     @field_validator('chat_response', mode='before')
     @classmethod

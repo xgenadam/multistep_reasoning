@@ -1,13 +1,12 @@
-from pydantic import TypeAdapter
-from openai import OpenAI
 import json
+import logging
+
+from openai import OpenAI
 
 from ..llama_utils import generate_simple_llm_input, stream_conversation, \
     extract_message
 from ..schemas import AccumulatedResult, SubTask
 from .base import ExecutorSynthesiserBase
-
-import logging
 
 logger = logging.getLogger()
 
@@ -97,7 +96,7 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
             previous_results=accumulated_results,
             current_task=current_sub_task,
             synthesis_prompt=prompt_str,
-            result=synthesis_result.content,
+            chat_response=synthesis_result,
         )
         self.history.append(accumulated_result.model_dump())
         logger.debug(f'completed synthesis')

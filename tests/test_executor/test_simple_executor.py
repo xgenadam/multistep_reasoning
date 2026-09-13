@@ -4,6 +4,7 @@ Unit tests for SimpleAgentExecutor.
 
 import pytest
 from openai.types.chat import ChatCompletionMessage
+from reasoning_sub_agents.document.models import PartKind, PartOutline
 from reasoning_sub_agents.execution_synthesiser.base import ExecutorSynthesiserBase
 from reasoning_sub_agents.executor.simple_executor import SimpleAgentExecutor
 from reasoning_sub_agents.schemas import (
@@ -137,6 +138,26 @@ def test_execute_multiple_sub_tasks(
     assert isinstance(result, AccumulatedResult)
     assert result.current_task == test_sub_tasks[-1]  # Should be the last task
     assert result.chat_response.content == 'Synthesis for Task 3'
+
+
+def test_execute_one_includes_document_outline(mock_openai_client):
+    mock_openai_client.set_return_values('Outlined response')
+
+    sub_task = create_test_sub_task('Outlined Task')
+    executor = SimpleAgentExecutor(llm_client=mock_openai_client)
+    executor.execute_one(
+        sub_task,
+        outline=[
+            PartOutline(
+                id='chapter-1', kind=PartKind.SECTION, title='Chapter 1', char_count=12
+            )
+        ],
+        summary='Chapter 1 exists.',
+    )
+    assert sub_task.status == TaskStatus.COMPLETED
+    prompt = executor.history[0]['full_prompt']
+    assert 'chapter-1' in prompt
+    assert 'Chapter 1 exists.' in prompt
 
 
 def test_executor_prompt_generation(mock_openai_client, mock_synthesiser):
