@@ -8,6 +8,7 @@ import instructor
 from openai import OpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionChunk, ChatCompletionMessage
 
+from .agent_detect import INNER_SKIP_SENTINEL
 from .schemas import BooleanResponse, ChatResponse, LLMInput, LLMMessage
 
 logger = logging.getLogger(__name__)
@@ -55,9 +56,36 @@ def create_llama_client(
 
 def generate_simple_llm_input(prompt: str) -> LLMInput:
     messages = [
-        LLMMessage(**{'role': 'system', 'content': 'You are a helpful assistant.'}),
+        LLMMessage(
+            **{
+                'role': 'system',
+                'content': f'{INNER_SKIP_SENTINEL} You are a helpful assistant.',
+            }
+        ),
         LLMMessage(**{'role': 'user', 'content': prompt}),
     ]
+    return LLMInput(messages=messages)
+
+
+def with_inner_sentinel(llm_input: LLMInput) -> LLMInput:
+    """Tag orchestrator LLM calls so oobabooga will not intercept them."""
+    messages = list(llm_input.messages)
+    if not messages:
+        return LLMInput(
+            messages=[
+                LLMMessage(role='system', content=INNER_SKIP_SENTINEL),
+            ]
+        )
+    first = messages[0]
+    content = first.content or ''
+    if INNER_SKIP_SENTINEL in content:
+        return llm_input
+    if first.role == 'system':
+        messages[0] = LLMMessage(
+            role='system', content=f'{INNER_SKIP_SENTINEL} {content}'
+        )
+    else:
+        messages.insert(0, LLMMessage(role='system', content=INNER_SKIP_SENTINEL))
     return LLMInput(messages=messages)
 
 
@@ -147,7 +175,9 @@ def get_streamed_json_response[T](
         mode=instructor.Mode.JSON,
     )
 
-    messages = [msg.model_dump() for msg in llm_input.messages]
+    messages = [
+        msg.model_dump() for msg in with_inner_sentinel(llm_input).messages
+    ]
     instructor_kwargs = instructor_kwargs or {}
 
     response = instr_client.create(
@@ -223,7 +253,9 @@ def stream_conversation(
     if callbacks is None:
         callbacks = []
 
-    standard_messages = [msg.model_dump() for msg in llm_input.messages]
+    standard_messages = [
+        msg.model_dump() for msg in with_inner_sentinel(llm_input).messages
+    ]
 
     # TODO: timeout = none is not ideal, but when we send lots of tasks and they
     #  get processed sequentially this causes a timeout. for now setting it to None

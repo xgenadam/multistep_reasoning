@@ -136,6 +136,7 @@ Or in the UI: Session → Extensions → enable **multistep_reasoning** (and **o
 - Inner LLM calls use `generate_reply_HF` / `generate_reply_custom` directly, not `generate_reply`, so the extension does not recurse.
 - The same oobabooga chat keeps editing one `Document`. A new chat starts empty.
 - Open WebUI can keep pointing at oobabooga’s OpenAI API; no extra pipeline.
+- **Intercept mode** (Gradio): `chat_only` (default) skips Cline / OpenCode / Grok Build tool turns so those agents keep their own loops. `always` intercepts every chat turn except inner orchestrator calls. `never` never intercepts.
 
 ### Optional env vars
 
@@ -164,3 +165,65 @@ python server.py --extensions openai multistep_reasoning
 ```
 
 In that layout `script.py` is already at the extension root (`oobabooga_extension/script.py`).
+
+## Cline, OpenCode, and Grok Build
+
+Those tools already run a tool loop (read/edit/shell). This project must **not** steal that loop. Two pieces:
+
+1. Point the **model** at oobabooga with intercept mode `chat_only` (default). Agent-shaped turns (OpenAI `tools`, Cline XML, tool-result messages) fall through to a normal completion.
+2. Add this repo as an **MCP server**. The agent can call `deep_reason` when it wants a long plan/analysis `Document`, then apply that with its own tools.
+
+### MCP server
+
+```bash
+cd /path/to/this/repo
+export MULTISTEP_ORCHESTRATOR_YAML=/path/to/this/repo/orchestrator.yaml
+python -m reasoning_sub_agents.mcp_server
+```
+
+`orchestrator.yaml` `llm.host` / `llm.port` must be oobabooga’s OpenAI API (often `127.0.0.1:5000`). Inner HTTP calls include a skip sentinel so the extension does not recurse.
+
+Tools:
+
+- `deep_reason(prompt, session_id?, chat_context?)` → markdown document
+- `reset_session(session_id)` → drop a stored document
+
+### Grok Build
+
+In `~/.grok/config.toml` or the project `.grok/config.toml`:
+
+```toml
+[mcp_servers.multistep-reasoning]
+command = "python"
+args = ["-m", "reasoning_sub_agents.mcp_server"]
+env = { MULTISTEP_ORCHESTRATOR_YAML = "/path/to/this/repo/orchestrator.yaml", PYTHONPATH = "/path/to/this/repo" }
+enabled = true
+```
+
+Run Grok from a cwd where that `PYTHONPATH` repo is importable, or install the package with `pip install -e /path/to/this/repo`.
+
+### Cline
+
+In Cline MCP settings (`cline_mcp_settings.json`), the same stdio server:
+
+```json
+{
+  "mcpServers": {
+    "multistep-reasoning": {
+      "command": "python",
+      "args": ["-m", "reasoning_sub_agents.mcp_server"],
+      "cwd": "/path/to/this/repo",
+      "env": {
+        "MULTISTEP_ORCHESTRATOR_YAML": "/path/to/this/repo/orchestrator.yaml",
+        "PYTHONPATH": "/path/to/this/repo"
+      }
+    }
+  }
+}
+```
+
+### OpenCode
+
+Register the same command in OpenCode’s MCP config (`opencode.json` / MCP servers). Command, `cwd`, and env match the snippets above.
+
+If the coding agent’s model is oobabooga, leave intercept mode at `chat_only` (or disable the extension for that profile). Use `deep_reason` only when you want a multi-step document, not for every file edit.

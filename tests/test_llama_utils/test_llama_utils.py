@@ -75,7 +75,10 @@ def test_generate_simple_llm_input():
     # Check system message
     system_msg = llm_input.messages[0]
     assert system_msg.role == 'system'
-    assert system_msg.content == 'You are a helpful assistant.'
+    assert 'You are a helpful assistant.' in system_msg.content
+    from reasoning_sub_agents.agent_detect import INNER_SKIP_SENTINEL
+
+    assert INNER_SKIP_SENTINEL in system_msg.content
 
     # Check user message
     user_msg = llm_input.messages[1]

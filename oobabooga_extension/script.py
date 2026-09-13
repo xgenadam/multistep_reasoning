@@ -27,6 +27,7 @@ params = {
     'display_name': 'Multi-step reasoning',
     'is_tab': False,
     'enable': True,
+    'intercept_mode': 'chat_only',
 }
 
 _inner: ContextVar[bool] = ContextVar('multistep_inner', default=False)
@@ -87,11 +88,23 @@ def ui() -> None:
         info='Decompose the user turn, run sub-tasks, and edit a per-chat Document. '
         'Follow-ups in the same chat keep editing that document.',
     )
+    intercept = gr.Radio(
+        choices=['chat_only', 'always', 'never'],
+        value=params.get('intercept_mode', 'chat_only'),
+        label='Intercept mode',
+        info='chat_only: skip Cline/OpenCode/Grok tool turns. '
+        'always: intercept every chat turn (except inner calls). '
+        'never: never intercept.',
+    )
 
     def _set_enable(value: bool) -> None:
         params['enable'] = bool(value)
 
+    def _set_mode(value: str) -> None:
+        params['intercept_mode'] = value
+
     enable.change(_set_enable, enable, None)
+    intercept.change(_set_mode, intercept, None)
 
 
 def custom_generate_reply(
@@ -102,6 +115,19 @@ def custom_generate_reply(
     is_chat: bool = False,
 ) -> Iterator[str]:
     if _inner.get() or not params.get('enable', True) or _orchestrator is None:
+        yield from _default_generate(
+            question, original_question, state, stopping_strings, is_chat=is_chat
+        )
+        return
+
+    from reasoning_sub_agents.agent_detect import should_skip_orchestrator
+
+    if should_skip_orchestrator(
+        intercept_mode=str(params.get('intercept_mode', 'chat_only')),
+        state=state,
+        question=question or '',
+        original_question=original_question or '',
+    ):
         yield from _default_generate(
             question, original_question, state, stopping_strings, is_chat=is_chat
         )
