@@ -45,8 +45,16 @@ Sub-tasks:
 **PROOF:**
 If your response has fewer than 3 sub-tasks but involves more than one logical stage, you have failed this critical instruction.
 
-This is the user query:
+{conversation_block}This is the user query:
 {user_input}
+"""
+
+CONVERSATION_BLOCK = """
+Previous conversation (for context only; fulfil the new user query below):
+================================================================================
+{chat_context}
+================================================================================
+
 """
 
 
@@ -59,16 +67,23 @@ class SimpleTaskDecomposer(TaskDecomposerBase):
         self.llm_client = llm_client
         self.history = {} if history is None else history
 
-    def generate_sub_tasks(self, user_input: str) -> list[SubTask]:
+    def generate_sub_tasks(
+        self, user_input: str, chat_context: str | None = None
+    ) -> list[SubTask]:
         self.history['user_input'] = user_input
-        initial_tasks = self.generate_initial_sub_tasks(user_input=user_input)
+        self.history['chat_context'] = chat_context
+        initial_tasks = self.generate_initial_sub_tasks(
+            user_input=user_input, chat_context=chat_context
+        )
         return initial_tasks
 
-    def generate_initial_sub_tasks(self, user_input: str) -> list[SubTask]:
+    def generate_initial_sub_tasks(
+        self, user_input: str, chat_context: str | None = None
+    ) -> list[SubTask]:
         logger.info('generating initial sub tasks')
 
         initial_decomposed_tasks = self.generate_initial_decomposition(
-            user_input=user_input
+            user_input=user_input, chat_context=chat_context
         )
         decomposed_tasks = self.filter_decompose_response(
             decomposition_response=initial_decomposed_tasks
@@ -80,9 +95,15 @@ class SimpleTaskDecomposer(TaskDecomposerBase):
         )
         return sub_tasks
 
-    def generate_initial_decomposition(self, user_input: str) -> list[DecomposeItem]:
+    def generate_initial_decomposition(
+        self, user_input: str, chat_context: str | None = None
+    ) -> list[DecomposeItem]:
+        conversation_block = (
+            CONVERSATION_BLOCK.format(chat_context=chat_context) if chat_context else ''
+        )
         initial_decompose_prompt = DECOMPOSE_TASK_PROMPT.format(
             user_input=user_input,
+            conversation_block=conversation_block,
             json_definition=json.dumps(
                 TypeAdapter(list[DecomposeItem]).json_schema(), indent=4
             ),

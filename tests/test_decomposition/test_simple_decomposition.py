@@ -360,6 +360,24 @@ def test_decomposition_prompt_generation(mock_openai_client):
         assert user_input in prompt
 
 
+def test_decomposition_prompt_includes_chat_context(mock_openai_client):
+    import unittest.mock
+
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.simple_decomposition.get_streamed_json_response'
+    ) as mock_get_streamed_json_response:
+        mock_get_streamed_json_response.return_value = []
+        decomposer = SimpleTaskDecomposer(llm_client=mock_openai_client)
+        decomposer.generate_sub_tasks(
+            user_input='Make chapter 3 darker',
+            chat_context='User: write a book\nAssistant: Chapter 1...',
+        )
+        prompt = decomposer.history['decomposition_prompt']
+        assert 'Previous conversation' in prompt
+        assert 'Chapter 1...' in prompt
+        assert 'Make chapter 3 darker' in prompt
+
+
 def test_history_update_during_decomposition(mock_openai_client):
     """Test that history is properly updated during decomposition."""
     # Import necessary models

@@ -59,9 +59,13 @@ Output in this format:
 
 
 class SelfCritiquingDecomposition(SimpleTaskDecomposer):
-    def generate_sub_tasks(self, user_input: str) -> list[SubTask]:
+    def generate_sub_tasks(
+        self, user_input: str, chat_context: str | None = None
+    ) -> list[SubTask]:
         # 1: Generate initial decomposition using parent logic
-        initial_sub_tasks = super().generate_sub_tasks(user_input=user_input)
+        initial_sub_tasks = super().generate_sub_tasks(
+            user_input=user_input, chat_context=chat_context
+        )
         self.history['initial_decomposition_count'] = len(initial_sub_tasks)
         
         # 2: Critique the decomposition

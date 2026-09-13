@@ -58,14 +58,21 @@ class TaskOrchestrator:
         self.history = [] if history is None else history
 
     def query(
-        self, user_input: str, return_sub_tasks: bool = False
+        self,
+        user_input: str,
+        return_sub_tasks: bool = False,
+        *,
+        document: Document | None = None,
+        chat_context: str | None = None,
     ) -> ChatCompletionMessage | tuple[ChatCompletionMessage, AccumulatedResult]:
-        sub_tasks = self.decomposer.generate_sub_tasks(user_input)
+        sub_tasks = self.decomposer.generate_sub_tasks(
+            user_input, chat_context=chat_context
+        )
 
         logger.debug('executing sub tasks')
         if self.document_composer is not None:
             sub_task_execution_result = self._run_document_pipeline(
-                user_input, sub_tasks
+                user_input, sub_tasks, document=document
             )
             synthesis_history = self.document_composer.history
         else:
@@ -80,6 +87,7 @@ class TaskOrchestrator:
 
         history_entry: dict[str, Any] = {
             'user_input': user_input,
+            'chat_context': chat_context,
             'decomposition_history': self.decomposer.history,
             'execution_results': self.agent_executor.history,
             'synthesis_history': synthesis_history,
@@ -92,7 +100,10 @@ class TaskOrchestrator:
         return sub_task_execution_result.chat_response
 
     def _run_document_pipeline(
-        self, user_input: str, sub_tasks: list[SubTask]
+        self,
+        user_input: str,
+        sub_tasks: list[SubTask],
+        document: Document | None = None,
     ) -> AccumulatedResult:
         if self.document_composer is None:
             raise RuntimeError('document pipeline requires document_composer')
@@ -102,7 +113,8 @@ class TaskOrchestrator:
                 'means no sub tasks were executed!'
             )
 
-        document = Document.empty(render_mode=self.options.render)
+        if document is None:
+            document = Document.empty(render_mode=self.options.render)
         oracle = self.oracle_factory(document) if self.oracle_factory else None
         last_task = sub_tasks[0]
         for idx, sub_task in enumerate(sub_tasks):

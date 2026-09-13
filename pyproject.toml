@@ -1,0 +1,25 @@
+# Ruff (linter + optional formatter)
+[tool.ruff]
+line-length = 88
+target-version = "py312"  # adjust to your Python version
+src = ["reasoning_sub_agents",]    # adjust to your source paths
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
+ignore = []
+
+[tool.ruff.format]        # if using Ruff's formatter (recommended)
+quote-style = "single"
+indent-style = "space"
+line-ending = "lf"
+
+# mypy
+[tool.mypy]
+python_version = "3.12"   # adjust to your version
+strict = true
+warn_unused_configs = true
+show_error_codes = true
+
+# Optional: relax rules for tests or third-party code
+[[tool.mypy.overrides]]
+disallow_untyped_defs = false

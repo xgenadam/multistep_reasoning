@@ -1,0 +1,15 @@
+llm:
+  host: 127.0.0.1
+  port: 8000
+
+components:
+  decomposer: self_critique
+  executor: oracle_loop
+  composer: document
+  oracle: document_oracle
+
+options:
+  max_oracle_rounds: 8
+  summary_max_words: 400
+  render: markdown_with_files
+  composer_max_retries: 3
