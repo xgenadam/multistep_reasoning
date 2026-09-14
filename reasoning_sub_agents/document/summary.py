@@ -4,6 +4,8 @@ import logging
 from openai import OpenAI
 
 from ..llama_utils import extract_content, generate_simple_llm_input, stream_conversation
+from ..progress import llm_step
+from ..prompt_budget import cap_prompt
 from .models import Document
 
 logger = logging.getLogger(__name__)
@@ -38,6 +40,7 @@ def update_rolling_summary(
     *,
     max_words: int = 400,
     excerpt_chars: int = 400,
+    prompt_token_budget: int = 16384,
 ) -> str:
     changed: list[dict] = []
     for part_id in changed_part_ids:
@@ -55,16 +58,20 @@ def update_rolling_summary(
             }
         )
     outline = [item.model_dump() for item in document.outline()]
-    prompt = SUMMARY_PROMPT.format(
-        old_summary=document.summary or '(empty)',
-        changed=json.dumps(changed, indent=2),
-        outline=json.dumps(outline, indent=2),
-        max_words=max_words,
+    prompt = cap_prompt(
+        SUMMARY_PROMPT.format(
+            old_summary=document.summary or '(empty)',
+            changed=json.dumps(changed, indent=2),
+            outline=json.dumps(outline, indent=2),
+            max_words=max_words,
+        ),
+        prompt_token_budget,
     )
-    response = stream_conversation(
-        llama_client=llm_client,
-        llm_input=generate_simple_llm_input(prompt),
-    )
+    with llm_step('Rolling summary'):
+        response = stream_conversation(
+            llama_client=llm_client,
+            llm_input=generate_simple_llm_input(prompt),
+        )
     summary = extract_content(response)
     words = summary.split()
     if len(words) > max_words:

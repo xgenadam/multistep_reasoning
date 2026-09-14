@@ -227,3 +227,5 @@ In Cline MCP settings (`cline_mcp_settings.json`), the same stdio server:
 Register the same command in OpenCode’s MCP config (`opencode.json` / MCP servers). Command, `cwd`, and env match the snippets above.
 
 If the coding agent’s model is oobabooga, leave intercept mode at `chat_only` (or disable the extension for that profile). Use `deep_reason` only when you want a multi-step document, not for every file edit.
+
+For **books / series / on-disk workspaces**, use the sibling package [`novel_mcp_server/`](novel_mcp_server/README.md) (`python -m novel_mcp_server`) instead of this thin server. Same Grok/Cline/OpenCode clients; extra tools for bind/list/read/search and conversation search. Easy to move to its own repo later.

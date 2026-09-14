@@ -80,6 +80,33 @@ def test_oracle_loop_budget_exceeded():
             executor.execute_one(_task(), oracle=oracle)
 
 
+def test_executor_turn_null_result_is_not_a_deliverable():
+    turn = ExecutorTurn.model_validate(
+        {'thinking': 'planning', 'tool_calls': None, 'result': None}
+    )
+    assert turn.result is None
+    assert not turn.tool_calls
+    nested = ExecutorTurn.model_validate({'result': {'result': None}})
+    assert nested.result is None
+
+
+def test_oracle_loop_retries_empty_result_then_succeeds():
+    executor = OracleLoopExecutor(llm_client=MockOpenAI(), max_oracle_rounds=4)
+    oracle = DocumentOracle(Document.empty())
+    task = _task('Draft the intro')
+    with patch(
+        'reasoning_sub_agents.executor.oracle_loop_executor.get_streamed_json_response'
+    ) as mock_json:
+        mock_json.side_effect = [
+            ExecutorTurn(thinking='still thinking', result=None),
+            ExecutorTurn(result='Here is the introduction.'),
+        ]
+        result = executor.execute_one(task, oracle=oracle)
+    assert result.sub_task_result.chat_response.content == 'Here is the introduction.'
+    assert mock_json.call_count == 2
+    assert executor.history[0]['oracle_rounds'][0]['observation'] == '(empty result; retrying)'
+
+
 def test_execute_sub_tasks_not_supported():
     executor = OracleLoopExecutor(llm_client=MockOpenAI())
     with pytest.raises(TypeError, match='execute_sub_tasks'):

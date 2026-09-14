@@ -35,7 +35,10 @@ class ComponentSpec:
 def _decomposer_simple(ctx: BuildContext) -> Any:
     from ..task_decomposition.simple_decomposition import SimpleTaskDecomposer
 
-    return SimpleTaskDecomposer(llm_client=ctx.llm_client)
+    return SimpleTaskDecomposer(
+        llm_client=ctx.llm_client,
+        prompt_token_budget=ctx.options.prompt_token_budget,
+    )
 
 
 def _decomposer_self_critique(ctx: BuildContext) -> Any:
@@ -43,13 +46,19 @@ def _decomposer_self_critique(ctx: BuildContext) -> Any:
         SelfCritiquingDecomposition,
     )
 
-    return SelfCritiquingDecomposition(llm_client=ctx.llm_client)
+    return SelfCritiquingDecomposition(
+        llm_client=ctx.llm_client,
+        prompt_token_budget=ctx.options.prompt_token_budget,
+    )
 
 
 def _executor_simple(ctx: BuildContext) -> Any:
     from ..executor.simple_executor import SimpleAgentExecutor
 
-    return SimpleAgentExecutor(llm_client=ctx.llm_client)
+    return SimpleAgentExecutor(
+        llm_client=ctx.llm_client,
+        prompt_token_budget=ctx.options.prompt_token_budget,
+    )
 
 
 def _executor_oracle_loop(ctx: BuildContext) -> Any:
@@ -58,13 +67,17 @@ def _executor_oracle_loop(ctx: BuildContext) -> Any:
     return OracleLoopExecutor(
         llm_client=ctx.llm_client,
         max_oracle_rounds=ctx.options.max_oracle_rounds,
+        prompt_token_budget=ctx.options.prompt_token_budget,
     )
 
 
 def _composer_simple(ctx: BuildContext) -> Any:
     from ..execution_synthesiser.simple_synthesiser import SimpleSynthesiser
 
-    return SimpleSynthesiser(llm_client=ctx.llm_client)
+    return SimpleSynthesiser(
+        llm_client=ctx.llm_client,
+        prompt_token_budget=ctx.options.prompt_token_budget,
+    )
 
 
 def _composer_document(ctx: BuildContext) -> Any:
@@ -73,6 +86,7 @@ def _composer_document(ctx: BuildContext) -> Any:
     return DocumentComposer(
         llm_client=ctx.llm_client,
         max_retries=ctx.options.composer_max_retries,
+        prompt_token_budget=ctx.options.prompt_token_budget,
     )
 
 
@@ -86,6 +100,7 @@ def _oracle_document(ctx: BuildContext) -> Any:
             document,
             llm_client=ctx.llm_client,
             summary_max_words=ctx.options.summary_max_words,
+            prompt_token_budget=ctx.options.prompt_token_budget,
         )
 
     return build

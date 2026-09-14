@@ -11,6 +11,8 @@ from ..llama_utils import (
     stream_conversation,
 )
 from ..oracle.document_oracle import DocumentOracle
+from ..progress import llm_step
+from ..prompt_budget import cap_prompt
 from ..schemas import AccumulatedResult, SubTask, SubTaskResult, TaskStatus
 from .base import ExecutorBase
 
@@ -19,6 +21,11 @@ logger = logging.getLogger()
 
 PROMPT = """
 You are an expert sub task execution agent.
+
+Original user request (the sub-task MUST serve this; do not switch topic):
+================================================================================
+{user_request}
+================================================================================
 
 This is the relevant context of the task which you are assigned:
 ================================================================================
@@ -49,9 +56,15 @@ Rolling summary:
 
 
 class SimpleAgentExecutor(ExecutorBase):
-    def __init__(self, llm_client: OpenAI, history: list | None = None):
+    def __init__(
+        self,
+        llm_client: OpenAI,
+        history: list | None = None,
+        prompt_token_budget: int = 16384,
+    ):
         self.llm_client = llm_client
         self.history = [] if history is None else history
+        self.prompt_token_budget = prompt_token_budget
 
     def execute_one(
         self,
@@ -60,10 +73,12 @@ class SimpleAgentExecutor(ExecutorBase):
         outline: list[PartOutline] | None = None,
         summary: str | None = None,
         oracle: DocumentOracle | None = None,
+        user_request: str | None = None,
     ) -> SubTask:
         if oracle is not None:
             logger.warning('simple executor ignoring oracle; it cannot query the document')
         prompt_str = PROMPT.format(
+            user_request=user_request or '(not provided)',
             context=sub_task.decomposed_sub_task.context,
             objective=sub_task.decomposed_sub_task.objective,
         )
@@ -72,10 +87,12 @@ class SimpleAgentExecutor(ExecutorBase):
                 outline=json.dumps([item.model_dump() for item in outline], indent=2),
                 summary=summary or '(empty)',
             )
+        prompt_str = cap_prompt(prompt_str, self.prompt_token_budget)
         prompt = generate_simple_llm_input(prompt_str)
-        execution_response = stream_conversation(
-            llama_client=self.llm_client, llm_input=prompt
-        )
+        with llm_step(f'Execute: {sub_task.decomposed_sub_task.name}'):
+            execution_response = stream_conversation(
+                llama_client=self.llm_client, llm_input=prompt
+            )
         sub_task.sub_task_result = SubTaskResult(
             chat_response=extract_message(execution_response)
         )

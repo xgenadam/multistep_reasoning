@@ -35,9 +35,9 @@ class DecomposeSubTask(BaseModel):
 
 
 thinking_description = """
-As you are creating sub tasks, this is an optional space to think hard about the strategy for breaking down subsequent sub tasks.
-You can include your reasoning here, and at a later stage it will be filtered out from execution of sub tasks.
-For complex prompts, aim to output at least 3 thinking steps before generating sub_task_detail items.
+Optional one-sentence note about the breakdown. Do not write long reasoning.
+Thinking-only output is invalid: the same JSON array MUST contain sub_task_detail items.
+Prefer emitting sub_task_detail items first; at most one thinking_step.
 """
 
 

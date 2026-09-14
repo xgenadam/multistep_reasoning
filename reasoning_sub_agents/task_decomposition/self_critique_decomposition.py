@@ -5,9 +5,20 @@ from typing import cast
 from openai import OpenAI
 from pydantic import TypeAdapter
 
-from ..llama_utils import generate_simple_llm_input, get_streamed_json_response, get_streamed_boolean_decision, extract_content, stream_conversation
+from ..llama_utils import (
+    extract_content,
+    generate_simple_llm_input,
+    get_streamed_json_response,
+    limited_inner_tokens,
+    stream_conversation,
+)
+from ..progress import llm_step, set_phase, set_sub_tasks
+from ..prompt_budget import cap_prompt
 from ..schemas import DecomposeItem, DecomposeReset, DecomposeSubTask, SubTask
-from .simple_decomposition import SimpleTaskDecomposer
+from .simple_decomposition import (
+    SimpleTaskDecomposer,
+    ensure_sub_tasks,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +54,8 @@ Generate a revised decomposition following these rules:
 - For requests requiring multiple logical steps (e.g., containing 'write', 'create', 'design', 'analyze'), generate 3-5 sub-tasks.
 - Each sub-task must have an action verb and concrete deliverable.
 - If the request has sequential dependencies, ensure proper task ordering.
+- The JSON array MUST contain at least one meta_type "sub_task_detail" object.
+- Emit sub_task_detail items first. Do not return only thinking_step items.
 
 User request: {user_input}
 
@@ -63,27 +76,50 @@ class SelfCritiquingDecomposition(SimpleTaskDecomposer):
         self, user_input: str, chat_context: str | None = None
     ) -> list[SubTask]:
         # 1: Generate initial decomposition using parent logic
+        set_phase('Initial decomposition')
         initial_sub_tasks = super().generate_sub_tasks(
             user_input=user_input, chat_context=chat_context
         )
         self.history['initial_decomposition_count'] = len(initial_sub_tasks)
-        
+        set_sub_tasks(
+            [task.decomposed_sub_task.name for task in initial_sub_tasks],
+            'queued',
+        )
+
         # 2: Critique the decomposition
+        set_phase('Critiquing the decomposition')
         criticism = self.critique_sub_tasks(user_input, initial_sub_tasks)
         self.history['critique'] = criticism
         
         # 3: Determine if regeneration is needed
         logger.info('determining if regeneration is needed')
+        set_phase('Deciding whether to regenerate the decomposition')
         regenerate = self.should_regenerate(user_input, criticism, initial_sub_tasks)
         self.history['regeneration_needed'] = regenerate
         
         # 4: Handle regeneration if required
         if regenerate:
             logger.info('Regenerating sub-tasks due to critique')
-            return self.regenerate_sub_tasks(user_input, criticism, initial_sub_tasks)
+            set_phase('Regenerating sub-tasks after critique')
+            set_sub_tasks(
+                [task.decomposed_sub_task.name for task in initial_sub_tasks],
+                'rerunning',
+            )
+            revised = self.regenerate_sub_tasks(user_input, criticism, initial_sub_tasks)
+            if not revised:
+                logger.warning(
+                    'Regeneration produced no executable sub-tasks; keeping initial'
+                )
+                revised = initial_sub_tasks
+            revised = ensure_sub_tasks(user_input, revised)
+            set_sub_tasks(
+                [task.decomposed_sub_task.name for task in revised],
+                'queued',
+            )
+            return revised
         logger.info('No regeneration needed')
 
-        return initial_sub_tasks
+        return ensure_sub_tasks(user_input, initial_sub_tasks)
 
     def critique_sub_tasks(
         self,
@@ -98,16 +134,20 @@ class SelfCritiquingDecomposition(SimpleTaskDecomposer):
             for task in generated_sub_tasks
         ], indent=4)
         
-        critique_prompt = SELF_CRITIQUE_PROMPT.format(
-            user_input=user_input,
-            sub_tasks=sub_tasks_str
+        critique_prompt = cap_prompt(
+            SELF_CRITIQUE_PROMPT.format(
+                user_input=user_input,
+                sub_tasks=sub_tasks_str
+            ),
+            self.prompt_token_budget,
         )
         
-        # Request critique from LLM
-        critique_response = stream_conversation(
-            llama_client=self.llm_client,
-            llm_input=generate_simple_llm_input(critique_prompt),
-        )
+        with llm_step('Critique decomposition'):
+            with limited_inner_tokens(1024):
+                critique_response = stream_conversation(
+                    llama_client=self.llm_client,
+                    llm_input=generate_simple_llm_input(critique_prompt),
+                )
         
         return extract_content(critique_response)
 
@@ -124,18 +164,13 @@ class SelfCritiquingDecomposition(SimpleTaskDecomposer):
         if subtask_count < 3:
             logger.warning(f'Decomposition has insufficient sub-tasks: {subtask_count} < 3')
             return True
-            
-        # Use LLM decision only when critique is ambiguous
-        decision_prompt = DECISION_PROMPT_TEMPLATE.format(
-            user_input=user_input,
-            criticism=criticism,
-            subtask_count=subtask_count
-        )
-        
-        return get_streamed_boolean_decision(
-            llama_client=self.llm_client,
-            llm_input=generate_simple_llm_input(decision_prompt)
-        )
+        # Already 3–5 tasks: skip a long boolean LLM call. Only regen if
+        # critique is clearly non-empty and not a "no critique" stub.
+        stub = (criticism or '').strip().lower()
+        if not stub or stub.startswith('no critique') or stub in {'none', 'n/a', 'ok'}:
+            return False
+        logger.info('Keeping initial decomposition (%s tasks); critique noted but not regenerated', subtask_count)
+        return False
 
     def regenerate_sub_tasks(
         self,
@@ -148,29 +183,34 @@ class SelfCritiquingDecomposition(SimpleTaskDecomposer):
             task.decomposed_sub_task.model_dump()
             for task in initial_sub_tasks
         ], indent=4)
-        revised_prompt = REVISION_PROMPT.format(
-            user_input=user_input,
-            criticism=criticism,
-            json_definition=json.dumps(
-                TypeAdapter(list[DecomposeItem]).json_schema(), indent=4
+        revised_prompt = cap_prompt(
+            REVISION_PROMPT.format(
+                user_input=user_input,
+                criticism=criticism,
+                json_definition=json.dumps(
+                    TypeAdapter(list[DecomposeItem]).json_schema(), indent=4
+                ),
+                previous_decomposition_results=previous_decomposition_results
             ),
-            previous_decomposition_results=previous_decomposition_results
+            self.prompt_token_budget,
         )
         self.history['regeneration_prompt'] = revised_prompt
 
-        revised_response = get_streamed_json_response(
-            llama_client=self.llm_client,
-            llm_input=generate_simple_llm_input(revised_prompt),
-            response_model=list[DecomposeItem],
-        )
+        with llm_step('Regenerate decomposition (JSON)'):
+            revised_response = get_streamed_json_response(
+                llama_client=self.llm_client,
+                llm_input=generate_simple_llm_input(revised_prompt),
+                response_model=list[DecomposeItem],
+            )
         # revised_response = revised_response.decompose_items
         if not isinstance(revised_response, list):
             revised_response = [revised_response]
         
         decomposed_tasks = self.filter_decompose_response(revised_response)
-        self.history['regenerated_decomposition_count'] = len(decomposed_tasks)
-        self.history['regenerated_sub_tasks'] =  TypeAdapter(list[SubTask]).dump_python(
-            decomposed_tasks
+        revised = self.create_sub_tasks(decomposed_tasks)
+        self.history['regenerated_decomposition_count'] = len(revised)
+        self.history['regenerated_sub_tasks'] = TypeAdapter(list[SubTask]).dump_python(
+            revised
         )
-        logger.info(f'regenerated {len(decomposed_tasks)} sub-tasks')
-        return self.create_sub_tasks(decomposed_tasks)
+        logger.info('regenerated %s sub-tasks', len(revised))
+        return revised

@@ -1,5 +1,5 @@
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, Self
 
@@ -19,8 +19,17 @@ from .execution_synthesiser.document_composer import (
 from .executor.base import ExecutorBase
 from .llama_utils import create_llama_client
 from .oracle.document_oracle import DocumentOracle
+from .progress import (
+    live,
+    set_document,
+    set_phase,
+    set_sub_tasks,
+    set_task_status,
+    set_user_query,
+)
 from .schemas import AccumulatedResult, SubTask
 from .task_decomposition.base import TaskDecomposerBase
+from .task_decomposition.simple_decomposition import ensure_sub_tasks
 
 logger = logging.getLogger(__name__)
 
@@ -64,20 +73,69 @@ class TaskOrchestrator:
         *,
         document: Document | None = None,
         chat_context: str | None = None,
+        on_progress: Callable[[str], None] | None = None,
     ) -> ChatCompletionMessage | tuple[ChatCompletionMessage, AccumulatedResult]:
+        result = None
+        for kind, payload in self.iter_query(
+            user_input, document=document, chat_context=chat_context
+        ):
+            if kind == 'status' and on_progress is not None:
+                on_progress(str(payload))
+            elif kind == 'done':
+                result = payload
+        if result is None:
+            raise RuntimeError('orchestrator produced no result')
+        if return_sub_tasks:
+            return result.chat_response, result
+        return result.chat_response
+
+    def iter_query(
+        self,
+        user_input: str,
+        *,
+        document: Document | None = None,
+        chat_context: str | None = None,
+    ) -> Iterator[tuple[str, Any]]:
+        """Yield ('status', message) then ('done', AccumulatedResult). Same-thread UI hook."""
+        self.live_run = live()
+        set_user_query(user_input)
+        set_phase('Decomposing the request into sub-tasks…')
+        yield ('status', 'Decomposing the request into sub-tasks…')
         sub_tasks = self.decomposer.generate_sub_tasks(
             user_input, chat_context=chat_context
+        )
+        if not sub_tasks:
+            logger.warning(
+                'Decomposer returned no sub-tasks; using a single fallback task'
+            )
+            sub_tasks = ensure_sub_tasks(user_input, sub_tasks)
+        names = [
+            task.decomposed_sub_task.name for task in sub_tasks
+        ]
+        set_sub_tasks(names, 'queued')
+        yield (
+            'status',
+            f'Decomposed {len(sub_tasks)} sub-tasks: {", ".join(names) or "(none)"}',
         )
 
         logger.debug('executing sub tasks')
         if self.document_composer is not None:
-            sub_task_execution_result = self._run_document_pipeline(
+            result: AccumulatedResult | None = None
+            for kind, payload in self._iter_document_pipeline(
                 user_input, sub_tasks, document=document
-            )
+            ):
+                if kind == 'status':
+                    yield ('status', payload)
+                else:
+                    result = payload
+            if result is None:
+                raise RuntimeError('document pipeline produced no result')
+            sub_task_execution_result = result
             synthesis_history = self.document_composer.history
         else:
             if self.result_synthesiser is None:
                 raise RuntimeError('result_synthesiser is required in legacy mode')
+            yield ('status', 'Executing sub-tasks (legacy synthesiser)…')
             sub_task_execution_result = self.agent_executor.execute_sub_tasks(
                 user_request=user_input,
                 sub_tasks=sub_tasks,
@@ -95,9 +153,7 @@ class TaskOrchestrator:
         if sub_task_execution_result.document_snapshot is not None:
             history_entry['document'] = sub_task_execution_result.document_snapshot
         self.history.append(history_entry)
-        if return_sub_tasks:
-            return sub_task_execution_result.chat_response, sub_task_execution_result
-        return sub_task_execution_result.chat_response
+        yield ('done', sub_task_execution_result)
 
     def _run_document_pipeline(
         self,
@@ -105,26 +161,55 @@ class TaskOrchestrator:
         sub_tasks: list[SubTask],
         document: Document | None = None,
     ) -> AccumulatedResult:
+        result = None
+        for kind, payload in self._iter_document_pipeline(
+            user_input, sub_tasks, document=document
+        ):
+            if kind == 'done':
+                result = payload
+        if result is None:
+            raise RuntimeError('document pipeline produced no result')
+        return result
+
+    def _iter_document_pipeline(
+        self,
+        user_input: str,
+        sub_tasks: list[SubTask],
+        document: Document | None = None,
+    ) -> Iterator[tuple[str, Any]]:
         if self.document_composer is None:
             raise RuntimeError('document pipeline requires document_composer')
         if not sub_tasks:
-            raise RuntimeError(
-                'something went wrong here, if this gets raised it '
-                'means no sub tasks were executed!'
+            logger.warning(
+                'Document pipeline received no sub-tasks; using a single fallback task'
             )
+            sub_tasks = ensure_sub_tasks(user_input, sub_tasks)
 
         if document is None:
             document = Document.empty(render_mode=self.options.render)
         oracle = self.oracle_factory(document) if self.oracle_factory else None
         last_task = sub_tasks[0]
+        total = len(sub_tasks)
         for idx, sub_task in enumerate(sub_tasks):
-            logger.info('Executing sub task %s of %s', idx, len(sub_tasks))
-            self.agent_executor.execute_one(
-                sub_task,
-                outline=document.outline(),
-                summary=document.summary,
-                oracle=oracle,
-            )
+            name = sub_task.decomposed_sub_task.name
+            logger.info('Executing sub task %s of %s', idx, total)
+            set_phase(f'Executing {idx + 1}/{total}: {name}')
+            set_task_status(name, 'in_progress')
+            yield ('status', f'Executing {idx + 1}/{total}: {name}')
+            try:
+                self.agent_executor.execute_one(
+                    sub_task,
+                    outline=document.outline(),
+                    summary=document.summary,
+                    oracle=oracle,
+                    user_request=user_input,
+                )
+            except Exception:
+                set_task_status(name, 'failed')
+                raise
+            set_task_status(name, 'completed')
+            set_phase(f'Composing after {idx + 1}/{total}: {name}')
+            yield ('status', f'Composing after {idx + 1}/{total}: {name}')
             ops = self.document_composer.compose(
                 user_request=user_input,
                 sub_tasks=sub_tasks,
@@ -132,6 +217,8 @@ class TaskOrchestrator:
                 document=document,
             )
             changed = changed_part_ids(ops)
+            set_document(document.render())
+            yield ('status', f'Updating summary after {idx + 1}/{total}: {name}')
             if oracle is not None:
                 oracle.update_summary(changed)
             else:
@@ -140,17 +227,21 @@ class TaskOrchestrator:
                     changed,
                     self.llm_client,
                     max_words=self.options.summary_max_words,
+                    prompt_token_budget=self.options.prompt_token_budget,
                 )
             last_task = sub_task
 
-        return AccumulatedResult(
-            previous_results=[],
-            current_task=last_task,
-            synthesis_prompt='',
-            chat_response=ChatCompletionMessage(
-                role='assistant', content=document.render()
+        yield (
+            'done',
+            AccumulatedResult(
+                previous_results=[],
+                current_task=last_task,
+                synthesis_prompt='',
+                chat_response=ChatCompletionMessage(
+                    role='assistant', content=document.render()
+                ),
+                document_snapshot=document.to_dict(),
             ),
-            document_snapshot=document.to_dict(),
         )
 
     @classmethod

@@ -7,6 +7,8 @@ from ..document.models import PartOutline
 from ..execution_synthesiser.base import ExecutorSynthesiserBase
 from ..llama_utils import get_streamed_json_response
 from ..oracle.document_oracle import DocumentOracle
+from ..progress import llm_step
+from ..prompt_budget import cap_prompt
 from ..oracle.tools import ExecutorTurn
 from ..schemas import (
     AccumulatedResult,
@@ -34,6 +36,11 @@ Rules:
 """
 
 USER_PROMPT = """
+Original user request (the sub-task MUST serve this; do not switch topic):
+================================================================================
+{user_request}
+================================================================================
+
 This is the relevant context of the task which you are assigned:
 ================================================================================
 {context}
@@ -67,10 +74,12 @@ class OracleLoopExecutor(ExecutorBase):
         llm_client: OpenAI,
         history: list | None = None,
         max_oracle_rounds: int = 8,
+        prompt_token_budget: int = 16384,
     ) -> None:
         self.llm_client = llm_client
         self.history = [] if history is None else history
         self.max_oracle_rounds = max_oracle_rounds
+        self.prompt_token_budget = prompt_token_budget
 
     def execute_sub_tasks(
         self,
@@ -90,16 +99,22 @@ class OracleLoopExecutor(ExecutorBase):
         outline: list[PartOutline] | None = None,
         summary: str | None = None,
         oracle: DocumentOracle | None = None,
+        user_request: str | None = None,
     ) -> SubTask:
         if oracle is None:
             raise TypeError('oracle_loop executor requires a DocumentOracle')
         outline_payload = [item.model_dump() for item in (outline or [])]
-        user_prompt = USER_PROMPT.format(
-            context=sub_task.decomposed_sub_task.context,
-            objective=sub_task.decomposed_sub_task.objective,
-            outline=json.dumps(outline_payload, indent=2),
-            summary=summary or '(empty)',
-            json_definition=json.dumps(ExecutorTurn.model_json_schema(), indent=2),
+        schema = json.dumps(ExecutorTurn.model_json_schema(), indent=2)
+        user_prompt = cap_prompt(
+            USER_PROMPT.format(
+                user_request=user_request or '(not provided)',
+                context=sub_task.decomposed_sub_task.context,
+                objective=sub_task.decomposed_sub_task.objective,
+                outline=json.dumps(outline_payload, indent=2),
+                summary=summary or '(empty)',
+                json_definition=schema,
+            ),
+            self.prompt_token_budget,
         )
         messages = [
             LLMMessage(role='system', content=SYSTEM_PROMPT),
@@ -107,13 +122,21 @@ class OracleLoopExecutor(ExecutorBase):
         ]
         rounds: list[dict] = []
         for round_idx in range(self.max_oracle_rounds):
-            turn = get_streamed_json_response(
-                llama_client=self.llm_client,
-                llm_input=LLMInput(messages=messages),
-                response_model=ExecutorTurn,
-            )
+            with llm_step(
+                f'Execute {sub_task.decomposed_sub_task.name} (turn {round_idx + 1})'
+            ):
+                turn = get_streamed_json_response(
+                    llama_client=self.llm_client,
+                    llm_input=LLMInput(messages=messages),
+                    response_model=ExecutorTurn,
+                )
             if turn.tool_calls:
-                observation = oracle.dispatch(turn.tool_calls)
+                observation = cap_prompt(
+                    oracle.dispatch(turn.tool_calls),
+                    self.prompt_token_budget // 4
+                    if self.prompt_token_budget > 0
+                    else 0,
+                )
                 rounds.append(
                     {
                         'round': round_idx,
@@ -132,8 +155,37 @@ class OracleLoopExecutor(ExecutorBase):
                     )
                 )
                 continue
+            result_text = (turn.result or '').strip()
+            if not result_text:
+                logger.warning(
+                    'executor turn %s had no tool_calls and empty result; asking again',
+                    round_idx,
+                )
+                rounds.append(
+                    {
+                        'round': round_idx,
+                        'thinking': turn.thinking,
+                        'tool_calls': [],
+                        'observation': '(empty result; retrying)',
+                    }
+                )
+                messages.append(
+                    LLMMessage(role='assistant', content=turn.model_dump_json())
+                )
+                messages.append(
+                    LLMMessage(
+                        role='user',
+                        content=(
+                            'Your previous JSON had no tool_calls and result was '
+                            'null/empty. Write the sub-task deliverable now as a '
+                            'non-empty string in `result`. Do not wrap it as '
+                            '{"result": null}.'
+                        ),
+                    )
+                )
+                continue
             sub_task.sub_task_result = SubTaskResult(
-                chat_response=_assistant_message(turn.result or '')
+                chat_response=_assistant_message(result_text)
             )
             sub_task.status = TaskStatus.COMPLETED
             self.history.append(

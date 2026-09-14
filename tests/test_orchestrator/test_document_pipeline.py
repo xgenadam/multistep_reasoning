@@ -187,3 +187,56 @@ def test_document_pipeline_reuses_existing_document():
     assert 'Chapter two body' in response.content
     outline = executor.execute_one.call_args.kwargs['outline']
     assert outline[0].id == 'chapter-1'
+
+
+def test_document_pipeline_empty_sub_tasks_uses_fallback():
+    decomposer = MagicMock()
+    decomposer.generate_sub_tasks.return_value = []
+    decomposer.history = {}
+    executor = MagicMock()
+
+    def run_one(sub_task, **kwargs):
+        sub_task.sub_task_result = SubTaskResult(
+            chat_response=ChatCompletionMessage(
+                content='Photosynthesis is how plants make food.',
+                role='assistant',
+            )
+        )
+        sub_task.status = TaskStatus.COMPLETED
+        return sub_task
+
+    executor.execute_one.side_effect = run_one
+    executor.history = []
+    composer = DocumentComposer(llm_client=MockOpenAI())
+    oracle = MagicMock(spec=DocumentOracle)
+    oracle.update_summary.return_value = 'summary'
+    orchestrator = TaskOrchestrator(
+        decomposer=decomposer,
+        agent_executor=executor,
+        llm_client=MockOpenAI(),
+        document_composer=composer,
+        oracle_factory=lambda document: oracle,
+    )
+    with patch(
+        'reasoning_sub_agents.execution_synthesiser.document_composer.get_streamed_json_response'
+    ) as mock_json:
+        from reasoning_sub_agents.execution_synthesiser.document_composer import (
+            ComposerResponse,
+        )
+
+        mock_json.return_value = ComposerResponse(
+            ops=[
+                AddPart(
+                    id='answer',
+                    kind='section',
+                    title='Answer',
+                    body_source='current_result',
+                )
+            ]
+        )
+        response = orchestrator.query('Explain photosynthesis')
+
+    assert executor.execute_one.call_count == 1
+    executed = executor.execute_one.call_args.args[0]
+    assert 'photosynthesis' in executed.decomposed_sub_task.objective.lower()
+    assert 'Photosynthesis is how plants make food.' in response.content

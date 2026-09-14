@@ -1,0 +1,17 @@
+[project]
+name = "novel-mcp-server"
+version = "0.1.0"
+description = "MCP server for longform workspace tools (Grok / OpenCode / Cline)"
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic>=2",
+  "pyyaml",
+  "openai",
+]
+
+[project.scripts]
+novel-mcp-server = "novel_mcp_server.server:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

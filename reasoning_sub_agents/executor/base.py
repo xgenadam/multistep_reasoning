@@ -23,6 +23,7 @@ class ExecutorBase(ABC):
         outline: list[PartOutline] | None = None,
         summary: str | None = None,
         oracle: DocumentOracle | None = None,
+        user_request: str | None = None,
     ) -> SubTask:
         raise NotImplementedError(
             f'{type(self).__name__} does not implement execute_one'

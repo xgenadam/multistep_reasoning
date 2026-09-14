@@ -105,6 +105,76 @@ def test_compose_retries_on_replace_miss_then_succeeds():
     assert mock_json.call_count == 2
 
 
+def test_compose_prompt_does_not_include_existing_part_bodies():
+    huge = 'KEEP-SECRET-BODY ' * 50
+    document = Document.empty()
+    document.apply(
+        [AddPart(id='chapter-1', kind='section', title='Chapter 1', body=huge)]
+    )
+    document.summary = 'Chapter 1 exists.'
+    payload = 'Chapter two full text that must survive.'
+    task = _sub_task('Write chapter 2', payload)
+    composer = DocumentComposer(llm_client=MockOpenAI())
+    with patch(
+        'reasoning_sub_agents.execution_synthesiser.document_composer.get_streamed_json_response'
+    ) as mock_json:
+        mock_json.return_value = ComposerResponse(
+            ops=[
+                AddPart(
+                    id='chapter-2',
+                    kind='section',
+                    title='Chapter 2',
+                    body_source='current_result',
+                )
+            ]
+        )
+        composer.compose(
+            user_request='Write a book',
+            sub_tasks=[task],
+            current_sub_task=task,
+            document=document,
+        )
+    prompt = mock_json.call_args.kwargs['llm_input'].messages[-1].content
+    assert 'KEEP-SECRET-BODY' not in prompt
+    assert 'chapter-1' in prompt
+    assert 'Chapter 1 exists.' in prompt
+    assert payload not in prompt
+    assert 'sha256=' in prompt
+    assert document.get_part('chapter-2').body == payload
+
+
+def test_compose_fetches_bodies_when_need_part_ids():
+    document = Document.empty()
+    document.apply(
+        [AddPart(id='intro', kind='section', title='Intro', body='old intro text')]
+    )
+    task = _sub_task('Revise intro', 'new intro text that must be kept')
+    composer = DocumentComposer(llm_client=MockOpenAI(), max_retries=3)
+    with patch(
+        'reasoning_sub_agents.execution_synthesiser.document_composer.get_streamed_json_response'
+    ) as mock_json:
+        mock_json.side_effect = [
+            ComposerResponse(need_part_ids=['intro'], ops=[]),
+            ComposerResponse(
+                ops=[
+                    ReplaceInPart(
+                        id='intro', search='old intro text', replace='new intro text that must be kept'
+                    )
+                ]
+            ),
+        ]
+        composer.compose(
+            user_request='Write a book',
+            sub_tasks=[task],
+            current_sub_task=task,
+            document=document,
+        )
+    assert mock_json.call_count == 2
+    second_prompt = mock_json.call_args_list[1].kwargs['llm_input'].messages[-1].content
+    assert 'old intro text' in second_prompt
+    assert document.get_part('intro').body == 'new intro text that must be kept'
+
+
 def test_empty_ops_fall_back_to_verbatim_add():
     payload = 'verbatim payload'
     task = _sub_task('Notes', payload)

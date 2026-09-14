@@ -5,6 +5,7 @@ from openai import OpenAI
 
 from ..llama_utils import generate_simple_llm_input, stream_conversation, \
     extract_message
+from ..prompt_budget import cap_prompt
 from ..schemas import AccumulatedResult, SubTask
 from .base import ExecutorSynthesiserBase
 
@@ -60,9 +61,16 @@ Rules for combining previous results:
 
 
 class SimpleSynthesiser(ExecutorSynthesiserBase):
-    def __init__(self, llm_client: OpenAI, history: list | None = None, exclude_individual_sub_task_results: bool = True):
+    def __init__(
+        self,
+        llm_client: OpenAI,
+        history: list | None = None,
+        exclude_individual_sub_task_results: bool = True,
+        prompt_token_budget: int = 16384,
+    ):
         self.llm_client = llm_client
         self.history = history if history is not None else []
+        self.prompt_token_budget = prompt_token_budget
 
     def synthesize(
         self,
@@ -82,12 +90,15 @@ class SimpleSynthesiser(ExecutorSynthesiserBase):
             )
         except IndexError:
             previous_result_str = ''
-        prompt_str = PROMPT.format(
-            user_request=user_request,
-            sub_tasks=sub_tasks_str,
-            previous_result_sub_prompt=previous_result_str,
-            current_sub_task=current_sub_task.model_dump(),
-            current_result=current_sub_task.sub_task_result.chat_response.content,
+        prompt_str = cap_prompt(
+            PROMPT.format(
+                user_request=user_request,
+                sub_tasks=sub_tasks_str,
+                previous_result_sub_prompt=previous_result_str,
+                current_sub_task=current_sub_task.model_dump(),
+                current_result=current_sub_task.sub_task_result.chat_response.content,
+            ),
+            self.prompt_token_budget,
         )
         prompt = generate_simple_llm_input(prompt_str)
         synthesis_result = stream_conversation(llama_client=self.llm_client, llm_input=prompt)

@@ -6,6 +6,8 @@ from openai import OpenAI
 from ..document import Document, Part
 from ..document.summary import update_rolling_summary
 from ..llama_utils import generate_simple_llm_input, get_streamed_json_response
+from ..progress import llm_step
+from ..prompt_budget import cap_prompt
 from .tools import (
     AskTool,
     ListPartsTool,
@@ -57,11 +59,13 @@ class DocumentOracle:
         *,
         summary_max_words: int = 400,
         excerpt_chars: int = 160,
+        prompt_token_budget: int = 16384,
     ) -> None:
         self.document = document
         self.llm_client = llm_client
         self.summary_max_words = summary_max_words
         self.excerpt_chars = excerpt_chars
+        self.prompt_token_budget = prompt_token_budget
 
     def list_parts(self) -> list[dict]:
         return [item.model_dump() for item in self.document.outline()]
@@ -119,17 +123,21 @@ class DocumentOracle:
                 for part in self.document.parts[:8]
             ]
         excerpts = [hit.model_dump() for hit in hits]
-        prompt = ASK_PROMPT.format(
-            question=question,
-            outline=json.dumps(self.list_parts(), indent=2),
-            excerpts=json.dumps(excerpts, indent=2),
-            json_definition=json.dumps(OracleAnswer.model_json_schema(), indent=2),
+        prompt = cap_prompt(
+            ASK_PROMPT.format(
+                question=question,
+                outline=json.dumps(self.list_parts(), indent=2),
+                excerpts=json.dumps(excerpts, indent=2),
+                json_definition=json.dumps(OracleAnswer.model_json_schema(), indent=2),
+            ),
+            self.prompt_token_budget,
         )
-        answer = get_streamed_json_response(
-            llama_client=self.llm_client,
-            llm_input=generate_simple_llm_input(prompt),
-            response_model=OracleAnswer,
-        )
+        with llm_step('Oracle ask'):
+            answer = get_streamed_json_response(
+                llama_client=self.llm_client,
+                llm_input=generate_simple_llm_input(prompt),
+                response_model=OracleAnswer,
+            )
         return answer
 
     def update_summary(self, changed_part_ids: list[str]) -> str:
@@ -140,6 +148,7 @@ class DocumentOracle:
             changed_part_ids,
             self.llm_client,
             max_words=self.summary_max_words,
+            prompt_token_budget=self.prompt_token_budget,
         )
 
     def dispatch(self, tool_calls: list[OracleTool]) -> str:

@@ -5,4 +5,5 @@ llama_cpp_server
 *.json
 *.md
 !README.md
+novel_mcp_server/workspaces/
 

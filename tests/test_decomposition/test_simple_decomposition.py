@@ -1,8 +1,16 @@
 """Test suite for reasoning_sub_agents.task_decomposition module."""
 
 import pytest
-from reasoning_sub_agents.schemas import DecomposeReset, DecomposeSubTask, SubTask
-from reasoning_sub_agents.task_decomposition.simple_decomposition import SimpleTaskDecomposer
+from reasoning_sub_agents.schemas import (
+    DecomposeReset,
+    DecomposeSubTask,
+    DecomposeThinkingStep,
+    SubTask,
+)
+from reasoning_sub_agents.task_decomposition.simple_decomposition import (
+    SimpleTaskDecomposer,
+    fallback_sub_task,
+)
 from tests.mock_openai import MockOpenAI
 
 
@@ -440,9 +448,10 @@ def test_empty_decomposition_response(mock_openai_client):
         # Call the method that stores user_input in history
         result = decomposer.generate_sub_tasks(user_input=user_input)
 
-        # Should return empty list
+        # Empty JSON is not executable; fall back to a single task for the request
         assert isinstance(result, list)
-        assert len(result) == 0
+        assert len(result) == 1
+        assert result[0].decomposed_sub_task.objective == user_input
 
         # History should still be updated
         assert 'user_input' in decomposer.history
@@ -501,6 +510,34 @@ def test_decomposition_with_mixed_items(mock_openai_client):
         # Should only get sub tasks after filtering
         assert len(result) == 1  # sub_task_2 (after reset)
         assert result[0].decomposed_sub_task.name == 'Task 2'
+
+
+def test_thinking_only_decomposition_falls_back(mock_openai_client):
+    """Thinking/reset-only JSON used to yield zero tasks and crash the document pipeline."""
+    import unittest.mock
+
+    thinking = DecomposeThinkingStep(
+        meta_type='thinking_step',
+        thinking='Need several steps, still writing them...',
+    )
+    reset = DecomposeReset(meta_type='reset', reasoning='Start over')
+    with unittest.mock.patch(
+        'reasoning_sub_agents.task_decomposition.simple_decomposition.get_streamed_json_response'
+    ) as mock_json:
+        mock_json.return_value = [thinking, thinking, reset]
+        decomposer = SimpleTaskDecomposer(llm_client=mock_openai_client)
+        user_input = 'Explain photosynthesis in simple terms'
+        result = decomposer.generate_sub_tasks(user_input=user_input)
+
+    assert len(result) == 1
+    assert result[0].decomposed_sub_task.objective == user_input
+    assert result[0].decomposed_sub_task.name.startswith('Explain photosynthesis')
+
+
+def test_fallback_sub_task_uses_first_line():
+    task = fallback_sub_task('Line one\nLine two')
+    assert task.decomposed_sub_task.name == 'Line one'
+    assert 'Line two' in task.decomposed_sub_task.objective
 
 
 if __name__ == '__main__':

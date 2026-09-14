@@ -2,7 +2,7 @@
 
 import unittest.mock
 import pytest
-from reasoning_sub_agents.schemas import DecomposeSubTask, SubTask
+from reasoning_sub_agents.schemas import DecomposeSubTask, DecomposeThinkingStep, SubTask
 from reasoning_sub_agents.task_decomposition.self_critique_decomposition import SelfCritiquingDecomposition
 from reasoning_sub_agents.task_decomposition.simple_decomposition import SimpleTaskDecomposer
 from tests.mock_openai import MockOpenAI
@@ -97,8 +97,8 @@ def test_generate_sub_tasks_with_sufficient_initial_decomposition(mock_openai_cl
         # Verify initial decomposition was called
         mock_initial_decomposition.assert_called_once()
 
-        # Verify critique and decision were called
-        mock_decision.assert_called_once()
+        # 3+ tasks skip the boolean LLM call
+        mock_decision.assert_not_called()
 
         # Verify history tracking
         assert 'user_input' in decomposer.history
@@ -316,7 +316,7 @@ def test_should_regenerate_with_low_subtask_count(mock_openai_client):
         mock_decision.assert_not_called()
 
 def test_should_regenerate_with_sufficient_subtask_count(mock_openai_client):
-    """Test should_regeneration logic when sub-task count >= 3 (uses LLM decision)."""
+    """Test should_regenerate when sub-task count >= 3 (skip boolean LLM)."""
     # Create mock sub-tasks (3+)
     sub_task_1 = DecomposeSubTask(
         meta_type='sub_task_detail',
@@ -368,9 +368,9 @@ def test_should_regenerate_with_sufficient_subtask_count(mock_openai_client):
         # Call the method
         result = decomposer.should_regenerate(user_input, criticism, generated_sub_tasks)
 
-        # Verify result follows LLM decision
-        assert result is True
-        mock_decision.assert_called_once()
+        # 3+ tasks skip the boolean LLM call; keep the initial decomposition
+        assert result is False
+        mock_decision.assert_not_called()
 
 def test_regenerate_sub_tasks(mock_openai_client):
     """Test the regenerate_sub_tasks method."""
@@ -561,6 +561,43 @@ def test_self_critique_history_tracking(mock_openai_client):
         assert result[0].decomposed_sub_task.name == 'Enhanced Research'
         assert result[1].decomposed_sub_task.name == 'Enhanced Analysis'
         assert result[2].decomposed_sub_task.name == 'Summarize'
+
+def test_empty_regeneration_keeps_initial(mock_openai_client):
+    """If regen JSON is thinking-only, keep the initial executable tasks."""
+    initial = DecomposeSubTask(
+        meta_type='sub_task_detail',
+        name='Answer the question',
+        type='writing',
+        description='Write the answer',
+        context='User asked a question',
+        complexity=2,
+        objective='Answer the user request',
+    )
+    thinking = DecomposeThinkingStep(
+        meta_type='thinking_step',
+        thinking='Still planning the breakdown',
+    )
+    with (
+        unittest.mock.patch(
+            'reasoning_sub_agents.task_decomposition.simple_decomposition.get_streamed_json_response'
+        ) as mock_initial,
+        unittest.mock.patch(
+            'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_json_response'
+        ) as mock_revised,
+        unittest.mock.patch.object(
+            SelfCritiquingDecomposition,
+            'critique_sub_tasks',
+            mock_critique_sub_tasks_method,
+        ),
+    ):
+        mock_initial.return_value = [initial]
+        mock_revised.return_value = [thinking]
+        decomposer = SelfCritiquingDecomposition(llm_client=mock_openai_client)
+        result = decomposer.generate_sub_tasks(user_input='Explain photosynthesis')
+
+    assert len(result) == 1
+    assert result[0].decomposed_sub_task.name == 'Answer the question'
+
 
 def test_critique_with_edge_cases(mock_openai_client):
     """Test critique handling with edge cases."""
