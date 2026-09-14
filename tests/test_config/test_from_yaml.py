@@ -16,6 +16,24 @@ def test_load_default_orchestrator_yaml():
     assert config.components.executor == 'oracle_loop'
     assert config.components.composer == 'document'
     assert config.components.oracle == 'document_oracle'
+    assert config.options.log_prompts is False
+
+
+def test_log_prompts_yaml_flag(tmp_path):
+    yaml_path = tmp_path / 'orch.yaml'
+    yaml_path.write_text(
+        """
+components:
+  decomposer: simple
+  executor: simple
+  composer: simple
+  oracle: null
+options:
+  log_prompts: true
+"""
+    )
+    orchestrator = TaskOrchestrator.from_yaml(yaml_path, llm_client=MockOpenAI())
+    assert orchestrator.options.log_prompts is True
 
 
 def test_from_yaml_builds_document_stack(tmp_path):

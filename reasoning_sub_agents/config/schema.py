@@ -21,6 +21,7 @@ class OptionsConfig(BaseModel):
     render: Literal['markdown_with_files', 'sections_only'] = 'markdown_with_files'
     composer_max_retries: int = 3
     prompt_token_budget: int = 16384
+    log_prompts: bool = False
 
 
 class OrchestratorConfig(BaseModel):

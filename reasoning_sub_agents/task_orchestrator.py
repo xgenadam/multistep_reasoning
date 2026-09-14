@@ -17,7 +17,7 @@ from .execution_synthesiser.document_composer import (
     changed_part_ids,
 )
 from .executor.base import ExecutorBase
-from .llama_utils import create_llama_client
+from .llama_utils import create_llama_client, prompt_logging
 from .oracle.document_oracle import DocumentOracle
 from .progress import (
     live,
@@ -97,6 +97,18 @@ class TaskOrchestrator:
         chat_context: str | None = None,
     ) -> Iterator[tuple[str, Any]]:
         """Yield ('status', message) then ('done', AccumulatedResult). Same-thread UI hook."""
+        with prompt_logging(self.options.log_prompts):
+            yield from self._iter_query(
+                user_input, document=document, chat_context=chat_context
+            )
+
+    def _iter_query(
+        self,
+        user_input: str,
+        *,
+        document: Document | None = None,
+        chat_context: str | None = None,
+    ) -> Iterator[tuple[str, Any]]:
         self.live_run = live()
         set_user_query(user_input)
         set_phase('Decomposing the request into sub-tasks…')

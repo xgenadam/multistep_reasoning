@@ -21,11 +21,37 @@ _json_completion: ContextVar[bool] = ContextVar('json_completion', default=False
 _inner_token_limit: ContextVar[int | None] = ContextVar(
     'inner_token_limit', default=None
 )
+_log_prompts: ContextVar[bool] = ContextVar('log_prompts', default=False)
 
 
 def json_completion_active() -> bool:
     """True while get_streamed_json_response is running (inner JSON, not prose)."""
     return _json_completion.get()
+
+
+def log_prompts_enabled() -> bool:
+    """True when orchestrator.yaml options.log_prompts is on."""
+    return _log_prompts.get()
+
+
+@contextmanager
+def prompt_logging(enabled: bool):
+    token = _log_prompts.set(bool(enabled))
+    try:
+        yield
+    finally:
+        _log_prompts.reset(token)
+
+
+def maybe_log_prompt(llm_input: LLMInput, *, kind: str) -> None:
+    if not _log_prompts.get():
+        return
+    parts = [
+        f'[{message.role}]\n{message.content or ""}'
+        for message in llm_input.messages
+    ]
+    blob = '\n\n'.join(parts)
+    logger.info('LLM %s prompt (%s chars):\n%s', kind, len(blob), blob)
 
 
 def inner_token_limit() -> int | None:
@@ -200,6 +226,7 @@ def get_streamed_json_response(
     if partial_callbacks is None:
         partial_callbacks = []
     begin_llm('JSON completion')
+    maybe_log_prompt(llm_input, kind='JSON')
     json_token = _json_completion.set(True)
     limit_token = _inner_token_limit.set(_inner_token_limit.get() or 2048)
     try:
@@ -469,6 +496,7 @@ def stream_conversation(
     if callbacks is None:
         callbacks = []
     begin_llm('stream completion')
+    maybe_log_prompt(llm_input, kind='stream')
 
     standard_messages = [
         msg.model_dump() for msg in with_inner_sentinel(llm_input).messages

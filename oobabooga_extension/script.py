@@ -21,6 +21,7 @@ import os
 import queue
 import sys
 import threading
+from contextlib import contextmanager
 from contextvars import ContextVar, copy_context
 from pathlib import Path
 from typing import Any, Iterator
@@ -539,13 +540,14 @@ def _inner_generate(prompt: str, *, stream: bool = False):
         return _inner_generate_stream(prompt)
     token = _inner.set(True)
     try:
-        state = _generation_state(stream=False)
-        last = ''
-        for cumulative in _default_generate(
-            prompt, prompt, state, None, is_chat=False
-        ):
-            last = cumulative or last
-        return last
+        with _oobabooga_prompt_print():
+            state = _generation_state(stream=False)
+            last = ''
+            for cumulative in _default_generate(
+                prompt, prompt, state, None, is_chat=False
+            ):
+                last = cumulative or last
+            return last
     finally:
         _inner.reset(token)
 
@@ -553,18 +555,53 @@ def _inner_generate(prompt: str, *, stream: bool = False):
 def _inner_generate_stream(prompt: str) -> Iterator[str]:
     token = _inner.set(True)
     try:
-        state = _generation_state(stream=True)
-        prev = ''
-        for cumulative in _default_generate(
-            prompt, prompt, state, None, is_chat=False
-        ):
-            text = cumulative or ''
-            delta = text[len(prev) :] if text.startswith(prev) else text
-            prev = text
-            if delta:
-                yield delta
+        with _oobabooga_prompt_print():
+            state = _generation_state(stream=True)
+            prev = ''
+            for cumulative in _default_generate(
+                prompt, prompt, state, None, is_chat=False
+            ):
+                text = cumulative or ''
+                delta = text[len(prev) :] if text.startswith(prev) else text
+                prev = text
+                if delta:
+                    yield delta
     finally:
         _inner.reset(token)
+
+
+@contextmanager
+def _oobabooga_prompt_print():
+    """oobabooga prints full prompts when args.verbose; keep that off unless yaml says so."""
+    try:
+        from reasoning_sub_agents.llama_utils import log_prompts_enabled
+
+        enabled = log_prompts_enabled()
+    except Exception:
+        enabled = False
+    if enabled:
+        yield
+        return
+    previous = None
+    try:
+        from modules import shared
+
+        args = getattr(shared, 'args', None)
+        if args is not None and getattr(args, 'verbose', False):
+            previous = True
+            args.verbose = False
+    except Exception:
+        previous = None
+    try:
+        yield
+    finally:
+        if previous is not None:
+            try:
+                from modules import shared
+
+                shared.args.verbose = True
+            except Exception:
+                pass
 
 
 # Keys llama.cpp prepare_payload / generate_with_streaming require.

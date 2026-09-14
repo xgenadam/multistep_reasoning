@@ -354,3 +354,17 @@ def test_run_multi_concurrent_empty_inputs(mock_openai_client):
     )
 
     assert results == {}
+
+
+def test_maybe_log_prompt_off_by_default(caplog):
+    from reasoning_sub_agents.llama_utils import maybe_log_prompt, prompt_logging
+
+    llm_input = generate_simple_llm_input('SECRET SUB-TASK OBJECTIVE')
+    with caplog.at_level('INFO', logger='reasoning_sub_agents.llama_utils'):
+        maybe_log_prompt(llm_input, kind='JSON')
+    assert 'SECRET SUB-TASK OBJECTIVE' not in caplog.text
+    with prompt_logging(True), caplog.at_level(
+        'INFO', logger='reasoning_sub_agents.llama_utils'
+    ):
+        maybe_log_prompt(llm_input, kind='JSON')
+    assert 'SECRET SUB-TASK OBJECTIVE' in caplog.text

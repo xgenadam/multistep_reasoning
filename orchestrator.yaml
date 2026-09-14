@@ -14,3 +14,4 @@ options:
   render: markdown_with_files
   composer_max_retries: 3
   prompt_token_budget: 16384
+  log_prompts: false

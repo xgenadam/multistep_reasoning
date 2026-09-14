@@ -13,3 +13,4 @@ options:
   summary_max_words: 400
   render: markdown_with_files
   composer_max_retries: 3
+  log_prompts: false
