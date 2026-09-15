@@ -122,6 +122,17 @@ class OracleLoopExecutor(ExecutorBase):
         ]
         rounds: list[dict] = []
         for round_idx in range(self.max_oracle_rounds):
+            if round_idx == self.max_oracle_rounds - 1:
+                messages.append(
+                    LLMMessage(
+                        role='user',
+                        content=(
+                            'This is the last allowed turn. Do not call tools. '
+                            'Put the best deliverable you can in `result` now, '
+                            'even if incomplete, and say what is still missing.'
+                        ),
+                    )
+                )
             with llm_step(
                 f'Execute {sub_task.decomposed_sub_task.name} (turn {round_idx + 1})'
             ):
@@ -197,10 +208,68 @@ class OracleLoopExecutor(ExecutorBase):
             )
             return sub_task
 
-        raise RuntimeError(
-            f'oracle_loop executor exceeded {self.max_oracle_rounds} rounds '
-            f'without producing a result for {sub_task.decomposed_sub_task.name!r}'
+        fallback = _budget_fallback_text(
+            sub_task, rounds, self.max_oracle_rounds
         )
+        logger.warning(
+            'oracle_loop exhausted %s rounds for %r; using partial fallback',
+            self.max_oracle_rounds,
+            sub_task.decomposed_sub_task.name,
+        )
+        sub_task.sub_task_result = SubTaskResult(
+            chat_response=_assistant_message(fallback)
+        )
+        sub_task.status = TaskStatus.COMPLETED
+        self.history.append(
+            {
+                'completed_sub_task': sub_task.model_dump(),
+                'oracle_rounds': rounds,
+                'full_prompt': user_prompt,
+                'budget_exhausted': True,
+            }
+        )
+        return sub_task
+
+
+def _budget_fallback_text(
+    sub_task: SubTask, rounds: list[dict], max_rounds: int
+) -> str:
+    name = sub_task.decomposed_sub_task.name
+    objective = sub_task.decomposed_sub_task.objective
+    thinking_bits: list[str] = []
+    observations: list[str] = []
+    for entry in rounds:
+        thinking = (entry.get('thinking') or '').strip()
+        if thinking:
+            thinking_bits.append(thinking)
+        observation = (entry.get('observation') or '').strip()
+        if observation and observation != '(empty result; retrying)':
+            observations.append(observation)
+    parts = [
+        f'Partial result for **{name}** (oracle round budget of {max_rounds} reached).',
+        '',
+        'The executor kept querying tools or returning empty JSON instead of a '
+        'finished deliverable. What follows is the best draft from those rounds, '
+        'not a complete answer.',
+        '',
+        f'Objective: {objective}',
+    ]
+    if thinking_bits:
+        parts.extend(['', 'Last working notes:', thinking_bits[-1]])
+    if observations:
+        excerpt = observations[-1]
+        if len(excerpt) > 2000:
+            excerpt = excerpt[:2000] + '\n…'
+        parts.extend(['', 'Last tool observation:', excerpt])
+    if not thinking_bits and not observations:
+        parts.extend(
+            [
+                '',
+                'No usable notes were captured. Increase '
+                '`options.max_oracle_rounds` or simplify the sub-task.',
+            ]
+        )
+    return '\n'.join(parts)
 
 
 def _assistant_message(content: str):

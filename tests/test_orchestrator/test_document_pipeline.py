@@ -240,3 +240,71 @@ def test_document_pipeline_empty_sub_tasks_uses_fallback():
     executed = executor.execute_one.call_args.args[0]
     assert 'photosynthesis' in executed.decomposed_sub_task.objective.lower()
     assert 'Photosynthesis is how plants make food.' in response.content
+
+
+def test_document_pipeline_continues_after_executor_error():
+    first = _task('Chapter 1')
+    second = _task('Chapter 2')
+    decomposer = MagicMock()
+    decomposer.generate_sub_tasks.return_value = [first, second]
+    decomposer.history = {}
+    executor = MagicMock()
+
+    def run_one(sub_task, **kwargs):
+        if sub_task is first:
+            raise RuntimeError('oracle_loop executor exceeded 8 rounds')
+        sub_task.sub_task_result = SubTaskResult(
+            chat_response=ChatCompletionMessage(
+                content='Chapter two survived.', role='assistant'
+            )
+        )
+        sub_task.status = TaskStatus.COMPLETED
+        return sub_task
+
+    executor.execute_one.side_effect = run_one
+    executor.history = []
+    composer = DocumentComposer(llm_client=MockOpenAI())
+    oracle = MagicMock(spec=DocumentOracle)
+    oracle.update_summary.return_value = 'summary'
+    orchestrator = TaskOrchestrator(
+        decomposer=decomposer,
+        agent_executor=executor,
+        llm_client=MockOpenAI(),
+        document_composer=composer,
+        oracle_factory=lambda document: oracle,
+    )
+    with patch(
+        'reasoning_sub_agents.execution_synthesiser.document_composer.get_streamed_json_response'
+    ) as mock_json:
+        from reasoning_sub_agents.execution_synthesiser.document_composer import (
+            ComposerResponse,
+        )
+
+        mock_json.side_effect = [
+            ComposerResponse(
+                ops=[
+                    AddPart(
+                        id='chapter-1',
+                        kind='section',
+                        title='Chapter 1',
+                        body_source='current_result',
+                    )
+                ]
+            ),
+            ComposerResponse(
+                ops=[
+                    AddPart(
+                        id='chapter-2',
+                        kind='section',
+                        title='Chapter 2',
+                        body_source='current_result',
+                    )
+                ]
+            ),
+        ]
+        response = orchestrator.query('Write two chapters')
+
+    assert first.status == TaskStatus.FAILED
+    assert 'exceeded 8 rounds' in first.sub_task_result.chat_response.content
+    assert 'Chapter two survived.' in response.content
+    assert executor.execute_one.call_count == 2

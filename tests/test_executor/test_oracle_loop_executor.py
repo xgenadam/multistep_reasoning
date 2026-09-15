@@ -1,7 +1,5 @@
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from reasoning_sub_agents.document import AddPart, Document
 from reasoning_sub_agents.executor.oracle_loop_executor import OracleLoopExecutor
 from reasoning_sub_agents.oracle import DocumentOracle, ExecutorTurn, ListPartsTool
@@ -67,17 +65,25 @@ def test_oracle_loop_requires_oracle():
         executor.execute_one(_task())
 
 
-def test_oracle_loop_budget_exceeded():
+def test_oracle_loop_budget_exhausted_returns_partial():
     executor = OracleLoopExecutor(llm_client=MockOpenAI(), max_oracle_rounds=2)
     oracle = DocumentOracle(Document.empty())
+    task = _task('Draft the intro')
     with patch(
         'reasoning_sub_agents.executor.oracle_loop_executor.get_streamed_json_response'
     ) as mock_json:
         mock_json.return_value = ExecutorTurn(
-            tool_calls=[ListPartsTool()], result=None
+            thinking='Need more of the outline before writing.',
+            tool_calls=[ListPartsTool()],
+            result=None,
         )
-        with pytest.raises(RuntimeError, match='exceeded 2 rounds'):
-            executor.execute_one(_task(), oracle=oracle)
+        result = executor.execute_one(task, oracle=oracle)
+    content = result.sub_task_result.chat_response.content
+    assert result.status == TaskStatus.COMPLETED
+    assert 'Partial result' in content
+    assert 'oracle round budget of 2' in content
+    assert 'Need more of the outline' in content
+    assert executor.history[0]['budget_exhausted'] is True
 
 
 def test_executor_turn_null_result_is_not_a_deliverable():

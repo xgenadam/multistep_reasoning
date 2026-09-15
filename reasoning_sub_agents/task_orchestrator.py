@@ -27,7 +27,7 @@ from .progress import (
     set_task_status,
     set_user_query,
 )
-from .schemas import AccumulatedResult, SubTask
+from .schemas import AccumulatedResult, SubTask, SubTaskResult, TaskStatus
 from .task_decomposition.base import TaskDecomposerBase
 from .task_decomposition.simple_decomposition import ensure_sub_tasks
 
@@ -216,10 +216,22 @@ class TaskOrchestrator:
                     oracle=oracle,
                     user_request=user_input,
                 )
-            except Exception:
+            except Exception as exc:
+                logger.exception('sub-task %s failed; continuing with a stub', name)
                 set_task_status(name, 'failed')
-                raise
-            set_task_status(name, 'completed')
+                sub_task.status = TaskStatus.FAILED
+                sub_task.sub_task_result = SubTaskResult(
+                    chat_response=ChatCompletionMessage(
+                        role='assistant',
+                        content=(
+                            f'This sub-task failed before producing a deliverable: {exc}\n\n'
+                            'Continuing with the remaining sub-tasks so some output '
+                            'still reaches the document.'
+                        ),
+                    )
+                )
+            else:
+                set_task_status(name, 'completed')
             set_phase(f'Composing after {idx + 1}/{total}: {name}')
             yield ('status', f'Composing after {idx + 1}/{total}: {name}')
             ops = self.document_composer.compose(
