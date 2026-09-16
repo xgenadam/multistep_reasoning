@@ -1,10 +1,19 @@
 # Multi-step reasoning
 
+This is heavily WIP and an ongoing project.
+
+# Multi-step reasoning
+
 A library that turns one user prompt into several sub-tasks, runs those separately, then folds the results into a `Document` instead of rewriting the whole answer each time.
 
 Later sub-tasks do not receive the full document. They get an outline, a rolling summary, and a `DocumentOracle` they can query (`list_parts`, `read_part`, `search`, `ask`).
 
-The same pipeline can run against a local OpenAI-compatible server, or as an **oobabooga** (text-generation-webui) extension so Gradio and Open WebUI both use it.
+The aim of this project is to give LLM's more time to think about and solve complex problems as opposed to solving in a single call.
+The breakdown into subtasks allows more focus on a single subject, with only the appropriate context, whilst the orchestrator can check the result against the full context. It also reduces bloat of the context window.
+Similarly, the use of the `Document` as the final response allows for the editting of earlier parts of the response as the sub tasks complete with the orchestrator integrating the results of sub tasks into this. 
+
+The most powerful aspect of this is that it allows the LLM to revise its earlier response prior to presenting it to the user, the earliest part of the document is not set in stone and can be editted if needed later by the LLM.
+
 
 ## Layout
 
@@ -14,6 +23,7 @@ The same pipeline can run against a local OpenAI-compatible server, or as an **o
 | `orchestrator.yaml` | Which decomposer / executor / composer / oracle to wire |
 | `oobabooga_extension/` | oobabooga hook (`script.py`) |
 | `tests/` | Unit tests (no live model required) |
+
 
 ## How a turn works
 
@@ -67,11 +77,11 @@ pip install pytest openai instructor pydantic pyyaml
 pytest tests -q
 ```
 
+NB: the testing needs to be updated
+
 ## oobabooga (text-generation-webui)
 
 oobabooga only loads `script.py` at the **root** of the extension folder. Cloning this repo into `extensions/` is not enough by itself: `script.py` currently lives under `oobabooga_extension/`.
-
-### Install the repo as an extension
 
 ```bash
 # folder name = extension name
@@ -85,22 +95,7 @@ cp oobabooga_extension/script.py .
 cp oobabooga_extension/orchestrator.yaml .   # optional; root orchestrator.yaml is also found
 ```
 
-You want:
-
-```text
-user_data/extensions/multistep_reasoning/
-  script.py                 # required
-  orchestrator.yaml
-  reasoning_sub_agents/
-  requirements.txt
-  ...
-```
-
-A symlink is fine:
-
-```bash
-ln -s oobabooga_extension/script.py script.py
-```
+as of last revision, it is best to copy all files from the oobabooga extensions to the root of the project, the above is out of date. See TODO list
 
 ### Python dependencies
 
@@ -110,122 +105,30 @@ Install into the **same** environment oobabooga uses:
 pip install -r requirements.txt
 ```
 
-Minimum for the extension: `openai`, `instructor`, `pydantic`, `pyyaml`.
+## TODO/caveats
+This project was mostly manually done, but I decided to let grok build loose on it to complete the final document oracle composition. This was mostly successful. The pain points came with the integration as an oobabooga extension. It seemed to be getting very bogged down into fetching the correct chat messages, implementing a now deleted scoring system which was sometimes responding to the wrong chat. Reading that was a massive wtf.
 
-### Enable
+It also polluted the multi step reasoning with oobabooga specific code. The `reasoning_sub_agents` module should be all about the reasoning, and be platform agnostic.
 
-CLI:
+I've fixed most of these, but I need to freshly test setting this up as an extension again.
 
-```bash
-python server.py --extensions openai multistep_reasoning
-```
+Similarly it added mcp code to the `reasoning_sub_agents` module, but this should deffinitely live elsewhere and wrap that code.
 
-`openai` is oobabooga’s OpenAI-compatible API (Open WebUI). `multistep_reasoning` must match the folder name.
+I think there are also probably some cases where there is code that is unused, either introduced through multiple rounds through grok or as leftover from my own edits/deletions.
 
-Or in the UI: Session → Extensions → enable **multistep_reasoning** (and **openai** if you use Open WebUI) → apply / restart.
+I'm on the fence about making this a propper package, currently it is only being tested/used as an extension package for oobabooga. However I want to make it more portable.
+Early explorations of this via grok build as an MCP server did not result in what I was envisioning. As an MCP server that grok proposed, it would have required a dedicated LLM running as part of the server, however I envision this instead being a reasoning harness that the primary LLM can use. I need to think about how to implement this more (currently I am just exploring whether this reasoning harness results in improved responses).
 
-### Check it loaded
+While this does work, the final document does contain repetition. Currently we have the ability to add/delete/modify parts of a document, but I think we need to introduce the ability to merge and compare them to elimimate this.
 
-- Gradio should show **Enable multi-step reasoning**.
-- Logs should contain `multi-step reasoning extension ready`.
-- If setup fails, the exception is logged and the extension stays disabled.
+Tool use inside the sub agents has not been implemented, and how tool use (such as search) gets handled is something I need to think about and experiment with.
+I can see the benefits of each sub task agent being able to call tools, but if not handled appropriately it could become messy and complicated. 
 
-### Behaviour
+## Results/thoughts
 
-- A user turn runs the full decompose → execute → compose pipeline against the model already loaded in oobabooga.
-- Inner LLM calls use `generate_reply_HF` / `generate_reply_custom` directly, not `generate_reply`, so the extension does not recurse.
-- The same oobabooga chat keeps editing one `Document`. A new chat starts empty.
-- Open WebUI can keep pointing at oobabooga’s OpenAI API; no extra pipeline.
-- **Intercept mode** (Gradio): `chat_only` (default) skips Cline / OpenCode / Grok Build tool turns so those agents keep their own loops. `always` intercepts every chat turn except inner orchestrator calls. `never` never intercepts.
+I've run this using Mistral 3.5 128B and Qwen 3.6 35B.
+Obviously Mistral is much slower, for a single user input there are multiple calls to the LLM for each response, but it did provide better results in both cases.
 
-### Optional env vars
+For most use cases I think this does not need to be used, I would envision this being something the LLM can decide to use in the event it needs to ruminate more on a result before coming back with an immediate response.
 
-| Variable | Meaning |
-| --- | --- |
-| `MULTISTEP_REASONING_ROOT` | Repo root if `import reasoning_sub_agents` fails (not needed when `script.py` is at the repo root) |
-| `MULTISTEP_ORCHESTRATOR_YAML` | Path to a specific `orchestrator.yaml` |
-
-### Caveats
-
-- Only one extension may define `custom_generate_reply`. Do not enable another that does the same.
-- You do not need a separate llama.cpp server for this path; oobabooga’s loaded model is the backend.
-
-### Alternative: repo elsewhere, extension is a symlink
-
-If you keep the git checkout outside text-generation-webui:
-
-```bash
-pip install -e /path/to/this/repo
-
-ln -sfn /path/to/this/repo/oobabooga_extension \
-  /path/to/text-generation-webui/user_data/extensions/multistep_reasoning
-
-export MULTISTEP_REASONING_ROOT=/path/to/this/repo
-python server.py --extensions openai multistep_reasoning
-```
-
-In that layout `script.py` is already at the extension root (`oobabooga_extension/script.py`).
-
-## Cline, OpenCode, and Grok Build
-
-Those tools already run a tool loop (read/edit/shell). This project must **not** steal that loop. Two pieces:
-
-1. Point the **model** at oobabooga with intercept mode `chat_only` (default). Agent-shaped turns (OpenAI `tools`, Cline XML, tool-result messages) fall through to a normal completion.
-2. Add this repo as an **MCP server**. The agent can call `deep_reason` when it wants a long plan/analysis `Document`, then apply that with its own tools.
-
-### MCP server
-
-```bash
-cd /path/to/this/repo
-export MULTISTEP_ORCHESTRATOR_YAML=/path/to/this/repo/orchestrator.yaml
-python -m reasoning_sub_agents.mcp_server
-```
-
-`orchestrator.yaml` `llm.host` / `llm.port` must be oobabooga’s OpenAI API (often `127.0.0.1:5000`). Inner HTTP calls include a skip sentinel so the extension does not recurse.
-
-Tools:
-
-- `deep_reason(prompt, session_id?, chat_context?)` → markdown document
-- `reset_session(session_id)` → drop a stored document
-
-### Grok Build
-
-In `~/.grok/config.toml` or the project `.grok/config.toml`:
-
-```toml
-[mcp_servers.multistep-reasoning]
-command = "python"
-args = ["-m", "reasoning_sub_agents.mcp_server"]
-env = { MULTISTEP_ORCHESTRATOR_YAML = "/path/to/this/repo/orchestrator.yaml", PYTHONPATH = "/path/to/this/repo" }
-enabled = true
-```
-
-Run Grok from a cwd where that `PYTHONPATH` repo is importable, or install the package with `pip install -e /path/to/this/repo`.
-
-### Cline
-
-In Cline MCP settings (`cline_mcp_settings.json`), the same stdio server:
-
-```json
-{
-  "mcpServers": {
-    "multistep-reasoning": {
-      "command": "python",
-      "args": ["-m", "reasoning_sub_agents.mcp_server"],
-      "cwd": "/path/to/this/repo",
-      "env": {
-        "MULTISTEP_ORCHESTRATOR_YAML": "/path/to/this/repo/orchestrator.yaml",
-        "PYTHONPATH": "/path/to/this/repo"
-      }
-    }
-  }
-}
-```
-
-### OpenCode
-
-Register the same command in OpenCode’s MCP config (`opencode.json` / MCP servers). Command, `cwd`, and env match the snippets above.
-
-If the coding agent’s model is oobabooga, leave intercept mode at `chat_only` (or disable the extension for that profile). Use `deep_reason` only when you want a multi-step document, not for every file edit.
-
-For **books / series / on-disk workspaces**, use the sibling package [`novel_mcp_server/`](novel_mcp_server/README.md) (`python -m novel_mcp_server`) instead of this thin server. Same Grok/Cline/OpenCode clients; extra tools for bind/list/read/search and conversation search. Easy to move to its own repo later.
+As noted above, the final document does contain repetition, there are a few ways we can handle this, such as adding the ability to merge parts of the document, overhaul the entire thing etc. This needs experimentation to find what works best, and may be dependent on model competence itself.

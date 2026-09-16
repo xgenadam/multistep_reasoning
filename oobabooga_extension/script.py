@@ -417,17 +417,11 @@ def custom_generate_reply(
         chat_id_from_state,
         compact_chat_history,
         compact_chat_history_from_state,
-        select_current_user_turn,
     )
     from reasoning_sub_agents.document import Document
 
     stashed = _take_stashed_turn(state)
-    user_text, source, turn_debug = select_current_user_turn(
-        question=question or '',
-        original_question=original_question or '',
-        state=state,
-        pending_user_text=stashed.get('user_text') or '',
-    )
+    user_text = question
     if not user_text.strip():
         _last_trace = (
             'Skipped pipeline:\nno stashed chat_input and could not parse '
@@ -454,18 +448,6 @@ def custom_generate_reply(
             chat_context = compact_chat_history(stashed.get('history'))
         else:
             chat_context = compact_chat_history_from_state(state)
-        logger.info(
-            'pipeline start source=%s session=%s user_text=%r prompt_chars=%s\n%s',
-            source,
-            session_id,
-            user_text[:160],
-            len(question or ''),
-            turn_debug,
-        )
-        _last_trace = (
-            f'Running… v5 source={source} session={session_id}\n'
-            f'{user_text[:400]}\n\n{turn_debug}'
-        )
         events: queue.Queue = queue.Queue()
 
         def on_live(snapshot: str) -> None:
@@ -478,9 +460,6 @@ def custom_generate_reply(
 
             try:
                 with live_session(on_live):
-                    from reasoning_sub_agents.progress import set_turn_debug
-
-                    set_turn_debug(turn_debug)
                     for kind, payload in _orchestrator.iter_query(
                         user_text,
                         document=document,
