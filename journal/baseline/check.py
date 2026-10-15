@@ -59,6 +59,19 @@ def score_scenario(sid: str, expect: dict, turn: dict) -> list[tuple[str, bool, 
         st = (turn.get('sub_tasks') or {}).get('final_sub_task_count')
         ok = st is not None and st >= expect['min_sub_tasks']
         out.append((f"sub-tasks >= {expect['min_sub_tasks']}", ok, f"count={st}"))
+    if 'file' in expect.get('part_kinds_include', []):
+        # 0-09: file part bodies must be RAW file content. The renderer
+        # (Document.render, markdown_with_files) adds the ``` fence and
+        # infers the language from the title, so a model-authored fence at
+        # the start of the body double-fences the output.
+        snap = turn.get('snapshot') or {}
+        bad = []
+        for p in snap.get('parts') or []:
+            body = (p.get('body') or '').lstrip()
+            if 'file' in str(p.get('kind')).lower() and body.startswith('```'):
+                bad.append(p.get('id'))
+        out.append(('file part bodies not pre-fenced (0-09)', not bad,
+                    f"fenced={bad} (renderer adds the fence; body must be raw)"))
     return out
 
 

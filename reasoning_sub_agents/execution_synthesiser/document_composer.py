@@ -127,7 +127,11 @@ Rules:
 6. There is no full-document overwrite. If the document is empty, add_part.
 7. Choose kind="section" for prose, kind="file" for runnable artifacts
    (scripts, tools, code files). A file part's title MUST be the filename with
-   its extension (e.g. "wordcount.py").
+   its extension (e.g. "wordcount.py"). A file part's body is the RAW file
+   content only — never wrap it in ``` code fences (the renderer adds the
+   fence and infers the language from the title), and never append usage
+   notes, verification tables, or other commentary after the code; if notes
+   are needed, put them in a separate section part.
 8. Part ids must be unique, stable, kebab-case.
 9. Titles are OPTIONAL. Omit title when a part needs no heading; when you do
    set one, keep it short and factual.
