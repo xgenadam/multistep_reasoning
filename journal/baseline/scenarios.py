@@ -39,6 +39,53 @@ SCENARIOS: list[dict] = [
         ],
     },
     {
+        'id': 's1b_csv2json_cli',
+        'title': 'Code deliverable: CSV-to-JSON converter CLI (P0-1, X2 of 3)',
+        'expect': {
+            'criterion': 'P0-1',
+            'part_kinds_include': ['file'],
+            'file_parts_min': 1,
+            'non_empty': True,
+            'note': '0-05 verification: different tool than s1 (X2: conversion).',
+        },
+        'turns': [
+            {
+                'name': 's1b:t0',
+                'text': (
+                    'Write a small CLI tool in Python called "csv2json" that, '
+                    'given a path to a CSV file, prints the rows as a JSON '
+                    'array of objects (header row = keys) to stdout. Flag '
+                    '"--indent" for pretty-printing. Exit non-zero if the '
+                    'file is missing or empty. Provide the code.'
+                ),
+            }
+        ],
+    },
+    {
+        'id': 's1c_logscan_cli',
+        'title': 'Code deliverable: log scanner CLI (P0-1, X3 of 3)',
+        'expect': {
+            'criterion': 'P0-1',
+            'part_kinds_include': ['file'],
+            'file_parts_min': 1,
+            'non_empty': True,
+            'note': '0-05 verification: different tool than s1 (X3: filtering).',
+        },
+        'turns': [
+            {
+                'name': 's1c:t0',
+                'text': (
+                    'Write a small CLI tool in Python called "logscan" that, '
+                    'given a log file path and a level (INFO, WARN, ERROR), '
+                    'prints only the matching log lines, newest last, with a '
+                    'count on stderr. Flag "--limit N" caps the number '
+                    'printed. Exit non-zero if the file does not exist. '
+                    'Provide the code.'
+                ),
+            }
+        ],
+    },
+    {
         'id': 's2_report',
         'title': 'Written deliverable: report (expect section parts)',
         'expect': {
