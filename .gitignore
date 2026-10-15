@@ -7,6 +7,7 @@ llama_cpp_server
 *.json
 *.md
 !README.md
+!AGENTS.md
 !journal/**/*.md
 !journal/baseline/runs/*.json
 novel_mcp_server/workspaces/
