@@ -41,7 +41,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from reasoning_sub_agents.document import Document  # noqa: E402
+from reasoning_sub_agents.document import AppliedOp, Document  # noqa: E402
+from reasoning_sub_agents.document.models import Part  # noqa: E402
 from reasoning_sub_agents.llama_utils import create_llama_client  # noqa: E402
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E402
 
@@ -238,9 +239,16 @@ def doc_metrics(snapshot: dict) -> dict:
             op = entry.get('op')
             if isinstance(op, dict) and 'type' in op:
                 ops[op['type']] += 1
+    headings = sum(
+        1
+        for p in parts
+        for line in (p.get('body') or '').splitlines()
+        if line.startswith('## ')
+    )
     return {
         'part_count': len(parts),
         'part_kinds': dict(Counter(p.get('kind', '?') for p in parts)),
+        'body_h2_headings': headings,
         'part_titles': [p.get('title') or '' for p in parts],
         'summary_chars': len(snapshot.get('summary') or ''),
         'content_chars': sum(len(p.get('body') or '') for p in parts),
@@ -293,7 +301,18 @@ def run_scenario(scenario: dict, client, measured: MeasuredCompletions, run_inde
             doc = None
             prior = turn.get('prior')
             if prior and prior in docs:
-                doc = Document(**docs[prior])
+                snap = docs[prior]
+                # to_dict() stores parts/op_log as plain dicts; rehydrate so
+                # the document's attribute access (outline(), render(), ...)
+                # works. (Pipeline-side gap: no from_dict() exists yet —
+                # noted in S-002, matters for Phase P snapshot design.)
+                doc = Document(
+                    title=snap.get('title'),
+                    parts=[Part.model_validate(p) for p in snap.get('parts') or []],
+                    summary=snap.get('summary') or '',
+                    op_log=[AppliedOp.model_validate(e) for e in snap.get('op_log') or []],
+                    render_mode=snap.get('render_mode') or 'markdown_with_files',
+                )
             idx_start = measured.start_index()
             turn_start = time.perf_counter()
             result = None
@@ -324,6 +343,7 @@ def run_scenario(scenario: dict, client, measured: MeasuredCompletions, run_inde
                 'llm': llm_stats(measured.records_between(idx_start, idx_end)),
                 'document': doc_metrics(snapshot),
                 'sub_tasks': turn_health(entry),
+                'snapshot': snapshot,  # full parts/op_log for post-hoc inspection
             })
     finally:
         record['total_wall_seconds'] = round(time.perf_counter() - t0, 1)

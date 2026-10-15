@@ -1,4 +1,4 @@
-from reasoning_sub_agents.chat_adapter import (
+from oobabooga_extension.chat_adapter import (  # module moved out of the package
     chat_id_from_state,
     compact_chat_history,
 )

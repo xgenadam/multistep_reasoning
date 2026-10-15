@@ -41,8 +41,13 @@ def score_scenario(sid: str, expect: dict, turn: dict) -> list[tuple[str, bool, 
         n = kind_count('file')
         out.append((f"file parts >= {expect['file_parts_min']}", n >= expect['file_parts_min'], f"count={n}"))
     if 'section_parts_min' in expect:
+        # P0-2 is about the rendered output being sectioned, not about part
+        # granularity — a single part may hold multiple ## sections.
+        h2 = doc.get('body_h2_headings', 0)
         n = kind_count('section')
-        out.append((f"section parts >= {expect['section_parts_min']}", n >= expect['section_parts_min'], f"count={n}"))
+        ok = n >= expect['section_parts_min'] or h2 >= expect['section_parts_min']
+        out.append((f"sectioned output >= {expect['section_parts_min']}", ok,
+                    f"section_parts={n}, body_h2={h2}"))
     if 'non_empty' in expect:
         ok = bool(doc.get('non_empty'))
         out.append(('document non-empty', ok, f"chars={doc.get('content_chars')}"))
