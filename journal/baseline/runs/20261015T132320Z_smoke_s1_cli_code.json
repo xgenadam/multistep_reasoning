@@ -1,0 +1,200 @@
+{
+  "backend": "http://host.containers.internal:5000/v1",
+  "generated_at": "20261015T132320Z",
+  "label": "smoke",
+  "runs_per_scenario": 1,
+  "jobs": 1,
+  "caveat": null,
+  "total_calls_observed": 13,
+  "results": [
+    {
+      "scenario": "s1_cli_code",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-1",
+        "part_kinds_include": [
+          "file"
+        ],
+        "file_parts_min": 1,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a small CLI tool in Python called \"wordcount\" that, given one or more file paths, prints for each file: line count, word count, and character count, in a simple table. It should exit non-zero if a path does not exist. Provide the code.",
+          "wall_seconds": 419.1,
+          "llm": {
+            "calls": 13,
+            "prompt_tokens": 38559,
+            "completion_tokens": 8325,
+            "wall_seconds_sum_calls": 418.95,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 13.31,
+                "max_s": 18.85
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 39.37,
+                "max_s": 39.37
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 33.99,
+                "max_s": 87.79
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 25.64,
+                "max_s": 48.44
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Design CLI argument parsing and file validation": {
+                "count": 1,
+                "p50_s": 10.55,
+                "max_s": 10.55
+              },
+              "Composing after 2/3: Implement counting logic and table output": {
+                "count": 1,
+                "p50_s": 13.31,
+                "max_s": 13.31
+              },
+              "Composing after 3/3: Write the final complete wordcount.py script": {
+                "count": 1,
+                "p50_s": 18.85,
+                "max_s": 18.85
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 43.9,
+                "max_s": 48.44
+              },
+              "Executing 1/3: Design CLI argument parsing and file validation": {
+                "count": 1,
+                "p50_s": 33.99,
+                "max_s": 33.99
+              },
+              "Executing 2/3: Implement counting logic and table output": {
+                "count": 2,
+                "p50_s": 43.6,
+                "max_s": 81.49
+              },
+              "Executing 3/3: Write the final complete wordcount.py script": {
+                "count": 2,
+                "p50_s": 47.03,
+                "max_s": 87.79
+              },
+              "Updating summary after 1/3: Design CLI argument parsing and file validation": {
+                "count": 1,
+                "p50_s": 21.93,
+                "max_s": 21.93
+              },
+              "Updating summary after 2/3: Implement counting logic and table output": {
+                "count": 1,
+                "p50_s": 27.06,
+                "max_s": 27.06
+              },
+              "Updating summary after 3/3: Write the final complete wordcount.py script": {
+                "count": 1,
+                "p50_s": 24.21,
+                "max_s": 24.21
+              }
+            }
+          },
+          "document": {
+            "part_count": 3,
+            "part_kinds": {
+              "section": 3
+            },
+            "part_titles": [
+              "CLI Argument Parsing and File Validation",
+              "Counting Logic and Table Output",
+              "Complete wordcount.py Script"
+            ],
+            "summary_chars": 2669,
+            "content_chars": 11711,
+            "top_dup_pairs": [
+              {
+                "a": "counting-logic-table-output",
+                "b": "final-wordcount-script",
+                "jaccard": 0.352
+              },
+              {
+                "a": "cli-arg-parsing-validation",
+                "b": "final-wordcount-script",
+                "jaccard": 0.248
+              },
+              {
+                "a": "cli-arg-parsing-validation",
+                "b": "counting-logic-table-output",
+                "jaccard": 0.088
+              }
+            ],
+            "max_dup_jaccard": 0.352,
+            "op_counts": {
+              "add_part": 3
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 87.8,
+          "phase": "Decomposed 3 sub-tasks: Design CLI argument parsing and file validation, Implement counting logic and table output, Write the final complete wordcount.py script"
+        },
+        {
+          "t": 87.8,
+          "phase": "Executing 1/3: Design CLI argument parsing and file validation"
+        },
+        {
+          "t": 121.8,
+          "phase": "Composing after 1/3: Design CLI argument parsing and file validation"
+        },
+        {
+          "t": 132.4,
+          "phase": "Updating summary after 1/3: Design CLI argument parsing and file validation"
+        },
+        {
+          "t": 154.3,
+          "phase": "Executing 2/3: Implement counting logic and table output"
+        },
+        {
+          "t": 241.5,
+          "phase": "Composing after 2/3: Implement counting logic and table output"
+        },
+        {
+          "t": 254.9,
+          "phase": "Updating summary after 2/3: Implement counting logic and table output"
+        },
+        {
+          "t": 281.9,
+          "phase": "Executing 3/3: Write the final complete wordcount.py script"
+        },
+        {
+          "t": 376.0,
+          "phase": "Composing after 3/3: Write the final complete wordcount.py script"
+        },
+        {
+          "t": 394.9,
+          "phase": "Updating summary after 3/3: Write the final complete wordcount.py script"
+        }
+      ],
+      "total_wall_seconds": 419.1
+    }
+  ],
+  "errors": []
+}

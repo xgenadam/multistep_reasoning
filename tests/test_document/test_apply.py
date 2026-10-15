@@ -8,6 +8,7 @@ from reasoning_sub_agents.document import (
     DocumentApplyError,
     DocumentIntegrityError,
     InsertInPart,
+    MergeParts,
     MovePart,
     Part,
     PartKind,
@@ -234,3 +235,96 @@ def test_unknown_part_errors():
     doc = Document.empty()
     with pytest.raises(DocumentApplyError, match='unknown part id'):
         doc.apply([DeletePart(id='missing')])
+
+
+# --- merge_parts (0-03) ---------------------------------------------------
+
+
+def test_merge_preserves_all_content_and_keeps_primary():
+    doc = Document(parts=[_part('a', 'A body'), _part('b', 'B body'), _part('c', 'C body')])
+    doc.apply([MergeParts(ids=['b', 'a'])])
+    # b is primary -> survives with b's identity, placed at b's original slot
+    assert [p.id for p in doc.parts] == ['b', 'c']
+    merged = doc.parts[0]
+    assert merged.kind == PartKind.SECTION
+    assert merged.body == 'B body\n\nA body'  # ids order
+    # no content dropped
+    assert 'A body' in merged.body and 'B body' in merged.body
+
+
+def test_merge_reorders_body_and_survivor_by_ids():
+    doc = Document(parts=[_part('a', 'A body'), _part('b', 'B body')])
+    doc.apply([MergeParts(ids=['a', 'b'])])
+    assert doc.parts[0].id == 'a'
+    assert doc.parts[0].body == 'A body\n\nB body'
+
+
+def test_merge_keeps_primary_metadata():
+    primary = Part(id='keep', kind=PartKind.FILE, title='keep.py',
+                   body='print(1)', origin_task='task-x')
+    other = _part('other', 'prose')
+    doc = Document(parts=[other, primary])
+    doc.apply([MergeParts(ids=['keep', 'other'])])
+    merged = doc.parts[0]
+    assert merged.id == 'keep'
+    assert merged.kind == PartKind.FILE
+    assert merged.title == 'keep.py'
+    assert merged.origin_task == 'task-x'
+    assert merged.body == 'print(1)\n\nprose'
+
+
+def test_merge_atomic_on_unknown_id():
+    a, b, c = _part('a', 'a'), _part('b', 'b'), _part('c', 'c')
+    doc = Document(parts=[a, b, c])
+    with pytest.raises(DocumentApplyError, match='unknown part id'):
+        doc.apply([MergeParts(ids=['b', 'missing'])])
+    # nothing changed
+    assert [p.id for p in doc.parts] == ['a', 'b', 'c']
+    assert doc.parts[0] is a
+
+
+def test_merge_untargeted_parts_keep_identity():
+    a = _part('a', 'keep me')
+    b = _part('b', 'b')
+    c = _part('c', 'c')
+    doc = Document(parts=[a, b, c])
+    doc.apply([MergeParts(ids=['b', 'c'])])
+    assert [p.id for p in doc.parts] == ['a', 'b']
+    assert doc.parts[0] is a  # untouched part keeps object identity
+
+
+def test_merge_rejects_duplicate_ids():
+    doc = Document(parts=[_part('a', 'a'), _part('b', 'b')])
+    with pytest.raises(ValueError, match='must be unique'):
+        MergeParts(ids=['a', 'a'])
+
+
+def test_merge_rejects_single_id():
+    with pytest.raises(ValueError):
+        MergeParts(ids=['only'])
+
+
+def test_merge_is_patch_only_for_integrity():
+    # A merge does not write a sub-task payload, so it must not require one.
+    doc = Document(parts=[_part('a', 'A'), _part('b', 'B')])
+    ops = [MergeParts(ids=['a', 'b'])]
+    doc.apply(ops, current_result='an unrelated sub-task result')
+    assert_payload_kept(doc, ops, 'an unrelated sub-task result')
+    assert doc.parts[0].body == 'A\n\nB'
+
+
+def test_merge_changed_part_ids_covers_survivor_and_sources():
+    from reasoning_sub_agents.execution_synthesiser.document_composer import (
+        changed_part_ids,
+    )
+
+    ops = [MergeParts(ids=['b', 'a']), UpdatePart(id='c', body='x')]
+    assert changed_part_ids(ops) == ['b', 'a', 'c']
+
+
+def test_merge_records_op_log():
+    doc = Document(parts=[_part('a', 'a'), _part('b', 'b')])
+    doc.apply([MergeParts(ids=['a', 'b'])], origin_task='consolidate')
+    assert len(doc.op_log) == 1
+    assert doc.op_log[0].op.type == 'merge_parts'
+    assert doc.op_log[0].origin_task == 'consolidate'

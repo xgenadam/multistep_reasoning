@@ -11,6 +11,7 @@ from ..document import (
     DocumentApplyError,
     DocumentIntegrityError,
     DocumentOp,
+    MergeParts,
     assert_payload_kept,
     preview_text,
 )
@@ -339,7 +340,15 @@ def _slugify(name: str) -> str:
 def changed_part_ids(ops: list[DocumentOp]) -> list[str]:
     ids: list[str] = []
     for op in ops:
-        part_id = getattr(op, 'id', None)
-        if isinstance(part_id, str) and part_id not in ids:
-            ids.append(part_id)
+        if isinstance(op, MergeParts):
+            # The survivor (first id) and every absorbed part are all
+            # summary-relevant: the survivor's body changed and the others
+            # no longer exist.
+            candidates = list(op.ids)
+        else:
+            part_id = getattr(op, 'id', None)
+            candidates = [part_id] if isinstance(part_id, str) else []
+        for part_id in candidates:
+            if part_id not in ids:
+                ids.append(part_id)
     return ids

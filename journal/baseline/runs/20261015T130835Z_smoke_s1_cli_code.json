@@ -1,0 +1,13 @@
+{
+  "backend": "http://host.containers.internal:5000/v1",
+  "generated_at": "20261015T130835Z",
+  "label": "smoke",
+  "runs_per_scenario": 1,
+  "jobs": 1,
+  "caveat": null,
+  "total_calls_observed": 5,
+  "results": [],
+  "errors": [
+    "s1_cli_code run 0: IncompleteOutputException()"
+  ]
+}

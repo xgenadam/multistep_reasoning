@@ -6,6 +6,7 @@ from .operations import (
     DeletePart,
     DocumentOp,
     InsertInPart,
+    MergeParts,
     MovePart,
     ReplaceInPart,
     UpdatePart,
@@ -69,6 +70,8 @@ def _apply_one(
         _insert_in_part(document, op, current_result)
     elif isinstance(op, UpdatePart):
         _update_part(document, op, current_result)
+    elif isinstance(op, MergeParts):
+        _merge_parts(document, op)
     elif isinstance(op, MovePart):
         _move_part(document, op)
     elif isinstance(op, DeletePart):
@@ -145,6 +148,23 @@ def _update_part(
     existing = document.parts[idx]
     body = resolve_body(op, current_result)
     document.parts[idx] = existing.model_copy(update={'body': body})
+
+
+def _merge_parts(document: Document, op: MergeParts) -> None:
+    # Resolve all ids up front so a bad id fails the whole batch atomically.
+    resolved = [(part_id, _require_index(document, part_id)) for part_id in op.ids]
+    primary_id, primary_idx = resolved[0]
+    primary = document.parts[primary_idx]
+    merged_body = '\n\n'.join(document.parts[idx].body for _, idx in resolved)
+    merged = primary.model_copy(update={'body': merged_body})
+    for part_id, idx in resolved:
+        if part_id == primary_id:
+            document.parts[idx] = merged
+    # Delete highest index first so earlier deletions never shift later ones.
+    for part_id, idx in sorted(
+        ((p, i) for p, i in resolved if p != primary_id), key=lambda x: -x[1]
+    ):
+        del document.parts[idx]
 
 
 def _move_part(document: Document, op: MovePart) -> None:

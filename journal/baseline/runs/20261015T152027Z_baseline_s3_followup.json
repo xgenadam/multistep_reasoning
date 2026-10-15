@@ -1,0 +1,690 @@
+{
+  "backend": "http://host.containers.internal:5000/v1",
+  "generated_at": "20261015T152027Z",
+  "label": "baseline",
+  "runs_per_scenario": 2,
+  "jobs": 1,
+  "caveat": null,
+  "total_calls_observed": 58,
+  "results": [
+    {
+      "scenario": "s3_followup",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-3",
+        "max_dup_jaccard_below": 0.5,
+        "non_empty": true,
+        "note": "turn 1 continues turn 0's document; duplicate part pairs indicate the composer is re-emitting instead of updating"
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a one-page report (about 300 words) with clear sections covering: what a file-based ticketing system is, its main benefits, and its main drawbacks.",
+          "wall_seconds": 511.9,
+          "llm": {
+            "calls": 14,
+            "prompt_tokens": 39872,
+            "completion_tokens": 11704,
+            "wall_seconds_sum_calls": 511.75,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 17.81,
+                "max_s": 28.73
+              },
+              "decompose": {
+                "count": 2,
+                "p50_s": 35.25,
+                "max_s": 38.85
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 26.23,
+                "max_s": 144.79
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 16.89,
+                "max_s": 48.75
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Research and outline key content for the file-based ticketing system report": {
+                "count": 1,
+                "p50_s": 11.58,
+                "max_s": 11.58
+              },
+              "Composing after 2/3: Write the one-page (~300 word) report with three labelled sections": {
+                "count": 1,
+                "p50_s": 17.81,
+                "max_s": 17.81
+              },
+              "Composing after 3/3: Verify the final draft against the specification": {
+                "count": 1,
+                "p50_s": 28.73,
+                "max_s": 28.73
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 3,
+                "p50_s": 38.85,
+                "max_s": 48.75
+              },
+              "Executing 1/3: Research and outline key content for the file-based ticketing system report": {
+                "count": 1,
+                "p50_s": 26.23,
+                "max_s": 26.23
+              },
+              "Executing 2/3: Write the one-page (~300 word) report with three labelled sections": {
+                "count": 2,
+                "p50_s": 75.28,
+                "max_s": 144.79
+              },
+              "Executing 3/3: Verify the final draft against the specification": {
+                "count": 2,
+                "p50_s": 55.15,
+                "max_s": 103.2
+              },
+              "Updating summary after 1/3: Research and outline key content for the file-based ticketing system report": {
+                "count": 1,
+                "p50_s": 13.51,
+                "max_s": 13.51
+              },
+              "Updating summary after 2/3: Write the one-page (~300 word) report with three labelled sections": {
+                "count": 1,
+                "p50_s": 18.18,
+                "max_s": 18.18
+              },
+              "Updating summary after 3/3: Verify the final draft against the specification": {
+                "count": 1,
+                "p50_s": 15.6,
+                "max_s": 15.6
+              }
+            }
+          },
+          "document": {
+            "part_count": 1,
+            "part_kinds": {
+              "section": 1
+            },
+            "part_titles": [
+              "File-Based Ticketing System Report"
+            ],
+            "summary_chars": 1463,
+            "content_chars": 2000,
+            "top_dup_pairs": [],
+            "max_dup_jaccard": 0.0,
+            "op_counts": {
+              "add_part": 2,
+              "delete_part": 1,
+              "update_part": 1
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        },
+        {
+          "index": 1,
+          "text": "Extend the report: add a section on how to migrate an existing set of tickets from an external tracker to the file-based system, including a concrete migration plan with three steps. Keep the existing sections accurate and do not repeat their content.",
+          "wall_seconds": 960.4,
+          "llm": {
+            "calls": 15,
+            "prompt_tokens": 307921,
+            "completion_tokens": 14222,
+            "wall_seconds_sum_calls": 960.18,
+            "by_kind": {
+              "compose": {
+                "count": 4,
+                "p50_s": 48.16,
+                "max_s": 68.46
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 42.13,
+                "max_s": 42.13
+              },
+              "summary": {
+                "count": 6,
+                "p50_s": 58.89,
+                "max_s": 214.37
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 36.82,
+                "max_s": 48.78
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Review existing report structure and content": {
+                "count": 1,
+                "p50_s": 36.2,
+                "max_s": 36.2
+              },
+              "Composing after 2/3: Draft the migration section with a three-step concrete plan": {
+                "count": 1,
+                "p50_s": 47.72,
+                "max_s": 47.72
+              },
+              "Composing after 3/3: Integrate new section and verify existing content integrity": {
+                "count": 2,
+                "p50_s": 58.53,
+                "max_s": 68.46
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 41.17,
+                "max_s": 42.13
+              },
+              "Executing 1/3: Review existing report structure and content": {
+                "count": 2,
+                "p50_s": 56.39,
+                "max_s": 97.07
+              },
+              "Executing 2/3: Draft the migration section with a three-step concrete plan": {
+                "count": 2,
+                "p50_s": 113.07,
+                "max_s": 214.37
+              },
+              "Executing 3/3: Integrate new section and verify existing content integrity": {
+                "count": 2,
+                "p50_s": 116.21,
+                "max_s": 211.72
+              },
+              "Updating summary after 1/3: Review existing report structure and content": {
+                "count": 1,
+                "p50_s": 33.43,
+                "max_s": 33.43
+              },
+              "Updating summary after 2/3: Draft the migration section with a three-step concrete plan": {
+                "count": 1,
+                "p50_s": 48.78,
+                "max_s": 48.78
+              },
+              "Updating summary after 3/3: Integrate new section and verify existing content integrity": {
+                "count": 1,
+                "p50_s": 23.28,
+                "max_s": 23.28
+              }
+            }
+          },
+          "document": {
+            "part_count": 1,
+            "part_kinds": {
+              "section": 1
+            },
+            "part_titles": [
+              "File-Based Ticketing System Report"
+            ],
+            "summary_chars": 2125,
+            "content_chars": 10500,
+            "top_dup_pairs": [],
+            "max_dup_jaccard": 0.0,
+            "op_counts": {
+              "add_part": 4,
+              "delete_part": 3,
+              "update_part": 2
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 119.3,
+          "phase": "Decomposed 3 sub-tasks: Research and outline key content for the file-based ticketing system report, Write the one-page (~300 word) report with three labelled sections, Verify the final draft against the specification"
+        },
+        {
+          "t": 119.3,
+          "phase": "Executing 1/3: Research and outline key content for the file-based ticketing system report"
+        },
+        {
+          "t": 145.5,
+          "phase": "Composing after 1/3: Research and outline key content for the file-based ticketing system report"
+        },
+        {
+          "t": 157.1,
+          "phase": "Updating summary after 1/3: Research and outline key content for the file-based ticketing system report"
+        },
+        {
+          "t": 170.6,
+          "phase": "Executing 2/3: Write the one-page (~300 word) report with three labelled sections"
+        },
+        {
+          "t": 321.2,
+          "phase": "Composing after 2/3: Write the one-page (~300 word) report with three labelled sections"
+        },
+        {
+          "t": 339.0,
+          "phase": "Updating summary after 2/3: Write the one-page (~300 word) report with three labelled sections"
+        },
+        {
+          "t": 357.2,
+          "phase": "Executing 3/3: Verify the final draft against the specification"
+        },
+        {
+          "t": 467.5,
+          "phase": "Composing after 3/3: Verify the final draft against the specification"
+        },
+        {
+          "t": 496.3,
+          "phase": "Updating summary after 3/3: Verify the final draft against the specification"
+        },
+        {
+          "t": 511.9,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 594.3,
+          "phase": "Decomposed 3 sub-tasks: Review existing report structure and content, Draft the migration section with a three-step concrete plan, Integrate new section and verify existing content integrity"
+        },
+        {
+          "t": 594.3,
+          "phase": "Executing 1/3: Review existing report structure and content"
+        },
+        {
+          "t": 707.1,
+          "phase": "Composing after 1/3: Review existing report structure and content"
+        },
+        {
+          "t": 743.3,
+          "phase": "Updating summary after 1/3: Review existing report structure and content"
+        },
+        {
+          "t": 776.7,
+          "phase": "Executing 2/3: Draft the migration section with a three-step concrete plan"
+        },
+        {
+          "t": 1002.9,
+          "phase": "Composing after 2/3: Draft the migration section with a three-step concrete plan"
+        },
+        {
+          "t": 1050.6,
+          "phase": "Updating summary after 2/3: Draft the migration section with a three-step concrete plan"
+        },
+        {
+          "t": 1099.4,
+          "phase": "Executing 3/3: Integrate new section and verify existing content integrity"
+        },
+        {
+          "t": 1331.9,
+          "phase": "Composing after 3/3: Integrate new section and verify existing content integrity"
+        },
+        {
+          "t": 1449.0,
+          "phase": "Updating summary after 3/3: Integrate new section and verify existing content integrity"
+        }
+      ],
+      "total_wall_seconds": 1472.2
+    },
+    {
+      "scenario": "s3_followup",
+      "run": 1,
+      "expectations": {
+        "criterion": "P0-3",
+        "max_dup_jaccard_below": 0.5,
+        "non_empty": true,
+        "note": "turn 1 continues turn 0's document; duplicate part pairs indicate the composer is re-emitting instead of updating"
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a one-page report (about 300 words) with clear sections covering: what a file-based ticketing system is, its main benefits, and its main drawbacks.",
+          "wall_seconds": 519.5,
+          "llm": {
+            "calls": 15,
+            "prompt_tokens": 95969,
+            "completion_tokens": 8858,
+            "wall_seconds_sum_calls": 519.36,
+            "by_kind": {
+              "compose": {
+                "count": 4,
+                "p50_s": 16.84,
+                "max_s": 100.47
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 44.25,
+                "max_s": 44.25
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 48.34,
+                "max_s": 61.72
+              },
+              "system_other": {
+                "count": 5,
+                "p50_s": 20.7,
+                "max_s": 36.07
+              }
+            },
+            "by_phase": {
+              "Composing after 1/4: Draft the definition section for file-based ticketing": {
+                "count": 1,
+                "p50_s": 19.99,
+                "max_s": 19.99
+              },
+              "Composing after 2/4: Draft the main benefits section": {
+                "count": 1,
+                "p50_s": 13.45,
+                "max_s": 13.45
+              },
+              "Composing after 3/4: Draft the main drawbacks section": {
+                "count": 1,
+                "p50_s": 13.69,
+                "max_s": 13.69
+              },
+              "Composing after 4/4: Assemble and polish the one-page report": {
+                "count": 1,
+                "p50_s": 100.47,
+                "max_s": 100.47
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 40.16,
+                "max_s": 44.25
+              },
+              "Executing 1/4: Draft the definition section for file-based ticketing": {
+                "count": 1,
+                "p50_s": 61.72,
+                "max_s": 61.72
+              },
+              "Executing 2/4: Draft the main benefits section": {
+                "count": 1,
+                "p50_s": 37.26,
+                "max_s": 37.26
+              },
+              "Executing 3/4: Draft the main drawbacks section": {
+                "count": 1,
+                "p50_s": 48.34,
+                "max_s": 48.34
+              },
+              "Executing 4/4: Assemble and polish the one-page report": {
+                "count": 2,
+                "p50_s": 31.77,
+                "max_s": 56.31
+              },
+              "Updating summary after 1/4: Draft the definition section for file-based ticketing": {
+                "count": 1,
+                "p50_s": 10.61,
+                "max_s": 10.61
+              },
+              "Updating summary after 2/4: Draft the main benefits section": {
+                "count": 1,
+                "p50_s": 16.39,
+                "max_s": 16.39
+              },
+              "Updating summary after 3/4: Draft the main drawbacks section": {
+                "count": 1,
+                "p50_s": 20.7,
+                "max_s": 20.7
+              },
+              "Updating summary after 4/4: Assemble and polish the one-page report": {
+                "count": 1,
+                "p50_s": 32.89,
+                "max_s": 32.89
+              }
+            }
+          },
+          "document": {
+            "part_count": 1,
+            "part_kinds": {
+              "section": 1
+            },
+            "part_titles": [
+              "File-Based Ticketing Systems: Overview"
+            ],
+            "summary_chars": 2287,
+            "content_chars": 2043,
+            "top_dup_pairs": [],
+            "max_dup_jaccard": 0.0,
+            "op_counts": {
+              "add_part": 5,
+              "append_to_part": 1,
+              "delete_part": 4
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 4,
+            "exec_status_counts": {
+              "None": 4
+            },
+            "final_sub_task_count": 4
+          }
+        },
+        {
+          "index": 1,
+          "text": "Extend the report: add a section on how to migrate an existing set of tickets from an external tracker to the file-based system, including a concrete migration plan with three steps. Keep the existing sections accurate and do not repeat their content.",
+          "wall_seconds": 531.9,
+          "llm": {
+            "calls": 14,
+            "prompt_tokens": 44571,
+            "completion_tokens": 9431,
+            "wall_seconds_sum_calls": 531.75,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 24.06,
+                "max_s": 38.61
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 60.74,
+                "max_s": 60.74
+              },
+              "summary": {
+                "count": 6,
+                "p50_s": 31.13,
+                "max_s": 76.98
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 26.11,
+                "max_s": 86.73
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Review existing report sections and structure": {
+                "count": 1,
+                "p50_s": 24.06,
+                "max_s": 24.06
+              },
+              "Composing after 2/3: Draft the three-step migration section": {
+                "count": 1,
+                "p50_s": 19.02,
+                "max_s": 19.02
+              },
+              "Composing after 3/3: Integrate and verify the extended report": {
+                "count": 1,
+                "p50_s": 38.61,
+                "max_s": 38.61
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 73.74,
+                "max_s": 86.73
+              },
+              "Executing 1/3: Review existing report sections and structure": {
+                "count": 2,
+                "p50_s": 31.13,
+                "max_s": 43.57
+              },
+              "Executing 2/3: Draft the three-step migration section": {
+                "count": 2,
+                "p50_s": 38.12,
+                "max_s": 65.63
+              },
+              "Executing 3/3: Integrate and verify the extended report": {
+                "count": 2,
+                "p50_s": 44.24,
+                "max_s": 76.98
+              },
+              "Updating summary after 1/3: Review existing report sections and structure": {
+                "count": 1,
+                "p50_s": 26.92,
+                "max_s": 26.92
+              },
+              "Updating summary after 2/3: Draft the three-step migration section": {
+                "count": 1,
+                "p50_s": 25.3,
+                "max_s": 25.3
+              },
+              "Updating summary after 3/3: Integrate and verify the extended report": {
+                "count": 1,
+                "p50_s": 23.38,
+                "max_s": 23.38
+              }
+            }
+          },
+          "document": {
+            "part_count": 1,
+            "part_kinds": {
+              "section": 1
+            },
+            "part_titles": [
+              "File-Based Ticketing Systems: Overview"
+            ],
+            "summary_chars": 1806,
+            "content_chars": 5320,
+            "top_dup_pairs": [],
+            "max_dup_jaccard": 0.0,
+            "op_counts": {
+              "add_part": 7,
+              "append_to_part": 1,
+              "delete_part": 6,
+              "update_part": 1
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 80.3,
+          "phase": "Decomposed 4 sub-tasks: Draft the definition section for file-based ticketing, Draft the main benefits section, Draft the main drawbacks section, Assemble and polish the one-page report"
+        },
+        {
+          "t": 80.3,
+          "phase": "Executing 1/4: Draft the definition section for file-based ticketing"
+        },
+        {
+          "t": 142.1,
+          "phase": "Composing after 1/4: Draft the definition section for file-based ticketing"
+        },
+        {
+          "t": 162.1,
+          "phase": "Updating summary after 1/4: Draft the definition section for file-based ticketing"
+        },
+        {
+          "t": 172.7,
+          "phase": "Executing 2/4: Draft the main benefits section"
+        },
+        {
+          "t": 210.0,
+          "phase": "Composing after 2/4: Draft the main benefits section"
+        },
+        {
+          "t": 223.4,
+          "phase": "Updating summary after 2/4: Draft the main benefits section"
+        },
+        {
+          "t": 239.8,
+          "phase": "Executing 3/4: Draft the main drawbacks section"
+        },
+        {
+          "t": 288.2,
+          "phase": "Composing after 3/4: Draft the main drawbacks section"
+        },
+        {
+          "t": 301.9,
+          "phase": "Updating summary after 3/4: Draft the main drawbacks section"
+        },
+        {
+          "t": 322.6,
+          "phase": "Executing 4/4: Assemble and polish the one-page report"
+        },
+        {
+          "t": 386.1,
+          "phase": "Composing after 4/4: Assemble and polish the one-page report"
+        },
+        {
+          "t": 486.6,
+          "phase": "Updating summary after 4/4: Assemble and polish the one-page report"
+        },
+        {
+          "t": 519.5,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 667.0,
+          "phase": "Decomposed 3 sub-tasks: Review existing report sections and structure, Draft the three-step migration section, Integrate and verify the extended report"
+        },
+        {
+          "t": 667.0,
+          "phase": "Executing 1/3: Review existing report sections and structure"
+        },
+        {
+          "t": 729.3,
+          "phase": "Composing after 1/3: Review existing report sections and structure"
+        },
+        {
+          "t": 753.4,
+          "phase": "Updating summary after 1/3: Review existing report sections and structure"
+        },
+        {
+          "t": 780.3,
+          "phase": "Executing 2/3: Draft the three-step migration section"
+        },
+        {
+          "t": 856.6,
+          "phase": "Composing after 2/3: Draft the three-step migration section"
+        },
+        {
+          "t": 875.6,
+          "phase": "Updating summary after 2/3: Draft the three-step migration section"
+        },
+        {
+          "t": 900.9,
+          "phase": "Executing 3/3: Integrate and verify the extended report"
+        },
+        {
+          "t": 989.4,
+          "phase": "Composing after 3/3: Integrate and verify the extended report"
+        },
+        {
+          "t": 1028.0,
+          "phase": "Updating summary after 3/3: Integrate and verify the extended report"
+        }
+      ],
+      "total_wall_seconds": 1051.4
+    }
+  ],
+  "errors": []
+}

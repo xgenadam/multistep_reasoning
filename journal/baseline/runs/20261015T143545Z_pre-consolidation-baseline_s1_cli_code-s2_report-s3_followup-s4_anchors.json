@@ -1,0 +1,1108 @@
+{
+  "backend": "http://host.containers.internal:5000/v1",
+  "generated_at": "20261015T143545Z",
+  "label": "pre-consolidation-baseline",
+  "runs_per_scenario": 2,
+  "jobs": 1,
+  "caveat": null,
+  "total_calls_observed": 112,
+  "results": [
+    {
+      "scenario": "s1_cli_code",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-1",
+        "part_kinds_include": [
+          "file"
+        ],
+        "file_parts_min": 1,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a small CLI tool in Python called \"wordcount\" that, given one or more file paths, prints for each file: line count, word count, and character count, in a simple table. It should exit non-zero if a path does not exist. Provide the code.",
+          "wall_seconds": 642.4,
+          "llm": {
+            "calls": 14,
+            "prompt_tokens": 305489,
+            "completion_tokens": 6782,
+            "wall_seconds_sum_calls": 642.23,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 16.53,
+                "max_s": 36.75
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 54.63,
+                "max_s": 54.63
+              },
+              "summary": {
+                "count": 6,
+                "p50_s": 56.73,
+                "max_s": 99.4
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 43.52,
+                "max_s": 85.76
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Implement CLI argument parsing and file validation": {
+                "count": 1,
+                "p50_s": 16.53,
+                "max_s": 16.53
+              },
+              "Composing after 2/3: Implement line, word, and character counting logic": {
+                "count": 1,
+                "p50_s": 15.5,
+                "max_s": 15.5
+              },
+              "Composing after 3/3: Assemble the table output and final wordcount script": {
+                "count": 1,
+                "p50_s": 36.75,
+                "max_s": 36.75
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 70.2,
+                "max_s": 85.76
+              },
+              "Executing 1/3: Implement CLI argument parsing and file validation": {
+                "count": 2,
+                "p50_s": 56.73,
+                "max_s": 73.85
+              },
+              "Executing 2/3: Implement line, word, and character counting logic": {
+                "count": 2,
+                "p50_s": 50.87,
+                "max_s": 88.12
+              },
+              "Executing 3/3: Assemble the table output and final wordcount script": {
+                "count": 2,
+                "p50_s": 55.56,
+                "max_s": 99.4
+              },
+              "Updating summary after 1/3: Implement CLI argument parsing and file validation": {
+                "count": 1,
+                "p50_s": 19.72,
+                "max_s": 19.72
+              },
+              "Updating summary after 2/3: Implement line, word, and character counting logic": {
+                "count": 1,
+                "p50_s": 42.65,
+                "max_s": 42.65
+              },
+              "Updating summary after 3/3: Assemble the table output and final wordcount script": {
+                "count": 1,
+                "p50_s": 44.39,
+                "max_s": 44.39
+              }
+            }
+          },
+          "document": {
+            "part_count": 4,
+            "part_kinds": {
+              "section": 2,
+              "file": 2
+            },
+            "part_titles": [
+              "CLI Argument Parsing & File Validation",
+              "Line, Word & Character Counting",
+              "wordcount.py \u2013 Complete Script",
+              "wordcount.py"
+            ],
+            "summary_chars": 2214,
+            "content_chars": 7702,
+            "top_dup_pairs": [
+              {
+                "a": "arg-parsing-validation",
+                "b": "wordcount-full-code",
+                "jaccard": 0.268
+              },
+              {
+                "a": "count-file-logic",
+                "b": "wordcount-full-code",
+                "jaccard": 0.113
+              },
+              {
+                "a": "arg-parsing-validation",
+                "b": "count-file-logic",
+                "jaccard": 0.087
+              }
+            ],
+            "max_dup_jaccard": 0.268,
+            "op_counts": {
+              "add_part": 4
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 140.4,
+          "phase": "Decomposed 3 sub-tasks: Implement CLI argument parsing and file validation, Implement line, word, and character counting logic, Assemble the table output and final wordcount script"
+        },
+        {
+          "t": 140.4,
+          "phase": "Executing 1/3: Implement CLI argument parsing and file validation"
+        },
+        {
+          "t": 253.9,
+          "phase": "Composing after 1/3: Implement CLI argument parsing and file validation"
+        },
+        {
+          "t": 270.4,
+          "phase": "Updating summary after 1/3: Implement CLI argument parsing and file validation"
+        },
+        {
+          "t": 290.1,
+          "phase": "Executing 2/3: Implement line, word, and character counting logic"
+        },
+        {
+          "t": 391.9,
+          "phase": "Composing after 2/3: Implement line, word, and character counting logic"
+        },
+        {
+          "t": 407.4,
+          "phase": "Updating summary after 2/3: Implement line, word, and character counting logic"
+        },
+        {
+          "t": 450.1,
+          "phase": "Executing 3/3: Assemble the table output and final wordcount script"
+        },
+        {
+          "t": 561.2,
+          "phase": "Composing after 3/3: Assemble the table output and final wordcount script"
+        },
+        {
+          "t": 598.0,
+          "phase": "Updating summary after 3/3: Assemble the table output and final wordcount script"
+        }
+      ],
+      "total_wall_seconds": 642.4
+    },
+    {
+      "scenario": "s1_cli_code",
+      "run": 1,
+      "expectations": {
+        "criterion": "P0-1",
+        "part_kinds_include": [
+          "file"
+        ],
+        "file_parts_min": 1,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a small CLI tool in Python called \"wordcount\" that, given one or more file paths, prints for each file: line count, word count, and character count, in a simple table. It should exit non-zero if a path does not exist. Provide the code.",
+          "wall_seconds": 438.6,
+          "llm": {
+            "calls": 13,
+            "prompt_tokens": 80599,
+            "completion_tokens": 5773,
+            "wall_seconds_sum_calls": 438.47,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 15.09,
+                "max_s": 17.72
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 70.28,
+                "max_s": 70.28
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 36.66,
+                "max_s": 43.98
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 27.0,
+                "max_s": 123.33
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Design CLI argument parsing and path validation for wordcount": {
+                "count": 1,
+                "p50_s": 12.72,
+                "max_s": 12.72
+              },
+              "Composing after 2/3: Implement line, word, and character counting per file": {
+                "count": 1,
+                "p50_s": 15.09,
+                "max_s": 15.09
+              },
+              "Composing after 3/3: Assemble the table output and write the complete wordcount.py script": {
+                "count": 1,
+                "p50_s": 17.72,
+                "max_s": 17.72
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 96.81,
+                "max_s": 123.33
+              },
+              "Executing 1/3: Design CLI argument parsing and path validation for wordcount": {
+                "count": 1,
+                "p50_s": 37.41,
+                "max_s": 37.41
+              },
+              "Executing 2/3: Implement line, word, and character counting per file": {
+                "count": 2,
+                "p50_s": 23.43,
+                "max_s": 36.66
+              },
+              "Executing 3/3: Assemble the table output and write the complete wordcount.py script": {
+                "count": 2,
+                "p50_s": 25.67,
+                "max_s": 43.98
+              },
+              "Updating summary after 1/3: Design CLI argument parsing and path validation for wordcount": {
+                "count": 1,
+                "p50_s": 9.72,
+                "max_s": 9.72
+              },
+              "Updating summary after 2/3: Implement line, word, and character counting per file": {
+                "count": 1,
+                "p50_s": 21.57,
+                "max_s": 21.57
+              },
+              "Updating summary after 3/3: Assemble the table output and write the complete wordcount.py script": {
+                "count": 1,
+                "p50_s": 32.43,
+                "max_s": 32.43
+              }
+            }
+          },
+          "document": {
+            "part_count": 3,
+            "part_kinds": {
+              "section": 2,
+              "file": 1
+            },
+            "part_titles": [
+              "CLI Argument Parsing & Path Validation",
+              "File Counting: Lines, Words, and Characters",
+              "Complete Script: wordcount.py"
+            ],
+            "summary_chars": 2397,
+            "content_chars": 8421,
+            "top_dup_pairs": [
+              {
+                "a": "file-counting",
+                "b": "wordcount-py",
+                "jaccard": 0.24
+              },
+              {
+                "a": "cli-arg-parsing",
+                "b": "wordcount-py",
+                "jaccard": 0.234
+              },
+              {
+                "a": "cli-arg-parsing",
+                "b": "file-counting",
+                "jaccard": 0.065
+              }
+            ],
+            "max_dup_jaccard": 0.24,
+            "op_counts": {
+              "add_part": 3
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 193.6,
+          "phase": "Decomposed 3 sub-tasks: Design CLI argument parsing and path validation for wordcount, Implement line, word, and character counting per file, Assemble the table output and write the complete wordcount.py script"
+        },
+        {
+          "t": 193.6,
+          "phase": "Executing 1/3: Design CLI argument parsing and path validation for wordcount"
+        },
+        {
+          "t": 231.1,
+          "phase": "Composing after 1/3: Design CLI argument parsing and path validation for wordcount"
+        },
+        {
+          "t": 243.8,
+          "phase": "Updating summary after 1/3: Design CLI argument parsing and path validation for wordcount"
+        },
+        {
+          "t": 253.5,
+          "phase": "Executing 2/3: Implement line, word, and character counting per file"
+        },
+        {
+          "t": 300.4,
+          "phase": "Composing after 2/3: Implement line, word, and character counting per file"
+        },
+        {
+          "t": 315.5,
+          "phase": "Updating summary after 2/3: Implement line, word, and character counting per file"
+        },
+        {
+          "t": 337.1,
+          "phase": "Executing 3/3: Assemble the table output and write the complete wordcount.py script"
+        },
+        {
+          "t": 388.4,
+          "phase": "Composing after 3/3: Assemble the table output and write the complete wordcount.py script"
+        },
+        {
+          "t": 406.2,
+          "phase": "Updating summary after 3/3: Assemble the table output and write the complete wordcount.py script"
+        }
+      ],
+      "total_wall_seconds": 438.6
+    },
+    {
+      "scenario": "s2_report",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-2",
+        "part_kinds_include": [
+          "section"
+        ],
+        "section_parts_min": 2,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a short internal report (about 300-500 words total) on why a team of four engineers should adopt a file-based ticketing system (markdown files in git) instead of an external issue tracker. Cover: cost and hosting, searchability, review culture, and one honest drawback. Use clear section headings.",
+          "wall_seconds": 462.4,
+          "llm": {
+            "calls": 13,
+            "prompt_tokens": 81725,
+            "completion_tokens": 8252,
+            "wall_seconds_sum_calls": 462.28,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 14.65,
+                "max_s": 15.6
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 41.33,
+                "max_s": 41.33
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 47.91,
+                "max_s": 139.79
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 22.15,
+                "max_s": 51.74
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Outline report structure and key arguments": {
+                "count": 1,
+                "p50_s": 13.18,
+                "max_s": 13.18
+              },
+              "Composing after 2/3: Write the full internal report": {
+                "count": 1,
+                "p50_s": 15.6,
+                "max_s": 15.6
+              },
+              "Composing after 3/3: Review and finalize for word count, tone, and completeness": {
+                "count": 1,
+                "p50_s": 14.65,
+                "max_s": 14.65
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 46.54,
+                "max_s": 51.74
+              },
+              "Executing 1/3: Outline report structure and key arguments": {
+                "count": 1,
+                "p50_s": 47.91,
+                "max_s": 47.91
+              },
+              "Executing 2/3: Write the full internal report": {
+                "count": 2,
+                "p50_s": 72.76,
+                "max_s": 139.79
+              },
+              "Executing 3/3: Review and finalize for word count, tone, and completeness": {
+                "count": 2,
+                "p50_s": 35.59,
+                "max_s": 64.37
+              },
+              "Updating summary after 1/3: Outline report structure and key arguments": {
+                "count": 1,
+                "p50_s": 16.86,
+                "max_s": 16.86
+              },
+              "Updating summary after 2/3: Write the full internal report": {
+                "count": 1,
+                "p50_s": 25.6,
+                "max_s": 25.6
+              },
+              "Updating summary after 3/3: Review and finalize for word count, tone, and completeness": {
+                "count": 1,
+                "p50_s": 18.71,
+                "max_s": 18.71
+              }
+            }
+          },
+          "document": {
+            "part_count": 1,
+            "part_kinds": {
+              "section": 1
+            },
+            "part_titles": [
+              "Why We Should Track Tickets as Markdown in Git"
+            ],
+            "summary_chars": 1788,
+            "content_chars": 2712,
+            "top_dup_pairs": [],
+            "max_dup_jaccard": 0.0,
+            "op_counts": {
+              "add_part": 2,
+              "delete_part": 1
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 93.1,
+          "phase": "Decomposed 3 sub-tasks: Outline report structure and key arguments, Write the full internal report, Review and finalize for word count, tone, and completeness"
+        },
+        {
+          "t": 93.1,
+          "phase": "Executing 1/3: Outline report structure and key arguments"
+        },
+        {
+          "t": 141.0,
+          "phase": "Composing after 1/3: Outline report structure and key arguments"
+        },
+        {
+          "t": 154.2,
+          "phase": "Updating summary after 1/3: Outline report structure and key arguments"
+        },
+        {
+          "t": 171.1,
+          "phase": "Executing 2/3: Write the full internal report"
+        },
+        {
+          "t": 316.6,
+          "phase": "Composing after 2/3: Write the full internal report"
+        },
+        {
+          "t": 332.2,
+          "phase": "Updating summary after 2/3: Write the full internal report"
+        },
+        {
+          "t": 357.8,
+          "phase": "Executing 3/3: Review and finalize for word count, tone, and completeness"
+        },
+        {
+          "t": 429.0,
+          "phase": "Composing after 3/3: Review and finalize for word count, tone, and completeness"
+        },
+        {
+          "t": 443.7,
+          "phase": "Updating summary after 3/3: Review and finalize for word count, tone, and completeness"
+        }
+      ],
+      "total_wall_seconds": 462.4
+    },
+    {
+      "scenario": "s2_report",
+      "run": 1,
+      "expectations": {
+        "criterion": "P0-2",
+        "part_kinds_include": [
+          "section"
+        ],
+        "section_parts_min": 2,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Write a short internal report (about 300-500 words total) on why a team of four engineers should adopt a file-based ticketing system (markdown files in git) instead of an external issue tracker. Cover: cost and hosting, searchability, review culture, and one honest drawback. Use clear section headings.",
+          "wall_seconds": 470.3,
+          "llm": {
+            "calls": 13,
+            "prompt_tokens": 36755,
+            "completion_tokens": 10101,
+            "wall_seconds_sum_calls": 470.16,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 16.62,
+                "max_s": 21.74
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 49.23,
+                "max_s": 49.23
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 47.81,
+                "max_s": 128.31
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 23.32,
+                "max_s": 50.05
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Draft cost/hosting and searchability arguments": {
+                "count": 1,
+                "p50_s": 16.29,
+                "max_s": 16.29
+              },
+              "Composing after 2/3: Draft review-culture and honest-drawback arguments": {
+                "count": 1,
+                "p50_s": 16.62,
+                "max_s": 16.62
+              },
+              "Composing after 3/3: Assemble final report with headings and verify word count": {
+                "count": 1,
+                "p50_s": 21.74,
+                "max_s": 21.74
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 49.64,
+                "max_s": 50.05
+              },
+              "Executing 1/3: Draft cost/hosting and searchability arguments": {
+                "count": 1,
+                "p50_s": 62.62,
+                "max_s": 62.62
+              },
+              "Executing 2/3: Draft review-culture and honest-drawback arguments": {
+                "count": 2,
+                "p50_s": 28.62,
+                "max_s": 47.81
+              },
+              "Executing 3/3: Assemble final report with headings and verify word count": {
+                "count": 2,
+                "p50_s": 67.49,
+                "max_s": 128.31
+              },
+              "Updating summary after 1/3: Draft cost/hosting and searchability arguments": {
+                "count": 1,
+                "p50_s": 14.74,
+                "max_s": 14.74
+              },
+              "Updating summary after 2/3: Draft review-culture and honest-drawback arguments": {
+                "count": 1,
+                "p50_s": 21.9,
+                "max_s": 21.9
+              },
+              "Updating summary after 3/3: Assemble final report with headings and verify word count": {
+                "count": 1,
+                "p50_s": 24.75,
+                "max_s": 24.75
+              }
+            }
+          },
+          "document": {
+            "part_count": 1,
+            "part_kinds": {
+              "section": 1
+            },
+            "part_titles": [
+              "File-Based Ticketing: Internal Recommendation"
+            ],
+            "summary_chars": 2526,
+            "content_chars": 2571,
+            "top_dup_pairs": [],
+            "max_dup_jaccard": 0.0,
+            "op_counts": {
+              "add_part": 3,
+              "delete_part": 2
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 99.3,
+          "phase": "Decomposed 3 sub-tasks: Draft cost/hosting and searchability arguments, Draft review-culture and honest-drawback arguments, Assemble final report with headings and verify word count"
+        },
+        {
+          "t": 99.3,
+          "phase": "Executing 1/3: Draft cost/hosting and searchability arguments"
+        },
+        {
+          "t": 161.9,
+          "phase": "Composing after 1/3: Draft cost/hosting and searchability arguments"
+        },
+        {
+          "t": 178.2,
+          "phase": "Updating summary after 1/3: Draft cost/hosting and searchability arguments"
+        },
+        {
+          "t": 193.0,
+          "phase": "Executing 2/3: Draft review-culture and honest-drawback arguments"
+        },
+        {
+          "t": 250.2,
+          "phase": "Composing after 2/3: Draft review-culture and honest-drawback arguments"
+        },
+        {
+          "t": 266.9,
+          "phase": "Updating summary after 2/3: Draft review-culture and honest-drawback arguments"
+        },
+        {
+          "t": 288.8,
+          "phase": "Executing 3/3: Assemble final report with headings and verify word count"
+        },
+        {
+          "t": 423.8,
+          "phase": "Composing after 3/3: Assemble final report with headings and verify word count"
+        },
+        {
+          "t": 445.5,
+          "phase": "Updating summary after 3/3: Assemble final report with headings and verify word count"
+        }
+      ],
+      "total_wall_seconds": 470.3
+    },
+    {
+      "scenario": "s4_anchors",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-4",
+        "note": "anchor for total wall-clock and token totals; compare pre- vs post-consolidation. Also exercises decompose->execute->compose breadth (2 sub-tasks).",
+        "min_sub_tasks": 2,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Plan a 7-day study schedule for learning the basics of linear algebra (vectors, matrices, systems of equations). Deliverable 1: a day-by-day schedule table. Deliverable 2: a short checklist of 10 concepts that must be solid before moving on to numerical linear algebra.",
+          "wall_seconds": 497.0,
+          "llm": {
+            "calls": 14,
+            "prompt_tokens": 44835,
+            "completion_tokens": 11018,
+            "wall_seconds_sum_calls": 496.87,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 17.23,
+                "max_s": 17.55
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 42.58,
+                "max_s": 42.58
+              },
+              "summary": {
+                "count": 6,
+                "p50_s": 53.73,
+                "max_s": 101.54
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 23.61,
+                "max_s": 36.31
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations": {
+                "count": 1,
+                "p50_s": 16.6,
+                "max_s": 16.6
+              },
+              "Composing after 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 17.55,
+                "max_s": 17.55
+              },
+              "Composing after 3/3: Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 17.23,
+                "max_s": 17.23
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 39.45,
+                "max_s": 42.58
+              },
+              "Executing 1/3: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations": {
+                "count": 2,
+                "p50_s": 85.61,
+                "max_s": 101.54
+              },
+              "Executing 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 2,
+                "p50_s": 28.72,
+                "max_s": 49.1
+              },
+              "Executing 3/3: Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)": {
+                "count": 2,
+                "p50_s": 36.74,
+                "max_s": 58.37
+              },
+              "Updating summary after 1/3: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations": {
+                "count": 1,
+                "p50_s": 17.25,
+                "max_s": 17.25
+              },
+              "Updating summary after 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 22.02,
+                "max_s": 22.02
+              },
+              "Updating summary after 3/3: Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 25.19,
+                "max_s": 25.19
+              }
+            }
+          },
+          "document": {
+            "part_count": 3,
+            "part_kinds": {
+              "section": 3
+            },
+            "part_titles": [
+              "7-Day Curriculum Progression: Vectors \u2192 Matrices \u2192 Systems of Equations",
+              "Day-by-Day Schedule Table",
+              "Deliverable 2 \u2013 Readiness Checklist: 10 Concepts Before Numerical Linear Algebra"
+            ],
+            "summary_chars": 2662,
+            "content_chars": 11658,
+            "top_dup_pairs": [
+              {
+                "a": "day-7-curriculum-plan",
+                "b": "day-schedule-table",
+                "jaccard": 0.251
+              },
+              {
+                "a": "day-7-curriculum-plan",
+                "b": "nla-prerequisite-checklist",
+                "jaccard": 0.095
+              },
+              {
+                "a": "day-schedule-table",
+                "b": "nla-prerequisite-checklist",
+                "jaccard": 0.095
+              }
+            ],
+            "max_dup_jaccard": 0.251,
+            "op_counts": {
+              "add_part": 3
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 78.9,
+          "phase": "Decomposed 3 sub-tasks: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations, Write the day-by-day schedule table (Deliverable 1), Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        },
+        {
+          "t": 78.9,
+          "phase": "Executing 1/3: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations"
+        },
+        {
+          "t": 250.1,
+          "phase": "Composing after 1/3: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations"
+        },
+        {
+          "t": 266.8,
+          "phase": "Updating summary after 1/3: Plan the 7-day curriculum progression for vectors, matrices, and systems of equations"
+        },
+        {
+          "t": 284.0,
+          "phase": "Executing 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 341.5,
+          "phase": "Composing after 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 359.0,
+          "phase": "Updating summary after 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 381.1,
+          "phase": "Executing 3/3: Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        },
+        {
+          "t": 454.6,
+          "phase": "Composing after 3/3: Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        },
+        {
+          "t": 471.8,
+          "phase": "Updating summary after 3/3: Draft the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        }
+      ],
+      "total_wall_seconds": 497.0
+    },
+    {
+      "scenario": "s4_anchors",
+      "run": 1,
+      "expectations": {
+        "criterion": "P0-4",
+        "note": "anchor for total wall-clock and token totals; compare pre- vs post-consolidation. Also exercises decompose->execute->compose breadth (2 sub-tasks).",
+        "min_sub_tasks": 2,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Plan a 7-day study schedule for learning the basics of linear algebra (vectors, matrices, systems of equations). Deliverable 1: a day-by-day schedule table. Deliverable 2: a short checklist of 10 concepts that must be solid before moving on to numerical linear algebra.",
+          "wall_seconds": 514.8,
+          "llm": {
+            "calls": 12,
+            "prompt_tokens": 36027,
+            "completion_tokens": 10098,
+            "wall_seconds_sum_calls": 514.65,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 15.94,
+                "max_s": 16.88
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 45.51,
+                "max_s": 45.51
+              },
+              "summary": {
+                "count": 4,
+                "p50_s": 70.65,
+                "max_s": 121.18
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 24.13,
+                "max_s": 85.72
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Design the 7-day topic progression for linear algebra basics": {
+                "count": 1,
+                "p50_s": 13.32,
+                "max_s": 13.32
+              },
+              "Composing after 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 16.88,
+                "max_s": 16.88
+              },
+              "Composing after 3/3: Write the 10-concept readiness checklist (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 15.94,
+                "max_s": 15.94
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 65.61,
+                "max_s": 85.72
+              },
+              "Executing 1/3: Design the 7-day topic progression for linear algebra basics": {
+                "count": 1,
+                "p50_s": 96.47,
+                "max_s": 96.47
+              },
+              "Executing 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 2,
+                "p50_s": 63.8,
+                "max_s": 121.18
+              },
+              "Executing 3/3: Write the 10-concept readiness checklist (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 44.83,
+                "max_s": 44.83
+              },
+              "Updating summary after 1/3: Design the 7-day topic progression for linear algebra basics": {
+                "count": 1,
+                "p50_s": 20.12,
+                "max_s": 20.12
+              },
+              "Updating summary after 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 24.9,
+                "max_s": 24.9
+              },
+              "Updating summary after 3/3: Write the 10-concept readiness checklist (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 23.35,
+                "max_s": 23.35
+              }
+            }
+          },
+          "document": {
+            "part_count": 3,
+            "part_kinds": {
+              "section": 3
+            },
+            "part_titles": [
+              "7-Day Linear Algebra \u2013 Topic Progression & Daily Breakdown",
+              "Deliverable 1 \u2013 7-Day Linear Algebra Study Schedule",
+              "Deliverable 2 \u2013 10-Concept Readiness Checklist (Gate to Numerical Linear Algebra)"
+            ],
+            "summary_chars": 2663,
+            "content_chars": 17040,
+            "top_dup_pairs": [
+              {
+                "a": "topic-progression",
+                "b": "schedule-table",
+                "jaccard": 0.382
+              },
+              {
+                "a": "topic-progression",
+                "b": "readiness-checklist",
+                "jaccard": 0.105
+              },
+              {
+                "a": "schedule-table",
+                "b": "readiness-checklist",
+                "jaccard": 0.098
+              }
+            ],
+            "max_dup_jaccard": 0.382,
+            "op_counts": {
+              "add_part": 3
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 131.2,
+          "phase": "Decomposed 3 sub-tasks: Design the 7-day topic progression for linear algebra basics, Write the day-by-day schedule table (Deliverable 1), Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 131.2,
+          "phase": "Executing 1/3: Design the 7-day topic progression for linear algebra basics"
+        },
+        {
+          "t": 227.7,
+          "phase": "Composing after 1/3: Design the 7-day topic progression for linear algebra basics"
+        },
+        {
+          "t": 241.1,
+          "phase": "Updating summary after 1/3: Design the 7-day topic progression for linear algebra basics"
+        },
+        {
+          "t": 261.2,
+          "phase": "Executing 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 388.8,
+          "phase": "Composing after 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 405.7,
+          "phase": "Updating summary after 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 430.6,
+          "phase": "Executing 3/3: Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 475.5,
+          "phase": "Composing after 3/3: Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 491.4,
+          "phase": "Updating summary after 3/3: Write the 10-concept readiness checklist (Deliverable 2)"
+        }
+      ],
+      "total_wall_seconds": 514.8
+    }
+  ],
+  "errors": [
+    "s3_followup run 0: AttributeError(\"'dict' object has no attribute 'id'\")",
+    "s3_followup run 1: AttributeError(\"'dict' object has no attribute 'id'\")"
+  ]
+}
