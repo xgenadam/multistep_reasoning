@@ -255,6 +255,34 @@ class TaskOrchestrator:
                 )
             last_task = sub_task
 
+        # 0-06: optional consolidation pass after the final sub-task.
+        # Outline + previews only, merge/move/delete, best-effort.
+        if self.options.consolidation:
+            set_phase('Consolidating document')
+            yield ('status', 'Consolidating document')
+            try:
+                cons_ops = self.document_composer.consolidate(
+                    user_request=user_input,
+                    document=document,
+                )
+            except Exception as exc:  # noqa: BLE001 - consolidation is best-effort
+                logger.exception('consolidation pass failed; continuing without it')
+                cons_ops = []
+            if cons_ops:
+                changed = changed_part_ids(cons_ops)
+                set_document(document.render())
+                yield ('status', 'Updating summary after consolidation')
+                if oracle is not None:
+                    oracle.update_summary(changed)
+                else:
+                    update_rolling_summary(
+                        document,
+                        changed,
+                        self.llm_client,
+                        max_words=self.options.summary_max_words,
+                        prompt_token_budget=self.options.prompt_token_budget,
+                    )
+
         yield (
             'done',
             AccumulatedResult(

@@ -308,3 +308,124 @@ def test_document_pipeline_continues_after_executor_error():
     assert 'exceeded 8 rounds' in first.sub_task_result.chat_response.content
     assert 'Chapter two survived.' in response.content
     assert executor.execute_one.call_count == 2
+
+
+def test_document_pipeline_runs_consolidation_when_enabled():
+    from reasoning_sub_agents.config.schema import OptionsConfig
+    from reasoning_sub_agents.document import MergeParts
+    from reasoning_sub_agents.execution_synthesiser.document_composer import (
+        ComposerResponse,
+        ConsolidationResponse,
+    )
+
+    task1 = _task('Chapter 1')
+    task2 = _task('Chapter 2')
+
+    decomposer = MagicMock()
+    decomposer.generate_sub_tasks.return_value = [task1, task2]
+    decomposer.history = {}
+    executor = MagicMock()
+
+    def run_one(sub_task, **kwargs):
+        payload = 'one body' if sub_task is task1 else 'two body'
+        sub_task.sub_task_result = SubTaskResult(
+            chat_response=ChatCompletionMessage(content=payload, role='assistant')
+        )
+        sub_task.status = TaskStatus.COMPLETED
+        return sub_task
+
+    executor.execute_one.side_effect = run_one
+    executor.history = []
+
+    composer = DocumentComposer(llm_client=MockOpenAI())
+    oracle = MagicMock(spec=DocumentOracle)
+    oracle.update_summary.return_value = 'summary'
+
+    orchestrator = TaskOrchestrator(
+        decomposer=decomposer,
+        agent_executor=executor,
+        llm_client=MockOpenAI(),
+        document_composer=composer,
+        oracle_factory=lambda document: oracle,
+        options=OptionsConfig(consolidation=True),
+    )
+    calls = {'n': 0}
+
+    def fake_json(**kwargs):
+        calls['n'] += 1
+        if calls['n'] <= 2:
+            return ComposerResponse(
+                ops=[
+                    AddPart(
+                        id=f'chapter-{calls["n"]}',
+                        kind='section',
+                        title=f'Chapter {calls["n"]}',
+                        body_source='current_result',
+                    )
+                ]
+            )
+        return ConsolidationResponse(ops=[MergeParts(ids=['chapter-1', 'chapter-2'])])
+
+    with patch(
+        'reasoning_sub_agents.execution_synthesiser.document_composer.get_streamed_json_response',
+        side_effect=fake_json,
+    ):
+        response, accumulated = orchestrator.query('Write a book', return_sub_tasks=True)
+
+    assert calls['n'] == 3
+    assert oracle.update_summary.call_count == 3  # 2 composes + 1 consolidation
+    parts = accumulated.document_snapshot['parts']
+    assert [p['id'] for p in parts] == ['chapter-1']
+    assert parts[0]['body'] == 'one body\n\ntwo body'
+    assert 'one body' in response.content and 'two body' in response.content
+    phases = [h.get('phase') for h in composer.history]
+    assert 'consolidation' in phases
+
+
+def test_document_pipeline_skips_consolidation_by_default():
+    from reasoning_sub_agents.execution_synthesiser.document_composer import (
+        ComposerResponse,
+    )
+
+    task1 = _task('Chapter 1')
+
+    decomposer = MagicMock()
+    decomposer.generate_sub_tasks.return_value = [task1]
+    decomposer.history = {}
+    executor = MagicMock()
+    executor.execute_one.side_effect = lambda sub_task, **kw: (
+        setattr(
+            sub_task,
+            'sub_task_result',
+            SubTaskResult(
+                chat_response=ChatCompletionMessage(content='body', role='assistant')
+            ),
+        )
+        or setattr(sub_task, 'status', TaskStatus.COMPLETED)
+        or sub_task
+    )
+    executor.history = []
+
+    composer = DocumentComposer(llm_client=MockOpenAI())
+    oracle = MagicMock(spec=DocumentOracle)
+    oracle.update_summary.return_value = 'summary'
+
+    orchestrator = TaskOrchestrator(
+        decomposer=decomposer,
+        agent_executor=executor,
+        llm_client=MockOpenAI(),
+        document_composer=composer,
+        oracle_factory=lambda document: oracle,
+    )  # default OptionsConfig: consolidation off
+
+    with patch(
+        'reasoning_sub_agents.execution_synthesiser.document_composer.get_streamed_json_response'
+    ) as mock_json:
+        mock_json.return_value = ComposerResponse(
+            ops=[AddPart(id='chapter-1', kind='section', body_source='current_result')]
+        )
+        orchestrator.query('Write a book')
+
+    assert mock_json.call_count == 1  # only the compose, no consolidation call
+    assert oracle.update_summary.call_count == 1
+    assert all('consolidation' != h.get('phase') for h in composer.history)

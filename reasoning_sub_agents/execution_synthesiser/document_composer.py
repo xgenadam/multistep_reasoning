@@ -1,17 +1,20 @@
 import json
 import logging
 import re
+from typing import Annotated
 
 from openai import OpenAI
 from pydantic import BaseModel, Field, TypeAdapter
 
 from ..document import (
     AddPart,
+    DeletePart,
     Document,
     DocumentApplyError,
     DocumentIntegrityError,
     DocumentOp,
     MergeParts,
+    MovePart,
     assert_payload_kept,
     preview_text,
 )
@@ -28,6 +31,67 @@ MAX_ATTACHED_PARTS = 4
 class ComposerResponse(BaseModel):
     need_part_ids: list[str] = Field(default_factory=list)
     ops: list[DocumentOp] = Field(default_factory=list)
+
+
+# 0-06 consolidation: restricted op set — cleanup only, never add content.
+ConsolidationOp = Annotated[
+    MergeParts | MovePart | DeletePart,
+    Field(discriminator='type'),
+]
+
+
+class ConsolidationResponse(BaseModel):
+    ops: list[ConsolidationOp] = Field(default_factory=list)
+
+
+CONSOLIDATE_PROMPT = """
+You are the document consolidator for a multi-step LLM pipeline. All
+sub-tasks are done. Your ONLY job is outline-level cleanup of the finished
+document before it is presented: fold redundant or near-duplicate parts,
+remove parts that add nothing, and fix ordering. You do NOT write new
+content.
+
+You may ONLY emit these operations:
+- merge_parts: fold overlapping / redundant parts into one. "ids" is the
+  ORDERED list of source part ids; the FIRST keeps its id, kind, title and
+  position and the bodies are concatenated in ids order. Only merge parts
+  whose content genuinely overlaps — never merge distinct topics just to
+  shorten the document.
+- move_part: reorder a part (set "after" to a part id or "end").
+- delete_part: remove a part ONLY when it is redundant or an orphan (e.g. a
+  stub, a leftover that a merge already absorbed, or a part whose content is
+  fully covered by another). Deleting a part discards its body, so delete
+  only what is truly safe to lose.
+
+Rules:
+1. You do NOT receive part bodies — only the outline (ids, kinds, titles,
+   sizes) and a rolling summary. Decide from those; if you are unsure, do
+   NOT delete.
+2. Prefer merge over delete: consolidation should preserve content.
+3. Do not change titles, bodies, or kinds. Do not emit any other operation
+   (no add_part, no update/append/replace/insert).
+4. If the document is already clean, emit an empty "ops" list.
+
+Original user request (context only):
+================================================================================
+{user_request}
+================================================================================
+
+Rolling summary:
+================================================================================
+{summary}
+================================================================================
+
+Document outline (id, kind, title, char count):
+================================================================================
+{outline}
+================================================================================
+
+Output JSON matching this schema:
+```
+{json_definition}
+```
+"""
 
 
 COMPOSE_PROMPT = """
@@ -223,6 +287,102 @@ class DocumentComposer:
 
         raise DocumentApplyError(
             f'composer failed after {self.max_retries} retries: {last_error}'
+        )
+
+    def consolidate(
+        self,
+        user_request: str,
+        document: Document,
+    ) -> list[ConsolidationOp]:
+        """
+        0-06: one best-effort consolidation pass after the final sub-task.
+
+        Outline + summary only (no part bodies), restricted to
+        merge/move/delete. Returns the ops applied (possibly empty); a bad
+        proposal is logged and abandoned — this pass must never fail the
+        pipeline or drop content it could not verify.
+        """
+        if len(document.parts) < 2:
+            return []
+        prompt = self._build_consolidation_prompt(user_request, document)
+        set_phase('Consolidating document (JSON)')
+        with llm_step('Consolidate document ops (JSON)'):
+            response = get_streamed_json_response(
+                llama_client=self.llm_client,
+                llm_input=generate_simple_llm_input(prompt),
+                response_model=ConsolidationResponse,
+            )
+        if isinstance(response, list):
+            response = ConsolidationResponse(ops=response)
+        ops = list(response.ops)
+        self.history.append(
+            {
+                'phase': 'consolidation',
+                'ops': TypeAdapter(list[ConsolidationOp]).dump_python(ops),
+                'error': None,
+            }
+        )
+        if not ops:
+            return []
+        working = document.clone()
+        try:
+            working.apply(ops, origin_task='consolidation')
+            # Consolidation may never drop the document or shrink it to
+            # nothing: if the proposal leaves no parts, it is a no-op.
+            if not working.parts:
+                logger.warning('consolidation proposal empties the document; ignoring')
+                self.history.append(
+                    {'phase': 'consolidation', 'ops': [], 'error': 'emptied document'}
+                )
+                return []
+        except (DocumentApplyError, DocumentIntegrityError) as exc:
+            logger.warning('consolidation proposal invalid, abandoning: %s', exc)
+            self.history.append(
+                {
+                    'phase': 'consolidation',
+                    'ops': TypeAdapter(list[ConsolidationOp]).dump_python(ops),
+                    'error': str(exc),
+                }
+            )
+            return []
+        document.title = working.title
+        document.parts = working.parts
+        document.op_log = working.op_log
+        return ops
+
+    def _build_consolidation_prompt(
+        self,
+        user_request: str,
+        document: Document,
+    ):
+        # Outline only: id, kind, title and size — never bodies.
+        outline = [
+            {
+                'id': p.id,
+                'kind': p.kind,
+                'title': p.title,
+                'chars': len(p.body),
+            }
+            for p in document.parts
+        ]
+        schema = json.dumps(ConsolidationResponse.model_json_schema(), indent=2)
+        core = CONSOLIDATE_PROMPT.format(
+            user_request=user_request,
+            summary=document.summary or '(empty)',
+            outline=json.dumps(outline, indent=2),
+            json_definition='(see schema below)',
+        )
+        return budgeted_prompt(
+            [
+                PromptPiece('core', core, priority=0, truncatable=False),
+                PromptPiece(
+                    'schema',
+                    'Output JSON matching this schema:\n```\n' + schema + '\n```',
+                    priority=0,
+                    truncatable=False,
+                ),
+            ],
+            self.prompt_token_budget,
         )
 
     def _propose(

@@ -41,6 +41,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
+from reasoning_sub_agents.config.schema import (  # noqa: E402
+    OrchestratorConfig,
+    OptionsConfig,
+)
 from reasoning_sub_agents.document import Document  # noqa: E402
 from reasoning_sub_agents.llama_utils import create_llama_client  # noqa: E402
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E402
@@ -63,7 +67,19 @@ _current_phase: contextvars.ContextVar[str] = contextvars.ContextVar(
 
 
 def classify_call(messages: list[dict]) -> str:
-    """Best-effort label for an LLM call from its system message(s)."""
+    """Best-effort label for an LLM call from its system message(s).
+
+    instructor's JSON mode embeds the response schema in the system message,
+    which is what makes the other labels work. The consolidation call is the
+    one exception: its restricted schema contains no add_part, so the system
+    scan would miss it; check its unique user-prompt signature first, before
+    the scan short-circuits on system_other.
+    """
+    for msg in messages:
+        if msg.get('role') == 'user' and 'document consolidator' in (
+            msg.get('content') or ''
+        ).lower():
+            return 'consolidate'
     for msg in messages:
         if msg.get('role') != 'system':
             continue
@@ -82,6 +98,11 @@ def classify_call(messages: list[dict]) -> str:
         if 'tool call' in low or 'assistant response' in low:
             return 'executor_turn'
         return 'system_other'
+    for msg in messages:
+        if msg.get('role') == 'user':
+            low = (msg.get('content') or '').lower()
+            if 'document consolidator' in low:
+                return 'consolidate'
     return 'no_system'
 
 
@@ -284,7 +305,13 @@ def turn_health(entry: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 
-def run_scenario(scenario: dict, client, measured: MeasuredCompletions, run_index: int) -> dict:
+def run_scenario(
+    scenario: dict,
+    client,
+    measured: MeasuredCompletions,
+    run_index: int,
+    build_orchestrator=None,
+) -> dict:
     record = {
         'scenario': scenario['id'],
         'run': run_index,
@@ -308,7 +335,8 @@ def run_scenario(scenario: dict, client, measured: MeasuredCompletions, run_inde
             idx_start = measured.start_index()
             turn_start = time.perf_counter()
             result = None
-            orch = TaskOrchestrator.instantiate(llm_client=client)
+            build = build_orchestrator or (lambda: TaskOrchestrator.instantiate(llm_client=client))
+            orch = build()
             for kind, payload in orch.iter_query(turn['text'], document=doc):
                 if kind == 'status':
                     _current_phase.set(str(payload))
@@ -354,6 +382,8 @@ def main() -> int:
                     help='scenarios to run concurrently (server has 5 slots)')
     ap.add_argument('--smoke', action='store_true',
                     help='cheap integration check: 1 run of the first scenario')
+    ap.add_argument('--consolidation', action='store_true',
+                    help='enable the 0-06 consolidation pass after the final sub-task')
     ap.add_argument('--label', default=None)
     ap.add_argument('--out', default=str(Path(__file__).parent / 'runs'))
     args = ap.parse_args()
@@ -381,10 +411,21 @@ def main() -> int:
     results: list[dict | None] = [None] * len(jobs)
     errors: list[str] = []
 
+    def make_orchestrator(llm_client):
+        if args.consolidation:
+            cfg = OrchestratorConfig(
+                options=OptionsConfig(consolidation=True)
+            )
+            return TaskOrchestrator.from_orchestrator_config(cfg, llm_client=llm_client)
+        return TaskOrchestrator.instantiate(llm_client=llm_client)
+
     def work(idx: int, item: tuple[dict, int]) -> None:
         s, r = item
         try:
-            results[idx] = run_scenario(s, client, measured, r)
+            results[idx] = run_scenario(
+                s, client, measured, r,
+                build_orchestrator=lambda: make_orchestrator(client),
+            )
         except Exception as exc:  # noqa: BLE001 - report, keep other jobs
             errors.append(f'{s["id"]} run {r}: {exc!r}')
 

@@ -22,6 +22,10 @@ class OptionsConfig(BaseModel):
     composer_max_retries: int = 3
     prompt_token_budget: int = 16384
     log_prompts: bool = False
+    # 0-06: run a consolidation pass (merge/delete/move only) after the final
+    # sub-task. Off by default so it cannot perturb the baseline or the
+    # 0-04/0-05 verification runs.
+    consolidation: bool = False
 
 
 class OrchestratorConfig(BaseModel):
