@@ -313,6 +313,98 @@ def test_merge_is_patch_only_for_integrity():
     assert doc.parts[0].body == 'A\n\nB'
 
 
+# --- optional titles (0-02 / D1) ------------------------------------------
+
+
+def test_part_title_is_optional():
+    p = Part(id='a', kind=PartKind.SECTION, body='standalone body')
+    assert p.title is None
+
+
+def test_add_part_without_title():
+    doc = Document.empty()
+    doc.apply([AddPart(id='a', kind='section', body='no heading needed')])
+    assert doc.parts[0].title is None
+    rendered = doc.render()
+    assert '## ' not in rendered
+    assert 'no heading needed' in rendered
+
+
+def test_untitled_file_part_renders_fallback_heading():
+    doc = Document.empty()
+    doc.apply([AddPart(id='script', kind='file', body='print(1)')])
+    rendered = doc.render('markdown_with_files')
+    assert '## file' in rendered
+    assert 'print(1)' in rendered
+
+
+def test_title_none_round_trips_through_snapshot():
+    doc = Document(
+        parts=[Part(id='a', kind=PartKind.SECTION, body='x')],
+    )
+    snap = doc.to_dict()
+    rehydrated = Part.model_validate(snap['parts'][0])
+    assert rehydrated.title is None
+    # and Document(**snapshot)-style reconstruction via the harness path
+    doc2 = Document(
+        title=snap['title'],
+        parts=[Part.model_validate(p) for p in snap['parts']],
+        summary=snap['summary'],
+        op_log=[],
+        render_mode=snap['render_mode'],
+    )
+    assert doc2.parts[0].title is None
+    assert doc2.outline()[0].title is None
+
+
+def test_from_dict_round_trips_to_dict():
+    doc = Document(
+        title='Doc',
+        parts=[
+            Part(id='a', kind=PartKind.SECTION, title=None, body='body a'),
+            Part(id='b', kind=PartKind.FILE, title='f.py', body='print(1)'),
+        ],
+        summary='old summary',
+        render_mode='markdown_with_files',
+    )
+    doc.apply(
+        [MergeParts(ids=['b', 'a']), AddPart(id='c', kind='section', body='new')],
+        origin_task='t',
+    )
+    rehydrated = Document.from_dict(doc.to_dict())
+    assert rehydrated.title == doc.title
+    assert [type(p) for p in rehydrated.parts] == [Part, Part]
+    assert [p.id for p in rehydrated.parts] == [p.id for p in doc.parts]
+    assert [p.body for p in rehydrated.parts] == [p.body for p in doc.parts]
+    assert [p.kind for p in rehydrated.parts] == [p.kind for p in doc.parts]
+    assert rehydrated.summary == doc.summary
+    assert len(rehydrated.op_log) == len(doc.op_log)
+    assert rehydrated.op_log[0].op.type == 'merge_parts'
+    # attribute access that used to crash on raw dicts
+    assert [o.id for o in rehydrated.outline()] == [p.id for p in rehydrated.parts]
+    assert rehydrated.render('markdown_with_files') == doc.render('markdown_with_files')
+    # tolerant of a minimal snapshot (missing optional keys)
+    minimal = Document.from_dict({'parts': [{'id': 'x', 'kind': 'section', 'body': 'y'}]})
+    assert minimal.parts[0].body == 'y'
+    assert minimal.summary == ''
+
+
+def test_oracle_search_survives_untitled_part():
+    from reasoning_sub_agents.oracle.document_oracle import DocumentOracle
+
+    doc = Document(
+        parts=[
+            Part(id='a', kind=PartKind.SECTION, body='alpha beta gamma'),
+            Part(id='b', kind=PartKind.SECTION, title=None, body='delta epsilon'),
+        ],
+    )
+    oracle = DocumentOracle(doc)
+    hits = oracle.search('delta')
+    assert any(h.part_id == 'b' for h in hits)
+    # list_parts (outline) must not crash on None title
+    assert [p['id'] for p in oracle.list_parts()] == ['a', 'b']
+
+
 def test_merge_changed_part_ids_covers_survivor_and_sources():
     from reasoning_sub_agents.execution_synthesiser.document_composer import (
         changed_part_ids,

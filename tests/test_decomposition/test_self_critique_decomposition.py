@@ -62,14 +62,13 @@ def test_generate_sub_tasks_with_sufficient_initial_decomposition(mock_openai_cl
         objective='Write comprehensive competitive analysis report',
     )
 
-    # Mock the initial decomposition call and decision
+    # Mock the initial decomposition call. (No decision mock: 3+ tasks skip
+    # the decision entirely — should_regenerate is pure Python since the
+    # streamed boolean call was removed.)
     with (
         unittest.mock.patch(
             'reasoning_sub_agents.task_decomposition.simple_decomposition.get_streamed_json_response'
         ) as mock_initial_decomposition,
-        unittest.mock.patch(
-            'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_boolean_decision'
-        ) as mock_decision,
         unittest.mock.patch.object(
             SelfCritiquingDecomposition,
             'critique_sub_tasks',
@@ -78,9 +77,6 @@ def test_generate_sub_tasks_with_sufficient_initial_decomposition(mock_openai_cl
     ):
         # Mock initial decomposition response (3 sub-tasks)
         mock_initial_decomposition.return_value = [sub_task_1, sub_task_2, sub_task_3]
-
-        # Mock decision (False = no regeneration needed)
-        mock_decision.return_value = False
 
         # Initialize decomposer
         decomposer = SelfCritiquingDecomposition(llm_client=mock_openai_client)
@@ -96,9 +92,6 @@ def test_generate_sub_tasks_with_sufficient_initial_decomposition(mock_openai_cl
 
         # Verify initial decomposition was called
         mock_initial_decomposition.assert_called_once()
-
-        # 3+ tasks skip the boolean LLM call
-        mock_decision.assert_not_called()
 
         # Verify history tracking
         assert 'user_input' in decomposer.history
@@ -154,14 +147,13 @@ def test_generate_sub_tasks_with_insufficient_initial_decomposition(mock_openai_
         objective='Write summary of analysis',
     )
 
-    # Mock the initial decomposition call and decision
+    # Mock the initial decomposition call. (No decision mock: < 3 tasks
+    # regenerates automatically in pure Python — should_regenerate short-
+    # circuits on the sub-task count, no streamed boolean call is made.)
     with (
         unittest.mock.patch(
             'reasoning_sub_agents.task_decomposition.simple_decomposition.get_streamed_json_response'
         ) as mock_initial_decomposition,
-        unittest.mock.patch(
-            'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_boolean_decision'
-        ) as mock_decision,
         unittest.mock.patch(
             'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_json_response'
         ) as mock_revised_decomposition,
@@ -173,9 +165,6 @@ def test_generate_sub_tasks_with_insufficient_initial_decomposition(mock_openai_
     ):
         # Mock initial decomposition response (only 1 sub-task)
         mock_initial_decomposition.return_value = [sub_task_1]
-
-        # Mock decision (should return True due to < 3 sub-tasks)
-        mock_decision.return_value = True
 
         # Mock revised decomposition response (3 sub-tasks)
         mock_revised_decomposition.return_value = [revised_sub_task_1, revised_sub_task_2, revised_sub_task_3]
@@ -195,10 +184,7 @@ def test_generate_sub_tasks_with_insufficient_initial_decomposition(mock_openai_
         # Verify initial decomposition was called
         mock_initial_decomposition.assert_called_once()
 
-        # Verify critique was called, but decision should NOT be called (short-circuit for < 3 sub-tasks)
-        mock_decision.assert_not_called()
-
-        # Verify revised decomposition was called (regeneration)
+        # Verify revised decomposition was called (regeneration, < 3 sub-tasks)
         mock_revised_decomposition.assert_called_once()
 
         # Verify history tracking
@@ -295,25 +281,17 @@ def test_should_regenerate_with_low_subtask_count(mock_openai_client):
         SubTask(meta_type='sub_task', decomposed_sub_task=sub_task_2),
     ]
 
-    # Mock decision response (should be ignored for < 3 sub-tasks)
-    with unittest.mock.patch(
-        'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_boolean_decision'
-    ) as mock_decision:
-        mock_decision.return_value = False  # This should be ignored
+    # No decision mock: should_regenerate is pure Python since the streamed
+    # boolean call was removed (< 3 sub-tasks always regenerates).
+    decomposer = SelfCritiquingDecomposition(llm_client=mock_openai_client)
+    user_input = 'Test regeneration logic'
+    criticism = 'Test criticism'
 
-        # Initialize decomposer
-        decomposer = SelfCritiquingDecomposition(llm_client=mock_openai_client)
-        user_input = 'Test regeneration logic'
-        criticism = 'Test criticism'
+    # Call the method
+    result = decomposer.should_regenerate(user_input, criticism, generated_sub_tasks)
 
-        # Call the method
-        result = decomposer.should_regenerate(user_input, criticism, generated_sub_tasks)
-
-        # Verify result is True (automatic regeneration for < 3 sub-tasks)
-        assert result is True
-
-        # Verify decision was NOT called (short-circuit logic)
-        mock_decision.assert_not_called()
+    # Verify result is True (automatic regeneration for < 3 sub-tasks)
+    assert result is True
 
 def test_should_regenerate_with_sufficient_subtask_count(mock_openai_client):
     """Test should_regenerate when sub-task count >= 3 (skip boolean LLM)."""
@@ -354,23 +332,17 @@ def test_should_regenerate_with_sufficient_subtask_count(mock_openai_client):
         SubTask(meta_type='sub_task', decomposed_sub_task=sub_task_3),
     ]
 
-    # Mock decision response
-    with unittest.mock.patch(
-        'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_boolean_decision'
-    ) as mock_decision:
-        mock_decision.return_value = True
+    # No decision mock: should_regenerate is pure Python since the streamed
+    # boolean call was removed (3+ tasks keep the initial decomposition).
+    decomposer = SelfCritiquingDecomposition(llm_client=mock_openai_client)
+    user_input = 'Test regeneration logic'
+    criticism = 'Task quality could be improved'
 
-        # Initialize decomposer
-        decomposer = SelfCritiquingDecomposition(llm_client=mock_openai_client)
-        user_input = 'Test regeneration logic'
-        criticism = 'Task quality could be improved'
+    # Call the method
+    result = decomposer.should_regenerate(user_input, criticism, generated_sub_tasks)
 
-        # Call the method
-        result = decomposer.should_regenerate(user_input, criticism, generated_sub_tasks)
-
-        # 3+ tasks skip the boolean LLM call; keep the initial decomposition
-        assert result is False
-        mock_decision.assert_not_called()
+    # 3+ tasks keep the initial decomposition
+    assert result is False
 
 def test_regenerate_sub_tasks(mock_openai_client):
     """Test the regenerate_sub_tasks method."""
@@ -494,14 +466,12 @@ def test_self_critique_history_tracking(mock_openai_client):
         objective='Summary objective',
     )
 
-    # Mock all LLM calls
+    # Mock all LLM calls. (No decision mock: 2 sub-tasks < 3 triggers pure-Python
+    # automatic regeneration; the streamed boolean call no longer exists.)
     with (
         unittest.mock.patch(
             'reasoning_sub_agents.task_decomposition.simple_decomposition.get_streamed_json_response'
         ) as mock_initial_decomposition,
-        unittest.mock.patch(
-            'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_boolean_decision'
-        ) as mock_decision,
         unittest.mock.patch(
             'reasoning_sub_agents.task_decomposition.self_critique_decomposition.get_streamed_json_response'
         ) as mock_revised_decomposition,
@@ -513,7 +483,6 @@ def test_self_critique_history_tracking(mock_openai_client):
     ):
         # Mock responses
         mock_initial_decomposition.return_value = [sub_task_1, sub_task_2]  # 2 sub-tasks
-        mock_decision.return_value = True
         mock_revised_decomposition.return_value = [revised_sub_task_1, revised_sub_task_2, revised_sub_task_3]
 
         # Initialize decomposer

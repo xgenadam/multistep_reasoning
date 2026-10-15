@@ -138,8 +138,11 @@ def test_compose_prompt_does_not_include_existing_part_bodies():
     assert 'KEEP-SECRET-BODY' not in prompt
     assert 'chapter-1' in prompt
     assert 'Chapter 1 exists.' in prompt
-    assert payload not in prompt
-    assert 'sha256=' in prompt
+    # Contract (updated 2026-10-15, 0-08): the current result appears in the
+    # prompt EXACTLY ONCE — via the result preview. It must not be re-pasted
+    # as an attached body or literal op body; the composer copies it with
+    # body_source="current_result" instead.
+    assert prompt.count(payload) == 1
     assert document.get_part('chapter-2').body == payload
 
 

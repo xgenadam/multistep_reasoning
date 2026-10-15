@@ -88,7 +88,7 @@ class DocumentOracle:
         needle = query.lower()
         hits: list[SearchHit] = []
         for part in self.document.parts:
-            haystack = f'{part.title}\n{part.body}'.lower()
+            haystack = f'{part.title or ""}\n{part.body}'.lower()
             index = haystack.find(needle)
             if index < 0:
                 continue
@@ -97,7 +97,7 @@ class DocumentOracle:
             return hits
         tokens = [token for token in needle.split() if token]
         for part in self.document.parts:
-            haystack = f'{part.title}\n{part.body}'.lower()
+            haystack = f'{part.title or ""}\n{part.body}'.lower()
             for token in tokens:
                 index = haystack.find(token)
                 if index >= 0:

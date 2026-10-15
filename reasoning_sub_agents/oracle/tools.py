@@ -120,6 +120,6 @@ class OracleAnswer(BaseModel):
 
 class SearchHit(BaseModel):
     part_id: str
-    title: str
+    title: str | None = None
     index: int
     excerpt: str

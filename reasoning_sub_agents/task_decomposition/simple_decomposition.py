@@ -33,6 +33,11 @@ Rules:
 - Use 2-5 sub-tasks if the request has multiple steps.
 - Each sub-task starts with a verb and has a concrete deliverable that still refers to the user's request (names, topic, artefacts they asked for).
 - Do not generate tasks about JSON, schemas, or error messages unless the user asked about those.
+- Match sub-task deliverables to the requested output shape. If the user asks for a
+  code artifact (a script, tool, program), the sub-tasks must PRODUCE that
+  artifact (e.g. "Write the wordcount.py script", "Add error handling to the
+  script"), not merely design, explain, or summarize around it. If the user
+  asks for prose (a report, analysis), sub-task deliverables are prose.
 
 Format illustration only (NOT the user's task):
 User query: "Design a website about climate change"

@@ -17,7 +17,9 @@ RenderMode = Literal['markdown_with_files', 'sections_only']
 class Part(BaseModel):
     id: str
     kind: PartKind
-    title: str
+    # Optional (D1 / 0-02): the composer must not be forced to invent a
+    # title when the part stands on its own (e.g. a self-headed report).
+    title: str | None = None
     body: str
     origin_task: str | None = None
 
@@ -25,7 +27,7 @@ class Part(BaseModel):
 class PartOutline(BaseModel):
     id: str
     kind: PartKind
-    title: str
+    title: str | None = None
     char_count: int
 
 
@@ -128,9 +130,28 @@ class Document:
             'render_mode': self.render_mode,
         }
 
+    @classmethod
+    def from_dict(cls, data: dict) -> Self:
+        """
+        Inverse of to_dict(). Rehydrates plain-dict snapshots (as stored on
+        disk or in multi-turn continuation) back into Part / AppliedOp
+        objects so attribute access (outline(), render(), ...) works.
 
-def _fence_language(title: str) -> str:
-    if '.' not in title:
+        A bare Document(**data) would NOT work: it stores parts/op_log
+        uncoerced, so a dict part crashes in outline() with
+        AttributeError: 'dict' object has no attribute 'id'.
+        """
+        return cls(
+            title=data.get('title'),
+            parts=[Part.model_validate(p) for p in data.get('parts') or []],
+            summary=data.get('summary') or '',
+            op_log=[AppliedOp.model_validate(e) for e in data.get('op_log') or []],
+            render_mode=data.get('render_mode') or 'markdown_with_files',
+        )
+
+
+def _fence_language(title: str | None) -> str:
+    if not title or '.' not in title:
         return ''
     ext = title.rsplit('.', 1)[-1].lower()
     if ext in {'md', 'txt'}:

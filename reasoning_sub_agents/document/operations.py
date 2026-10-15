@@ -22,7 +22,8 @@ class AddPart(_BodyMixin):
     type: Literal['add_part'] = 'add_part'
     id: str
     kind: Literal['section', 'file']
-    title: str
+    # Optional (D1 / 0-02); omit when the part needs no heading.
+    title: str | None = None
     after: str = 'end'
     origin_task: str | None = None
 

@@ -41,8 +41,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from reasoning_sub_agents.document import AppliedOp, Document  # noqa: E402
-from reasoning_sub_agents.document.models import Part  # noqa: E402
+from reasoning_sub_agents.document import Document  # noqa: E402
 from reasoning_sub_agents.llama_utils import create_llama_client  # noqa: E402
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E402
 
@@ -302,17 +301,10 @@ def run_scenario(scenario: dict, client, measured: MeasuredCompletions, run_inde
             prior = turn.get('prior')
             if prior and prior in docs:
                 snap = docs[prior]
-                # to_dict() stores parts/op_log as plain dicts; rehydrate so
-                # the document's attribute access (outline(), render(), ...)
-                # works. (Pipeline-side gap: no from_dict() exists yet —
-                # noted in S-002, matters for Phase P snapshot design.)
-                doc = Document(
-                    title=snap.get('title'),
-                    parts=[Part.model_validate(p) for p in snap.get('parts') or []],
-                    summary=snap.get('summary') or '',
-                    op_log=[AppliedOp.model_validate(e) for e in snap.get('op_log') or []],
-                    render_mode=snap.get('render_mode') or 'markdown_with_files',
-                )
+                # to_dict() stores parts/op_log as plain dicts; from_dict()
+                # rehydrates them so attribute access (outline(), render(),
+                # ...) works on the reconstructed document (0-08).
+                doc = Document.from_dict(snap)
             idx_start = measured.start_index()
             turn_start = time.perf_counter()
             result = None

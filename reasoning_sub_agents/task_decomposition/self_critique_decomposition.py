@@ -53,6 +53,10 @@ You are a task decomposition expert. You previously decomposed the user request 
 Generate a revised decomposition following these rules:
 - For requests requiring multiple logical steps (e.g., containing 'write', 'create', 'design', 'analyze'), generate 3-5 sub-tasks.
 - Each sub-task must have an action verb and concrete deliverable.
+- Match deliverables to the requested output shape: if the user wants a code
+  artifact (script, tool, program), sub-tasks must PRODUCE that artifact, not
+  design/explain/summarize around it; if the user wants prose, sub-task
+  deliverables are prose.
 - If the request has sequential dependencies, ensure proper task ordering.
 - The JSON array MUST contain at least one meta_type "sub_task_detail" object.
 - Emit sub_task_detail items first. Do not return only thinking_step items.
