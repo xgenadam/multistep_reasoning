@@ -1,9 +1,11 @@
 *idea
 *__pycache__
 venv
+dsh-podman-venv
 llama_cpp_server
 *.json
 *.md
 !README.md
+!journal/**/*.md
 novel_mcp_server/workspaces/
 
