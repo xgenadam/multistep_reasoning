@@ -1,35 +1,36 @@
 # S-NNN — <one-line session title>
 
 - **Date:** YYYY-MM-DD
-- **Phase(s) / tickets:** e.g. Phase 0 — 0-01, 0-03
-- **Goal of session:** what this session was supposed to accomplish
+- **Model / effort:** e.g. Opus 5.5 / high (and whether it matched the ticket's front-matter)
+- **Ticket:** e.g. 0-14 (status at start → at end)
+- **reconstructed:** false   <!-- true only when written after the fact (tickets/README rule 6); then name the sources -->
+- **Files opened to orient:** the files read before the first message stated the six O-1 facts (≤ 3 is the bar)
+- **Runs produced:** paths under `journal/baseline/runs/`, or "none"
 
 ## What went right
 
 ## What went wrong
 
-## Pain points and how they were solved
+## Pain points
 
-| Pain | Cause | Resolution | Left a durable fix? |
+| Pain | Cause | Resolution | Durable fix? |
 | --- | --- | --- | --- |
 
-## Decisions made
+## Decisions
 
-<!-- Any that survive get promoted to PLAN.md "Settled decisions". -->
+<!-- Load-bearing ones get appended to DECISIONS.md in this commit; cite the D-nnn here. "None" is valid. -->
 
 ## Measurements vs. pass criteria
 
-<!-- Cite criterion IDs (P0-3, A-1, …). Pass/fail per criterion, wall-clock,
-     token counts, notable model failures. Write "not measured" explicitly
-     rather than omitting. -->
+<!-- Criterion ID → pass/fail/not measured, pointing at the ticket's
+     Measurements block rather than repeating it. Wall times say whether the
+     agent was active during the run. -->
 
-## State docs superseded / retired
+## Superseded / retired
 
-<!-- Which TODO/ANALYSIS/CRITICAL-style docs this session makes obsolete.
-     "None" is a valid answer; blank is not. -->
+<!-- Stale state docs this session retires. "None" is valid; blank is not. -->
 
 ## Handoff
 
-- **Exact state of world:** files changed, branches, services running,
-  anything mid-flight.
-- **Next 2–3 moves:** in execution order.
+- **State of the world:** branch and HEAD vs `origin/master`, the working tree, anything mid-flight, the server owner.
+- **Next 2–3 moves:** in execution order, each with model/effort. Mirror the first one into INDEX.md § Now.

@@ -24,6 +24,8 @@ Decisions D-C and D-D. Dates are file mtimes.
 | `mcp-deep-reason-schema.md` | `mcp_server/mcp_server.py:30-64, 138-178` (tracked) | 236d168 | `ReasoningSessionStore` + `deep_reason`/`reset_session` tool schema | MCP retired (S-002); kept as the Phase H reference |
 | `llama_server.md` | `llama_server.py` (tracked) | 236d168 | llama-server launcher | Needs `requests`, no callers |
 | `project_serializer.md` | `project_serializer.py` (tracked) | 236d168 | Dumped the repo into `project_text.txt` | Unreferenced |
+| `2026-10-13-PLAN-v1.md` | `journal/PLAN.md` v1 (tracked; O-01) | 2026-10-13 | Plan of record v1: stale "Current state" audit, defect table D1–D10, v1 phases, settled decisions, process section | Rewritten as PLAN.md v2; decisions → `DECISIONS.md`, process → `AGENTS.md`. Kept for the Phase P / T / H design prose v2 condenses |
+| `plan-2026-10-18-approved.md` | `journal/plan-2026-10-18-approved.md` (tracked; O-01, `git mv`) | 2026-10-18 | Approved roadmap v2 (S-004): analysis, defects N1–N19, decisions D-A…D-Q, phases | Part 2 now lives in PLAN.md v2; D-A…D-Q map to `DECISIONS.md` D-001…D-012 (each title names its plan letter) |
 
 ## Deleted, unarchived
 

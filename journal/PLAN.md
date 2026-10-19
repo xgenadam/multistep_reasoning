@@ -1,586 +1,558 @@
-# Journal — Multi-Step Reasoning Harness
+# PLAN — knowledge-grounded, long-horizon reasoning harness (v2)
 
-Working plan of record, revised from `OBJECTIVE.md` (2026-10-13). The original
-stays in place; this journal is the forward-looking version. Each phase section
-contains: scope, key changes, and **pass criteria** — performance and
-behavioral acceptance measured on the live pipeline, not unit tests.
+The *what* and *why*: goal, phases, scope, and the pass criteria that are the
+acceptance criteria. v2 was written by ticket O-01 (2026-10-19) from the
+approved roadmap (`archive/plan-2026-10-18-approved.md`, S-004, which also
+holds the analysis behind it). v1 is `archive/2026-10-13-PLAN-v1.md`.
 
----
+Elsewhere, not here:
+- Decisions: `DECISIONS.md`.
+- How sessions work: `../AGENTS.md`.
+- Ticket format and rules: `tickets/README.md`.
+- Live state: `INDEX.md` and `make board`.
 
-## North star (unchanged)
+## Goal and north star
 
-The model never loads a corpus — it *explores* one through a bounded
-interface. Active context (user request, current sub-task, document outline,
-rolling summary) stays small and always in-prompt; everything else is
-on-demand retrieval through tools the model chooses to call. Corpus unbounded,
-window bounded. One architecture absorbs RAG, codebase ingestion, chat memory,
-book/legal/science verification: **more backends behind the oracle's door.**
+The goal:
+- Ingest large corpora (arXiv, Wikipedia, libraries of books) into a knowledge base.
+- Run long jobs over that base: analyse papers, write books, continue a series, write code.
+- Raise LLM output quality even over very long tasks.
 
-## Settled decisions (unchanged from OBJECTIVE.md)
+The north star (D-001): **the model never loads a corpus; it explores one
+through a bounded interface.** Active context stays small and always
+in-prompt: the request, the current sub-task, the document outline and the
+rolling summary. Everything else is on-demand retrieval through tools the
+model chooses to call. The corpus is unbounded and the window bounded, with
+more stores behind the oracle's one door.
 
-| Decision | Answer |
-| --- | --- |
-| Deployment face | oobabooga extension only; MCP server abandoned |
-| Vector store | Server-based (Qdrant or Chroma), run separately |
-| Graph storage | In-process adjacency (sqlite / NetworkX over a persisted edge list); **no Neo4j initially** |
-| Domain packs | Config-bundle layer, spec now, build `code` pack end-to-end first |
-| Harness-as-tool trigger | Hybrid: heuristics pre-filter + native llama.cpp tool calling as primary + text sentinel as universal backstop |
-| Testing | Small local model for fast smoke; big model for quality evaluation |
-| Dependency direction | `context` ← `reasoning` ← (`packs`, `tools`); `context` standalone |
+## Principles
 
-Re-plan triggers (from the original, retained): the three load-bearing
-decisions are (1) `ContextStore` as the single door from day one, (2) native
-tool calling primary with sentinel backstop, (3) no Neo4j initially. If any
-changes, re-plan the affected phase before starting it.
+1. **Validate interfaces in days, against what exists.** `ContextStore` is
+   proven against `Document` alone, and V proves it against a 20-paper
+   store, before any heavy backend exists.
+2. **Every phase is gated on cost, and from Q on also on quality** (D-007).
+   Cost is marginal and measured on uncontaminated runs, and the baseline is
+   re-recorded when prompts change materially.
+3. **Scale by tiers.** Bounded corpora first, and every tier step carries a
+   10× scaling test.
+4. **Detection must trigger recovery** (D-009). Verdicts carry confidence
+   tiers (D-010).
+5. **Server hours are the throughput limit.** One 5-slot server is shared
+   with the agent. Timing gates need an idle box, and long campaigns get
+   scheduled.
+6. **Parallel streams only on disjoint files.** One task per session.
 
----
-
-## Current state (verified against the code, 2026-10-13)
-
-### Pipeline
-
-- Core pipeline works end-to-end: decompose → execute → compose → render,
-  driven by `reasoning_sub_agents/task_orchestrator.py`.
-- `Document` (named `Part`s + rolling summary + op log) is the only real
-  memory; sub-tasks query it via `DocumentOracle` (`list_parts`, `read_part`,
-  `search`, `ask`, `summary`).
-- `DocumentOracle` constructor takes `prompt_token_budget`
-  ([document_oracle.py:62](../reasoning_sub_agents/oracle/document_oracle.py#L62));
-  `prompt_budget.py` exists and is the basis for the per-phase cost gates below.
-
-### Verified defects (each claim below was checked in code, not taken on faith)
-
-| # | Defect | Evidence |
-| --- | --- | --- |
-| D1 | `Part.title` and `AddPart.title` are mandatory `str` | [models.py:20-28](../reasoning_sub_agents/document/models.py#L20-L28) |
-| D2 | `MovePart` / `DeletePart` fully implemented but **absent from `COMPOSE_PROMPT`** — the model cannot know they exist | ops in [operations.py:66-72](../reasoning_sub_agents/document/operations.py#L66-L72), applied in [apply.py:73-75](../reasoning_sub_agents/document/apply.py#L73-L75); zero matches for `move_part`/`delete_part` in `execution_synthesiser/` |
-| D3 | No merge operation; dedupe means re-typing content → the repetition the README admits | no `merge` in [operations.py](../reasoning_sub_agents/document/operations.py) |
-| D4 | Oracle `search` is literal substring; `ask` falls back to the **first 8 parts** on no match | [document_oracle.py:123](../reasoning_sub_agents/oracle/document_oracle.py#L123) `self.document.parts[:8]` |
-| D5 | `COMPOSE_PROMPT` framed as "write a report with sections" → always markdown even for code requests | [document_composer.py:32](../reasoning_sub_agents/execution_synthesiser/document_composer.py#L32) |
-| D6 | Sub-agent tools limited to oracle tools; no pack-level tool set | no tool-registration layer outside the oracle |
-| D7 | Sub-tasks strictly sequential; `run_multi_concurrent` exists with **zero call sites** | [llama_utils.py:527](../reasoning_sub_agents/llama_utils.py#L527) |
-| D8 | Broken imports: `__main__.py` imports non-existent `reasoning_sub_agents.mcp_server`; `tst_new_orchestrator.py` imports non-existent `LLMClientAdapter` | [__main__.py:1](../reasoning_sub_agents/__main__.py#L1) |
-| D9 | `RollingDocumentUpdateSynthesiser` `NameError` in its no-previous-result branch | dies with the legacy chain in Phase P |
-| D10 | Chat history compression is last-6-turns only | [chat_adapter.py:70,88](../oobabooga_extension/chat_adapter.py#L70) `max_turns: int = 6` |
-
-### Repo hygiene
-
-`mcp_server/` (abandoned, still imported by D8), `main.bak.py`,
-`tst_new_orchestrator.py`, `history_*.json` experiment dumps (one is
-~138 MB — the bulk of the repo), a full-machine `requirements.txt` dump.
-
----
-
-## Target package layout (unchanged)
+## Phase map
 
 ```
-reasoning_sub_agents/
-  context/                 # LAYER 0 — standalone, no dependency on reasoning/
-    store.py               #   ContextStore interface + unified retrieve()
-    vector.py              #   Qdrant/Chroma client
-    graph.py               #   adjacency, seed -> neighbor expansion
-    codebase_ingest.py     #   parse -> chunks -> vectors + graph nodes (offline)
-    chat_memory.py         #   chat history as a retrievable store
-  reasoning/               # LAYER 1 — today's core; DEPENDS ON context
-    document/              #   (moved from reasoning_sub_agents/document)
-    task_decomposition/
-    executor/
-    execution_synthesiser/
-    oracle/                #   generalized to query any ContextStore
-    task_orchestrator.py
-  packs/                   # LAYER 2 — config bundles; DEPENDS ON both
-    base.py  code.py  book.py  legal.py  science.py
-  tools/                   # "harness as a tool" registration
-    register.py            #   exposes deep_reason / retrieve to a host client
+O (organise) ─► 0-close-A (measure/bookkeep) ─► Q-01 (judge, offline) ∥ A (keystone) ─► V (vertical slice, papers-lite)
+   ─► R-mech ∥ B (papers, tier 1) ─► T-science ─► T-book (with R-quality) ─► later: B2 adapters (wiki/books/code), B3 write side, B4 scale tiers
+0-close-B (defects) and Q-02 (server campaign): slotted when the server is idle.   P (execution model): deferrable.   C, H: after A, as capacity allows.
 ```
 
-`Document` becomes **one kind of store inside `context`**: working memory for
-the current turn; RAG stores are long-term memory; the oracle queries both
-through the same interface.
+Critical paths:
+- Paper analysis: O → 0-close-A → A → V → B(papers) → T-science.
+- Books: … → R-mech → B2(books) → T-book.
+
+"Parallel" means one stream's unattended work (ingest, campaigns) overlaps
+the other's coding.
+
+Tickets are instantiated when their phase starts. Instantiated so far: O,
+0-close-A/B, Q and A. For those, the ticket front-matter is the source of
+truth (`make board`). The board at the end of this file covers the rest.
 
 ---
 
-## Phase map (the structural change vs. OBJECTIVE.md)
-
-Original: a chain, 0 → 1 → 2 → 3 → 4.
-
-Revised: the real dependency graph is:
-
-```
-Phase 0 ──► Phase A (keystone, days) ──► Phase B (ingest+graph, weeks) ──┐
-       └────────► Phase P (execution, weeks)  ───────────────────────────┼──► Phase T (code pack) ──► other packs
-       Phase C (chat memory, days, anytime) ─────────────────────────────┘
-       Phase H (harness-as-tool, anytime after A)
-```
-
-Two rules drive the shape:
-1. **Validate the keystone in days, not weeks** — the `ContextStore`
-   interface gets validated against `Document` alone, with zero new services,
-   before any Qdrant/tree-sitter work exists to discover that the interface is
-   wrong.
-2. **Run streams that don't share files concurrently.** Phase P touches the
-   Document mutation model and the executor loop; Phase B touches the new
-   `context/` backends. They share almost no code, so they run in parallel.
-
-Critical path: **0 → A → B → code pack**.
-
-### Why this beats the original sequencing
-
-| Original | Revised | Why |
-| --- | --- | --- |
-| Phase 1 = interface + Qdrant + graph + memory, "weeks" | A (days) / B (weeks) / C (days) | Interface mistakes surface on day 5 against Document, not week 4 against the hard backends |
-| Phase 2 queued behind all of Phase 1 | P starts after 0, parallel to B/C | Parallel execution touches Document + executor, not Qdrant |
-| "Critique checks the graph for missing edges" | Conservative bias at decomposition + serial recovery | Detection without recovery is a dead end; the safe direction is the default |
-| Compose "must stay sequential" | + explicit duty: reconcile overlapping sibling results | Where `merge_parts` earns its keep |
-| Pack contract proven by `code`, verifiers per-pack | Layered `VerifierSpec` from day one | Book/legal/science verifiers are a different mechanism; the contract must absorb that |
-| Chat memory replaces last-6 compression | Rolling summary kept in-prompt + store behind it | Retrieval gives recall, not coherence |
-| No cost model | Latency/token budget is a gate on every phase | We're adding 4 passes to a single-user local-model product |
-
----
-
-## Phase 0 — Document flexibility (days)
-
-Direct answer to "documents are not flexible enough." Contained to
-`document/`, the composer prompt, and tests. This phase **unblocks P** (merge
-semantics the snapshot design needs) and delivers immediate user value.
-
-### Scope
-
-0. **Fix the broken imports first** (D8): `__main__.py` no longer imports the
-   dead `mcp_server` (re-point or delete the file); delete or fix
-   `tst_new_orchestrator.py`. A package that doesn't import is the wrong base
-   for everything else. *Budget: an hour.*
-1. **Optional titles** (D1): `Part.title` and `AddPart.title` become
-   `str | None = None`. `Document.render()` already handles empty titles
-   (no heading; `## file` for untitled file parts,
-   [models.py:96-102](../reasoning_sub_agents/document/models.py#L96-L102)).
-   Add one `part.title or ''` guard in the oracle's search haystack.
-2. **New `merge_parts` op** (D3): `{id, kind, title?, ids: [source ids], after}`
-   — code concatenates source bodies **verbatim** in the given order, inserts
-   the new part, deletes the sources. Add the schema model, its `_apply_one`
-   case in [apply.py](../reasoning_sub_agents/document/apply.py), and unit
-   tests. (Unit tests are fine *here* — this is pure state manipulation; the
-   phase *gate* below is still behavioral.)
-3. **Surface `move_part` / `delete_part` / `merge_parts` in `COMPOSE_PROMPT`**
-   (D2) and document that titles are optional. Add the dedupe rule: *if a new
-   part overlaps an existing one, prefer `merge_parts` or a targeted patch
-   over a near-duplicate `add_part`.* Highest-leverage change for the known
-   repetition problem.
-4. **Output-shape flexibility** (D5): teach the composer to emit `file` parts
-   for code artifacts (rendering already code-fences with a language inferred
-   from the filename, [models.py:132](../reasoning_sub_agents/document/models.py#L132)).
-   Add an output-shape hint to the decomposer so "write me a CLI tool" yields
-   code parts, not a prose report *about* a CLI tool.
-5. **Consolidation pass**: one extra composer call after the final sub-task,
-   scoped to outline-level cleanup (merge/delete redundancies). Input:
-   outline + previews only, never part bodies. This is the explicit "revise
-   before presenting" step the design promises but only applies between
-   sub-tasks today. **Must be latency-budgeted** (see gate).
-6. **Integrity coverage**: `assert_payload_kept` already raises when a merge
-   would drop the current sub-task's result; `changed_part_ids` already feeds
-   deleted ids into the summary update. No code changes — add tests for both
-   paths.
-7. **Record the latency/token baseline.** Before the consolidation pass lands,
-   measure on the small model: wall-clock per typical turn, tokens per turn,
-   turns/minute. Every later phase is gated against this number.
-
-### Pass criteria (behavioral, small model, live pipeline)
-
-- **P0-1 Shape**: "write a CLI tool that does X" → final `Document` contains
-  ≥1 `file` part with runnable code; zero parts whose body is a prose report
-  *about* the tool. Run 3× with different X; pass = 3/3.
-- **P0-2 Shape**: "write a report on Y" → sectioned markdown, no `file` parts.
-- **P0-3 Dedupe**: deliberately overlapping follow-up question (e.g. ask for a
-  section that 80% overlaps an existing part) → op log contains
-  `merge_parts` or a patch; no near-duplicate part survives to the final
-  render. Measure duplication rate: for the final document, no two parts
-  share >50% of body tokens.
-- **P0-4 Latency**: consolidation pass adds **≤ 1.5× a single compose call's
-  p50 wall time** to the total turn, and total tokens per turn grow ≤ 25% vs.
-  the Phase 0 baseline. Consolidation is optional value; it may not tax the
-  product.
-- **P0-5 Regression**: existing golden-fixture parser tests (truncated JSON,
-  junk meta-shapes through the `llama_utils.py` repair logic) all green.
-
----
-
-## Phase A — The keystone: `ContextStore` + ranked document retrieval (days, zero new services)
-
-Old Phase 1 deflated to the decision actually being validated: **is the
-interface shape right?** Everything is testable against `Document` alone.
-No Qdrant, no tree-sitter, no graph, no new runtime dependency.
-
-### Scope
-
-1. **Pure rename commit** (the package move from the target layout:
-   `document/` → `reasoning/document/`, etc.), no logic changes, its own
-   commit, tests green. Keeps Phase B's diffs readable.
-2. **`ContextStore` interface** in `context/store.py`:
-   `list()`, `read(id, start, end)`, `search(query) -> ranked hits`,
-   `ask(question) -> answer + citations`, `summary(id)`. `Document` is the
-   first and only implementer, wrapping existing oracle behavior.
-3. **Ranked retrieval on the document store**: BM25 (pure Python — `rank_bm25`
-   or hand-rolled) replaces literal substring search (D4); **delete the
-   first-8-parts fallback** ([document_oracle.py:123](../reasoning_sub_agents/oracle/document_oracle.py#L123));
-   `ask` returns ranked top-k with per-part citations.
-4. **Multi-store conflict policy — settled now, in writing**, while the
-   interface is still abstract:
-   - Working-memory (document) hits outrank corpus hits for current-task
-     questions.
-   - Cross-store conflicts are **annotated in the answer, never silently
-     resolved**.
-   - Every citation carries a store id.
-5. Generalize `DocumentOracle` to accept a **set** of `ContextStore`s with a
-   store scope in the tool params (e.g. `search(store=..., query=...)`). With
-   only `Document` present, this is pure plumbing — but it's the door, and it
-   gets walked in its final shape.
-
-### Pass criteria
-
-- **A-1 Citation honesty**: `ask` over a large document (> 30 parts) returns
-  citations that all exist and all actually contain the cited content; zero
-  "first-8" artifacts. Test set: 10 questions, 5 whose answer is in the last
-  third of the document (where the old fallback structurally failed). Pass =
-  10/10 cited correctly.
-- **A-2 Rank quality**: for 10 needle queries (exact identifiers/strings
-  planted in specific parts), the containing part is in top-3 for ≥ 8/10.
-- **A-3 No regression vs. substring**: on the same 10 needles, BM25 retrieves
-  everything literal substring did, and more. (Ranked must be a strict
-  superset in recall on the needle set.)
-- **A-4 Interface stability**: the `ContextStore` protocol type-checks against
-  `Document` without adapter hacks; no method in the interface is untested by
-  a live call in A-1/A-2. (This is the cheap proxy for "will B be pleasant.")
-- **A-5 Zero new runtime dependencies, zero new services.** If either is
-  true, the phase has quietly grown into B and must be re-split.
-- **A-6 Latency**: `search`/`ask` wall time on a 30-part document within 10%
-  of the Phase 0 baseline oracle calls.
-
----
-
-## Phase P — Execution model: tools, DAG, parallel frontier (weeks, starts right after 0, runs parallel to B/C)
-
-All executor-side changes in one stream so they don't collide with B's
-backend work. Ordered small → large.
-
-### Scope
-
-1. **Tool-set generalization first** (days, D6): `OracleLoopExecutor`'s tool
-   set becomes configurable; dispatch routes tool names to handlers the way
-   `DocumentOracle._run` already does; loop mechanics (round budget,
-   last-turn forcing, empty-result retry, budget-exhausted fallback) unchanged.
-   A hardcoded "code" set (`run_python`, `read_file`) exists *before any pack
-   concept* — packs later just configure it.
-2. **DAG schema** (D7): `depends_on: list[str]` on `DecomposeSubTask`; the
-   decompose prompt emits edges, turning the flat list into a DAG. **With a
-   conservative-bias rule written into the prompt**: *when unsure whether B
-   needs A's output, emit the edge.* A wrong sequential edge costs one slot of
-   latency; a wrong parallel edge costs a blind sub-task. With `--parallel 2`
-   the upside of parallelism is modest, so the safe direction must be the
-   default.
-3. **Frontier execution, serial compose, frozen snapshot**: topologically
-   level the DAG; execute a frontier in parallel via `run_multi_concurrent`
-   (D7); **compose stays sequential** (it mutates shared Document state —
-   parts, op log, summary) and folds results back in topological order.
-   During a frontier, every executor queries a **frozen snapshot** taken at
-   frontier start; reads-only during the frontier, mutations only in the
-   serial compose phase. **Explicit compose duty**: compose's job includes
-   *reconciling overlapping sibling results* — two siblings reading the same
-   snapshot will both happily produce a "utils" part; the Phase 0 dedupe rule
-   + `merge_parts` is the mechanism, but reconciliation must be a named duty
-   of the compose prompt, not an emergent hope.
-4. **Recovery, not just detection**: the self-critique pass still checks the
-   dependency graph for missing edges, and the per-sub-task verifier flags a
-   context-starved sibling — but detection triggers **action**: the flagged
-   sub-task is re-executed **serially, with its siblings' outputs injected
-   into context**. This converts the worst failure mode (blind sub-task,
-   garbage downstream) into a degradation (one retry, extra latency).
-5. **Retire the legacy chain** (D9): the `AccumulatedResult.previous_results`
-   chain (`SimpleSynthesiser`, `RollingDocumentUpdateSynthesiser`) is
-   inherently sequential; delete it — the `NameError` dies with it.
-
-### Pass criteria
-
-- **P-P1 Concurrency, measurable**: a two-branch independent DAG (A → {B, C} →
-  D) runs with B and C truly overlapping; wall-clock of the frontier is ≤
-  0.75× the sum of B and C measured sequentially (i.e., real overlap, not
-  scheduling luck). Logged against the Phase 0 baseline.
-- **P-P2 Snapshot correctness**: no executor mid-frontier observes a part that
-   didn't exist at frontier start (asserted via op-log timestamps in the
-   smoke run).
-- **P-P3 Overlap reconciliation**: inject the adversarial case — both siblings
-   produce near-duplicate content → final document contains a merged part, no
-   duplicate (same >50% shared-token check as P0-3).
-- **P-P4 Corruption → recovery**: corrupt an edge (B depends on A's output but
-   the edge is missing) → verifier flags B → B is re-executed serially with
-   A's output in context → final result references A's content. Pass = the
-   *recovered* result is correct, not merely that the flag fired.
-- **P-P5 Latency tax**: total turn latency for a sequential-equivalent task
-   (degenerate 1-node DAG) grows ≤ 10% vs. Phase 0 baseline — the DAG
-   machinery must be free when it buys nothing.
-- **P-P6 No deadlock/cycles**: 20 random DAG decompositions (small model,
-  logged) all topologically order; a hand-injected cycle is rejected with a
-  clear error, not a hang.
-
----
-
-## Phase B — Ingestion + graph retrieval (weeks, after A)
-
-Old Phase 1 item 4, unchanged in design:
-
-1. **Ingest (offline)**: tree-sitter parse → semantic chunks → Qdrant; graph
-   nodes (functions/classes/files) + edges (calls, imports, references,
-   same-module) → adjacency table.
-2. **Retriever**: vector search → seed chunks → one or two hops along
-   call/import edges → return structurally adjacent code the vector pass
-   missed.
-3. Prior art to study first: Microsoft GraphRAG, LightRAG, HippoRAG.
-4. **Ingest and retrieval must record costs**: token cost per corpus,
-   retrieval wall time per query, neighbor-expansion fan-out. Phase T's
-   verifiers will call this repeatedly; the per-turn latency budget has to
-   survive it.
-
-### Pass criteria
-
-- **B-1 Structural recall**: on a mid-size repo, "where is X called from" and
-  "what does this module depend on" (10 queries each, X chosen to be
-  *structurally* findable — same call/import edge, not merely topically
-  similar) → the caller/importer is in the returned set for ≥ 8/10 of each.
-- **B-2 Graph adds value**: for ≥ 3 of the 20 queries, the correct chunk is
-  **absent from pure vector top-10** but present after 1–2-hop expansion.
-  (If the graph never rescues anything, it's not earning its existence.)
-- **B-3 Cost**: single-query retrieval (vector + expansion) ≤ 2 s p50 on the
-  local box; ingest of a mid-size repo completes unattended and its recorded
-  token/cost profile is in the journal.
-- **B-4 End-to-end with oracle**: `search(store=codebase, query=...)` returns
-  cited, ranked hits through the same interface as the document store — the
-  host model sees one door (re-check A-4 with a second store behind it).
-
----
-
-## Phase C — Chat memory (days, anytime, low priority)
-
-Stack, don't replace (D10):
-
-1. Keep a **small rolling summary in-prompt** — retrieval gives recall, not
-   coherent present context.
-2. Stored turns as a `ContextStore`: turns/concepts as nodes with
-   `mentions-same-entity` / `follows-from` / `contradicts` edges;
-   neighborhood-expansion retrieval (same machinery as B, smaller scale).
-3. Successor to `compact_chat_history` (last 6 turns,
-   [chat_adapter.py:70](../oobabooga_extension/chat_adapter.py#L70)) — but the
-   last-6 behavior keeps running until C demonstrably beats it.
-
-### Pass criteria
-
-- **C-1 Recall**: plant a fact in turn N of a long local conversation; ask for
-  it ≥ 10 turns later → retrieved and cited in ≥ 3/3 runs.
-- **C-2 Coherence**: on a 20-turn continuation, the rolling summary contains
-  the 3 active threads and no stale ones (checked by the big model as judge,
-  3/3).
-- **C-3 No regression**: existing last-6 behavior still functions as fallback
-  when the store is empty or errors.
-
----
-
-## Phase T — Domain packs (weeks; code pack needs B + P)
-
-A pack is a **config bundle, not code** — that's what keeps the core generic.
-
-### The one contract change I insist on: `VerifierSpec` is layered from day one
-
-The `code` pack's verifier is objective (does it run / pass tests);
-legal/science is "claim vs. retrieved source, LLM-judged"; **book** is the
-weak link — "check a 3000-word new chapter against retrieved canon" is exactly
-the long-context consistency reasoning you lack the window for. Proving the
-contract with `code` first hides that the other three verifiers are a
-*different mechanism*, not instances of it. So:
-
-```python
-class DomainPack(BaseModel):
-    id: str                       # 'code' | 'book' | 'legal' | 'science'
-    decomposer: str               # which decomposer + prompt tweaks
-    output_shape: OutputShape     # 'prose' | 'code' | 'mixed' — drives render + composer
-    sub_task_tools: list[str]     # tools available to executors (Phase P)
-    retrievers: list[str]         # which context stores this pack queries
-    verifiers: list[VerifierSpec]
-    sources: list[SourceSpec]     # ingested corpora bound to the pack
-    verifier_policy: str          # 'block_on_fail' | 'annotate' | 'retry_then_annotate'
-
-class VerifierSpec(BaseModel):
-    objective: ObjectiveHook | None   # run it / tests pass / import check
-    llm_judge: JudgeSpec | None       # claim vs. retrieved evidence, with citations
-    fol: bool = False                 # opt-in deep verification, never gates
-    policy: Literal['block_on_fail', 'annotate', 'retry_then_annotate']
-```
-
-Verdicts always carry a **confidence tier**: objective pass > judge-agree >
-judge-unsure → annotation. The book pack's verdicts are *soft* and the system
-says so, instead of pretending a small model's consistency read is as firm as
-a test pass.
-
-### Per-pack shape
-
-- **`code`** (built first, end-to-end): `output_shape=code`, tools
-  `[run_python, read_file]` (from P-1), verifier = "does it import & run /
-  pass the given tests" (objective tier).
-- **`book`**: `output_shape=prose`, `sources=[the book being continued]`,
-  verifier = consistency check — retrieve established canon (characters,
-  facts, timeline) and check the new chapter against it (judge tier).
-  "Edit past text for consistency": verifier flags a conflict → composer
-  issues a `replace_in_part`/`merge_parts` op on the *earlier* chapter part.
-  The Document's revision capability is what makes continuation possible.
-- **`legal` / `science`**: `sources=[statutes / papers]`, verifier =
-  check-against-source (retrieve the cited passage, LLM-judge the claim
-  against it) — judge tier first; **FOL deep-verification** (emit first-order
-  logic, check entailment/consistency with a small prover) as an opt-in flag.
-  FOL is the most research-y piece and must not gate the rest.
-
-### Pass criteria
-
-- **T-1 Code pack end-to-end**: ingest a small repo (B) → "implement feature
-  X in this repo" → produced code imports/runs (objective verifier passes
-  3/3 on 3 different features) and uses ≥1 structurally-retrieved neighbor
-  (a function/call the vector pass alone would have missed) in 2/3 runs.
-- **T-2 Contract generality**: the book and legal packs are expressible as
-  pure config against `VerifierSpec` — no core code changes required to
-  *load* them (their quality is evaluated with the big model, separately).
-- **T-3 Honesty of verdicts**: every verification result in a run log carries
-  its confidence tier and (judge tier) the retrieved evidence it was based on;
-  a deliberately unverifiable claim yields *annotation*, not a silent pass or
-  a hard block.
-- **T-4 Latency**: verifier passes add ≤ 30% to code-pack turn latency vs.
-  Phase P baseline (verifiers may be the most expensive part of a turn; the
-  budget is real).
-
----
-
-## Phase H — Harness-as-tool (overlaps anything after A)
-
-The main chat model invokes the harness mid-conversation. Hybrid trigger
-(unchanged design):
-
-1. **Heuristics pre-filter** (`agent_detect.py`, extended): trivial turns
-   never enter the harness; obviously complex turns may skip confirmation.
-   Cheap, never the sole decider.
-2. **Primary: native tool calling.** llama-server's OpenAI-compatible endpoint
-   accepts `tools`; `create_llama_client` already returns a stock OpenAI
-   client pointed at it; the serving model is tool-capable. Expose
-   `deep_reason(prompt, session_id)` first; add `retrieve(query)` only once
-   B exists (a `retrieve` tool over an empty backend is theater). The
-   oobabooga hook executes the call and feeds the result back; the model
-   continues from it.
-3. **Backstop: text sentinel.** Reuse the existing sentinel channel
-   (`[[multistep-inner]]` / `should_skip_orchestrator` machinery, turned
-   around): a `[[USE-DEEP-REASONING]]` marker (or fenced JSON) that the
-   `custom_generate_reply` hook intercepts. Works on any model; kept alive
-   even after native tool calling works.
-
-### Pass criteria
-
-- **H-1 Trigger precision**: 20-turn scripted conversation (10 trivial, 10
-  complex) → harness fires on ≥ 8/10 complex, on ≤ 2/10 trivial; every
-  non-heuristic decision was made by the model (tool call) or the sentinel,
-  never by the pre-filter alone.
-- **H-2 Tool-call loop**: native `deep_reason` call → harness runs → result
-  fed back → model produces a coherent continuation that *uses* the result
-  (checked on 3/3 runs with the big model as judge).
-- **H-3 Backstop equivalence**: same 10 complex turns through the sentinel
-   path only → same ≥ 8/10 fire rate. The two paths are interchangeable.
-- **H-4 No false-positive latency**: trivial turns cost ≤ 1 extra model pass
-  (the pre-filter or a single refusal) — the trigger machinery is invisible
-  to the common case.
-
----
-
-## Cross-cutting work (runs alongside all phases)
-
-1. **Live smoke tests**: small-model end-to-end pipeline test, gated/skipped
-   by default, run explicitly before merging a phase. Plus golden-fixture
-   tests feeding recorded bad model outputs (truncated JSON, wrong meta-types,
-   junk shapes) through the `llama_utils.py` parsers to catch silent
-   regressions in the repair logic.
-2. **Cleanup**: remove `mcp_server/` (abandoned) or freeze it with a banner;
-   delete `main.bak.py`, `tst_new_orchestrator.py`, and the
-   `history_*.json` / `results_*.json` / `output_*.md` experiment dumps
-   (most of the repo's size); replace the full-machine `requirements.txt`
-   dump with the project's real deps (`openai`, `instructor`, `pydantic`,
-   `pyyaml`, `pytest`, `tiktoken` optional, plus the Qdrant/Chroma client
-   when B lands).
-3. **Tighten the `ExecutorTurn` validator**: `_flatten_qwen_shape` silently
-   converts junk into `result`; add a **strict mode behind a flag** that logs
-   the raw payload at warning level instead of rescuing invisibly. The value
-   is *visibility*, not crashes — a hard fail on small-model junk would be
-   noise.
-4. **The latency/token budget is an acceptance criterion on every phase**,
-   using the existing `prompt_budget.py` and the Phase 0 baseline, not just a
-   capability check. Every new pass (consolidation, neighbor expansion,
-   verifiers, recovery retries) reports its cost in the journal.
-
----
-
-## Process: journal, tickets, wrap-ups
-
-### Session wrap-ups (the AAR input)
-
-- One entry per working session: `journal/S-NNN.md`, started from
-  [`SESSION_TEMPLATE.md`](SESSION_TEMPLATE.md), written **at session end,
-  before closing** — not retroactively.
-- Fixed skeleton, not freeform: phase/tickets touched → what went right →
-  what went wrong → pain points and how they were solved → decisions made
-  (worthwhile ones get promoted into this file's *Settled decisions* table) →
-  measurements vs. pass criteria → handoff (exact state of world + next
-  2–3 moves).
-- **Supersede rule:** every entry names which stale state docs it supersedes
-  or retires. The repo's `TODO.md` / `CRITICAL_ANALYSIS.md` /
-  `SYNTHESISER_STATUS_ANALYSIS.md` pile is the exact disease this prevents —
-  one session must not leave another session's state doc unretired.
-- The eventual **AAR is mechanical synthesis**: all `S-NNN` entries +
-  pass-criterion outcomes + `git log`. No new writing, no memory-archaeology.
-- The journal is meta-memory *about the process*; the `context` layer is
-  object-memory *about the domain*. The main reader of a wrap-up is the next
-  agent session, which reads files, not UIs — that is why this beats a
-  tracker server for lessons.
-
-### Tickets — files, not a server
-
-- `journal/tickets/<id>.md`, one file per work item, instantiated from
-  `PLAN.md` when a phase starts. Spec in [`tickets/README.md`](tickets/README.md).
-- IDs: `<phase>-<NN>` with phase ∈ {`0`, `A`, `B`, `C`, `H`, `P`, `T`};
-  e.g. `0-03`, `A-01`, `P-02`. Distinct from pass-criterion IDs (`P0-3`,
-  `P-P1`, …), which are single-digit and referenced as `criteria:` in
-  front-matter.
-- The plan's pass criteria **are** the acceptance criteria. No parallel
-  criteria list exists; a ticket without a `criteria:` entry is not a ticket.
-- Status changes are commits. The git history is the audit trail — better
-  than most Jira boards.
-- **Graduation triggers — do not re-litigate until one fires:**
-  (a) two humans executing in parallel, needing shared workflow state; or
-  (b) ~30–50 active items where grep-on-markdown demonstrably hurts.
-  If you graduate, in order of fit: Gitea/Forgejo issues on existing git
-  infra (lightest) → Redmine (boring single container) → Plane
-  (product-grade, multi-service, most babysitting).
-
----
-
-## Sequencing summary
-
-1. **Phase 0** — document flexibility + broken imports + baseline. *Days;
-   unblocks P and everything's ergonomics.*
-2. **Phase A** — `ContextStore` keystone + BM25 document retrieval, zero new
-   services. *Days; validates the single most important decision in the plan
-   before the hard backends exist.*
-3. **Phase P ∥ Phase B** (concurrent streams) — P: tool-set config → DAG →
-   parallel frontier with frozen snapshot + recovery. B: ingest + graph
-   retrieval. *Weeks each.*
-4. **Phase T** — `code` pack end-to-end (needs B + P), then book/legal/
-   science packs against the layered `VerifierSpec`. *Weeks.*
-5. **Phase C** (chat memory) and **Phase H** (harness-as-tool) — inserted as
-   capacity allows; C is low priority, H only needs A.
-6. **Throughout** — live smoke tests, cleanup, strict parsing mode, and the
-   per-phase cost gate.
-
-Phase completion is recorded in the session wrap-up that finishes the phase's
-last ticket: its *Measurements vs. pass criteria* section holds the
-pass/fail per criterion, wall-clock, token counts, and notable model
-failures. A failed criterion blocks the phase's "done" status, not the next
-phase's start, unless it's on the critical path (0 → A → B → code pack).
+## Phase O — Organisation (zero behaviour change, no server)
+
+O-04 bookkeeping → O-03 reproducible env + endpoint truth → O-02 archive,
+delete, `.gitignore` → O-01 journal restructure → O-05 README.
+
+- **O-1 Cold start:** a cold session's first message states six facts:
+  - the phase
+  - the active ticket
+  - the next command
+  - the server URL and model
+  - the interpreter
+  - the last pushed commit
+
+  It must have opened ≤ 3 files to do so, listed in its S-entry.
+- **O-2 Clean root:** `git ls-files | cut -d/ -f1 | sort -u` equals
+  {`.gitignore`, `AGENTS.md`, `Makefile`, `README.md`, `conftest.py`,
+  `journal`, `oobabooga_extension`, `orchestrator.yaml`, `pyproject.toml`,
+  `reasoning_sub_agents`, `requirements.txt`, `scripts`, `tests`}.
+  `git status --porcelain --ignored`, minus the whitelisted local dirs, is
+  empty after `make venv && make test`.
+- **O-3 Env:** a fresh `.venv` gives 186 passed / ≤ 10 skipped / 0 failed,
+  or the exact diff is recorded in O-03. It is never silently skipped.
+  Python 3.12 per D-012.
+- **O-4 Single-sourced process:** `grep -l 'Status changes are commit[s]'
+  AGENTS.md journal/PLAN.md journal/tickets/README.md` returns exactly one
+  file. Every `D-nnn` cited anywhere exists in `DECISIONS.md`
+  (`make board` lints this).
+- **O-5 Archive complete:** every path in O-02's lists appears in
+  `archive/README.md`. No `.gitignore` line matches `^\*\.(md|json)$`.
+  `git check-ignore journal/baseline/runs/probe.json` exits 1.
+- **O-6 Bookkeeping:** `git ls-files journal/baseline/runs | wc -l` = 9.
+  S-003 exists with `reconstructed: true`. Every open ticket's front-matter
+  has `criteria`, `model`, `effort`, `needs_server` and `depends_on`
+  (`make board` lints this).
+- **O-7 README runs:** every command `README.md` gives exists and runs as
+  written. Added at instantiation in S-004.
+
+## Phase 0 — Document flexibility (0-01…0-09) and close-out
+
+Done:
+- 0-01: broken imports.
+- 0-02: optional titles.
+- 0-03: `merge_parts`.
+- 0-04: composer ops + dedupe rule.
+- 0-05: file parts for code.
+- 0-07: integrity tests.
+- 0-08: `Document.from_dict`.
+
+Open:
+- 0-06: consolidation pass.
+- 0-09: double-fenced file parts.
+
+The close-out exists because the Phase 0 measurements are not yet trustworthy:
+- Call labels are wrong (N13).
+- Attribution is approximate at `--jobs > 1` (N14).
+- Streamed calls carry no usage (N15).
+- The S-002 token baseline is stale by 3–5× (N18).
+
+**0-close-A — measurement and bookkeeping.** Tickets 0-14 → 0-16 → 0-06,
+0-09, plus 0-11.
+- 0-14 makes the harness truthful:
+  - phase labels come from the orchestrator ContextVar;
+  - per-turn attribution is exact;
+  - streamed usage is recorded;
+  - real executor statuses are recorded;
+  - `check.py` gets the three missing P0 checks;
+  - `compare.py` gets the marginal G2 and an exit 2 on contaminated input.
+- 0-16 re-baselines s1–s4 at `--jobs 1` and attributes the token growth.
+- Then 0-06 and 0-09 are re-measured.
+- 0-11 repairs the oobabooga extension (N1, N12).
+
+**0-close-B — defects**, slotted between other work:
+- 0-10a skips the critique call whose text is ignored.
+- 0-10b makes the critique drive regeneration (N2; after Q-01).
+- 0-12 covers N4 partial status, N7 history copies and N3 integrity coverage.
+- 0-13 covers N9 instructor-path coverage.
+
+(0-15 is unallocated.)
+
+Pass criteria. The IDs are unchanged (no renumbering); P0-6…P0-9 were added
+by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
+- **P0-1 Shape:** "write a CLI tool that does X" gives a final `Document`
+  with ≥ 1 `file` part of runnable code and zero prose-report parts *about*
+  the tool. Three different X; pass = 3/3.
+- **P0-2 Shape:** "write a report on Y" gives sectioned markdown with no
+  `file` parts.
+- **P0-3 Dedupe:** a deliberately overlapping follow-up puts `merge_parts`
+  or a patch in the op log. In the final document no two parts share > 50%
+  of body tokens.
+- **P0-4 Consolidation cost** (revised by D-007; was "turn totals B vs A"):
+  - On an uncontaminated `--jobs 1` run, the consolidate call's p50 ≤ 1.5×
+    the compose p50 from the same run.
+  - Marginal tokens (the consolidate call plus the summary call it triggers)
+    ≤ 25% of the turn total.
+- **P0-5 Regression:** the golden-fixture parser tests (truncated JSON, junk
+  meta-shapes through the `llama_utils.py` repair logic) are all green.
+- **P0-6 Measurement truth (0-14):**
+  - Every call in a fresh run carries a phase label, and the labels sum to
+    the call total.
+  - Per-turn call and token counts are exact at `--jobs 3`, proved by a test
+    with a fake client.
+  - Streamed calls carry usage.
+  - Executor statuses are real.
+  - `check.py` asserts P0-1/P0-2/P0-3.
+  - `compare.py` computes the marginal G2 and exits 2 on `jobs > 1` or a
+    compose p50 > 1.3× the recorded clean baseline.
+  - Re-scoring the tracked runs reproduces S-002's compose, consolidate and
+    decompose verdicts.
+- **P0-7 Fresh baseline (0-16):**
+  - s1–s4 × 2 at `--jobs 1` in an idle window, every run accepted by
+    `compare.py`'s contamination check.
+  - New denominators (wall, compose p50, prompt/completion tokens per turn
+    per scenario) in `AGENTS.md` § Baseline and in `INDEX.md`.
+  - The prompt-token growth since S-002 attributed by call kind, with a
+    fix-or-accept decision appended to `DECISIONS.md`.
+- **P0-8 Defects closed with evidence:**
+  - Every N-defect a ticket names gets a test that fails on the pre-fix code
+    and passes after. For a coverage defect (N9), the test exercises the
+    uncovered path.
+  - A behavioural defect also needs a run file showing it fixed. For 0-09
+    that is an s1 run where `check.py`'s "file part bodies not pre-fenced"
+    passes; for 0-11, the user confirms in the UI that the extension loads
+    and answers.
+- **P0-9 Decomposer cost and quality:**
+  - 0-10a: critique calls drop to 0 on turns with ≥ 3 sub-tasks, and the
+    sub-task-count distribution over s1–s4 is unchanged.
+  - 0-10b: decompose-pair p50 and the sub-task-count distribution are
+    recorded, a simple request yields 1 sub-task, and G3 (Q-3) against
+    0-10a is ≥ 0.45.
+
+## Phase Q — Quality evaluation (∥ A; Q-01 needs no server)
+
+- **Q-01, the judge tool:**
+  - `journal/baseline/quality.py` plus `rubrics/`.
+  - `judge.base_url` and a reachability check come first.
+  - Pairwise with position swap; ties count 0.5; an absolute rubric is
+    secondary.
+  - Reports win-rate with a Wilson 95% CI.
+  - Validated offline on pairs cut from the tracked run files.
+  - Open question for the user at the start: Devstral-123B as judge beside
+    Qwen, run sequentially, or accept self-judging. If self-judging is
+    used, the caveat goes to DECISIONS.
+- **Q-02, experiment Q-E1 (harness vs single call):**
+  - Three arms with the same prompt, model and `max_tokens`:
+    (a) single call, (b) harness, (c) harness + consolidation.
+  - ≥ 10 prompts × 2 domains.
+  - Win-rate + CI per pairing, with tokens and wall time per arm beside
+    quality.
+  - A scheduled campaign. `--jobs 3` is acceptable, since outputs and tokens
+    stay clean. It answers the README's open question, whatever the answer is.
+- **Q-03, the G3 gate in `compare.py`:** needs n ≥ 10 pairs. Win-rate
+  ≥ 0.45 passes, < 0.35 fails, and anything between is inconclusive.
+
+Pass criteria:
+- **Q-1:** the judge agrees with 5 user-labelled real pairs ≥ 4/5. It also
+  picks the correct side of 5 plausible-but-wrong pairs (missing requested
+  section; off-by-one in code) ≥ 4/5, in both orders.
+- **Q-2:** Q-E1 is recorded with tokens and wall time per arm.
+- **Q-3:** G3 is exercised on the Q-E1 set.
+- **Q-4:** a judge budget is recorded ("10-pair set ≤ N tokens / ≤ M min"),
+  and judge calls never run inside a timing-gate window.
+- **Q-5:** repeatability. The same pair in the same order, judged twice,
+  agrees ≥ 90%.
+
+## Phase A — `ContextStore` keystone (zero new deps or services; D-001)
+
+- **A-01, interface on paper:**
+  - `ContextStore{store_id, list(filters), read(id, start, end),
+    search(query, k, filters) -> list[Hit], ask(question, k), summary(id)}`.
+  - `Hit{store_id, doc_id, chunk_id, title, span, score, text, provenance}`.
+  - A write-side method is reserved (D-004), declared but not implemented.
+  - The conflict policy:
+    - working memory outranks corpus for current-task questions;
+    - cross-store conflicts are annotated, never silently resolved;
+    - every citation carries a store id.
+- **A-02:** `Document` becomes the first store.
+  - A hand-rolled BM25 replaces substring search.
+  - The first-8-parts fallback is deleted.
+  - This fixes N5.
+- **A-03:** a `ToolRegistry` (name → schema + handler) replaces the tool set
+  that is closed in three places (the `oracle/tools.py` union,
+  `DocumentOracle._run`, the type hints). The oracle takes a set of stores
+  with a `store` param.
+- **A-04:**
+  - Op-log entries get `seq`/`ts`.
+  - Snapshot/rehydrate moves out of `harness.py` into
+    `reasoning_sub_agents/document/`, for R and Q-02.
+- **A-05:** the live criteria run.
+
+Pass criteria:
+- **A-1 Citation honesty:** `ask` over a > 30-part document returns citations
+  that all exist and all contain the cited content, with no first-8
+  artefacts. Ten questions, five of them answered in the last third. Pass
+  = 10/10.
+- **A-2 Rank quality:** for 10 planted needles, the containing part is in the
+  top 3 for ≥ 8/10.
+- **A-3 No regression vs substring:** on the same needles BM25 recalls a
+  strict superset of what the substring search did.
+- **A-4 Interface stability:** the `ContextStore` protocol type-checks
+  against `Document` without adapter hacks, and every interface method is
+  exercised by a live call in A-1/A-2.
+- **A-5 Zero new runtime dependencies and zero new services.** If either
+  appears, the phase has grown into B and is re-split.
+- **A-6 Latency:** `search`/`ask` wall time on a 30-part document is within
+  10% of the baseline oracle calls (P0-7 denominators).
+- **A-7 One place per tool:** adding a tool touches one place; a test
+  registers a dummy tool and the executor calls it.
+- **A-8 Persistence groundwork:**
+  - Op-log entries carry a monotonic `seq` and a `ts`.
+  - A run's `Document` snapshot → rehydrate round-trip is lossless.
+  - The harness uses the promoted functions.
+- **A-9 Interface dry-run:** the A-01 design note walks the interface through
+  five store kinds (document, papers, books, code, notes/chat). Per method
+  it records "fits" or the change made. The user approves it before A-02
+  starts.
+
+## Phase V — Vertical slice, papers-lite (D-005)
+
+- A script fetches ~20 arXiv papers on one topic into `corpora/papers-lite/`
+  (ignored), using the LaTeX source where available and PDF text otherwise.
+- Papers are chunked by section into an SQLite FTS5 store that implements
+  `ContextStore`. No dense index, no graph, no embedding service.
+- Two tasks run through the existing pipeline: "summarise paper X" and
+  "compare papers X, Y, Z on question Q", with citations (store/doc/chunk
+  ids). Q-01 judges the results.
+
+Pass criteria:
+- **V-1:** `search(store=papers)` returns `Hit`s with provenance, and `ask`'s
+  citations resolve to real chunks 10/10.
+- **V-2:** 20-needle recall@10 ≥ 0.8 with FTS5 alone.
+- **V-3:** the compare task's citations resolve ≥ 90%, and the judge scores
+  ≥ 3.5/5 on a 4-criterion rubric in 2/3 runs.
+- **V-4:** per-query p50 ≤ 0.5 s; cost per turn is recorded.
+
+## Phase R — Durable runs (D-006). R-mech now; R-quality lives in T-book (T-6)
+
+Mechanics are tested against a recorded or fake client, plus one live
+2-milestone smoke.
+- Run persistence under `/runs/<run_id>/`:
+  - a manifest with request, pack, config, status and budgets;
+  - a `Document` snapshot after every compose;
+  - an op log with `seq`/`ts`;
+  - sub-task results, so `body_source` ops replay;
+  - `plan.json`;
+  - an event log.
+- The two-level milestone loop, with budgets for milestones, sub-tasks per
+  milestone and tokens per run.
+- Pause-for-user: `review` milestones put the run in `awaiting_input`.
+- A `jobs` CLI: `start | status | resume | cancel | export | log` (D-002).
+- An in-run notes scratchpad (canon, facts, decisions) that packs fill and
+  executors query.
+
+Pass criteria:
+- **R-1:** SIGKILL after milestone k, then `resume`, completes the run with
+  an identical op-log prefix and no milestone re-executed. Tested with a
+  fake client in seconds, plus one live 2-milestone smoke.
+- **R-2:** an edited milestone title appears in the resumed event log, and a
+  removed milestone never executes.
+- **R-3:** a checkpoint write takes ≤ 200 ms per compose at 100 parts; the
+  snapshot is ≤ 2× the rendered size.
+- **R-4:** a scripted CLI smoke gets the expected exit codes; `status` shows
+  milestone i/N and tokens.
+- **R-5:** `status: budget_exhausted`; `export` yields all completed
+  milestones; manifest tokens ≥ budget.
+- **R-6, tier 0:** 3 chapters in 1 run. Given a planted contradiction, a
+  `replace_in_part`/`merge_parts` op targets the earlier chapter.
+
+## Phase B — Corpus framework, `papers` adapter, tier 1 (D-003, D-004)
+
+Ingest runs unattended while R-mech is coded.
+- **B-01, the framework** (`reasoning_sub_agents/context/`):
+  - `Corpus`;
+  - `Chunk{chunk_id, doc_id, corpus_id, ordinal, text, span, heading_path,
+    metadata}`;
+  - `Edge{src, dst, type, weight}`;
+  - FTS5 lexical retrieval (from V);
+  - batch, resumable, incremental ingest (per-document state, content-hash
+    dedupe);
+  - cost accounting.
+- **B-02, the dense backend and embedding service,** chosen by a 1 M-chunk
+  benchmark on the real box:
+  - backends: Qdrant vs LanceDB vs sqlite-vec;
+  - embedding: llama.cpp `--embedding` vs a CPU process.
+- **B-03, hybrid retrieval:** RRF of BM25 + dense, optional rerank, and
+  citation-graph expansion of 1–2 hops.
+- **B-04, the `papers` adapter at tier 1:** one arXiv category × one year,
+  ~10–20 K papers.
+  - Metadata plus LaTeX-first full text, split into sections.
+  - References become citation edges.
+
+Pass criteria:
+- **B-1:** kill mid-ingest, then resume: zero duplicate chunks and all docs
+  present (hash check).
+- **B-2:** on the papers 20-needle set, hybrid recall@10 is ≥ 0.8 and
+  ≥ max(lexical, dense). Graph expansion rescues ≥ 3/20.
+- **B-3:**
+  - Tier 1 ingests unattended.
+  - At 10× (tier 1 vs V), p50 ≤ 2× and recall stays within 10%.
+  - Single-query p50 ≤ 2 s.
+- **B-4:** one door. A-4 is re-checked with the full store behind it.
+- **B-5:** a cost profile per corpus is in the journal.
+
+Later phases, instantiated when reached:
+- **B2:** wiki, books and code adapters. Code is the original v1 B: tree-sitter
+  plus a call/import graph, with v1's structural-recall criteria.
+- **B3:** the KB write side (D-004), with a round-trip criterion.
+- **B4:** scale tiers 2–4 (Simple English Wikipedia → full Wikipedia → full
+  arXiv), gated on measured throughput.
+
+## Phase P — Execution model (deferrable; D-009)
+
+Design detail is in v1 § Phase P. Steps:
+1. Code tools are registered through A's `ToolRegistry`.
+2. `depends_on` and sub-task ids are added; the decompose prompt carries the
+   conservative-bias rule.
+3. Frontiers run in a bounded pool with `copy_context` against a frozen
+   `Document.clone()` snapshot. Compose stays serial and has an explicit
+   duty to reconcile overlapping siblings.
+4. Serial recovery: a flagged sub-task is re-run with its siblings' outputs.
+5. The legacy `previous_results` chain is retired, together with N10's
+   broken synthesiser and its 10 skipped tests.
+
+Pass criteria:
+- **P-P1:** a two-branch DAG (A → {B, C} → D) overlaps for real: frontier
+  wall ≤ 0.75× the sum of B and C run sequentially.
+- **P-P2:** no executor mid-frontier sees a part created after the frontier
+  started. Asserted via op-log `seq`/`ts`.
+- **P-P3:** when both siblings produce near-duplicates, the final document has
+  a merged part and no duplicate (the P0-3 > 50% shared-token check).
+- **P-P4:** with a missing edge (B needs A's output), the verifier flags B and
+  B is re-run serially with A's output in context. The *recovered* result
+  is correct.
+- **P-P5:** a degenerate 1-node DAG costs ≤ 10% more turn latency than the
+  baseline.
+- **P-P6:** 20 random decompositions all order topologically; an injected
+  cycle is rejected with a clear error, not a hang.
+
+## Phase T — Packs: code prover → science → book (D-010)
+
+The pack API extends `config/registry.py` (`pack:` in `OrchestratorConfig`,
+`extra='forbid'`). It covers prompt overrides, tool set, stores, verifiers and
+output shape. The `DomainPack`/`VerifierSpec` sketch is in v1 § Phase T.
+- **T-code** is the prover: corpus-less first (CLI scenarios plus a run/test
+  verifier); the B2-code store comes later.
+- **T-science** works over the `papers` store:
+  - summarise;
+  - claim/method/result cards (in the run scratchpad until B3);
+  - compare N papers;
+  - literature review.
+
+  Its verifier is a claim-vs-retrieved-passage judge plus objective citation
+  resolution.
+- **T-book:**
+  - the `books` adapter (B2);
+  - canon notes;
+  - a consistency verifier that emits revision ops on earlier chapters;
+  - series continuation = the R loop plus the canon store.
+- **legal:** a config-only existence proof.
+
+Pass criteria:
+- **T-1:** code pack end-to-end. Three different features in a small repo:
+  the produced code imports and runs 3/3. With B2-code, it also uses ≥ 1
+  structurally retrieved neighbour in 2/3 runs.
+- **T-2:** book and legal packs load as pure config against `VerifierSpec`,
+  with no core code changes.
+- **T-3:** every verdict in a run log carries its confidence tier and, at
+  judge tier, its evidence. An unverifiable claim yields an annotation, not
+  a silent pass or a hard block.
+- **T-4:** verifiers add ≤ 30% to code-pack turn latency vs the Phase P
+  baseline.
+- **T-5:** science. From 5 papers, ≥ 90% of the claim-card citations resolve
+  to the right passage. A 3-paper comparison scores ≥ 3.5/5 from the judge.
+- **T-6:** book. Continue a 3-chapter seed with ingested canon: 0
+  contradictions on a 10-item checklist in 2/3 runs, and ≥ 1 revision op on
+  an earlier chapter from a later milestone.
+
+## Phases C and H
+
+**H, faces (D-002).** The oobabooga harness-as-tool trigger uses three
+mechanisms:
+- a heuristic pre-filter (`agent_detect.py`);
+- native tool calling (`deep_reason(prompt, session_id)` first; `retrieve`
+  only once B exists);
+- the `[[USE-DEEP-REASONING]]` text sentinel as a universal backstop.
+
+H also covers the `jobs` CLI from R and per-chat extension state (N19).
+
+**C, chat memory (D-011):** chat turns become a B2 adapter.
+
+Pass criteria:
+- **H-1:** a scripted 20-turn conversation, 10 trivial and 10 complex turns.
+  The harness fires on ≥ 8/10 complex and ≤ 2/10 trivial. Every
+  non-heuristic decision is made by the model's tool call or by the sentinel.
+- **H-2:** a native `deep_reason` call runs the harness, feeds the result back,
+  and the model's continuation uses it, 3/3 (judge).
+- **H-3:** the sentinel path alone gets the same ≥ 8/10 on the complex turns.
+- **H-4:** a trivial turn costs ≤ 1 extra model pass.
+- **C-1:** a fact planted in turn N and asked for ≥ 10 turns later is
+  retrieved and cited in 3/3 runs.
+- **C-2:** over a 20-turn continuation, the rolling summary holds the 3 active
+  threads and no stale ones, 3/3 (judge).
+- **C-3:** last-6 behaviour still works as the fallback when the store is
+  empty or errors.
+
+## Cross-cutting
+
+- Live smoke runs (`make smoke`) before closing a behavioural ticket, plus
+  the golden-fixture parser tests.
+- A strict-mode flag for the `ExecutorTurn` validator (`_flatten_qwen_shape`
+  rescues junk silently): it logs the raw payload at warning level. The value
+  is visibility, not crashes. Unscheduled.
+- Every new pass (consolidation, expansion, verifiers, recovery retries)
+  reports its marginal cost (D-007).
+
+## Defect register (approved plan § 1.3, re-checked by O-01)
+
+| # | Defect | Where | Owner |
+| --- | --- | --- | --- |
+| N1 | oobabooga extension imports the moved `reasoning_sub_agents.chat_adapter`; `setup()` swallows the error and disables itself | `oobabooga_extension/script.py:83, :416` | 0-11 |
+| N2 | Self-critique: `should_regenerate` is `< 3 tasks`, the critique text is ignored, `DECISION_PROMPT_TEMPLATE` is dead | `self_critique_decomposition.py:158-177` | 0-10a, 0-10b |
+| N3 | A compose batch of only replace/merge/move/delete passes `assert_payload_kept` unconditionally | `document/integrity.py:13-61` | 0-12 |
+| N4 | Budget-exhausted executor returns `COMPLETED` with "Partial result…" | `oracle_loop_executor.py:211-231` | 0-12 |
+| N5 | Oracle `search` offset: computed on `title+'\n'+body`, sliced on `body` | `document_oracle.py:91-95, 177-185` | A-02 |
+| N6 | Silent endpoint defaults | — | fixed, O-03 (D-008) |
+| N7 | Orchestrator `history` stores component histories by reference | `task_orchestrator.py:158-167` | 0-12 |
+| N8 | `consolidate()` sends outline + summary only, but docs said "previews" | `document_composer.py:357-390` | 0-06 |
+| N9 | `MockOpenAI` is not an `OpenAI` → instructor path untested | `tests/mock_openai.py` | 0-13 |
+| N10 | `RollingDocumentUpdateSynthesiser` broken and unregistered; 10 skipped tests | `document_modification_synthesiser.py` | P (legacy chain) |
+| N11 | PLAN v1 defect table stale | — | fixed, O-01 (v1 archived) |
+| N12 | Extension passes the whole rendered prompt as the user message; clean text stashed, never read | `oobabooga_extension/script.py:350, :424` | 0-11 |
+| N13 | Harness `classify_call` mislabels by system-prompt keyword | `journal/baseline/harness.py` | 0-14 |
+| N14 | `--jobs > 1` attribution approximate | `journal/baseline/harness.py` | caveat fixed, O-04; exact in 0-14 |
+| N15 | Streamed calls record no token usage | `journal/baseline/harness.py` | 0-14 |
+| N16 | `exec_status_counts` always `{'None': n}` | `journal/baseline/harness.py` | 0-14 |
+| N17 | `check.py` lacks the P0-1/P0-2/P0-3 checks; Jaccard trivially 0 on 1-part docs | `journal/baseline/check.py` | 0-14 |
+| N18 | Prompt tokens per turn grew 3–5× after 0-04/0-05, ungated | run files `20261015T18…`, `…19…` | 0-16 |
+| N19 | Extension: in-memory Documents, one shared orchestrator, unbounded history, global `_pending_turn` | `oobabooga_extension/script.py` | R / H |
+
+Line numbers are as of S-004. Re-check them before editing.
+
+## Sizing (one task per session)
+
+| Phase | Tickets | Sessions | Server |
+| --- | --- | --- | --- |
+| O | 5 | 2.5–3.5 | none |
+| 0-close-A | 5 | ≈ 1.5 | ≈ 2 h idle (0-16, 0-06, 0-09) |
+| 0-close-B | 4 | ≈ 2 | behavioural only |
+| Q | 3 | 3–4 | Q-02 campaign: 60 turns ≈ 10–17 h at `--jobs 1` |
+| A | 5 | ≈ 3 | A-05 behavioural |
+| V | 3 | ≈ 2 | short |
+| R-mech | 4 | ≈ 3 | one smoke |
+| B (papers, tier 1) | 4 | weeks; ingest unattended | embedding + benchmark |
+| T-science | 3–4 | weeks | campaign |
+
+Phases O through A take ≈ 20 sessions. The first user-visible job (V) lands
+at ≈ 25.
+
+## Task board for tickets not yet instantiated
+
+Model and effort rules:
+- **Fable 5.1** only where reasoning depth decides the outcome: interface and
+  loop designs, and re-plans. Never to implement a spec'd ticket.
+- **Opus 5.5** is the default implementer:
+  - `medium` for a fully specified ticket;
+  - `high` for diagnosis, prompt or behaviour work, concurrency, or library
+    internals;
+  - `xhigh` only for P-02.
+- **Sonnet 5.5** for run-and-record (`low`) and checklist edits (`medium`).
+- No Haiku: every ticket ends in journal writing and commits.
+- A ticket with distinct stages (design / implement / run / analyse) runs
+  one stage per session.
+
+| Ticket | Model / effort | Planning | Note |
+| --- | --- | --- | --- |
+| V-01 fetch / parse / FTS5 store | Opus 5.5 / medium | short | LaTeX/PDF parsing choices |
+| V-02 tasks through the pipeline | prompts Opus / medium → runs Sonnet / medium | — | |
+| V-03 judge + write-up | Opus 5.5 / medium | — | |
+| R-01 run model design | Fable 5.1 / high | yes | persistence layout, milestone semantics, replay |
+| R-02 persistence + resume | Opus 5.5 / high | — | |
+| R-03 milestone loop + planner prompt | Opus 5.5 / high | — | |
+| R-04 `jobs` CLI, fake-client tests, smoke | Opus 5.5 / medium | — | |
+| B-01 corpus framework | Fable / high → Opus / high | yes | |
+| B-02 backend + embedding benchmark | Sonnet / medium → Opus / medium | — | the user chooses; DECISIONS records it |
+| B-03 hybrid retrieval + citation graph | Opus 5.5 / high | — | |
+| B-04 papers adapter, tier 1 | Opus / high → ingest Sonnet / low | — | |
+| T pack API | Fable / high → Opus / high | yes | T-2 depends on it |
+| T-code prover | Opus 5.5 / medium | — | |
+| T-science | Opus 5.5 / high | — | reuses Q-01's judge |
+| T-book | Fable / high → Opus / high | yes | the hardest verifier |
+| P-01 DAG schema + conservative-bias prompt | Opus 5.5 / high | — | |
+| P-02 frontier, snapshot, concurrency | Opus 5.5 / xhigh | short | the only concurrency-correctness ticket |
+| P-03 serial recovery | Opus 5.5 / high | — | |
+| P-04 retire legacy chain | Sonnet 5.5 / low | — | |

@@ -30,5 +30,7 @@ smoke:
 check:
 	$(PY) journal/baseline/check.py $(RUN)
 
+# Ticket table from front-matter + lint (O-4, O-6). Stdlib only, so it
+# falls back to python3 when the venv is absent.
 board:
-	@echo 'make board: placeholder until O-01 adds journal/board.py'
+	@$(if $(wildcard $(PY)),$(PY),python3) journal/board.py $(ARGS)

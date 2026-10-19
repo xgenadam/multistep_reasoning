@@ -1,0 +1,80 @@
+# Decisions
+
+Append-only register of load-bearing decisions. Other files cite these by ID
+and never restate them. To change one, append a new entry whose
+`Supersedes:` names it, then change only the old entry's status word to
+`superseded-by D-nnn`. Never edit or delete an entry's text.
+
+Format (four lines; the `Supersedes:` line also carries `Re-open if:`):
+
+    ## D-nnn — <title>    <date> · <S-entry> · active
+    Decision: …
+    Why: …
+    Supersedes: D-nnn | none    Re-open if: …
+
+The seed (D-001…D-012) was written by ticket O-01 from the approved roadmap
+v2 (`archive/plan-2026-10-18-approved.md` § 2.0, letter IDs D-A…D-Q, noted in
+each title as "plan D-x") and the still-standing parts of PLAN v1's "Settled
+decisions" and AGENTS.md's "Locked plan decisions". Plan decisions that were
+one-off actions (D-C, D-D), process rules (D-J, D-K, D-L → `AGENTS.md`,
+`tickets/README.md`) or ticket-local (D-N → ticket 0-06) are not repeated here.
+
+## D-001 — One door: every store sits behind `ContextStore`    2026-10-13 · S-001 · active
+Decision: The model never loads a corpus; it explores stores (the `Document` first, then corpora, notes, chat turns) through one bounded `ContextStore` interface the oracle queries. Phase A adds zero runtime deps and zero services, and adds `context/` beside the existing layout with no package-rename commit (plan D-Q).
+Why: Corpus unbounded, window bounded. Interface mistakes must surface in days against `Document` alone, before any backend exists; a rename breaks the extension's imports and every test import for no Phase A value.
+Supersedes: none (PLAN v1 Phase A item 1 "pure rename commit")    Re-open if: A-4 fails, or a second store cannot be added without changing the interface.
+
+## D-002 — Faces: oobabooga extension for chat, `jobs` CLI for long runs; MCP retired    2026-10-18 · S-004 · active
+Decision: `reasoning_sub_agents` stays platform-agnostic behind two thin faces: the oobabooga extension (chat turns, harness-as-tool) and a headless `jobs` CLI (Phase R) for multi-hour runs. The MCP server stays retired (schema in `archive/mcp-deep-reason-schema.md`). (plan D-G)
+Why: Multi-hour jobs cannot be driven from a chat UI; the baseline harness is already half a headless driver.
+Supersedes: none (PLAN v1 "oobabooga extension only")    Re-open if: a third client needs the harness and neither face can serve it.
+
+## D-003 — Storage: SQLite FTS5 lexical, vector backend chosen at B-02, no Neo4j    2026-10-18 · S-004 · active
+Decision: Lexical retrieval is SQLite FTS5 (stdlib). The dense backend and embedding service are chosen at B-02 by a 1 M-chunk benchmark on the real box. Graphs are in-process (sqlite adjacency over a persisted edge list); no Neo4j. (plan D-A)
+Why: Nothing pre-B needs vectors; the choice depends on measured throughput on a box shared with a 27B/123B generator.
+Supersedes: none (PLAN v1 "server-based Qdrant or Chroma")    Re-open if: B-02's benchmark shows no candidate meets B-3, or graph queries outgrow sqlite.
+
+## D-004 — Corpora: a framework with per-source adapters, papers first; write side later    2026-10-18 · S-004 · active
+Decision: Phase B is a corpus framework (parse → structure-aware chunks → lexical + dense index → typed edges; resumable, incremental ingest) with per-source adapters, starting with `papers` at tier 1. Wiki/books/code adapters, the KB write side (derived notes with provenance; notes never outrank sources) and scale tiers 2–4 are later phases with their own gates. (plan D-H, D-I)
+Why: Papers, wiki pages and books need the same pipeline; the citation/link/canon graph generalises the call graph. Scale must be proven by tiers, not assumed.
+Supersedes: none (PLAN v1 Phase B "tree-sitter + call graph", read-only KB)    Re-open if: the papers adapter needs framework changes that a second adapter would not share.
+
+## D-005 — Science pack first, after a papers-lite vertical slice    2026-10-18 · S-004 · active
+Decision: The first full pack and corpus are science / paper analysis. A vertical slice (Phase V: ~20 arXiv papers, FTS5 only, summarise + compare through the existing pipeline) runs right after Phase A. `code` stays the small contract prover. (plan D-B, D-M)
+Why: Paper analysis is the user's first target; a thin slice tests the interface months before the full corpus framework.
+Supersedes: none (PLAN v1 "build the `code` pack end-to-end first")    Re-open if: V shows the interface or pipeline cannot do grounded comparison at all.
+
+## D-006 — Durable runs: persisted, resumable, bounded two-level milestone loop    2026-10-18 · S-004 · active
+Decision: Every long run persists under `/runs/<run_id>/` and resumes after a kill. Reach comes from a bounded two-level loop (plan/outline → milestones, each milestone one pipeline turn against shared stores) with explicit budgets, not recursive self-decomposition. (plan D-F)
+Why: A book or a 200-paper review is hours to days of calls; flat decomposition does not reach that scale and unbounded recursion is budget-unstable.
+Supersedes: none    Re-open if: R-1 or R-6 cannot be met with two levels.
+
+## D-007 — Gates: marginal cost on uncontaminated runs, and quality by judge    2026-10-18 · S-004 · active
+Decision: Cost gates measure the marginal cost of the pass under test (its calls plus the calls it triggers) ÷ the turn total, only on uncontaminated runs (`compare.py` refuses `jobs > 1` or an inflated compose p50), against a baseline re-recorded whenever prompts change materially. From Phase Q on, quality is a gate too: pairwise judge, n ≥ 10. (plan D-O, D-E)
+Why: Turn totals vary 36K–305K tokens across identical scenarios, and the Phase 0 prompt changes grew tokens 3–5× unnoticed (N18). Cost-only gates cannot tell whether the harness helps.
+Supersedes: none (P0-4's "turn totals B vs A", cost-only gates)    Re-open if: a marginal measure cannot be attributed (labels unreliable) or judge repeatability fails Q-5.
+
+## D-008 — No silent LLM endpoint default    2026-10-18 · S-004 · active
+Decision: The generator endpoint comes from `LLM_BASE_URL`, the harness `--base-url`, or the YAML `llm` block, in that precedence; code never defaults it, and run files record the real endpoint. `:8000` is the host-side Devstral-123B (big model, future judge); `:5000` at `host.containers.internal` is the container-side Qwen3.8-27B generator. (plan D-P; implemented in O-03)
+Why: Two silent defaults (8000 vs 5000) sent calls to nothing and mislabelled run files (N6).
+Supersedes: none    Re-open if: never silently; a new default needs a new entry.
+
+## D-009 — Execution model: conservative-biased DAG, serial compose, serial recovery    2026-10-13 · S-001 · active
+Decision: Sub-tasks form a DAG whose decompose prompt emits an edge whenever unsure; frontiers run in parallel against a frozen snapshot while compose stays serial and must reconcile overlapping siblings; a verifier-flagged, context-starved sub-task is re-run serially with its siblings' outputs, not merely detected.
+Why: A wrong sequential edge costs one slot of latency; a wrong parallel edge costs a blind sub-task. Detection without recovery is a dead end.
+Supersedes: none    Re-open if: P-P4 shows serial recovery cannot repair a missing edge.
+
+## D-010 — Packs are config bundles with a layered `VerifierSpec`    2026-10-13 · S-001 · active
+Decision: A domain pack is configuration (prompts, tools, stores, verifiers, output shape), not core code. `VerifierSpec` is layered (objective hook / LLM judge / opt-in FOL), and every verdict carries a confidence tier: objective pass > judge-agree > judge-unsure → annotation.
+Why: Code verifiers are objective; book, legal and science verifiers are a different mechanism, and proving the contract with `code` alone would hide that.
+Supersedes: none    Re-open if: T-2 fails (a pack needs core code changes to load).
+
+## D-011 — Chat memory stays on the rolling summary    2026-10-13 · S-001 · active
+Decision: A small rolling summary stays in-prompt; stored chat turns become one more store behind the door (later, as a corpus adapter), never a separate memory system. The last-6-turns fallback keeps running until Phase C demonstrably beats it. Low priority.
+Why: Retrieval gives recall, not coherent present context.
+Supersedes: none    Re-open if: C-2 fails with the summary in place.
+
+## D-012 — Python 3.12 only until instructor is upgraded    2026-10-19 · S-005 · active
+Decision: `requires-python = ">=3.12,<3.13"`; `make venv` builds a uv-managed 3.12. The ticket that upgrades instructor past 1.3 also lifts the cap.
+Why: `instructor==1.3.*` pins `jiter<0.5`, which has no cp313 wheel and fails to build under PyO3 0.21 on 3.13.
+Supersedes: none (approved plan O-3 "fresh .venv (3.13)")    Re-open if: instructor is upgraded, or 3.12 is unavailable on the box.
