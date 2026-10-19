@@ -21,7 +21,7 @@ Step one is a reachability check (GET /models). The client is a stock
 Protocol (design § 3): each pair is judged with candidate a shown first
 (order `ab`) and second (order `ba`). A pair's outcome is the candidate that
 wins both orders; anything else is a tie. A verdict that fails to parse is
-retried once, then recorded as no verdict, which is excluded from the
+retried once with the next seed, then recorded as no verdict, which is excluded from the
 decisive count (it is not a tie).
 
 Output: journal/baseline/verdicts/<timestamp>_<label>.json, rewritten after
@@ -183,10 +183,10 @@ class Judge:
         return {'temperature': 0, 'seed': self.seed, 'max_tokens': self.max_tokens,
                 'thinking': 'on' if self.thinking else 'off'}
 
-    def attempt(self, messages: list[dict]) -> dict:
+    def attempt(self, messages: list[dict], seed: int) -> dict:
         t0 = time.perf_counter()
         resp = self.client.chat.completions.create(
-            model=self.model, messages=messages, temperature=0, seed=self.seed,
+            model=self.model, messages=messages, temperature=0, seed=seed,
             max_tokens=self.max_tokens,
             extra_body={'chat_template_kwargs': {'enable_thinking': self.thinking}},
         )
@@ -197,6 +197,7 @@ class Judge:
         usage = resp.usage
         verdict = parse_verdict(content)
         return {
+            'seed': seed,
             'seconds': round(seconds, 3),
             'finish_reason': choice.finish_reason,
             'prompt_tokens': getattr(usage, 'prompt_tokens', None),
@@ -209,10 +210,11 @@ class Judge:
         }
 
     def judge(self, messages: list[dict]) -> dict:
-        """One pair-order: retried once on an unparseable verdict."""
-        attempts = [self.attempt(messages)]
+        """One pair-order: retried once on an unparseable verdict, with the
+        next seed, since at temperature 0 the same seed repeats the output."""
+        attempts = [self.attempt(messages, self.seed)]
         if attempts[0]['verdict'] is None:
-            attempts.append(self.attempt(messages))
+            attempts.append(self.attempt(messages, self.seed + 1))
         final = attempts[-1]
         return {
             'winner': final['verdict']['winner'] if final['verdict'] else None,
