@@ -48,9 +48,10 @@ This file holds no decisions; it cites them by `D-nnn`.
   `chat.completions.create`. Two consequences:
   - The client must stay a stock `OpenAI` instance, because `llama_utils.py`
     only takes the instructor path for `isinstance(client, OpenAI)`.
-  - `instructor.from_openai` must be built per request. A hoisted one
-    bypasses the harness's counting
-    (`tests/test_llama_utils/test_instructor_seam.py`).
+  - The instructor client must be built per request. It is what
+    `instructor.from_openai` builds, with `create` wrapped to capture
+    reasoning (D-015). A hoisted one binds a stale `create` and bypasses the
+    harness's counting (`tests/test_llama_utils/test_instructor_seam.py`).
 
 ## Environment (do not re-discover)
 

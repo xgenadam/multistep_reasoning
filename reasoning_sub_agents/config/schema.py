@@ -1,6 +1,12 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+Thinking = Literal['off', 'on']
+StepKind = Literal[
+    'decompose', 'decompose_critique', 'executor_turn', 'oracle',
+    'compose', 'consolidate', 'summary',
+]  # progress.STEP_KINDS
 
 
 class LLMConfig(BaseModel):
@@ -37,6 +43,32 @@ class OptionsConfig(BaseModel):
     # sub-task. Off by default so it cannot perturb the baseline or the
     # 0-04/0-05 verification runs.
     consolidation: bool = False
+    # D-013: every call sends an explicit thinking switch. Off by default and
+    # for baselines; thinking_by_step overrides it per call kind. Reasoning
+    # text never reaches a prompt; it goes to a JSONL side log, one file per
+    # turn under thinking_log_dir/<date>/ (log_thinking None = jsonl when any
+    # step thinks, else off).
+    thinking: Thinking = 'off'
+    thinking_by_step: dict[StepKind, Thinking] = Field(default_factory=dict)
+    log_thinking: Literal['off', 'jsonl'] | None = None
+    thinking_log_dir: str = 'runs/thinking'
+
+    @field_validator('thinking', 'log_thinking', mode='before')
+    @classmethod
+    def _yaml_switch(cls, value):
+        # YAML 1.1 reads a bare off/on as a boolean.
+        if value is False:
+            return 'off'
+        if value is True:
+            return 'on'
+        return value
+
+    @field_validator('thinking_by_step', mode='before')
+    @classmethod
+    def _yaml_switches(cls, value):
+        if isinstance(value, dict):
+            return {k: cls._yaml_switch(v) for k, v in value.items()}
+        return value
 
 
 class OrchestratorConfig(BaseModel):

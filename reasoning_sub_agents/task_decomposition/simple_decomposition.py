@@ -161,7 +161,7 @@ class SimpleTaskDecomposer(TaskDecomposerBase):
         )
         self.history['decomposition_prompt'] = initial_decompose_prompt
         set_phase('Initial decomposition (JSON)')
-        with llm_step('Initial decomposition (JSON)'):
+        with llm_step('Initial decomposition (JSON)', 'decompose'):
             decompose_response = get_streamed_json_response(
                 llama_client=self.llm_client,
                 llm_input=generate_simple_llm_input(initial_decompose_prompt),

@@ -132,7 +132,7 @@ class DocumentOracle:
             ),
             self.prompt_token_budget,
         )
-        with llm_step('Oracle ask'):
+        with llm_step('Oracle ask', 'oracle'):
             answer = get_streamed_json_response(
                 llama_client=self.llm_client,
                 llm_input=generate_simple_llm_input(prompt),

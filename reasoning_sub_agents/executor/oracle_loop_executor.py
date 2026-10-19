@@ -134,7 +134,8 @@ class OracleLoopExecutor(ExecutorBase):
                     )
                 )
             with llm_step(
-                f'Execute {sub_task.decomposed_sub_task.name} (turn {round_idx + 1})'
+                f'Execute {sub_task.decomposed_sub_task.name} (turn {round_idx + 1})',
+                'executor_turn',
             ):
                 turn = get_streamed_json_response(
                     llama_client=self.llm_client,

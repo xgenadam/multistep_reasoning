@@ -29,6 +29,11 @@ Each call is attributed to its turn through a ContextVar (N14), so per-turn
 counts and tokens are exact at any --jobs. Streamed calls ask for a final
 usage chunk (N15); a server that omits it leaves `usage_reported: false` and
 the turn says its token totals are partial.
+
+Every call carries the thinking switch from `--thinking` (D-013, default
+off); each record keeps the switch it was sent with, its `reasoning_tokens`
+and a capped excerpt of its reasoning. The full text goes to the side log
+under `/runs/thinking/`, never into the run file or a prompt.
 """
 
 from __future__ import annotations
@@ -55,7 +60,12 @@ from reasoning_sub_agents.config.schema import (  # noqa: E402
     OptionsConfig,
 )
 from reasoning_sub_agents.document import Document  # noqa: E402
-from reasoning_sub_agents.llama_utils import create_llama_client  # noqa: E402
+from reasoning_sub_agents.llama_utils import (  # noqa: E402
+    create_llama_client,
+    message_reasoning,
+    reasoning_tokens,
+    split_reasoning,
+)
 from reasoning_sub_agents.progress import live, live_session  # noqa: E402
 from reasoning_sub_agents.schemas import TaskStatus  # noqa: E402
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E402
@@ -73,6 +83,9 @@ from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E40
 # pipeline running under the 2.8K cap is not what it will run under after
 # the fix lands (or via the oobabooga UI, which sets its own limit).
 MAX_TOKENS = 8192
+# Reasoning excerpt kept per call in the run file (tickets/README rule 8);
+# the full text is in the side log.
+REASONING_EXCERPT_CHARS = 500
 
 _current_phase: contextvars.ContextVar[str] = contextvars.ContextVar(
     'baseline_phase', default='unknown'
@@ -175,6 +188,20 @@ class CallRecord:
     label_source: str = 'keyword'  # 'phase' | 'keyword'
     usage_reported: bool = False
     error: str | None = None  # exception type when the call raised
+    thinking: bool | None = None  # enable_thinking the request carried (D-013)
+    reasoning_tokens: int | None = None
+    reasoning_chars: int = 0
+    reasoning_excerpt: str = ''
+
+
+def _switch(kwargs: dict) -> bool | None:
+    template = (kwargs.get('extra_body') or {}).get('chat_template_kwargs') or {}
+    return template.get('enable_thinking')
+
+
+def _reasoning_fields(text: str, usage) -> dict:
+    return dict(reasoning_tokens=reasoning_tokens(usage), reasoning_chars=len(text),
+                reasoning_excerpt=text[:REASONING_EXCERPT_CHARS])
 
 
 class MeasuredCompletions:
@@ -232,7 +259,7 @@ class MeasuredCompletions:
             index = self._next_index
             self._next_index += 1
         base = dict(index=index, kind=kind, phase=phase, turn=_current_turn.get(),
-                    step=step, label_source=label_source)
+                    step=step, label_source=label_source, thinking=_switch(kwargs))
         t0 = time.perf_counter()
         try:
             resp = self._real.create(**kwargs)
@@ -248,12 +275,16 @@ class MeasuredCompletions:
             dt = time.perf_counter() - t0
             usage = getattr(resp, 'usage', None)
             choices = getattr(resp, 'choices', None)
+            message = getattr(choices[0], 'message', None) if choices else None
+            text = (message_reasoning(message)
+                    or split_reasoning(getattr(message, 'content', None))[0])
             self._append(CallRecord(
                 **base, stream=False, seconds=dt, first_token_s=dt, chunks=1,
                 prompt_tokens=getattr(usage, 'prompt_tokens', None),
                 completion_tokens=getattr(usage, 'completion_tokens', None),
                 finish_reason=getattr(choices[0], 'finish_reason', None) if choices else None,
                 usage_reported=usage is not None,
+                **_reasoning_fields(text, usage),
             ))
             return resp
         return self._streaming(resp, base, t0)
@@ -264,6 +295,8 @@ class MeasuredCompletions:
         finish_reason = None
         usage = None
         error = None
+        reasoning: list[str] = []
+        content: list[str] = []
         try:
             for chunk in gen:
                 chunks += 1
@@ -277,6 +310,8 @@ class MeasuredCompletions:
                 delta = getattr(choice, 'delta', None)
                 if first_token_s is None and getattr(delta, 'content', None):
                     first_token_s = time.perf_counter() - t0
+                reasoning.append(message_reasoning(delta))
+                content.append(getattr(delta, 'content', None) or '')
                 fr = getattr(choice, 'finish_reason', None)
                 if fr:
                     finish_reason = fr
@@ -292,6 +327,8 @@ class MeasuredCompletions:
                 completion_tokens=getattr(usage, 'completion_tokens', None),
                 finish_reason=finish_reason, usage_reported=usage is not None,
                 error=error,
+                **_reasoning_fields(
+                    ''.join(reasoning) or split_reasoning(''.join(content))[0], usage),
             ))
 
     def _append(self, rec: CallRecord) -> None:
@@ -327,6 +364,8 @@ def _agg(records: list[CallRecord]) -> dict:
         'prompt_tokens': sum(r.prompt_tokens or 0 for r in records),
         'completion_tokens': sum(r.completion_tokens or 0 for r in records),
         'calls_without_usage': sum(_missing_usage(r) for r in records),
+        'reasoning_tokens': sum(r.reasoning_tokens or 0 for r in records),
+        'reasoning_chars': sum(r.reasoning_chars for r in records),
     }
 
 
@@ -348,6 +387,11 @@ def llm_stats(records: list[CallRecord]) -> dict:
         'tokens_partial': without_usage > 0,
         'label_sources': dict(Counter(r.label_source for r in records)),
         'calls_raised': sum(r.error is not None for r in records),
+        # D-013: calls sent with thinking on / with no explicit switch at all.
+        'thinking_calls': sum(r.thinking is True for r in records),
+        'calls_without_switch': sum(r.thinking is None for r in records),
+        'reasoning_tokens': sum(r.reasoning_tokens or 0 for r in records),
+        'reasoning_chars': sum(r.reasoning_chars for r in records),
         'wall_seconds_sum_calls': round(sum(r.seconds for r in records), 2),
         'by_kind': {k: _agg(v) for k, v in sorted(by_kind.items())},
         'by_phase': {k: _agg(v) for k, v in sorted(by_phase.items())},
@@ -489,7 +533,10 @@ def run_scenario(
     measured: MeasuredCompletions,
     run_index: int,
     build_orchestrator=None,
+    log_tag: str = '',
 ) -> dict:
+    """Run one scenario's turns. log_tag prefixes each turn's thinking side
+    log name, so runs on the same day do not share a file."""
     record = {
         'scenario': scenario['id'],
         'run': run_index,
@@ -524,7 +571,8 @@ def run_scenario(
                 # live_session() gives llm_step labels somewhere to land; the
                 # harness reads them per call (phase_kind).
                 with live_session() as state:
-                    for kind, payload in orch.iter_query(turn['text'], document=doc):
+                    for kind, payload in orch.iter_query(
+                            turn['text'], document=doc, turn_id=f'{log_tag}{turn_id}'):
                         if kind == 'status':
                             _current_phase.set(str(payload))
                             state.llm_label = ''  # a step label never spans phases
@@ -630,6 +678,9 @@ def main() -> int:
                     help='cheap integration check: 1 run of the first scenario')
     ap.add_argument('--consolidation', action='store_true',
                     help='enable the 0-06 consolidation pass after the final sub-task')
+    ap.add_argument('--thinking', choices=('off', 'on'), default='off',
+                    help="model thinking switch for every call (D-013; default off, "
+                         "the baseline setting)")
     ap.add_argument('--label', default=None)
     ap.add_argument('--base-url', default=os.environ.get('LLM_BASE_URL'),
                     help='generator endpoint, e.g. http://host.containers.internal:5000/v1 '
@@ -660,7 +711,8 @@ def main() -> int:
     client = create_llama_client(base_url=args.base_url)
     backend = str(client.base_url).rstrip('/')
     print(f'Backend: {backend}')
-    print(f'Scenarios: {[s["id"] for s in scenarios]} x {args.runs} run(s), jobs={args.jobs}')
+    print(f'Scenarios: {[s["id"] for s in scenarios]} x {args.runs} run(s), '
+          f'jobs={args.jobs}, thinking={args.thinking}')
 
     measured = install_instrumentation(client)
     if measured is None:
@@ -671,13 +723,12 @@ def main() -> int:
     results: list[dict | None] = [None] * len(jobs)
     errors: list[str] = []
 
+    options = OptionsConfig(consolidation=args.consolidation, thinking=args.thinking)
+    started = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+
     def make_orchestrator(llm_client):
-        if args.consolidation:
-            cfg = OrchestratorConfig(
-                options=OptionsConfig(consolidation=True)
-            )
-            return TaskOrchestrator.from_orchestrator_config(cfg, llm_client=llm_client)
-        return TaskOrchestrator.instantiate(llm_client=llm_client)
+        cfg = OrchestratorConfig(options=options)
+        return TaskOrchestrator.from_orchestrator_config(cfg, llm_client=llm_client)
 
     def work(idx: int, item: tuple[dict, int]) -> None:
         s, r = item
@@ -685,6 +736,7 @@ def main() -> int:
             results[idx] = run_scenario(
                 s, client, measured, r,
                 build_orchestrator=lambda: make_orchestrator(client),
+                log_tag=f'{started}_',
             )
         except Exception as exc:  # noqa: BLE001 - report, keep other jobs
             errors.append(f'{s["id"]} run {r}: {exc!r}')
@@ -708,6 +760,10 @@ def main() -> int:
         'label': label,
         'runs_per_scenario': args.runs,
         'jobs': args.jobs,
+        # D-013: the switch every call was sent with, and where the full
+        # reasoning text went (one JSONL per turn, named <started>_<turn id>).
+        'thinking': {'setting': options.thinking, 'by_step': options.thinking_by_step,
+                     'log_dir': options.thinking_log_dir, 'started_at': started},
         'caveat': ('per-call wall_seconds are inflated by concurrent server load; '
                    'use --jobs 1 for timing gates (per-turn calls and tokens are '
                    'exact, 0-14)')
@@ -731,7 +787,7 @@ def main() -> int:
             print(f"{rec['scenario']:<16} r{rec['run']} t{turn['index']}: "
                   f"wall={turn['wall_seconds']:>6}s calls={ll['calls']:>2} "
                   f"ptok={ll['prompt_tokens']:>6} ctok={ll['completion_tokens']:>6}"
-                  f"{'+' if ll['tokens_partial'] else ''} "
+                  f"{'+' if ll['tokens_partial'] else ''} rtok={ll['reasoning_tokens']} "
                   f"parts={d['part_count']} {d['part_kinds']} "
                   f"dup={'n/a' if dup is None else f'{dup:.2f}'} ops={d['turn_op_counts']}")
     if attribution['calls'] != attribution['calls_in_turns']:

@@ -17,7 +17,7 @@ from .execution_synthesiser.document_composer import (
     changed_part_ids,
 )
 from .executor.base import ExecutorBase
-from .llama_utils import create_llama_client, prompt_logging
+from .llama_utils import create_llama_client, prompt_logging, thinking_session
 from .oracle.document_oracle import DocumentOracle
 from .progress import (
     live,
@@ -74,10 +74,11 @@ class TaskOrchestrator:
         document: Document | None = None,
         chat_context: str | None = None,
         on_progress: Callable[[str], None] | None = None,
+        turn_id: str | None = None,
     ) -> ChatCompletionMessage | tuple[ChatCompletionMessage, AccumulatedResult]:
         result = None
         for kind, payload in self.iter_query(
-            user_input, document=document, chat_context=chat_context
+            user_input, document=document, chat_context=chat_context, turn_id=turn_id
         ):
             if kind == 'status' and on_progress is not None:
                 on_progress(str(payload))
@@ -95,9 +96,16 @@ class TaskOrchestrator:
         *,
         document: Document | None = None,
         chat_context: str | None = None,
+        turn_id: str | None = None,
     ) -> Iterator[tuple[str, Any]]:
-        """Yield ('status', message) then ('done', AccumulatedResult). Same-thread UI hook."""
-        with prompt_logging(self.options.log_prompts):
+        """Yield ('status', message) then ('done', AccumulatedResult). Same-thread UI hook.
+
+        turn_id names the turn's thinking side log (D-013); one is made up if
+        it is None.
+        """
+        with prompt_logging(self.options.log_prompts), thinking_session(
+            self.options, turn_id=turn_id
+        ):
             yield from self._iter_query(
                 user_input, document=document, chat_context=chat_context
             )

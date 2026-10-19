@@ -89,7 +89,7 @@ class SimpleAgentExecutor(ExecutorBase):
             )
         prompt_str = cap_prompt(prompt_str, self.prompt_token_budget)
         prompt = generate_simple_llm_input(prompt_str)
-        with llm_step(f'Execute: {sub_task.decomposed_sub_task.name}'):
+        with llm_step(f'Execute: {sub_task.decomposed_sub_task.name}', 'executor_turn'):
             execution_response = stream_conversation(
                 llama_client=self.llm_client, llm_input=prompt
             )

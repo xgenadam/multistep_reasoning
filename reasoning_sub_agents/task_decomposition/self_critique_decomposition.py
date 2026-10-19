@@ -146,7 +146,7 @@ class SelfCritiquingDecomposition(SimpleTaskDecomposer):
             self.prompt_token_budget,
         )
         
-        with llm_step('Critique decomposition'):
+        with llm_step('Critique decomposition', 'decompose_critique'):
             with limited_inner_tokens(1024):
                 critique_response = stream_conversation(
                     llama_client=self.llm_client,
@@ -200,7 +200,7 @@ class SelfCritiquingDecomposition(SimpleTaskDecomposer):
         )
         self.history['regeneration_prompt'] = revised_prompt
 
-        with llm_step('Regenerate decomposition (JSON)'):
+        with llm_step('Regenerate decomposition (JSON)', 'decompose'):
             revised_response = get_streamed_json_response(
                 llama_client=self.llm_client,
                 llm_input=generate_simple_llm_input(revised_prompt),

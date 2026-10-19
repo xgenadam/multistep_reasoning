@@ -15,6 +15,16 @@ import pytest
 from .conftest import RUNS
 
 RUN_FILES = sorted(RUNS.glob('*.json'))
+
+
+def _is_legacy(path) -> bool:
+    """Written before 0-14: aggregates only, keyword labels."""
+    run = json.loads(path.read_text())
+    return not any('calls' in turn for rec in run['results'] for turn in rec['turns'])
+
+
+LEGACY_FILES = [p for p in RUN_FILES if _is_legacy(p)]
+FRESH_FILES = [p for p in RUN_FILES if not _is_legacy(p)]
 BASELINE = RUNS / '20261015T143545Z_pre-consolidation-baseline_s1_cli_code-s2_report-s3_followup-s4_anchors.json'
 SMOKE = RUNS / '20261015T132320Z_smoke_s1_cli_code.json'
 POST_MERGE = RUNS / '20261015T182246Z_post-merge-0.04_s1_cli_code-s2_report-s3_followup.json'
@@ -40,11 +50,11 @@ def _phase_counts(harness, llm: dict) -> Counter:
 
 
 def test_tracked_run_files_are_present():
-    assert len(RUN_FILES) >= 10
+    assert len(LEGACY_FILES) >= 10
     assert all(p.exists() for p in (BASELINE, SMOKE, POST_MERGE, AB_CONTROL, AB_TREATMENT))
 
 
-@pytest.mark.parametrize('path', RUN_FILES, ids=lambda p: p.name[:16])
+@pytest.mark.parametrize('path', LEGACY_FILES, ids=lambda p: p.name[:16])
 def test_phase_labels_agree_with_keyword_labels(harness, path):
     for _, turn in _turns(path):
         llm = turn['llm']
@@ -99,7 +109,24 @@ def test_check_scores_every_tracked_file(check):
             checks.append(check.label_check(turn))
             assert checks
             name, ok, detail = checks[-1]
-            assert ok is None and 'predates 0-14' in detail
+            if path in FRESH_FILES:
+                assert ok is True, (path.name, detail)  # P0-6 on a live run
+            else:
+                assert ok is None and 'predates 0-14' in detail
+
+
+@pytest.mark.parametrize('path', FRESH_FILES, ids=lambda p: p.name[:16])
+def test_fresh_run_files_record_the_thinking_switch(path):
+    # P0-10 (0-15): the header names the setting and every call carried it.
+    run = json.loads(path.read_text())
+    setting = run['thinking']['setting']
+    for _, turn in _turns(path):
+        llm = turn['llm']
+        assert llm['calls_without_switch'] == 0
+        assert llm['thinking_calls'] == (llm['calls'] if setting == 'on' else 0)
+        if setting == 'off':
+            assert llm['reasoning_tokens'] == 0
+        assert all(len(c['reasoning_excerpt']) <= 500 for c in turn['calls'])
 
 
 def _score(check, path, scenario_id, index, run=0):

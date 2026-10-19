@@ -4,9 +4,13 @@ import os
 import re
 import threading
 import types
+import uuid
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, TypeVar, get_args, get_origin
 
 import instructor
@@ -15,7 +19,7 @@ from openai.types.chat import ChatCompletion, ChatCompletionChunk, ChatCompletio
 from pydantic import TypeAdapter
 
 from .agent_detect import INNER_SKIP_SENTINEL
-from .progress import begin_llm
+from .progress import begin_llm, current_step_kind, live
 from .schemas import BooleanResponse, ChatResponse, LLMInput, LLMMessage
 
 _json_completion: ContextVar[bool] = ContextVar('json_completion', default=False)
@@ -69,6 +73,145 @@ def limited_inner_tokens(max_new_tokens: int):
         _inner_token_limit.reset(token)
 
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Thinking (D-013): an explicit switch on every call, reasoning captured and
+# logged out of band. Nothing here is read back by a prompt builder, the
+# summary or the composer.
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class ThinkingLog:
+    """One orchestrator turn's thinking setting and its captured reasoning."""
+
+    setting: str = 'off'
+    by_step: dict[str, str] = field(default_factory=dict)
+    log: str = 'off'  # 'off' | 'jsonl'
+    log_dir: str = 'runs/thinking'
+    turn_id: str = ''
+    records: list[dict] = field(default_factory=list)
+
+    def path(self) -> Path:
+        safe = re.sub(r'[^A-Za-z0-9._-]+', '_', self.turn_id) or 'turn'
+        day = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        return Path(self.log_dir) / day / f'{safe}.jsonl'
+
+
+_thinking_log: ContextVar[ThinkingLog | None] = ContextVar('thinking_log', default=None)
+
+
+def thinking_log() -> ThinkingLog | None:
+    """The current turn's thinking log, or None outside a thinking_session."""
+    return _thinking_log.get()
+
+
+@contextmanager
+def thinking_session(options: Any = None, *, turn_id: str | None = None):
+    """Apply options.thinking* for one orchestrator turn.
+
+    log_thinking None means jsonl when any step thinks, off otherwise.
+    """
+    setting = getattr(options, 'thinking', 'off')
+    by_step = dict(getattr(options, 'thinking_by_step', None) or {})
+    log = getattr(options, 'log_thinking', None)
+    if log is None:
+        log = 'jsonl' if 'on' in (setting, *by_step.values()) else 'off'
+    session = ThinkingLog(
+        setting=setting,
+        by_step=by_step,
+        log=log,
+        log_dir=getattr(options, 'thinking_log_dir', 'runs/thinking'),
+        turn_id=turn_id
+        or f"{datetime.now(timezone.utc).strftime('%H%M%S')}-{uuid.uuid4().hex[:8]}",
+    )
+    token = _thinking_log.set(session)
+    try:
+        yield session
+    finally:
+        _thinking_log.reset(token)
+
+
+def thinking_enabled() -> bool:
+    """Whether the call about to be made should think (per-step override first)."""
+    session = _thinking_log.get()
+    if session is None:
+        return False
+    return session.by_step.get(current_step_kind() or '', session.setting) == 'on'
+
+
+def thinking_extra_body() -> dict:
+    """The explicit switch every call sends (vLLM and llama-server templates)."""
+    return {'chat_template_kwargs': {'enable_thinking': thinking_enabled()}}
+
+
+_THINK_BLOCK = re.compile(r'\s*<think>(.*?)(?:</think>|$)\s*', re.DOTALL)
+
+
+def split_reasoning(content: str | None) -> tuple[str, str]:
+    """(reasoning, answer): a leading <think>…</think> moved out of content.
+
+    The fallback for servers without a reasoning parser. An unterminated
+    block (truncated generation) is all reasoning.
+    """
+    if not content:
+        return '', content or ''
+    match = _THINK_BLOCK.match(content)
+    if match is None:
+        return '', content
+    return match.group(1).strip(), content[match.end():]
+
+
+def message_reasoning(message: Any) -> str:
+    """Reasoning text a server's parser put beside the content, if any."""
+    if message is None:
+        return ''
+    extra = getattr(message, 'model_extra', None) or {}
+    for name in ('reasoning_content', 'reasoning'):
+        value = getattr(message, name, None) or extra.get(name)
+        if value:
+            return str(value)
+    return ''
+
+
+def reasoning_tokens(usage: Any) -> int | None:
+    details = getattr(usage, 'completion_tokens_details', None)
+    if isinstance(details, dict):
+        return details.get('reasoning_tokens')
+    return getattr(details, 'reasoning_tokens', None)
+
+
+def record_reasoning(
+    text: str, *, path: str, tokens: int | None = None
+) -> dict | None:
+    """Log one call's reasoning to the turn's side log (never to a prompt)."""
+    session = _thinking_log.get()
+    if session is None or not (text or tokens):
+        return None
+    state = live()
+    record = {
+        'ts': datetime.now(timezone.utc).isoformat(timespec='milliseconds'),
+        'turn_id': session.turn_id,
+        'step': state.llm_label if state is not None else '',
+        'kind': current_step_kind(),
+        'setting': 'on' if thinking_enabled() else 'off',
+        'path': path,
+        'reasoning_tokens': tokens,
+        'chars': len(text),
+        'text': text,
+    }
+    session.records.append(record)
+    if session.log == 'jsonl':
+        try:
+            out = session.path()
+            out.parent.mkdir(parents=True, exist_ok=True)
+            with out.open('a', encoding='utf-8') as handle:
+                handle.write(json.dumps(record) + '\n')
+        except OSError as exc:
+            logger.warning('thinking log write failed: %s', exc)
+    return record
+
 
 R = TypeVar('R')
 Processor = Callable[[OpenAI, LLMInput], R]
@@ -184,7 +327,7 @@ def extract_content(response: ChatResponse) -> str:
         choice = response.choices[0]
         if hasattr(choice, 'message') and choice.message.content:
             content = choice.message.content
-        return content.strip()
+        return split_reasoning(content)[1].strip()
 
     # Streaming case: handle iterator or list uniformly
     chunks: Iterator[ChatCompletionChunk]
@@ -198,7 +341,8 @@ def extract_content(response: ChatResponse) -> str:
         if delta.content is not None:
             content += delta.content
 
-    return content.strip()
+    # D-013: reasoning is logged by the call path, never returned as content.
+    return split_reasoning(content)[1].strip()
 
 
 def extract_message(response: ChatResponse) -> ChatCompletionMessage:
@@ -231,7 +375,7 @@ def extract_message(response: ChatResponse) -> ChatCompletionMessage:
             # See OpenAI docs/cookbook for full example if you use tools
             pass
 
-    accumulated.content = accumulated.content.strip() or None
+    accumulated.content = split_reasoning(accumulated.content)[1].strip() or None
     return accumulated
 
 
@@ -280,8 +424,16 @@ def _get_streamed_json_response_inner(
     instructor_kwargs = instructor_kwargs or {}
 
     if isinstance(llama_client, OpenAI):
-        instr_client = instructor.from_openai(
-            llama_client,
+        # What instructor.from_openai builds, with create wrapped so every
+        # attempt's reasoning is logged and stripped before instructor parses
+        # (D-013, D-015). Built per request: it must bind the client's current
+        # chat.completions.create, which is the harness seam (O-03).
+        instr_client = instructor.Instructor(
+            client=llama_client,
+            create=instructor.patch(
+                create=_reasoning_capture(llama_client.chat.completions.create),
+                mode=instructor.Mode.JSON,
+            ),
             mode=instructor.Mode.JSON,
         )
         if instr_client is not None and callable(getattr(instr_client, 'create', None)):
@@ -291,6 +443,7 @@ def _get_streamed_json_response_inner(
                 response_model=response_model,
                 max_retries=max_retries,
                 timeout=3600,
+                extra_body=thinking_extra_body(),
                 **instructor_kwargs,
             )
             return _finalize_instructor_response(response, partial_callbacks)
@@ -303,9 +456,16 @@ def _get_streamed_json_response_inner(
                 messages=messages,
                 stream=False,
                 timeout=3600,
+                extra_body=thinking_extra_body(),
             )
-            content = extract_message(completion).content or ''
-            final_model = parse_json_model(content, response_model)
+            message = completion.choices[0].message if completion.choices else None
+            think, content = split_reasoning(getattr(message, 'content', None) or '')
+            record_reasoning(
+                message_reasoning(message) or think,
+                path='json',
+                tokens=reasoning_tokens(getattr(completion, 'usage', None)),
+            )
+            final_model = parse_json_model(content.strip(), response_model)
             for callback in partial_callbacks:
                 try:
                     callback(final_model)
@@ -330,6 +490,34 @@ def _get_streamed_json_response_inner(
                 }
             ]
     raise last_error or ValueError('JSON response failed')
+
+
+def _reasoning_capture(create: Callable[..., Any]) -> Callable[..., Any]:
+    """chat.completions.create as instructor calls it, once per attempt.
+
+    instructor 1.3.2 cannot be asked for this afterwards: _raw_response holds
+    only the last attempt and is missing for list[...] models, its usage is a
+    summed copy without completion_tokens_details, and its JSON mode parses
+    from the first '{' to the last '}', which a <think> block can contain.
+    """
+
+    def create_and_capture(*args: Any, **kwargs: Any) -> Any:
+        response = create(*args, **kwargs)
+        choices = getattr(response, 'choices', None)
+        if kwargs.get('stream') or not choices:
+            return response
+        message = choices[0].message
+        think, content = split_reasoning(message.content)
+        if think:
+            message.content = content
+        record_reasoning(
+            message_reasoning(message) or think,
+            path='instructor',
+            tokens=reasoning_tokens(getattr(response, 'usage', None)),
+        )
+        return response
+
+    return create_and_capture
 
 
 def parse_json_model(content: str, response_model: Any) -> Any:
@@ -529,11 +717,24 @@ def stream_conversation(
     #  get processed sequentially this causes a timeout. for now setting it to None
     #  is good enough
     stream = llama_client.chat.completions.create(
-        model=_model_name(), messages=standard_messages, stream=True, timeout=3600
+        model=_model_name(),
+        messages=standard_messages,
+        stream=True,
+        timeout=3600,
+        extra_body=thinking_extra_body(),
     )
 
     chunks: list[ChatCompletionChunk] = []
+    reasoning: list[str] = []
+    content: list[str] = []
+    tokens = None
     for chunk in stream:
+        if getattr(chunk, 'usage', None) is not None:
+            tokens = reasoning_tokens(chunk.usage)
+        if chunk.choices:
+            delta = chunk.choices[0].delta
+            reasoning.append(message_reasoning(delta))
+            content.append(delta.content or '')
         # Real-time processing via callbacks
         for callback in callbacks:
             try:
@@ -544,6 +745,11 @@ def stream_conversation(
 
         chunks.append(chunk)
 
+    record_reasoning(
+        ''.join(reasoning) or split_reasoning(''.join(content))[0],
+        path='stream',
+        tokens=tokens,
+    )
     return chunks
 
 

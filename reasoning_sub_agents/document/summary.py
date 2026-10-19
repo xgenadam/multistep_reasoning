@@ -67,7 +67,7 @@ def update_rolling_summary(
         ),
         prompt_token_budget,
     )
-    with llm_step('Rolling summary'):
+    with llm_step('Rolling summary', 'summary'):
         response = stream_conversation(
             llama_client=llm_client,
             llm_input=generate_simple_llm_input(prompt),

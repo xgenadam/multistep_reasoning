@@ -93,7 +93,7 @@ class FakeOrchestrator:
         self.history: list = []
         self.agent_executor = FakeExecutor()
 
-    def iter_query(self, text, document=None):
+    def iter_query(self, text, document=None, turn_id=None):
         turn = int(text)
         for status, calls in PLAN:
             yield ('status', status)
@@ -261,7 +261,7 @@ def test_a_call_that_raises_stays_in_its_turn(harness):
 
 def test_a_turn_that_raises_keeps_its_calls(harness):
     class Exploding(FakeOrchestrator):
-        def iter_query(self, text, document=None):
+        def iter_query(self, text, document=None, turn_id=None):
             for i, event in enumerate(super().iter_query(text, document)):
                 if i == 1:  # after decompose's two calls
                     raise RuntimeError('pipeline blew up')

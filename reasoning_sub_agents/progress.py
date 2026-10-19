@@ -129,16 +129,38 @@ def set_task_status(name: str, status: str) -> None:
     notify()
 
 
+# The kinds of model call (0-14's harness labels). llm_step sites name theirs,
+# so per-step settings (thinking, D-013) key on the same set.
+STEP_KINDS = (
+    'decompose',
+    'decompose_critique',
+    'executor_turn',
+    'oracle',
+    'compose',
+    'consolidate',
+    'summary',
+)
+_step_kind: ContextVar[str | None] = ContextVar('multistep_step_kind', default=None)
+
+
+def current_step_kind() -> str | None:
+    """The kind named by the innermost llm_step, or None outside one."""
+    return _step_kind.get()
+
+
 @contextmanager
-def llm_step(label: str) -> Iterator[None]:
+def llm_step(label: str, kind: str | None = None) -> Iterator[None]:
+    if kind is not None and kind not in STEP_KINDS:
+        raise ValueError(f'unknown step kind {kind!r}; expected one of {STEP_KINDS}')
     state = live()
     if state is not None:
         state.llm_label = label
         notify()
+    kind_token = _step_kind.set(kind)
     try:
         yield
     finally:
-        pass
+        _step_kind.reset(kind_token)
 
 
 def begin_llm(default_label: str = 'LLM call') -> None:

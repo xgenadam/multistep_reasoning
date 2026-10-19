@@ -521,7 +521,7 @@ Pass criteria:
 | N15 | Streamed calls record no token usage | `journal/baseline/harness.py` | fixed, 0-14 (`include_usage`) |
 | N16 | `exec_status_counts` always `{'None': n}` | `journal/baseline/harness.py` | fixed, 0-14 |
 | N17 | `check.py` lacks the P0-1/P0-2/P0-3 checks; Jaccard trivially 0 on 1-part docs | `journal/baseline/check.py` | fixed, 0-14 |
-| N20 | Model thinking never set or captured: runs take the server default, reasoning is discarded unseen | `reasoning_sub_agents/llama_utils.py` | 0-15 |
+| N20 | Model thinking never set or captured: runs take the server default, reasoning is discarded unseen | `reasoning_sub_agents/llama_utils.py` | fixed, 0-15 (D-013, D-015) |
 | N18 | Prompt tokens per turn grew 3–5× after 0-04/0-05, ungated | run files `20261015T18…`, `…19…` | 0-16 |
 | N19 | Extension: in-memory Documents, one shared orchestrator, unbounded history, global `_pending_turn` | `oobabooga_extension/script.py` | R / H |
 

@@ -310,7 +310,7 @@ class DocumentComposer:
             return []
         prompt = self._build_consolidation_prompt(user_request, document)
         set_phase('Consolidating document (JSON)')
-        with llm_step('Consolidate document ops (JSON)'):
+        with llm_step('Consolidate document ops (JSON)', 'consolidate'):
             response = get_streamed_json_response(
                 llama_client=self.llm_client,
                 llm_input=generate_simple_llm_input(prompt),
@@ -468,7 +468,7 @@ class DocumentComposer:
             self.prompt_token_budget,
         )
         set_phase('Composing document operations (JSON)')
-        with llm_step('Compose document ops (JSON)'):
+        with llm_step('Compose document ops (JSON)', 'compose'):
             response = get_streamed_json_response(
                 llama_client=self.llm_client,
                 llm_input=generate_simple_llm_input(prompt),

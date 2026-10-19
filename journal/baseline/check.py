@@ -196,6 +196,9 @@ def kind_line(turn: dict) -> str:
         if agg:
             cells.append(f"{kind} n={agg['count']} p50={agg['p50_s']}s")
     partial = ' (tokens partial)' if llm.get('tokens_partial') else ''
+    if 'reasoning_tokens' in llm:  # D-013, 0-15
+        cells.append(f"reasoning_tokens={llm['reasoning_tokens']} "
+                     f"thinking_calls={llm['thinking_calls']}/{llm['calls']}")
     return f"labels: {source}{partial}; " + ', '.join(cells)
 
 
@@ -209,7 +212,8 @@ def main() -> int:
     all_ok = True
     print(f"Run: {run.get('label')} @ {run.get('generated_at')} "
           f"({run.get('runs_per_scenario')} run(s)/scenario, jobs={run.get('jobs')}, "
-          f"backend={run.get('backend')})")
+          f"backend={run.get('backend')}, "
+          f"thinking={(run.get('thinking') or {}).get('setting', 'unrecorded (pre-0-15)')})")
     if run.get('errors'):
         print('RUN-LEVEL ERRORS:', *run['errors'], sep='\n  ')
     attribution = run.get('attribution')
