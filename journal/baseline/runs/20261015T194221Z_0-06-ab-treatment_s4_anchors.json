@@ -1,0 +1,284 @@
+{
+  "backend": "http://host.containers.internal:5000/v1",
+  "generated_at": "20261015T194221Z",
+  "label": "0-06-ab-treatment",
+  "runs_per_scenario": 1,
+  "jobs": 1,
+  "caveat": null,
+  "total_calls_observed": 15,
+  "results": [
+    {
+      "scenario": "s4_anchors",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-4",
+        "note": "anchor for total wall-clock and token totals; compare pre- vs post-consolidation. Also exercises decompose->execute->compose breadth (2 sub-tasks).",
+        "min_sub_tasks": 2,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Plan a 7-day study schedule for learning the basics of linear algebra (vectors, matrices, systems of equations). Deliverable 1: a day-by-day schedule table. Deliverable 2: a short checklist of 10 concepts that must be solid before moving on to numerical linear algebra.",
+          "wall_seconds": 1030.6,
+          "llm": {
+            "calls": 15,
+            "prompt_tokens": 378733,
+            "completion_tokens": 9144,
+            "wall_seconds_sum_calls": 1030.45,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 39.83,
+                "max_s": 73.67
+              },
+              "consolidate": {
+                "count": 1,
+                "p50_s": 79.99,
+                "max_s": 79.99
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 92.39,
+                "max_s": 92.39
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 117.73,
+                "max_s": 151.82
+              },
+              "system_other": {
+                "count": 5,
+                "p50_s": 52.11,
+                "max_s": 80.41
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Outline the 7-day topic progression for linear algebra basics": {
+                "count": 1,
+                "p50_s": 23.86,
+                "max_s": 23.86
+              },
+              "Composing after 2/3: Write the day-by-day 7-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 73.67,
+                "max_s": 73.67
+              },
+              "Composing after 3/3: Write the 10-concept readiness checklist (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 39.83,
+                "max_s": 39.83
+              },
+              "Consolidating document": {
+                "count": 1,
+                "p50_s": 79.99,
+                "max_s": 79.99
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 85.29,
+                "max_s": 92.39
+              },
+              "Executing 1/3: Outline the 7-day topic progression for linear algebra basics": {
+                "count": 1,
+                "p50_s": 117.73,
+                "max_s": 117.73
+              },
+              "Executing 2/3: Write the day-by-day 7-day schedule table (Deliverable 1)": {
+                "count": 2,
+                "p50_s": 70.8,
+                "max_s": 132.71
+              },
+              "Executing 3/3: Write the 10-concept readiness checklist (Deliverable 2)": {
+                "count": 2,
+                "p50_s": 87.63,
+                "max_s": 151.82
+              },
+              "Updating summary after 1/3: Outline the 7-day topic progression for linear algebra basics": {
+                "count": 1,
+                "p50_s": 32.61,
+                "max_s": 32.61
+              },
+              "Updating summary after 2/3: Write the day-by-day 7-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 42.81,
+                "max_s": 42.81
+              },
+              "Updating summary after 3/3: Write the 10-concept readiness checklist (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 80.41,
+                "max_s": 80.41
+              },
+              "Updating summary after consolidation": {
+                "count": 1,
+                "p50_s": 52.11,
+                "max_s": 52.11
+              }
+            }
+          },
+          "document": {
+            "part_count": 2,
+            "part_kinds": {
+              "section": 2
+            },
+            "body_h2_headings": 3,
+            "part_titles": [
+              "7-Day Topic Progression Outline",
+              "10-Concept Readiness Checklist"
+            ],
+            "summary_chars": 2446,
+            "content_chars": 12378,
+            "top_dup_pairs": [
+              {
+                "a": "day-by-day-topic-outline",
+                "b": "readiness-checklist",
+                "jaccard": 0.147
+              }
+            ],
+            "max_dup_jaccard": 0.147,
+            "op_counts": {
+              "add_part": 3,
+              "merge_parts": 1
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          },
+          "snapshot": {
+            "title": null,
+            "parts": [
+              {
+                "id": "day-by-day-topic-outline",
+                "kind": "section",
+                "title": "7-Day Topic Progression Outline",
+                "body": "## 7-Day Linear Algebra Study Schedule \u2014 Day-by-Day Topic Outline\n\n| Day | Primary Topic | Secondary / Reinforcement Topic | Suggested Practice Focus |\n|-----|---------------|---------------------------------|--------------------------|\n| **1** | Vector notation, geometric interpretation (R\u00b2, R\u00b3), and vector arithmetic (addition, scalar multiplication, negation) | Building intuition for vector spaces as sets closed under addition and scalar multiplication | Compute 15 vector sums/differences and scalar multiples; sketch each result geometrically; verify commutativity and associativity with numeric examples |\n| **2** | Dot product, cross product (R\u00b3), and linear combinations of vectors | Linear independence, span, and the geometric meaning of dependent vs. independent sets | Calculate dot and cross products for 10 vector pairs; for 6 given sets of 2\u20133 vectors, test linear independence via the cross/dot-product criteria and state the span geometrically |\n| **3** | Matrix multiplication, matrix properties (distributivity, associativity, non-commutativity), and the transpose operation | Viewing matrix\u2013vector multiplication as a linear transformation (column interpretation vs. row interpretation) | Multiply matrices of sizes 2\u00d73\u00b73\u00d72, 3\u00d73\u00b73\u00d71, 1\u00d74\u00b74\u00d71; verify (AB)\u1d40 = B\u1d40A\u1d40; map a simple 2\u00d72 matrix acting on (1,0) and (0,1) to describe the transformation |\n| **4** | Inverse matrices (2\u00d72 formula, 3\u00d73 cofactor/adjugate method), determinant, and rank | Cramer's rule intuition; when an inverse exists (det \u2260 0) and what rank tells you about column/row space | Compute inverses and determinants for five 2\u00d72 and three 3\u00d73 matrices; find the rank of four sample matrices; solve two small Ax = b systems using A\u207b\u00b9 and verify by substitution |\n| **5** | Gaussian elimination, row-echelon / reduced-echelon form, and consistency (unique, infinite, or no solution) | Homogeneous vs. non-homogeneous systems; expressing the solution set in parametric form | Perform full Gaussian elimination on four systems (3\u00d73 and 4\u00d74); classify each as consistent/inconsistent and unique/infinite; write the general solution with free variables |\n| **6** | Mixed timed problem set spanning vectors, matrices, and systems (the \"big-picture\" integration day) | Connecting the threads: how a system's coefficient matrix encodes the vector relationships, and how rank/inverse/elimination are three lenses on the same question | 30-minute timed set: 5 vector-problem items, 5 matrix-operation items, 5 system-solve items; afterwards, annotate each problem with which Day 1\u20135 concept it tests and flag any that took > 3 min |\n| **7** | Full review of all key definitions and theorems; targeted re-drill of weak spots identified on Day 6 | Self-assessment quiz and readiness gap-analysis for numerical linear algebra (what must be solid before pivoting to SVD, QR, iterative solvers, etc.) | 20-question self-test (multiple-choice + short-answer) covering every topic from Days 1\u20135; review every mistake in detail; write a one-page personal summary of the ten core concepts and note any lingering uncertainties |\n\n### Progression Logic\n\n- **Days 1 \u2192 2:** Build the vector toolbox (arithmetic \u2192 inner products \u2192 combinations/independence) so that the language of \"column space\" and \"null space\" has meaning when matrices appear.\n- **Days 3 \u2192 4:** Introduce matrices as operators, then equip the student with the three diagnostic tools (inverse, determinant, rank) that will be reused in every system-solving step.\n- **Day 5:** Unify vectors + matrices into the central algorithm of elementary linear algebra \u2014 Gaussian elimination \u2014 and make the consistency/solution-set vocabulary concrete.\n- **Day 6:** Force integration; mixed problems prevent the \"silo effect\" where a student can do dot products in isolation but cannot set up and solve a 3\u00d73 system from a word problem.\n- **Day 7:** Consolidate and self-diagnose, producing the readiness signal for moving on to numerical linear algebra.\n\n## 7-Day Linear Algebra Study Schedule\n\n| Day | Primary Topic | Sub-topics Covered | Practice/Exercise Focus | Suggested Study Time |\n|-----|---------------|--------------------|--------------------------|----------------------|\n| **1** | **Vectors \u2013 Foundations** | Vector notation (column/row); geometric interpretation in \u211d\u00b2 and \u211d\u00b3; vector addition, subtraction, scalar multiplication, negation; commutativity & associativity of vector arithmetic; intuition for vector spaces as closed sets | Compute 15 vector sums/differences and scalar multiples; sketch each result on a coordinate plane; verify commutativity and associativity with numeric examples; write a 3-sentence verbal description of what \"span\" means geometrically | 2.5 \u2013 3 hrs |\n| **2** | **Vectors \u2013 Products & Independence** | Dot product (algebraic & geometric definitions); cross product in \u211d\u00b3; linear combinations; linear dependence vs. independence; span of a set of vectors; orthogonal vs. parallel vectors | Calculate dot and cross products for 10 vector pairs; for 6 given sets of 2\u20133 vectors, test linear independence using the cross/dot-product criteria and state the span geometrically; identify 4 pairs as orthogonal, parallel, or neither | 2.5 \u2013 3 hrs |\n| **3** | **Matrices \u2013 Operations & Transformations** | Matrix multiplication (dimensional compatibility rule); distributivity, associativity, non-commutativity; transpose operation; matrix\u2013vector product as a linear transformation; column vs. row interpretation of the transformation | Multiply matrices of sizes 2\u00d73\u00b73\u00d72, 3\u00d73\u00b73\u00d71, 1\u00d74\u00d74\u00d71; verify (AB)\u1d40 = B\u1d40A\u1d40 with 3 random pairs; apply a simple 2\u00d72 matrix to (1,0) and (0,1) and describe the resulting geometric transformation (stretch, rotation, shear) | 3 \u2013 3.5 hrs |\n| **4** | **Matrices \u2013 Inverse, Determinant & Rank** | 2\u00d72 inverse formula; 3\u00d73 inverse via cofactor/adjugate method; determinant (cofactor expansion, properties); rank of a matrix; invertibility criterion (det \u2260 0); Cramer's rule intuition; column space vs. null space | Compute inverses and determinants for five 2\u00d72 and three 3\u00d73 matrices; find the rank of four sample matrices; solve two small Ax = b systems using A\u207b\u00b9 and verify by direct substitution; for each matrix, state dim(col-space) and dim(null-space) | 3 \u2013 3.5 hrs |\n| **5** | **Systems of Equations \u2013 Gaussian Elimination** | Gaussian elimination algorithm; row-echelon form (REF) and reduced-echelon form (RREF); pivot positions and free variables; consistency classification (unique / infinite / no solution); homogeneous vs. non-homogeneous systems; parametric form of the solution set | Perform full Gaussian elimination on four systems (two 3\u00d73, two 4\u00d74); classify each as consistent/inconsistent and unique/infinite; write the general solution with free variables in parametric vector form; identify one system whose coefficient matrix is singular and explain why in terms of rank | 3 \u2013 3.5 hrs |\n| **6** | **Integrated Practice Day (Vectors + Matrices + Systems)** | Cross-topic synthesis: how a system's coefficient matrix encodes vector relationships; how rank, inverse, and elimination are three lenses on the same question; translating word problems into matrix equations; common pitfalls across all three pillars | 30-minute timed mixed set: 5 vector items, 5 matrix-operation items, 5 system-solve items; afterwards, annotate each problem with which Day 1\u20135 concept it tests; flag any item that took > 3 minutes and redo it the next morning; write a 5-bullet \"what surprised me\" reflection | 3 \u2013 3.5 hrs |\n| **7** | **Full Review & Self-Assessment** | Re-drill of every key definition and theorem from Days 1\u20135; targeted re-solve of weak spots identified on Day 6; self-assessment quiz; readiness gap-analysis for numerical linear algebra (SVD, QR, iterative solvers) | 20-question self-test (multiple-choice + short-answer) covering all topics from Days 1\u20135; review every mistake in detail and write the correct solution; compose a one-page personal summary listing the ten core concepts and note any lingering uncertainties; set 2 concrete goals for the next study block | 3 \u2013 4 hrs |\n\n### Coverage Checklist\n\n- **Vectors** \u2192 Days 1, 2 (dedicated) + reinforced in Days 3, 5, 6\n- **Matrices** \u2192 Days 3, 4 (dedicated) + reinforced in Days 5, 6\n- **Systems of Equations** \u2192 Day 5 (dedicated) + reinforced in Days 4, 6\n- **Dedicated Practice / Review** \u2192 Day 6 (mixed timed practice) and Day 7 (full review & self-assessment)\n\n### How to Use This Table\n\n1. **Read** the Primary Topic and Sub-topics before starting to frame your session.\n2. **Work through** the Practice/Exercise Focus items by hand (pen & paper); avoid passive re-reading.\n3. **Respect the time block.** If a topic runs long, trim sub-topics rather than skipping the practice column.\n4. **End each day** by writing 2\u20133 sentences in a study journal summarising what you could do and what still feels shaky\u2014this feeds directly into Day 7's gap-analysis.",
+                "origin_task": "Outline the 7-day topic progression for linear algebra basics"
+              },
+              {
+                "id": "readiness-checklist",
+                "kind": "section",
+                "title": "10-Concept Readiness Checklist",
+                "body": "## Readiness Checklist: 10 Concepts Before Numerical Linear Algebra\n\n*If you can check off all ten items below with confidence, you are prepared to move on to numerical linear algebra (SVD, QR factorisation, iterative solvers, condition numbers, etc.).*\n\n- [ ] **1. Vector Operations** \u2013 Can compute addition, subtraction, scalar multiplication, dot product, and cross product for vectors in \u211d\u00b2 and \u211d\u00b3, and sketch or verbally interpret each result (direction, magnitude, orthogonality) on a coordinate diagram.\n\n- [ ] **2. Linear Independence / Dependence** \u2013 Given a set of 2\u20134 vectors in \u211d\u00b3, can determine whether they are linearly independent or dependent (via cross-product / dot-product criteria or row-reduction) and state the span geometrically (a line, a plane, or all of \u211d\u00b3).\n\n- [ ] **3. Matrix Multiplication & Properties** \u2013 Can multiply matrices of compatible dimensions (e.g., 2\u00d73 \u00b7 3\u00d72) by hand without error, verify associativity, distributivity, and the transpose rule (AB)\u1d40 = B\u1d40A\u1d40, and demonstrate with a concrete counter-example that multiplication is not commutative.\n\n- [ ] **4. Inverse Matrix** \u2013 Can compute the inverse of a 2\u00d72 matrix using the shortcut formula and of a 3\u00d73 matrix via the adjugate/cofactor method, and verify correctness by confirming A\u00b7A\u207b\u00b9 = I; can also state when an inverse does not exist.\n\n- [ ] **5. Determinant** \u2013 Can compute the determinant of a 2\u00d72 and 3\u00d73 matrix using cofactor expansion, interpret det(A) geometrically as a signed volume scale factor, and explain what det(A) = 0 implies (volume collapse, linearly dependent columns, non-invertibility).\n\n- [ ] **6. Rank & Nullity** \u2013 Can row-reduce a 4\u00d75 matrix to find its rank, compute the nullity as dim(null(A)), and verify the Rank\u2013Nullity Theorem (rank + nullity = number of columns); can state the dimension of the column space and null space for any given matrix.\n\n- [ ] **7. Gaussian Elimination** \u2013 Can carry out full Gaussian elimination on a 4\u00d74 augmented matrix [A | b] to reach both REF and RREF, correctly identify pivot positions and free variables, and write the general solution set in parametric vector form (x = x_p + t\u00b7v + s\u00b7w \u2026).\n\n- [ ] **8. Consistency of Systems** \u2013 Given the augmented matrix [A | b], can classify the system as *consistent-unique*, *consistent-infinite*, or *inconsistent* and justify the classification by comparing rank(A) with rank([A | b]); can recognise a singular-coefficient system and explain why it has no unique solution.\n\n- [ ] **9. Eigenvalues & Eigenvectors (Intro)** \u2013 Can set up and solve the characteristic equation det(A \u2212 \u03bbI) = 0 for a 2\u00d72 (and a simple 3\u00d73) matrix to obtain all eigenvalues, and for each eigenvalue can find the eigenspace (kernel of A \u2212 \u03bbI) and write a basis of eigenvectors.\n\n- [ ] **10. Geometric Interpretation \u2013 Column & Row Spaces** \u2013 Can describe the column space of a matrix as the span of its column vectors and the row space as the span of its row vectors, relate both to the geometry of the linear map x \u21a6 Ax (domain restriction to row space, codomain image = column space), and connect these subspaces to the solutions of Ax = b and Ax = 0.\n\n---\n\n**How to use this checklist:** Work through each item as a *self-test*\u2014attempt a concrete problem of the described type without notes. If any item feels shaky, revisit the corresponding day(s) in the 7-day schedule and redo the associated practice exercises before advancing to numerical linear algebra.",
+                "origin_task": "Write the 10-concept readiness checklist (Deliverable 2)"
+              }
+            ],
+            "summary": "The document now contains two sections forming a structured linear algebra self-study program. The first and largest section, \"7-Day Topic Progression Outline\" (~8,934 characters), has been substantially expanded from its earlier ~3,979-character form. It now carries the subtitle \"7-Day Linear Algebra Study Schedule \u2014 Day-by-Day Topic Outline\" and presents a four-column table\u2014Day, Primary Topic, Secondary/Reinforcement Topic, and Suggested Practice Focus\u2014laid out as a progressive, day-by-day learning path. Day 1 covers foundational vector concepts (notation, geometric interpretation in \u211d\u00b2 and \u211d\u00b3, addition, scalar multiplication, negation), with secondary reinforcement aimed at building spatial intuition. Each subsequent day introduces new primary material while recycling earlier topics for reinforcement, and each row includes a tailored practice focus to guide active problem-solving. The near-doubling in length suggests this section has absorbed the content of the previously separate \"7-Day Linear Algebra Study Schedule\" section (the five-column table with Sub-topics Covered and Suggested Study Time columns), merging the two overlapping schedules into a single, richer reference. The second section, \"10-Concept Readiness Checklist\" (~3,444 characters), is unchanged. It shifts the document's focus from in-week planning to a gating competency check: the learner is told that if all ten items can be checked off with confidence, they are prepared to move on to numerical linear algebra topics (SVD, QR factorisation, iterative solvers, condition numbers, etc.). The first listed item is \"Vector Operations,\" covering addition, subtraction, scalar multiplication, dot product, and cross product in \u211d\u00b2 and \u211d\u00b3. The remaining nine items presumably span the core concepts covered across the seven-day schedule\u2014matrices, systems of equations, determinants, eigenvalues/eigenvectors, linear transformations, and related ideas\u2014each presented as a discrete, checkable competency. This section functions as a terminal milestone, connecting the seven-day study arc to a natural \"next course\" in numerical linear algebra. No preface, learning-objectives list, resource bibliography, daily detailed notes, or assessment guide has been added yet. The document remains in an early-to-mid assembly stage, with the single consolidated schedule table providing the learning path and the readiness checklist providing a competency gate at the end.",
+            "op_log": [
+              {
+                "op": {
+                  "body": null,
+                  "body_source": "current_result",
+                  "type": "add_part",
+                  "id": "day-by-day-topic-outline",
+                  "kind": "section",
+                  "title": "7-Day Topic Progression Outline",
+                  "after": "end",
+                  "origin_task": "Outline the 7-day topic progression for linear algebra basics"
+                },
+                "origin_task": "Outline the 7-day topic progression for linear algebra basics"
+              },
+              {
+                "op": {
+                  "body": null,
+                  "body_source": "current_result",
+                  "type": "add_part",
+                  "id": "seven-day-schedule-table",
+                  "kind": "section",
+                  "title": "7-Day Linear Algebra Study Schedule",
+                  "after": "day-by-day-topic-outline",
+                  "origin_task": "Write the day-by-day 7-day schedule table (Deliverable 1)"
+                },
+                "origin_task": "Write the day-by-day 7-day schedule table (Deliverable 1)"
+              },
+              {
+                "op": {
+                  "body": null,
+                  "body_source": "current_result",
+                  "type": "add_part",
+                  "id": "readiness-checklist",
+                  "kind": "section",
+                  "title": "10-Concept Readiness Checklist",
+                  "after": "seven-day-schedule-table",
+                  "origin_task": "Write the 10-concept readiness checklist (Deliverable 2)"
+                },
+                "origin_task": "Write the 10-concept readiness checklist (Deliverable 2)"
+              },
+              {
+                "op": {
+                  "type": "merge_parts",
+                  "ids": [
+                    "day-by-day-topic-outline",
+                    "seven-day-schedule-table"
+                  ]
+                },
+                "origin_task": "consolidation"
+              }
+            ],
+            "render_mode": "markdown_with_files"
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 170.6,
+          "phase": "Decomposed 3 sub-tasks: Outline the 7-day topic progression for linear algebra basics, Write the day-by-day 7-day schedule table (Deliverable 1), Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 170.6,
+          "phase": "Executing 1/3: Outline the 7-day topic progression for linear algebra basics"
+        },
+        {
+          "t": 288.3,
+          "phase": "Composing after 1/3: Outline the 7-day topic progression for linear algebra basics"
+        },
+        {
+          "t": 312.2,
+          "phase": "Updating summary after 1/3: Outline the 7-day topic progression for linear algebra basics"
+        },
+        {
+          "t": 344.8,
+          "phase": "Executing 2/3: Write the day-by-day 7-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 486.4,
+          "phase": "Composing after 2/3: Write the day-by-day 7-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 560.1,
+          "phase": "Updating summary after 2/3: Write the day-by-day 7-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 602.9,
+          "phase": "Executing 3/3: Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 778.2,
+          "phase": "Composing after 3/3: Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 818.1,
+          "phase": "Updating summary after 3/3: Write the 10-concept readiness checklist (Deliverable 2)"
+        },
+        {
+          "t": 898.5,
+          "phase": "Consolidating document"
+        },
+        {
+          "t": 978.5,
+          "phase": "Updating summary after consolidation"
+        }
+      ],
+      "total_wall_seconds": 1030.6
+    }
+  ],
+  "errors": []
+}

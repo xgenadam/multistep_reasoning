@@ -1,0 +1,268 @@
+{
+  "backend": "http://host.containers.internal:5000/v1",
+  "generated_at": "20261015T192509Z",
+  "label": "0-06-ab-control",
+  "runs_per_scenario": 1,
+  "jobs": 1,
+  "caveat": null,
+  "total_calls_observed": 13,
+  "results": [
+    {
+      "scenario": "s4_anchors",
+      "run": 0,
+      "expectations": {
+        "criterion": "P0-4",
+        "note": "anchor for total wall-clock and token totals; compare pre- vs post-consolidation. Also exercises decompose->execute->compose breadth (2 sub-tasks).",
+        "min_sub_tasks": 2,
+        "non_empty": true
+      },
+      "turns": [
+        {
+          "index": 0,
+          "text": "Plan a 7-day study schedule for learning the basics of linear algebra (vectors, matrices, systems of equations). Deliverable 1: a day-by-day schedule table. Deliverable 2: a short checklist of 10 concepts that must be solid before moving on to numerical linear algebra.",
+          "wall_seconds": 839.1,
+          "llm": {
+            "calls": 13,
+            "prompt_tokens": 265246,
+            "completion_tokens": 8788,
+            "wall_seconds_sum_calls": 838.96,
+            "by_kind": {
+              "compose": {
+                "count": 3,
+                "p50_s": 30.55,
+                "max_s": 34.63
+              },
+              "decompose": {
+                "count": 1,
+                "p50_s": 109.52,
+                "max_s": 109.52
+              },
+              "summary": {
+                "count": 5,
+                "p50_s": 77.31,
+                "max_s": 144.25
+              },
+              "system_other": {
+                "count": 4,
+                "p50_s": 71.97,
+                "max_s": 88.9
+              }
+            },
+            "by_phase": {
+              "Composing after 1/3: Plan the 7-day topic progression for vectors, matrices, and systems of equations": {
+                "count": 1,
+                "p50_s": 23.1,
+                "max_s": 23.1
+              },
+              "Composing after 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 30.55,
+                "max_s": 30.55
+              },
+              "Composing after 3/3: Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 34.63,
+                "max_s": 34.63
+              },
+              "Decomposing the request into sub-tasks\u2026": {
+                "count": 2,
+                "p50_s": 99.21,
+                "max_s": 109.52
+              },
+              "Executing 1/3: Plan the 7-day topic progression for vectors, matrices, and systems of equations": {
+                "count": 1,
+                "p50_s": 144.25,
+                "max_s": 144.25
+              },
+              "Executing 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 2,
+                "p50_s": 43.53,
+                "max_s": 77.31
+              },
+              "Executing 3/3: Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)": {
+                "count": 2,
+                "p50_s": 63.97,
+                "max_s": 103.64
+              },
+              "Updating summary after 1/3: Plan the 7-day topic progression for vectors, matrices, and systems of equations": {
+                "count": 1,
+                "p50_s": 84.68,
+                "max_s": 84.68
+              },
+              "Updating summary after 2/3: Write the day-by-day schedule table (Deliverable 1)": {
+                "count": 1,
+                "p50_s": 49.08,
+                "max_s": 49.08
+              },
+              "Updating summary after 3/3: Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)": {
+                "count": 1,
+                "p50_s": 59.25,
+                "max_s": 59.25
+              }
+            }
+          },
+          "document": {
+            "part_count": 3,
+            "part_kinds": {
+              "section": 3
+            },
+            "body_h2_headings": 9,
+            "part_titles": [
+              "7-Day Topic Progression Plan",
+              "7-Day Study Schedule",
+              "Pre-NLA Concept Checklist"
+            ],
+            "summary_chars": 2748,
+            "content_chars": 13331,
+            "top_dup_pairs": [
+              {
+                "a": "topic-progression-plan",
+                "b": "schedule-table",
+                "jaccard": 0.17
+              },
+              {
+                "a": "topic-progression-plan",
+                "b": "nla-concept-checklist",
+                "jaccard": 0.119
+              },
+              {
+                "a": "schedule-table",
+                "b": "nla-concept-checklist",
+                "jaccard": 0.094
+              }
+            ],
+            "max_dup_jaccard": 0.17,
+            "op_counts": {
+              "add_part": 3
+            },
+            "non_empty": true
+          },
+          "sub_tasks": {
+            "exec_entries": 3,
+            "exec_status_counts": {
+              "None": 3
+            },
+            "final_sub_task_count": 3
+          },
+          "snapshot": {
+            "title": null,
+            "parts": [
+              {
+                "id": "topic-progression-plan",
+                "kind": "section",
+                "title": "7-Day Topic Progression Plan",
+                "body": "# 7-Day Linear Algebra Basics \u2014 Structured Outline\n\n## Day 1 \u2014 Vectors in \u211d\u00b2 and \u211d\u00b3\n**Main topic:** Vector arithmetic and geometric meaning in low dimensions.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Vector addition & scalar multiplication | Component-wise rules; geometric (tip-to-tail) picture |\n| 2 | Dot product (inner product) | Formula, orthogonality test, projection of one vector onto another |\n| 3 | Cross product (\u211d\u00b3 only) | Right-hand rule, magnitude = parallelogram area, orthogonality to both inputs |\n| 4 | Length, angle, unit vectors | \u2016v\u2016 = \u221a(v\u00b7v); cos \u03b8 = (a\u00b7b)/(\u2016a\u2016\u2016b\u2016); normalisation |\n\n**Why here:** Vectors are the atoms of linear algebra. Every later object (matrix, subspace, solution set) is built from vectors and the operations defined on them. Starting in \u211d\u00b2/\u211d\u00b3 gives a concrete geometric anchor before abstracting.\n\n---\n\n## Day 2 \u2014 Vector Spaces, Span, and Linear Independence\n**Main topic:** The structure that vectors live in.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Span & linear combinations | What set of vectors does {v\u2081,\u2026,v\u2096} \"cover\"? |\n| 2 | Linear independence / dependence | Definition via c\u2081v\u2081+\u2026+c\u2096v\u2096=0; geometric intuition (collinear, coplanar) |\n| 3 | Basis & dimension | Minimal spanning set; dim(\u211d\u207f)=n; non-uniqueness of bases |\n| 4 | Subspaces of \u211d\u207f | Row space, column space, null space (introduction \u2014 full treatment in Day 6) |\n\n**Why here:** Before manipulating matrices you need to know *what space they act on* and whether a set of vectors is redundant. Independence/dimension reasoning is the language for rank and solution uniqueness that appear in Days 4\u20135.\n\n---\n\n## Day 3 \u2014 Matrices & Matrix Operations\n**Main topic:** Matrices as compact representations of linear maps.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Matrix addition, scalar multiplication, transpose | Entry-wise rules; (AB)\u1d40 = B\u1d40A\u1d40 |\n| 2 | Matrix multiplication (row-column) | Dimensions must match; composition of linear maps; **non-commutativity** |\n| 3 | Inverse matrices | A\u207b\u00b9 definition; 2\u00d72 formula; invertibility iff columns are independent; elementary row operations (E\u2081,E\u2082,E\u2083) |\n| 4 | Augmented matrices & representing systems | Writing Ax = b as [A|b]; linking matrix columns to basis images |\n\n**Why here:** Matrices are the natural algebraic object once you know the vector space they act on (Day 2). Multiplication and inverses are the two operations you will reach for constantly in elimination (Day 5) and in numerical linear algebra (LAPACK dgesv, etc.).\n\n---\n\n## Day 4 \u2014 Determinants, Rank, and Singularity\n**Main topic:** Scalar invariants that tell you whether a system is well-posed.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Determinant (2\u00d72, 3\u00d73 by cofactor expansion) | Geometric meaning (signed volume); det(AB)=det(A)det(B); det(A\u1d40)=det(A) |\n| 2 | Rank of a matrix | rank = dim(col space) = dim(row space); how row ops change (or don't) rank |\n| 3 | Singularity & invertibility criterion | A is singular \u21d4 det A = 0 \u21d4 rank < n \u21d4 columns are dependent |\n| 4 | Properties used in practice | det(kA)=k\u207fdet(A); row/col swap flips sign; adding a multiple of one row to another leaves det unchanged |\n\n**Why here:** Determinant and rank are the \"go/no-go\" tests before solving. Knowing *whether* a unique solution exists (det\u22600, full rank) prevents wasting time on a singular system. These invariants are also the basis of condition-number thinking in numerical linear algebra.\n\n---\n\n## Day 5 \u2014 Gaussian Elimination & Row Reduction\n**Main topic:** The systematic algorithm for solving Ax = b.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Row echelon form (REF) & reduced row echelon form (RREF) | Pivots, free vs. pivot columns; uniqueness of RREF |\n| 2 | Gaussian elimination (forward sweep) | Forward substitution after elimination; partial pivoting (swap rows for numerical stability \u2014 preview) |\n| 3 | Gauss-Jordan elimination (full reduction) | Back-substitution absorbed into row ops; direct read-off of solution |\n| 4 | Consistency & uniqueness via rank | rank(A)=rank([A|b]) \u2192 consistent; = n \u2192 unique; < n \u2192 infinitely many; inconsistent \u2192 no solution |\n\n**Why here:** This is the core *procedure* that ties together vectors (columns), matrices (A, b), and the algebraic tests from Days 3\u20134. In numerical linear algebra, Gaussian elimination with pivoting **is** the basis of LAPACK's dgesv; understanding the hand algorithm first is essential.\n\n---\n\n## Day 6 \u2014 Solution Structure, Null Space, and Cramer's Rule\n**Main topic:** What the *set* of solutions looks like, not just one solution.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Homogeneous (Ax=0) vs. inhomogeneous (Ax=b) systems | Particular solution + null-space component: x = x\u209a + x\u2099 |\n| 2 | Null space & column space (full treatment) | dim(null) + dim(col) = n (Rank-Nullity); basis for null space from free variables |\n| 3 | Parametric (general) solution | Expressing all solutions with free parameters; geometric picture (line/plane in \u211d\u207f) |\n| 4 | Cramer's rule (n \u00d7 n, det A \u2260 0) | x\u1d62 = det(A\u1d62)/det(A); useful for 2\u00d72/3\u00d73; computational cost O(n!) \u2192 motivates elimination |\n\n**Why here:** Numerical linear algebra cares not just about *a* solution but about the *sensitivity* of the solution set (conditioning, perturbations). Understanding the null space and the particular+homogeneous decomposition is the prerequisite for that discussion.\n\n---\n\n## Day 7 \u2014 Review, Practice, and Synthesis\n**Main topic:** Consolidate all six days; build pattern-recognition for technique selection.\n\n| # | Sub-topic | Detail |\n|---|-----------|--------|\n| 1 | Mixed problem set (vectors \u2192 matrices \u2192 systems) | 15\u201320 problems spanning all topics; timed to simulate exam pressure |\n| 2 | Technique-selection heuristics | When to use geometric (dot/cross) vs. algebraic (matrix) vs. algorithmic (elimination) approach |\n| 3 | Common pitfalls & dimensional checks | Mismatched dimensions, forgetting det \u2260 0 before inverting, confusing row vs. column rank, arithmetic errors in elimination |\n| 4 | Bridge to numerical linear algebra | Brief preview: floating-point round-off, partial vs. complete pivoting, why O(n\u00b3) elimination beats O(n!) Cramer, what condition number means (awareness only, no deep treatment) |\n\n**Why here:** Spaced review at the end of the week cements the logical chain (vectors \u2192 spaces \u2192 matrices \u2192 invariants \u2192 algorithms \u2192 solution structure). The \"bridge\" sub-topic explicitly connects the hand-computed basics to the BLAS/LAPACK mindset expected in a numerical linear algebra course.\n\n---\n\n## Progression Logic (one-line summary)\n\nDay 1 (what vectors *are*) \u2192 Day 2 (what spaces they *span*) \u2192 Day 3 (how matrices *represent* maps on those spaces) \u2192 Day 4 (scalar tests that *classify* a matrix) \u2192 Day 5 (the *algorithm* that solves a system) \u2192 Day 6 (the *structure* of the full solution set) \u2192 Day 7 (*synthesis* and bridge to numerical methods).\n\nEach day's topics are a strict prerequisite for the next: you cannot form a matrix without vectors; you cannot test rank without independence; you cannot eliminate without knowing when the pivot matrix is invertible; you cannot interpret the solution set without understanding the null space.",
+                "origin_task": "Plan the 7-day topic progression for vectors, matrices, and systems of equations"
+              },
+              {
+                "id": "schedule-table",
+                "kind": "section",
+                "title": "7-Day Study Schedule",
+                "body": "| Day | Main Topic | Sub-topics | Suggested Study Time | Suggested Practice / Exercise |\n|-----|-----------|------------|----------------------|-------------------------------|\n| 1 | Vectors in \u211d\u00b2 and \u211d\u00b3 | Vector addition & scalar multiplication; dot product (inner product, projection); cross product (\u211d\u00b3); length, angle, unit vectors | 2\u20133 hrs | 6\u20138 component-wise arithmetic problems; compute dot & cross products, verify orthogonality, find unit vectors and angles between given vectors |\n| 2 | Vector Spaces, Span & Linear Independence | Span & linear combinations; independence / dependence; basis & dimension; subspaces of \u211d\u207f (row, column, null \u2013 intro) | 2\u20133 hrs | Determine span of 3\u20134 vector sets; prove / disprove independence; find a basis and dimension; sketch subspace geometry |\n| 3 | Matrices & Matrix Operations | Addition, scalar mult., transpose; row-column multiplication (non-commutativity); inverse matrices & elementary row ops; augmented matrices for systems | 2\u20133 hrs | Multiply 2\u00d73 \u00b7 3\u00d72, 3\u00d73 \u00b7 3\u00d72; compute 2\u00d72 inverses via formula; rewrite two linear systems as [A | b] augmented matrices |\n| 4 | Determinants, Rank & Singularity | Cofactor expansion (2\u00d72, 3\u00d73); rank = dim(col/row space); singularity \u21d4 det A = 0 \u21d4 rank < n; key determinant properties | 2\u20133 hrs | Compute determinants of 2\u00d72 and 3\u00d73 matrices; find rank by row reduction; classify 6 given matrices as singular / non-singular with justification |\n| 5 | Gaussian Elimination & Row Reduction | REF & RREF (pivots, free columns); Gaussian elimination (forward sweep + partial-pivoting preview); Gauss-Jordan (full reduction); consistency / uniqueness via rank | 2\u20133 hrs | Reduce four 3\u00d73 and two 4\u00d74 augmented matrices to RREF by hand; solve each system; state whether the solution is unique, infinite, or nonexistent |\n| 6 | Solution Structure, Null Space & Cramer's Rule | Homogeneous vs inhomogeneous (x = x\u209a + x\u2099); null space & column space (Rank-Nullity); parametric general solution; Cramer's rule (n \u00d7 n, det A \u2260 0) | 2\u20133 hrs | For three systems: find particular solution, basis for null space, write full parametric solution; verify Rank-Nullity; apply Cramer's rule to two 3\u00d73 systems |\n| 7 | Review, Practice & Synthesis | Mixed problem set (vectors \u2192 matrices \u2192 systems); technique-selection heuristics; common pitfalls & dimensional checks; bridge to numerical linear algebra (pivoting, O(n\u00b3) vs O(n!), condition number preview) | 3\u20134 hrs | 15\u201320 mixed problems (timed, ~45 min); self-diagnose weakest area; short written summary connecting elimination to LAPACK dgesv and the role of pivoting |",
+                "origin_task": "Write the day-by-day schedule table (Deliverable 1)"
+              },
+              {
+                "id": "nla-concept-checklist",
+                "kind": "section",
+                "title": "Pre-NLA Concept Checklist",
+                "body": "## Deliverable 2 \u2014 Pre-NLA Concept Checklist (10 items)\n\nTick each box only when you can explain *and* apply the concept without looking up notes.\n\n1. **Vector norms (\u2016v\u2016\u2082, \u2016A\u2016) and their role in measuring error**\n   Every iterative solver, residual check, and convergence test in numerical linear algebra is expressed in terms of vector and matrix norms; without them you cannot quantify \"how close\" an approximate solution is to the exact one.\n\n2. **Matrix multiplication as composition of linear maps, including non-commutativity and transpose rules**\n   BLAS routines (DGEMM, DSYRK) and every factored solver build on row-column multiplication; knowing (AB)\u1d40 = B\u1d40A\u1d40, dimension compatibility, and AB \u2260 BA in general lets you verify the correctness and efficiency of any composed algorithm.\n\n3. **Determinant and its geometric / analytic meaning (signed volume, det(AB) = det A \u00b7 det B)**\n   det A = 0 is the single scalar test that flags a singular matrix, the threshold between a well-posed and an ill-posed linear system that every direct solver must detect before attempting a solve.\n\n4. **Matrix inverse and the equivalent invertibility criteria (det \u2260 0, full rank, linearly independent columns)**\n   Understanding A\u207b\u00b9 as a linear map (not merely a 2\u00d72 formula) prepares you for the practical NLA insight that explicitly computing inverses is almost always replaced by factorisations to save both time and accuracy.\n\n5. **Rank\u2013Nullity theorem (dim null(A) + rank(A) = n) and construction of a null-space basis from free variables**\n   Determines whether a homogeneous system has only the trivial solution and quantifies the degrees of freedom in under-determined or over-determined problems that NLA must handle via least-squares or regularisation.\n\n6. **Gaussian elimination with partial pivoting (forward sweep to REF, then back-substitution)**\n   This hand algorithm is the exact procedure behind LAPACK's DGETF2 / DGETRF and DGESV; executing it step-by-step builds the intuition for pivot growth, forward error, and the O(n\u00b3) cost model that underpins all dense direct solvers.\n\n7. **LU triangular factorisation (A = LU) and its relationship to the elimination steps**\n   Decomposing A into a lower and an upper triangular factor is the single most reused building block in dense NLA (repeated right-hand-side solves, rank updates, sensitivity analysis); recognising where LU hides inside your elimination work is the key conceptual leap.\n\n8. **Condition number (intro: \u03ba(A) = \u2016A\u2016 \u00b7 \u2016A\u207b\u00b9\u2016) as a measure of solution sensitivity**\n   Before running any numerical solve you must be able to state *whether* the problem is ill-conditioned; \u03ba tells you roughly how many significant digits of b will be lost in x, which is the first question every NLA course asks.\n\n9. **Orthogonal projection of a vector onto a subspace (via the dot-product / normal equations)**\n   Least-squares solvers, QR factorisation, and Krylov-subspace iterative methods (GMRES, CG) all rest on projecting onto column spaces; the projection formula proj_w(v) = (v\u00b7w / w\u00b7w) w is the geometric seed from which those algorithms grow.\n\n10. **System solvability and uniqueness via rank comparison (rank(A) vs. rank([A|b])**\n    A numerical solver must first decide whether a solution exists and whether it is unique; these rank comparisons are the mathematical gate that every NLA routine implicitly performs, and mis-reading them leads to false convergence or missed inconsistency.",
+                "origin_task": "Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+              }
+            ],
+            "summary": "The document now contains three sections related to a seven-day course on Linear Algebra Basics and its prerequisites. The first section, \"7-Day Topic Progression Plan\" (~7,276 characters), presents a structured day-by-day outline for the course. Each day is dedicated to a main topic and broken down into numbered sub-topics with supporting details. Day 1 focuses on Vectors in \u211d\u00b2 and \u211d\u00b3, covering vector arithmetic (addition, scalar multiplication with component-wise rules and the geometric tip-to-tail picture) and the dot product (inner product), including its formula, orthogonality test, and projection of one vector onto another. The remaining six days (Days 2\u20137) follow the same structured format, progressing through standard linear algebra topics in a logical sequence. The section uses markdown formatting with headers, tables, and clear delineation between daily modules. The second section, \"7-Day Study Schedule\" (~2,598 characters), consolidates the seven-day plan into a compact reference table. The table has five columns: Day, Main Topic, Sub-topics, Suggested Study Time, and Suggested Practice / Exercise. For example, Day 1 lists \"Vectors in \u211d\u00b2 and \u211d\u00b3\" as the main topic, enumerates sub-topics including vector addition and scalar multiplication, dot product (inner product, projection), cross product (\u211d\u00b3), and length/angle/unit vectors, recommends 2\u20133 hours of study time, and suggests 6\u20138 component-wise arithmetic problems along with dot-product computations as practice exercises. The remaining days follow the same tabular format, providing a quick-glance schedule that complements the more detailed progression plan above it. The third section, \"Pre-NLA Concept Checklist\" (~3,457 characters), is a new addition labeled \"Deliverable 2.\" It presents a 10-item prerequisite checklist that students must be able to explain and apply without looking up notes before proceeding to Numerical Linear Algebra (NLA) material. The first listed item covers vector norms (\u2016v\u2016\u2082, \u2016A\u2016) and their role in measuring error, noting that every iterative solver, residual check, and convergence test in NLA is expressed in terms of these norms. Each checklist item follows the same pattern: a bolded concept name followed by a brief explanation of why it is foundational for NLA work. The checklist serves as a self-assessment gate, ensuring learners have solidified core linear algebra and analysis concepts before tackling the numerical methods that build on them. Together, the three sections form a layered learning package: the Topic Progression Plan provides the in-depth instructional breakdown for each day, the Study Schedule offers a concise at-a-glance timetable with time allocations and suggested practice work, and the Pre-NLA",
+            "op_log": [
+              {
+                "op": {
+                  "body": null,
+                  "body_source": "current_result",
+                  "type": "add_part",
+                  "id": "topic-progression-plan",
+                  "kind": "section",
+                  "title": "7-Day Topic Progression Plan",
+                  "after": "end",
+                  "origin_task": "Plan the 7-day topic progression for vectors, matrices, and systems of equations"
+                },
+                "origin_task": "Plan the 7-day topic progression for vectors, matrices, and systems of equations"
+              },
+              {
+                "op": {
+                  "body": null,
+                  "body_source": "current_result",
+                  "type": "add_part",
+                  "id": "schedule-table",
+                  "kind": "section",
+                  "title": "7-Day Study Schedule",
+                  "after": "topic-progression-plan",
+                  "origin_task": "Write the day-by-day schedule table (Deliverable 1)"
+                },
+                "origin_task": "Write the day-by-day schedule table (Deliverable 1)"
+              },
+              {
+                "op": {
+                  "body": null,
+                  "body_source": "current_result",
+                  "type": "add_part",
+                  "id": "nla-concept-checklist",
+                  "kind": "section",
+                  "title": "Pre-NLA Concept Checklist",
+                  "after": "end",
+                  "origin_task": "Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+                },
+                "origin_task": "Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+              }
+            ],
+            "render_mode": "markdown_with_files"
+          }
+        }
+      ],
+      "events": [
+        {
+          "t": 0.0,
+          "phase": "Decomposing the request into sub-tasks\u2026"
+        },
+        {
+          "t": 198.4,
+          "phase": "Decomposed 3 sub-tasks: Plan the 7-day topic progression for vectors, matrices, and systems of equations, Write the day-by-day schedule table (Deliverable 1), Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        },
+        {
+          "t": 198.4,
+          "phase": "Executing 1/3: Plan the 7-day topic progression for vectors, matrices, and systems of equations"
+        },
+        {
+          "t": 342.7,
+          "phase": "Composing after 1/3: Plan the 7-day topic progression for vectors, matrices, and systems of equations"
+        },
+        {
+          "t": 365.8,
+          "phase": "Updating summary after 1/3: Plan the 7-day topic progression for vectors, matrices, and systems of equations"
+        },
+        {
+          "t": 450.5,
+          "phase": "Executing 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 537.6,
+          "phase": "Composing after 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 568.2,
+          "phase": "Updating summary after 2/3: Write the day-by-day schedule table (Deliverable 1)"
+        },
+        {
+          "t": 617.2,
+          "phase": "Executing 3/3: Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        },
+        {
+          "t": 745.2,
+          "phase": "Composing after 3/3: Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        },
+        {
+          "t": 779.9,
+          "phase": "Updating summary after 3/3: Write the 10-concept prerequisite checklist for numerical linear algebra (Deliverable 2)"
+        }
+      ],
+      "total_wall_seconds": 839.1
+    }
+  ],
+  "errors": []
+}

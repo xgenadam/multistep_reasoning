@@ -1,9 +1,13 @@
 # AGENTS.md
 
 Guidance for agent sessions working in this repo. Read this first, then
-`journal/PLAN.md` for the full plan, `journal/S-002.md` (Handoff section) for
-the current state of the world, and `journal/tickets/README.md` for the ticket
-format. This file is the *operating* reference; PLAN.md is the *what/why*.
+`journal/S-004.md` (Handoff section) for the current state of the world and
+the next move, `journal/plan-2026-10-18-approved.md` for the approved roadmap
+v2 (its Part 2 supersedes the phases in `journal/PLAN.md`; ticket O-01
+rewrites PLAN.md from it), and `journal/tickets/README.md` for the ticket
+format. One ticket per session; each ticket's front-matter names the model
+and effort to run it with. This file is the *operating* reference; the plan
+is the *what/why*.
 
 ## What this repo is
 
@@ -35,6 +39,13 @@ keystone, zero new services) → **P ∥ B** (execution model ∥ ingest+graph) 
   jobs only in a genuinely idle window, and if the agent was active during a
   run, treat its wall times as inflated (op counts, part shapes, token counts
   stay clean). A contaminated time ⇒ rerun for the timing gate.
+- **Harness parallelism:** `harness.py --jobs N` runs scenarios concurrently
+  (ThreadPool; per-turn call attribution and token counts are *approximate*
+  — per-turn stats slice a global call counter and can include calls from
+  concurrent turns, until ticket 0-14 lands exact attribution — and per-call
+  `wall_seconds` inflate under concurrent load). **Default is 3** (the 5 slots must leave room for the agent); 4 is
+  the practical max. **Always use `--jobs 1` for timing-gate measurements**
+  (P0-4 / `compare.py` A/B / anything gating wall time).
 - Git identity is repo-local: `DSH Agent (ubuntu) <dsh-agent@localhost>`.
 - Approval policy is "ask"; file sandbox is `workspace-write` on `/workspace`.
 

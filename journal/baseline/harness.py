@@ -378,8 +378,10 @@ def main() -> int:
     ap.add_argument('--scenario', action='append', default=None,
                     help='scenario id (repeatable); default: all')
     ap.add_argument('--runs', type=int, default=2, help='runs per scenario (default 2)')
-    ap.add_argument('--jobs', type=int, default=1,
-                    help='scenarios to run concurrently (server has 5 slots)')
+    ap.add_argument('--jobs', type=int, default=3,
+                    help='scenarios to run concurrently (server has 5 slots; '
+                         'default 3, try up to 4; use 1 for clean timing-gate '
+                         'windows such as P0-4/compare.py measurements)')
     ap.add_argument('--smoke', action='store_true',
                     help='cheap integration check: 1 run of the first scenario')
     ap.add_argument('--consolidation', action='store_true',
@@ -448,8 +450,12 @@ def main() -> int:
         'label': label,
         'runs_per_scenario': args.runs,
         'jobs': args.jobs,
-        'caveat': ('per-turn LLM stats may include calls from concurrent turns '
-                   'when jobs>1') if args.jobs > 1 else None,
+        'caveat': ('per-turn call attribution and token counts are approximate '
+                   '(per-turn stats slice a global call counter, so they may include '
+                   'calls from concurrent turns); per-call wall_seconds are inflated by '
+                   'concurrent server load - use --jobs 1 for timing gates; exact '
+                   'attribution arrives with ticket 0-14')
+                   if args.jobs > 1 else None,
         'total_calls_observed': measured.total_calls,
         'results': [r for r in results if r is not None],
         'errors': errors,
