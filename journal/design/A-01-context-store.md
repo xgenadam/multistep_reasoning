@@ -535,3 +535,18 @@ prints it once per store, so the outline's token cost does not change.
 > Supersedes: none (answers the question D-014 left to A-01).    Re-open if:
 > V-1 needs an interface change for the papers store, or the role split fails
 > P0-3 or a Q gate once the composer sets roles.
+
+## 9. Approval (2026-10-19, S-017)
+
+The user approved this note. § 8 is recorded, amended, as **D-018**; where
+the two differ, D-018 governs.
+- § 7.1 and § 7.2: approved as proposed (`Part.role` with A-04, `results`
+  with A-03).
+- § 7.3: the working tier stays the default scope, but every store in scope
+  is listed to the model, which escalates by tier at its own discretion.
+  A confidence-driven search depth is A-06's to design.
+- § 7.4: the tier order is the provisional default. Context-dependent
+  precedence (book continuity vs. canon; a research assumption overturned by
+  a source) and escalation of a conflict into a fresh reasoning run are
+  A-06's to design.
+- § 7.5: V-5 added to PLAN.

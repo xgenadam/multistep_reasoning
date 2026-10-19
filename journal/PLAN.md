@@ -412,6 +412,10 @@ thinking on: 356 s).
   - Op-log entries get `seq`/`ts`.
   - Snapshot/rehydrate moves out of `harness.py` into
     `reasoning_sub_agents/document/`, for R and Q-02.
+  - `Part.role` (default `artifact`), the render filter and
+    `Document.begin_turn()` (D-018).
+- **A-06:** retrieval escalation and context-dependent conflict judgement,
+  on paper (D-018). Design only; it does not gate A-02…A-05.
 - **A-05:** the live criteria run.
 
 Pass criteria:
@@ -436,10 +440,23 @@ Pass criteria:
   - Op-log entries carry a monotonic `seq` and a `ts`.
   - A run's `Document` snapshot → rehydrate round-trip is lossless.
   - The harness uses the promoted functions.
+  - `Part.role` round-trips with a default of `artifact`, `render()` skips
+    `scratch` parts, and `begin_turn()` retires `reply` parts with
+    `delete_part` ops (D-018).
 - **A-9 Interface dry-run:** the A-01 design note walks the interface through
   five store kinds (document, papers, books, code, notes/chat). Per method
   it records "fits" or the change made. The user approves it before A-02
   starts.
+- **A-10 Retrieval and conflict judgement on paper:** the A-06 design note
+  covers:
+  - when the model searches and how hard (a confidence signal);
+  - when context overrides the default tier order, at least the
+    book-continuity and research cases in D-018;
+  - when a conflict escalates to a fresh reasoning run, with a cost and
+    depth bound.
+
+  It names the criteria its implementation will be held to, and the user
+  approves it.
 
 ## Phase V — Vertical slice, papers-lite (D-005)
 
@@ -458,6 +475,12 @@ Pass criteria:
 - **V-3:** the compare task's citations resolve ≥ 90%, and the judge scores
   ≥ 3.5/5 on a 4-criterion rubric in 2/3 runs.
 - **V-4:** per-query p50 ≤ 0.5 s; cost per turn is recorded.
+- **V-5 Conflicts surface:** one contradiction is planted between the
+  working Document and a paper. `ask(store='all')` lists it in
+  `Answer.conflicts` with both citations in 3/3 asks (D-018). When Q
+  measures qualitative gains, its cases include conflicts like this: a
+  working fact deliberately changed from its source (book continuity) and a
+  working assumption a source contradicts (research).
 
 ## Phase R — Durable runs (D-006). R-mech now; R-quality lives in T-book (T-6)
 
