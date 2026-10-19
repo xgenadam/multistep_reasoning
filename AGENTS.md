@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Guidance for agent sessions working in this repo. Read this first, then
-`journal/S-004.md` (Handoff section) for the current state of the world and
+`journal/S-005.md` (Handoff section) for the current state of the world and
 the next move, `journal/plan-2026-10-18-approved.md` for the approved roadmap
 v2 (its Part 2 supersedes the phases in `journal/PLAN.md`; ticket O-01
 rewrites PLAN.md from it), and `journal/tickets/README.md` for the ticket
@@ -27,8 +27,13 @@ keystone, zero new services) → **P ∥ B** (execution model ∥ ingest+graph) 
 ## Environment (do not re-discover)
 
 - Working dir: `/workspace`.
-- **Python venv: `dsh-podman-venv/` at repo root** (`dsh-podman-venv/bin/python`).
-  `/workspace/venv` is off-limits — never touch or import from it.
+- **Python:** `.venv/bin/python` (built by `make venv`; Python 3.12 — see
+  `pyproject.toml`) if present, else `dsh-podman-venv/bin/python` (no
+  interpreter in the agent container). `/workspace/venv` is off-limits —
+  never touch or import from it.
+- **LLM endpoint has no default (D-P):** `export
+  LLM_BASE_URL=http://host.containers.internal:5000/v1` before any harness
+  run or `create_llama_client()` call.
 - **Model server:** `http://host.containers.internal:5000/v1`, model
   `Qwen3.8-27B-UD-Q6_K.gguf`, no auth, **5 parallel slots**.
   `LLMConfig`'s default port is **8000** — always pass `port=5000` explicitly
@@ -110,7 +115,7 @@ Plane.
 - Commit journal and code **together** when a status flip is involved, so the
   audit trail reads as one change.
 - Run the test suite before committing behavior changes
-  (`dsh-podman-venv/bin/python -m pytest tests/ -q`); a green suite
+  (`make test`); a green suite
   (`… passed … skipped … 0 failed`) is the bar.
 
 ## Locked plan decisions (do not reopen without a new session decision)

@@ -39,9 +39,9 @@ Follow-ups in the same oobabooga chat reuse that chat’s `Document`.
 `orchestrator.yaml`:
 
 ```yaml
-llm:
-  host: 127.0.0.1
-  port: 8000
+llm:                 # required - there is no default endpoint
+  host: 127.0.0.1    # or base_url: http://host:port/v1
+  port: 8000         # LLM_BASE_URL in the environment overrides this block
 
 components:
   decomposer: self_critique    # simple | self_critique
@@ -56,7 +56,7 @@ options:
   composer_max_retries: 3
 ```
 
-Unknown names and incompatible combinations raise at load time (for example `oracle_loop` without an oracle).
+Unknown names and incompatible combinations raise at load time (for example `oracle_loop` without an oracle). A config with no `llm` endpoint and no `LLM_BASE_URL` raises when the client is created; nothing falls back to a guessed server.
 
 From Python:
 
@@ -104,6 +104,8 @@ Install into the **same** environment oobabooga uses:
 ```bash
 pip install -r requirements.txt
 ```
+
+`requirements.txt` is the curated runtime list (Python 3.12). For development: `make venv && make test` (see `pyproject.toml`).
 
 ## TODO/caveats
 This project was mostly manually done, but I decided to let grok build loose on it to complete the final document oracle composition. This was mostly successful. The pain points came with the integration as an oobabooga extension. It seemed to be getting very bogged down into fetching the correct chat messages, implementing a now deleted scoring system which was sometimes responding to the wrong chat. Reading that was a massive wtf.

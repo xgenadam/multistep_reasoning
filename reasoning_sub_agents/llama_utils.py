@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 import threading
 import types
@@ -73,22 +74,35 @@ R = TypeVar('R')
 Processor = Callable[[OpenAI, LLMInput], R]
 
 
+LLM_BASE_URL_ENV = 'LLM_BASE_URL'
+
+
 def create_llama_client(
-    config: dict | None = None, *, host: str | None = None, port: int | None = None
+    config: dict | None = None,
+    *,
+    base_url: str | None = None,
+    host: str | None = None,
+    port: int | None = None,
 ) -> OpenAI:
     """
     Creates and returns an OpenAI-compatible client for the llama.cpp server.
 
-    Priority:
-    - If config is provided, host/port are extracted from it.
-    - Otherwise, use explicit host/port arguments.
-    - Defaults: host="127.0.0.1", port=5000
+    Resolution order (D-P: there is no silent default endpoint):
+    1. the LLM_BASE_URL environment variable;
+    2. config['key_word_args'] (--host / --port), as written by the server
+       launcher config;
+    3. explicit base_url;
+    4. explicit host + port.
+    With none of these a ValueError is raised.
 
     Example:
-        client = create_llama_client(config=my_config)
-        client = create_llama_client(host="127.0.0.1", port=5000)
+        client = create_llama_client(base_url='http://host.containers.internal:5000/v1')
+        client = create_llama_client(host='127.0.0.1', port=8000)
     """
-    if config is not None:
+    env_url = os.environ.get(LLM_BASE_URL_ENV)
+    if env_url:
+        base_url = env_url
+    elif config is not None:
         host = config['key_word_args'].get('--host', '127.0.0.1')
         port_str = config['key_word_args'].get('--port')
         if port_str is None:
@@ -97,13 +111,16 @@ def create_llama_client(
             port = int(port_str)
         except ValueError:
             raise ValueError(f'Invalid --port value in config: {port_str}')
+        base_url = f'http://{host}:{port}/v1'
+    elif not base_url:
+        if host is None or port is None:
+            raise ValueError(
+                'No LLM endpoint configured: set LLM_BASE_URL, llm.base_url '
+                '(or llm.host + llm.port) in orchestrator.yaml, or pass '
+                'base_url / host + port to create_llama_client'
+            )
+        base_url = f'http://{host}:{port}/v1'
 
-    if host is None:
-        host = '127.0.0.1'
-    if port is None:
-        port = 5000
-
-    base_url = f'http://{host}:{port}/v1'
     logger.info('Creating OpenAI client for server at %s', base_url)
 
     client = OpenAI(base_url=base_url, api_key='sk-no-key-needed')

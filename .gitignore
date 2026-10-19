@@ -12,3 +12,7 @@ llama_cpp_server
 !journal/baseline/runs/*.json
 novel_mcp_server/workspaces/
 
+# O-03: local env + build artefacts (O-02 rewrites this file)
+.venv/
+*.egg-info/
+.pytest_cache/

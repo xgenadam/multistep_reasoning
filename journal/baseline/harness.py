@@ -8,11 +8,13 @@ background run catches contention from other traffic (e.g. the agent's own
 calls on the same server), the time numbers inflate while the output
 numbers stay clean — which tells you to re-run, not to conclude.
 
-Usage (from the repo root):
-  dsh-podman-venv/bin/python journal/baseline/harness.py --smoke
-  dsh-podman-venv/bin/python journal/baseline/harness.py                 # all scenarios, 2 runs each
-  dsh-podman-venv/bin/python journal/baseline/harness.py --scenario s2_report --runs 3
-  dsh-podman-venv/bin/python journal/baseline/harness.py --jobs 2        # concurrent scenarios (server has 5 slots)
+Usage (from the repo root; the endpoint is required, via --base-url or
+LLM_BASE_URL - there is no default):
+  export LLM_BASE_URL=http://host.containers.internal:5000/v1
+  .venv/bin/python journal/baseline/harness.py --smoke
+  .venv/bin/python journal/baseline/harness.py                 # all scenarios, 2 runs each
+  .venv/bin/python journal/baseline/harness.py --scenario s2_report --runs 3
+  .venv/bin/python journal/baseline/harness.py --jobs 2        # concurrent scenarios (server has 5 slots)
 
 Output: journal/baseline/runs/<timestamp>_<label>_<scenarios>.json plus a
 console summary.
@@ -28,6 +30,7 @@ from __future__ import annotations
 import argparse
 import contextvars
 import json
+import os
 import statistics
 import sys
 import threading
@@ -49,8 +52,10 @@ from reasoning_sub_agents.document import Document  # noqa: E402
 from reasoning_sub_agents.llama_utils import create_llama_client  # noqa: E402
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E402
 
-DEFAULT_HOST = 'host.containers.internal'
-DEFAULT_PORT = 5000
+# D-P: no silent endpoint default. The endpoint comes from --base-url or
+# LLM_BASE_URL; from the agent container it is
+# http://host.containers.internal:5000/v1 (127.0.0.1 is refused there).
+# Phase Q's judge endpoint is recorded the same way (JUDGE_BASE_URL).
 
 # The server's default per-generation cap is ~2804 tokens (measured via
 # /v1 probe: finish_reason=length at 2804 completion tokens). That truncates
@@ -387,6 +392,12 @@ def main() -> int:
     ap.add_argument('--consolidation', action='store_true',
                     help='enable the 0-06 consolidation pass after the final sub-task')
     ap.add_argument('--label', default=None)
+    ap.add_argument('--base-url', default=os.environ.get('LLM_BASE_URL'),
+                    help='generator endpoint, e.g. http://host.containers.internal:5000/v1 '
+                         '(default: $LLM_BASE_URL; required)')
+    ap.add_argument('--judge-base-url', default=os.environ.get('JUDGE_BASE_URL'),
+                    help='judge endpoint for Phase Q (default: $JUDGE_BASE_URL); '
+                         'recorded only, unused until Q-01')
     ap.add_argument('--out', default=str(Path(__file__).parent / 'runs'))
     args = ap.parse_args()
 
@@ -400,10 +411,18 @@ def main() -> int:
         scenarios = scenarios[:1]
         args.runs = 1
 
-    print(f'Backend: http://{DEFAULT_HOST}:{DEFAULT_PORT}/v1')
+    if not args.base_url:
+        ap.error('no endpoint: pass --base-url or set LLM_BASE_URL '
+                 '(e.g. http://host.containers.internal:5000/v1)')
+    env_url = os.environ.get('LLM_BASE_URL')
+    if env_url and env_url != args.base_url:
+        ap.error(f'LLM_BASE_URL={env_url} would override --base-url={args.base_url}; '
+                 'unset one of them')
+    client = create_llama_client(base_url=args.base_url)
+    backend = str(client.base_url).rstrip('/')
+    print(f'Backend: {backend}')
     print(f'Scenarios: {[s["id"] for s in scenarios]} x {args.runs} run(s), jobs={args.jobs}')
 
-    client = create_llama_client()
     measured = install_instrumentation(client)
     if measured is None:
         print('ERROR: client is not a stock OpenAI client; cannot instrument.')
@@ -445,7 +464,8 @@ def main() -> int:
     out_path = Path(args.out) / f'{stamp}_{label}_{slug}.json'
     out_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
-        'backend': f'http://{DEFAULT_HOST}:{DEFAULT_PORT}/v1',
+        'backend': backend,
+        'judge_backend': args.judge_base_url,
         'generated_at': stamp,
         'label': label,
         'runs_per_scenario': args.runs,

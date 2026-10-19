@@ -309,7 +309,7 @@ class TaskOrchestrator:
     ) -> Self:
         if llm_client is None:
             llm_client = create_llama_client(
-                host=config.llm.host, port=config.llm.port
+                base_url=config.llm.resolved_base_url()
             )
         ctx = BuildContext(llm_client=llm_client, options=config.options)
         specs = validate_component_compatibility(config.components)

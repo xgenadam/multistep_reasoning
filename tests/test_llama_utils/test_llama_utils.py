@@ -1,6 +1,7 @@
 """Test suite for reasoning_sub_agents.llama_utils module."""
 
 import pytest
+from reasoning_sub_agents.config import LLMConfig
 from reasoning_sub_agents.llama_utils import (
     LLMInput,
     create_llama_client,
@@ -11,6 +12,12 @@ from reasoning_sub_agents.llama_utils import (
     run_multi_concurrent,
     stream_conversation,
 )
+
+
+@pytest.fixture(autouse=True)
+def _no_endpoint_env(monkeypatch):
+    """A developer's LLM_BASE_URL must not leak into these tests."""
+    monkeypatch.delenv('LLM_BASE_URL', raising=False)
 
 
 def test_create_llama_client_with_config():
@@ -29,11 +36,41 @@ def test_create_llama_client_with_explicit_params():
     assert client.api_key == 'sk-no-key-needed'
 
 
-def test_create_llama_client_with_defaults():
-    """Test creating client with default parameters."""
-    client = create_llama_client()
-    assert str(client.base_url) == 'http://127.0.0.1:5000/v1/'
-    assert client.api_key == 'sk-no-key-needed'
+def test_create_llama_client_without_endpoint_raises():
+    """D-P: no silent default endpoint."""
+    with pytest.raises(ValueError, match='No LLM endpoint configured'):
+        create_llama_client()
+    with pytest.raises(ValueError, match='No LLM endpoint configured'):
+        create_llama_client(host='localhost')
+
+
+def test_create_llama_client_with_base_url():
+    client = create_llama_client(base_url='http://host.containers.internal:5000/v1')
+    assert str(client.base_url) == 'http://host.containers.internal:5000/v1/'
+
+
+def test_create_llama_client_env_overrides_everything(monkeypatch):
+    monkeypatch.setenv('LLM_BASE_URL', 'http://from-env:5000/v1')
+    config = {'key_word_args': {'--host': '192.168.1.1', '--port': '8080'}}
+    assert str(create_llama_client().base_url) == 'http://from-env:5000/v1/'
+    assert str(create_llama_client(config=config).base_url) == 'http://from-env:5000/v1/'
+    assert (
+        str(create_llama_client(base_url='http://explicit:1/v1').base_url)
+        == 'http://from-env:5000/v1/'
+    )
+
+
+def test_llm_config_resolved_base_url():
+    assert LLMConfig().resolved_base_url() is None
+    assert LLMConfig(host='127.0.0.1').resolved_base_url() is None
+    assert (
+        LLMConfig(host='127.0.0.1', port=8000).resolved_base_url()
+        == 'http://127.0.0.1:8000/v1'
+    )
+    assert (
+        LLMConfig(base_url='http://x:1/v1', host='h', port=2).resolved_base_url()
+        == 'http://x:1/v1'
+    )
 
 
 def test_create_llama_client_config_priority():

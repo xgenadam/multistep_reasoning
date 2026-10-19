@@ -4,8 +4,19 @@ from pydantic import BaseModel, Field
 
 
 class LLMConfig(BaseModel):
-    host: str = '127.0.0.1'
-    port: int = 8000
+    # D-P: no silent endpoint default. Set base_url, or host + port; the
+    # LLM_BASE_URL environment variable overrides both. With none of them
+    # create_llama_client raises instead of guessing a server.
+    base_url: str | None = None
+    host: str | None = None
+    port: int | None = None
+
+    def resolved_base_url(self) -> str | None:
+        if self.base_url:
+            return self.base_url
+        if self.host and self.port:
+            return f'http://{self.host}:{self.port}/v1'
+        return None
 
 
 class ComponentsConfig(BaseModel):

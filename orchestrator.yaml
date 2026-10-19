@@ -1,3 +1,7 @@
+# No default endpoint (D-P): set host + port or base_url here, or export
+# LLM_BASE_URL (which overrides this block). 8000 is the host-side
+# Devstral server; from the agent container use
+# http://host.containers.internal:5000/v1.
 llm:
   host: 127.0.0.1
   port: 8000
