@@ -159,7 +159,9 @@ def test_judge_end_to_end_and_resume(quality, monkeypatch, tmp_path, manifest):
     assert len(data['commit']) == 40
     retried = [c for c in data['calls'] if len(c['attempts']) == 2]
     assert len(retried) == 1 and retried[0]['side'] == 'a'
-    assert [x['seed'] for x in retried[0]['attempts']] == [0, 1]
+    assert retried[0]['attempts'][1]['repair'] is True
+    repair = next(c for c in fake.calls if len(c['messages']) == 4)
+    assert repair['messages'][2] == {'role': 'assistant', 'content': 'I think A.'}
     s = data['summary']
     assert s['q1']['damaged']['passed'] == 2
     assert s['q5']['rate'] == 1.0

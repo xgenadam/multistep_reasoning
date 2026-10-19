@@ -21,7 +21,8 @@ Step one is a reachability check (GET /models). The client is a stock
 Protocol (design § 3): each pair is judged with candidate a shown first
 (order `ab`) and second (order `ba`). A pair's outcome is the candidate that
 wins both orders; anything else is a tie. A verdict that fails to parse is
-retried once with the next seed, then recorded as no verdict, which is excluded from the
+given one repair turn (its own output back, "return the same verdict as
+valid JSON"), then recorded as no verdict, which is excluded from the
 decisive count (it is not a tie).
 
 Output: journal/baseline/verdicts/<timestamp>_<label>.json, rewritten after
@@ -68,6 +69,9 @@ WINNERS = ('A', 'B', 'tie')
 # Q-1 and Q-5 bars (PLAN § Phase Q; design § 4).
 REAL_MIN, DAMAGED_MIN, PADDED_MIN = 4, 4, 2
 REPEAT_AGREEMENT_MIN = 0.90
+REPAIR_PROMPT = ('That output is not valid JSON. Return the same verdict as one valid JSON '
+                 'object in the format above, with any quotes inside strings escaped, and '
+                 'nothing else.')
 
 
 def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float] | None:
@@ -183,10 +187,10 @@ class Judge:
         return {'temperature': 0, 'seed': self.seed, 'max_tokens': self.max_tokens,
                 'thinking': 'on' if self.thinking else 'off'}
 
-    def attempt(self, messages: list[dict], seed: int) -> dict:
+    def attempt(self, messages: list[dict]) -> dict:
         t0 = time.perf_counter()
         resp = self.client.chat.completions.create(
-            model=self.model, messages=messages, temperature=0, seed=seed,
+            model=self.model, messages=messages, temperature=0, seed=self.seed,
             max_tokens=self.max_tokens,
             extra_body={'chat_template_kwargs': {'enable_thinking': self.thinking}},
         )
@@ -197,7 +201,6 @@ class Judge:
         usage = resp.usage
         verdict = parse_verdict(content)
         return {
-            'seed': seed,
             'seconds': round(seconds, 3),
             'finish_reason': choice.finish_reason,
             'prompt_tokens': getattr(usage, 'prompt_tokens', None),
@@ -207,14 +210,24 @@ class Judge:
             'verdict': verdict,
             # Kept only when unparseable, to debug the rubric's output format.
             'raw': None if verdict else content[:2000],
+            '_content': content,
         }
 
     def judge(self, messages: list[dict]) -> dict:
-        """One pair-order: retried once on an unparseable verdict, with the
-        next seed, since at temperature 0 the same seed repeats the output."""
-        attempts = [self.attempt(messages, self.seed)]
+        """One pair-order: an unparseable verdict gets one repair turn.
+
+        Resending the same prompt is useless: at temperature 0 the server
+        decodes greedily and the seed changes nothing, so the output repeats
+        byte for byte. The repair turn shows the judge its own output and
+        asks for the same verdict as valid JSON.
+        """
+        attempts = [self.attempt(messages)]
         if attempts[0]['verdict'] is None:
-            attempts.append(self.attempt(messages, self.seed + 1))
+            repair = messages + [{'role': 'assistant', 'content': attempts[0]['_content']},
+                                 {'role': 'user', 'content': REPAIR_PROMPT}]
+            attempts.append({**self.attempt(repair), 'repair': True})
+        for a in attempts:
+            del a['_content']
         final = attempts[-1]
         return {
             'winner': final['verdict']['winner'] if final['verdict'] else None,
