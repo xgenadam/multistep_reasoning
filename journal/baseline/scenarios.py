@@ -10,8 +10,9 @@ Scenario map to plan criteria:
   s1_cli_code      -> P0-1 (code request lands as `file` parts, not prose)
   s2_report        -> P0-2 (report stays in sections; `section` parts)
   s3_followup      -> P0-3 (overlapping follow-up; dedupe quality via
-                      max_dup_jaccard < 0.50 across part pairs, and
-                      merge_parts or a patch op in the follow-up turn)
+                      max_dup_jaccard < 0.50 across part pairs, and the
+                      follow-up keeps turn 0's parts: none dropped unless
+                      merged into a surviving part)
   s4_anchors       -> P0-4 anchor set (total wall-clock + tokens, cheap
                       multi-sub-task prompt, pre-consolidation numbers)
 """
@@ -119,7 +120,9 @@ SCENARIOS: list[dict] = [
         'expect': {
             'criterion': 'P0-3',
             'max_dup_jaccard_below': 0.50,
-            'followup_merge_or_patch': True,  # on turns with a `prior`
+            # P0-3 (D-014): the follow-up edits the report (an artifact), so
+            # it must keep turn 0's parts rather than rebuild them.
+            'followup_keeps_parts': True,
             'non_empty': True,
             'note': 'turn 1 continues turn 0\'s document; duplicate part '
                     'pairs indicate the composer is re-emitting instead of '

@@ -18,6 +18,9 @@ RUN_FILES = sorted(RUNS.glob('*.json'))
 BASELINE = RUNS / '20261015T143545Z_pre-consolidation-baseline_s1_cli_code-s2_report-s3_followup-s4_anchors.json'
 SMOKE = RUNS / '20261015T132320Z_smoke_s1_cli_code.json'
 POST_MERGE = RUNS / '20261015T182246Z_post-merge-0.04_s1_cli_code-s2_report-s3_followup.json'
+SNAPSHOTS = RUNS / '20261015T165827Z_s3-snapshots_s3_followup.json'
+S3_BASELINE = RUNS / '20261015T152027Z_baseline_s3_followup.json'
+KEEPS = "follow-up keeps the prior turn's parts (P0-3)"
 AB_CONTROL = RUNS / '20261015T192509Z_0-06-ab-control_s4_anchors.json'
 AB_TREATMENT = RUNS / '20261015T194221Z_0-06-ab-treatment_s4_anchors.json'
 
@@ -99,10 +102,11 @@ def test_check_scores_every_tracked_file(check):
             assert ok is None and 'predates 0-14' in detail
 
 
-def _score(check, path, scenario_id, index):
+def _score(check, path, scenario_id, index, run=0):
     scenarios = check.load_scenarios()
-    run = json.loads(path.read_text())
-    rec = next(r for r in run['results'] if r['scenario'] == scenario_id)
+    data = json.loads(path.read_text())
+    rec = next(r for r in data['results']
+               if r['scenario'] == scenario_id and r['run'] == run)
     turn = rec['turns'][index]
     prior = rec['turns'][index - 1] if index else None
     exp = scenarios[scenario_id]['expect']
@@ -119,11 +123,16 @@ def test_new_p0_checks_on_tracked_runs(check):
     # P0-2: the post-merge report has no file parts.
     s2 = _score(check, POST_MERGE, 's2_report', 0)
     assert s2['file parts <= 0 (P0-2)'][0] is True
-    # P0-3: the post-merge follow-up rebuilt the document (S-002: "add ×3 →
-    # delete ×3 → add ×1, rebuild churn"); no merge, no patch.
+    # P0-3 (D-014): the post-merge follow-up rebuilt the document (S-002:
+    # "add ×3 → delete ×3 → add ×1, rebuild churn"), dropping turn 0's part.
     s3 = _score(check, POST_MERGE, 's3_followup', 1)
-    ok, detail = s3['follow-up op log has merge_parts or a patch (P0-3)']
-    assert ok is False and "'delete_part': 3" in detail
+    ok, detail = s3[KEEPS]
+    assert ok is False and "dropped=['definition-section']" in detail
+    # The snapshot run: r0 updated turn 0's part in place, r1 rebuilt it.
+    assert _score(check, SNAPSHOTS, 's3_followup', 1, run=0)[KEEPS][0] is True
+    assert _score(check, SNAPSHOTS, 's3_followup', 1, run=1)[KEEPS][0] is False
+    # Without snapshots the dropped ids are unknown.
+    assert _score(check, S3_BASELINE, 's3_followup', 1)[KEEPS][0] is None
     # N17: a one-part document has no pair to compare.
     assert s3['max dup Jaccard < 0.5'] == (None, 'n/a: 1 part(s)')
 

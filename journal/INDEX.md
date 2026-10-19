@@ -29,7 +29,7 @@ updated: 2026-10-19 (the S-008 0-14 close commit, `git log -1 -- journal/INDEX.m
 
 ## Phase status
 - **O:** complete (O-01…O-06 done).
-- **0:** 0-14 done (P0-6). 0-06 and 0-09 re-measure after 0-16. Re-scoring shows two tracked s3 follow-ups fail the new P0-3 op check (0-14 Notes).
+- **0:** 0-14 done (P0-6). 0-06 and 0-09 re-measure after 0-16. Re-scoring shows two tracked s3 follow-ups fail P0-3 as revised by D-014 (part identity; 0-14 Notes).
 - **Q, A:** instantiated, not started.
 - **V, R, B, T, P, C, H:** not instantiated (task board at the end of PLAN.md).
 

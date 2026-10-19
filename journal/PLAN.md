@@ -156,9 +156,12 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
   the tool. Three different X; pass = 3/3.
 - **P0-2 Shape:** "write a report on Y" gives sectioned markdown with no
   `file` parts.
-- **P0-3 Dedupe:** a deliberately overlapping follow-up puts `merge_parts`
-  or a patch in the op log. In the final document no two parts share > 50%
-  of body tokens.
+- **P0-3 Dedupe** (revised by D-014; was "puts `merge_parts` or a patch in
+  the op log"): a deliberately overlapping follow-up that edits an artifact
+  keeps the prior turn's parts. None is dropped unless `merge_parts` folds
+  it into a part that survives; updates, patches, moves, new parts and
+  deleted scratch parts are all fine. In the final document no two parts
+  share > 50% of body tokens (`n/a` with fewer than two parts).
 - **P0-4 Consolidation cost** (revised by D-007; was "turn totals B vs A"):
   - On an uncontaminated `--jobs 1` run, the consolidate call's p50 ≤ 1.5×
     the compose p50 from the same run.

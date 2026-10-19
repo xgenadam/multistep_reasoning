@@ -19,8 +19,6 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-# Ops that edit a part in place rather than re-emitting it (P0-3).
-PATCH_OPS = ('replace_in_part', 'insert_in_part', 'append_to_part', 'update_part')
 # Kinds only the keyword fallback produces; a fresh run has none (P0-6).
 FALLBACK_KINDS = ('system_other', 'no_system', 'unknown')
 
@@ -47,6 +45,39 @@ def turn_ops(turn: dict, prior_turn: dict | None) -> Counter:
     if prior_turn is not None:
         ops -= Counter((prior_turn.get('document') or {}).get('op_counts') or {})
     return ops
+
+
+def lost_prior_parts(turn: dict, prior_turn: dict | None) -> list[str] | None:
+    """Prior-turn part ids this turn dropped (P0-3, D-014), or None if unknown.
+
+    A prior part survives when it is still in the final document, or when a
+    merge_parts folded it (possibly via later merges) into a part that is.
+    Updates, patches, moves and new parts never lose anything; deleting the
+    turn's own scratch parts is not counted. Needs both snapshots: run files
+    without them cannot say which ids were dropped.
+    """
+    prior_snap = (prior_turn or {}).get('snapshot') or {}
+    snap = turn.get('snapshot') or {}
+    if not prior_snap.get('parts') or 'parts' not in snap:
+        return None
+    prior_ids = [p.get('id') for p in prior_snap['parts']]
+    final_ids = {p.get('id') for p in snap['parts']}
+    folded: dict[str, str] = {}  # merged-away id -> the primary it went into
+    for entry in (snap.get('op_log') or [])[len(prior_snap.get('op_log') or []):]:
+        op = entry.get('op') if isinstance(entry, dict) else None
+        if isinstance(op, dict) and op.get('type') == 'merge_parts':
+            primary, *rest = op.get('ids') or [None]
+            for pid in rest:
+                folded[pid] = primary
+
+    def survives(pid: str) -> bool:
+        seen = set()
+        while pid not in final_ids and pid in folded and pid not in seen:
+            seen.add(pid)
+            pid = folded[pid]
+        return pid in final_ids
+
+    return [pid for pid in prior_ids if not survives(pid)]
 
 
 def score_scenario(
@@ -105,13 +136,16 @@ def score_scenario(
         else:
             j = doc.get('max_dup_jaccard') or 0.0
             out.append((name, j < limit, f"j={j}, top={doc.get('top_dup_pairs', [])[:1]}"))
-    if expect.get('followup_merge_or_patch') and is_followup:
-        # P0-3: the overlapping follow-up merges or patches; it does not
-        # delete and re-add.
-        ops = turn_ops(turn, prior_turn)
-        hits = {op: ops[op] for op in ('merge_parts', *PATCH_OPS) if ops[op]}
-        out.append(('follow-up op log has merge_parts or a patch (P0-3)', bool(hits),
-                    f"turn ops={dict(ops)}"))
+    if expect.get('followup_keeps_parts') and is_followup:
+        # P0-3 (D-014): a follow-up that edits an artifact keeps its parts;
+        # it does not delete one and re-add the text under a new id.
+        name = "follow-up keeps the prior turn's parts (P0-3)"
+        lost = lost_prior_parts(turn, prior_turn)
+        ops = dict(turn_ops(turn, prior_turn))
+        if lost is None:
+            out.append((name, None, f'n/a: no snapshots to compare, turn ops={ops}'))
+        else:
+            out.append((name, not lost, f'dropped={lost}, turn ops={ops}'))
     if 'min_sub_tasks' in expect:
         st = (turn.get('sub_tasks') or {}).get('final_sub_task_count')
         ok = st is not None and st >= expect['min_sub_tasks']
