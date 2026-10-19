@@ -1,10 +1,10 @@
 # INDEX — live board (hand-maintained; ticket status lives only in front-matter: `make board`)
 
-updated: 2026-10-19 (the 0-06 close commit, S-013, `git log -1 -- journal/INDEX.md`)
+updated: 2026-10-19 (the S-014 commit, `git log -1 -- journal/INDEX.md`)
 
 ## Now
 - **Phase:** 0 close-out (0-close-A). 0-14 (P0-6), 0-15 (P0-10), 0-16 (P0-7, D-016) and 0-06 (P0-4 passed; `consolidation` stays off by default, its behaviour check moved to Q-02 arm (c)) are done.
-- **Next move:** 0-09 (Sonnet 5.5 / low, behavioural): one post-fix s1 run (`--scenario s1_cli_code --runs 1`, `--jobs 3` is fine) on `:8091` with `LLM_MODEL=qwen3.8-flash-next`; `check.py`'s "file part bodies not pre-fenced" check must PASS (0-15's off smoke failed it: 0-09 Notes). Claim the server first. Open AGENTS.md, this file and `tickets/0-09.md`.
+- **Next move:** 0-09 (Sonnet 5.5 / low): the S-014 re-run on `:8091` still FAILs the fence check (both file parts pre-fenced). Fix rule 7 (stronger prompt, or a composer-side outer-fence strip, which needs a decision against the ticket Notes), then re-run s1 with `LLM_MODEL=qwen3.8-flash-next`. Open AGENTS.md, this file and `tickets/0-09.md`.
 
 ## Resources
 - **Generator:** `:5000` (Qwen3.8-27B GGUF, llama-server) still had no model loaded at S-009 (2026-10-19). The user served `qwen3.8-flash-next` (vLLM) at `http://host.containers.internal:8091/v1`; it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). Export `LLM_BASE_URL` (D-008).
@@ -12,7 +12,7 @@ updated: 2026-10-19 (the 0-06 close commit, S-013, `git log -1 -- journal/INDEX.
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
 - **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close commit; the user pushes from the host.
-- **Server owner:** nobody (0-06 re-measure finished 2026-10-19).
+- **Server owner:** nobody (S-014 run finished 2026-10-19).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. 0-09 — s1 fence re-run — Sonnet 5.5/low — behavioural — 0-14
