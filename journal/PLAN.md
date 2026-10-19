@@ -757,3 +757,4 @@ Model and effort rules:
 | P-03 serial recovery | Opus 5.5 / high | — | |
 | P-04 retire legacy chain | Sonnet 5.5 / low | — | |
 | JSON schema dedup (N21) | Opus 5.5 / medium → re-baseline Sonnet 5.5 / low | — | after A-05 (D-016). Mechanical, not a redesign. Re-baseline at `--jobs 1`, and check quality (P0-1/2/3) does not regress. |
+| Q labelling app (the user's request, 2026-10-19): pairs side by side, a score entered in the UI, next pair; optional assistant for clarifying questions | Opus 5.5 / medium, or the user's own stack | short | gates Q-1's real-pair half and Q-04's label-agreement column; needs a Q criterion before instantiation. The assistant never shows a model verdict before the human's label is saved. |

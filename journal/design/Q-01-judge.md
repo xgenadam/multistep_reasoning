@@ -34,7 +34,8 @@
    agree, ties 0.5; the absolute rubric is secondary; inputs are blinded and
    normalised; temperature 0; strict JSON.
 5. **Validation set** (§ 4): 12 pairs, listed with their sources. Five need
-   the user's labels before Q-01 stage 2 measures Q-1.
+   the user's labels, which wait on the user's labelling app (PLAN § Task
+   board); the other seven and the standard slices (§ 9) run without them.
 6. **Budget** (§ 5): the Q-4 form and an estimate; Q-04 measures it.
 7. **Draft D-nnn** (§ 7) supersedes D-007's quality half.
 
@@ -137,7 +138,9 @@ stands alone.
 Twelve pairs, each judged in both orders; Q-5 repeats each pair/order once.
 Files land under `journal/baseline/bench/validation/` with a
 `pairs.yaml` manifest (`pair_id`, `kind`, `a`, `b`, `expected`, `source`).
-Stage 2 cuts and writes them; the user fills `expected` for R1–R5.
+Stage 2 cuts and writes them. The user fills `expected` for R1–R5 through
+their labelling app, not by hand (2026-10-19); until then Q-1's real-pair
+half is reported as pending.
 
 **Real pairs** (the user labels which is better; both sides are harness
 output from the 0-16 run file, run 0 against run 1):
