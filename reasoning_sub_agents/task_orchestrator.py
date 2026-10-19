@@ -264,7 +264,7 @@ class TaskOrchestrator:
             last_task = sub_task
 
         # 0-06: optional consolidation pass after the final sub-task.
-        # Outline + previews only, merge/move/delete, best-effort.
+        # Outline + rolling summary only (no previews, D-N), merge/move/delete, best-effort.
         if self.options.consolidation:
             set_phase('Consolidating document')
             yield ('status', 'Consolidating document')

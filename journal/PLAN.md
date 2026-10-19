@@ -650,7 +650,7 @@ Pass criteria:
 | N5 | Oracle `search` offset: computed on `title+'\n'+body`, sliced on `body` | `document_oracle.py:91-95, 177-185` | A-02 |
 | N6 | Silent endpoint defaults | — | fixed, O-03 (D-008) |
 | N7 | Orchestrator `history` stores component histories by reference | `task_orchestrator.py:158-167` | 0-12 |
-| N8 | `consolidate()` sends outline + summary only, but docs said "previews" | `document_composer.py:357-390` | 0-06 |
+| N8 | `consolidate()` sends outline + summary only, but docs said "previews" | `document_composer.py:357-390` | fixed, 0-06 (comment aligned; D-N stands: no previews) |
 | N9 | `MockOpenAI` is not an `OpenAI` → instructor path untested | `tests/mock_openai.py` | 0-13 |
 | N10 | `RollingDocumentUpdateSynthesiser` broken and unregistered; 10 skipped tests | `document_modification_synthesiser.py` | P (legacy chain) |
 | N11 | PLAN v1 defect table stale | — | fixed, O-01 (v1 archived) |
