@@ -1,20 +1,20 @@
 # INDEX — live board (hand-maintained; ticket status lives only in front-matter: `make board`)
 
-updated: 2026-10-19 (the S-009 0-15 close commit, `git log -1 -- journal/INDEX.md`)
+updated: 2026-10-19 (the S-010 0-16 stage 1 commit, `git log -1 -- journal/INDEX.md`)
 
 ## Now
 - **Phase:** 0 close-out (0-close-A). 0-14 (P0-6, truthful harness) and 0-15 (P0-10, thinking explicit and logged, D-013/D-015) are done.
-- **Next move:** 0-16 stage 1 (Sonnet 5.5 / low, timing: idle box, `--jobs 1`, thinking `off` is the default). Open AGENTS.md, this file and `tickets/0-16.md`, then `make test`. Read `tickets/README.md` and `SESSION_TEMPLATE.md` at session end, not start.
+- **Next move:** 0-16 stage 2 (Opus 5.5 / high, no server needed): denominators from the rebaseline run, N18 attribution by call kind, fix-or-accept in DECISIONS.md, replace `compare.CLEAN_COMPOSE_P50_S`. Open AGENTS.md, this file and `tickets/0-16.md`.
 
 ## Resources
 - **Generator:** `:5000` (Qwen3.8-27B GGUF, llama-server) still had no model loaded at S-009 (2026-10-19). The user served `qwen3.8-flash-next` (vLLM) at `http://host.containers.internal:8091/v1`; it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). Export `LLM_BASE_URL` (D-008).
 - **Judge:** `:8000` Devstral-123B is down (launchers in `scripts/server/`).
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Pushed:** `origin/master` = `dc31608` (D-014). `master` adds the 0-15 close commit; the user pushes from the host.
-- **Server owner:** nobody (no harness job running).
+- **Server owner:** nobody (0-16 stage 1 run finished 2026-10-19).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
-1. 0-16 — re-baseline + token growth — Sonnet→Opus, low→high — timing — 0-14, 0-15
+1. 0-16 — stage 2 (analyse) — Opus 5.5, high — none — 0-14, 0-15 (stage 1 done, S-010)
 2. 0-06 — consolidation re-measure — Sonnet 5.5/medium — timing — 0-14, 0-16
 3. 0-09 — s1 fence re-run — Sonnet 5.5/low — behavioural — 0-14
 4. 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI) — none
