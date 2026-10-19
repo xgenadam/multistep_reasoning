@@ -7,11 +7,10 @@
   schema.py` (the switches P4 relies on); `harness.py` (`--judge-base-url`,
   no commit recorded); the user's answers of 2026-10-19 in Q-01 Notes
   (hardware, tiers, judges by benchmark, endpoints).
-- **Status:** draft for the user's approval. Nothing here is in force until
-  the approval bullet lands in `tickets/Q-01.md`. The draft decision in § 7
-  is appended to DECISIONS.md at that point, and the fold list in § 8 is
-  applied then, not before. Until then PLAN's criteria and the Q tickets'
-  Scope stand as written.
+- **Status:** approved by the user on 2026-10-19 with one addendum: wall-clock
+  time is recorded for every arm and every judge call, per call, per prompt
+  and per arm. D-019 is in DECISIONS.md and the § 8 fold list is applied
+  (S-018).
 
 ## 0. Summary
 
@@ -37,7 +36,7 @@
    the user's labels, which wait on the user's labelling app (PLAN § Task
    board); the other seven and the standard slices (§ 9) run without them.
 6. **Budget** (§ 5): the Q-4 form and an estimate; Q-04 measures it.
-7. **Draft D-nnn** (§ 7) supersedes D-007's quality half.
+7. **Draft D-019** (§ 7) supersedes D-007's quality half.
 
 ## 1. The ruling on the S-012 proposal
 
@@ -68,9 +67,9 @@ Then the items. "Accept" means as written; "modify" lists the change.
 | P5 objective scoring first | accept | Code prompts carry hidden tests (pytest files beside the prompt, never in any prompt; a runner writes the rendered file parts to a temp dir and runs them with a timeout). Pass-rate with a Wilson CI is the code domain's primary metric; the judge is secondary there and runs only when both arms' tests agree. Report prompts carry a checklist (required sections, stated bounds, forbidden repeats) scored mechanically; the judge scores the rest. **Domains are never pooled**: a pass-rate and a win-rate are different quantities. The two padded-but-not-better pairs are in the validation set (§ 4) and in Q-04. |
 | P6 task mix | modify | Accept ≥ ⅓ long prompts. Modifications: (1) **"long" is operational**: the reference deliverable exceeds the generator's per-call `max_tokens`, or has more than one file. (2) **≥ 20 % follow-up turns**, since s3 is where part identity and dedupe matter (D-014). (3) **The single-model arms get a continue-until-done driver** on long prompts: when a call ends on `length`, the driver sends "continue" with the partial output until a stop or a cap of 3 continuations. Without it the harness wins long prompts by truncation, which measures nothing. |
 | P7 standing benchmark | accept | `journal/baseline/bench/v1/`: `prompts/<id>.md`, `tests/<id>/` for code, `checklists/<id>.yaml` for reports, `manifest.yaml` (domain, long, follow-up, overlap flags). One command runs any arm set on any subset. `subset: g3` names ≈ 10 prompts (half code, half report, two follow-ups) for G3 on every material change; the full set serves phase gates and the D-007 re-baselines. The set is frozen per version; a change is `v2`. |
-| Q-2′ | modify | Q-2 is **revised in place** with the "(revised by D-nnn; was …)" form used for P0-3 and P0-4. Pass-criterion IDs are never renumbered (`tickets/README.md`), and a primed ID is a renumbering. |
+| Q-2′ | modify | Q-2 is **revised in place** with the "(revised by D-019; was …)" form used for P0-3 and P0-4. Pass-criterion IDs are never renumbered (`tickets/README.md`), and a primed ID is a renumbering. |
 | Q-6, Q-7, Q-8, Q-9 | accept with wording | Q-7 reads "within ±25 % of the harness's median completion tokens per prompt". Q-9 keeps both sentences; its ablation sentence is Q-05's criterion. |
-| Draft decision | accept as D-nnn | With the modifications above folded in (§ 7). |
+| Draft decision | accept as D-019 | With the modifications above folded in (§ 7). |
 | Cost estimate | revise | See § 5. The proposal's 7 h at `--jobs 1` covered generation only. Judging adds 10–18 h of slow-tier swap windows for Q-E1 at 80 prompts, unattended. |
 
 What the ruling does not do: it does not change G3's thresholds (Q-03), the
@@ -220,9 +219,9 @@ from the verdict file; code prompts whose tests decide skip the judge.
   no-verdict exclusion, the Wilson CI, and the seam test that `quality.py`
   builds a stock `OpenAI` client (AGENTS.md).
 
-## 7. Draft decision (appended on approval under the next free D-nnn)
+## 7. D-019 as appended (with the wall-clock addendum)
 
-> ## D-nnn — Quality claims are pre-registered, powered and compute-matched; Q precedes A's implementation    2026-10-19 · S-018 · active
+> ## D-019 — Quality claims are pre-registered, powered and compute-matched; Q precedes A's implementation    2026-10-19 · S-018 · active
 > Decision: A pass that claims a quality gain shows a Wilson 95 % CI lower bound above 0.5 on decisive pairs and a point estimate at or above the effect pre-registered in the ticket's Notes before its first run file (default 0.70). The primary comparison is the harness against a self-refine single-model arm matched on completion tokens (±25 %); bare single calls, thinking off and on, are secondary. Objective checks score what they can (hidden tests for code, checklists for reports) and the judge scores the rest; no judge verdict replaces a test result, and domains are never pooled. G3 non-inferiority (Q-03's thresholds) stays for changes that claim no gain and runs on the standing `g3` subset from A-05 on. The benchmark is a frozen, versioned set under `journal/baseline/bench/`, ≥ ⅓ long prompts (deliverable beyond one call's `max_tokens`, or multi-file) and ≥ 20 % follow-ups; single-model arms continue until done. Judging is pairwise, both orders, decisive only when both agree, on two tiers (fast co-resident, slow sequential) with judges chosen by Q-04 and self-judging as control and fallback; one judge per table; every verdict records judge, rubric version and commit. Q-01, Q-04 (slow tier), Q-02 and Q-03 run before A-02 starts; A-02's session may overlap Q-02's campaign window with the campaign on a pinned worktree; the Q-E1 verdict is the re-plan point before A-03. (user-approved, S-018)
 > Why: n ≥ 10 cannot separate 0.70 from chance (7/10 gives 0.40–0.89); a bare single call uses a fraction of the harness's compute, so "the harness wins" could mean "more compute wins"; code can be tested; short tasks are where the harness is least likely to help; A through T invest in the pipeline, and D-007 already makes quality a gate from Q on, which needs the gate before A lands code.
 > Supersedes: D-007's quality half ("pairwise judge, n ≥ 10"); PLAN's S-012 proposal block.    Re-open if: the measured judge budget (Q-4) makes the powered n infeasible on the generator and the slow-tier judge; or (a″) cannot be matched within ±25 % on completion tokens; or Q-04 finds no judge that passes Q-1 in either tier.
@@ -277,9 +276,9 @@ the full bespoke set for Q-E1.
 
 1. PLAN § Phase Q: rewrite Q-02's bullet (arms, primary comparison, bench,
    stages), add Q-05 to the task board, revise Q-2 in place, add Q-6…Q-9,
-   delete the proposal block, cite D-nnn.
-2. DECISIONS: append D-nnn; D-007's status word becomes "active; quality
-   half superseded by D-nnn".
+   delete the proposal block, cite D-019.
+2. DECISIONS: append D-019; D-007's status word becomes "active; quality
+   half superseded by D-019".
 3. Tickets: Q-02 Scope and front-matter (three stages: Opus 5.5 / high
    bench and drivers → Sonnet 5.5 / low campaign → Opus 5.5 / high
    analysis; `depends_on: [Q-01, Q-04]`); Q-03 Scope (reads the verdict

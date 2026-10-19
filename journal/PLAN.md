@@ -216,7 +216,7 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     recorded, a simple request yields 1 sub-task, and G3 (Q-3) against
     0-10a is ≥ 0.45.
 
-## Phase Q — Quality evaluation (∥ A; Q-01 needs no server)
+## Phase Q — Quality evaluation (before A-02 starts, D-019; Q-01 stage 1 and Q-03 need no server)
 
 - **Q-01, the judge tool:**
   - `journal/baseline/quality.py` plus `rubrics/`.
@@ -225,19 +225,38 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     secondary.
   - Reports win-rate with a Wilson 95% CI.
   - Validated offline on pairs cut from the tracked run files.
-  - Open question for the user at the start: Devstral-123B as judge beside
-    Qwen, run sequentially, or accept self-judging. If self-judging is
-    used, the caveat goes to DECISIONS.
-- **Q-02, experiment Q-E1 (harness vs single call):**
-  - Three arms with the same prompt, model and `max_tokens`:
-    (a) single call, (b) harness, (c) harness + consolidation.
-  - ≥ 10 prompts × 2 domains.
-  - Win-rate + CI per pairing, with tokens and wall time per arm beside
-    quality.
-  - A scheduled campaign. `--jobs 3` is acceptable, since outputs and tokens
-    stay clean. It answers the README's open question, whatever the answer is.
-- **Q-03, the G3 gate in `compare.py`:** needs n ≥ 10 pairs. Win-rate
-  ≥ 0.45 passes, < 0.35 fails, and anything between is inconclusive.
+  - Judging runs on two tiers, fast co-resident and slow sequential, with
+    the judges chosen by Q-04 and self-judging as the control and fallback
+    (D-019, caveat included). Each judge has its own endpoint and an
+    explicit model name (D-008). Design: `journal/design/Q-01-judge.md`.
+- **Q-02, experiment Q-E1 (harness vs compute-matched single-model arms;
+  D-019):**
+  - Arms, same prompt, model and per-call `max_tokens`: (a) single call,
+    thinking off; (a′) single call, thinking on; (a″) self-refine (draft →
+    critique → revise, N rounds) matched to the harness's median completion
+    tokens ±25 %; (b) harness; (c) harness + consolidation, on the overlap
+    subset only. Single-model arms continue until done on long prompts.
+  - The primary comparison is (b) against (a″), pre-registered with the
+    effect (default 0.70 on decisive pairs), n and the analysis before the
+    first run file (Q-6). (a) and (a′) are secondary.
+  - Scoring: hidden tests for code, checklists for reports, the judge for
+    the rest; domains never pooled (Q-8).
+  - The set is `journal/baseline/bench/v1/` (Q-9): ≥ ⅓ long prompts, ≥ 20 %
+    follow-ups, a `g3` subset of ≈ 10, and `std-*` slices (design note
+    § 9). About 80 prompts.
+  - Three stages: bench v1 and the arm drivers (Opus 5.5 / high); the
+    campaign (Sonnet 5.5 / low, `--jobs 3`, from a pinned worktree, wall
+    time recorded per call, per prompt and per arm); the analysis (Opus
+    5.5 / high: win-rate and CI per pairing, tokens, wall and length per
+    arm). Judging is a slow-tier window on the committed run files. It
+    answers the README's open question, whatever the answer is, and is the
+    re-plan point before A-03.
+- **Q-03, the G3 gate in `compare.py`:** reads `quality.py`'s verdict file
+  for two arms; needs n ≥ 10 pairs. The all-pairs win-rate (ties 0.5)
+  ≥ 0.45 passes, < 0.35 fails, and anything between is inconclusive; the
+  decisive rate with its Wilson CI and the tie rate print beside it. G3
+  serves changes that claim no gain; a gain claim takes the Q-6 test. From
+  A-05 on it runs on the `g3` subset for every material change.
 - **Q-04, the judge benchmark** (added 2026-10-19 by Q-01 stage 1 at the
   user's request): every candidate judge in both tiers (fast co-resident,
   slow sequential; Q-01 Notes) is scored on the Q-1 validation set, both
@@ -250,157 +269,36 @@ Pass criteria:
 - **Q-1:** the judge agrees with 5 user-labelled real pairs ≥ 4/5. It also
   picks the correct side of 5 plausible-but-wrong pairs (missing requested
   section; off-by-one in code) ≥ 4/5, in both orders.
-- **Q-2:** Q-E1 is recorded with tokens and wall time per arm.
+- **Q-2** (revised by D-019; was "Q-E1 is recorded with tokens and wall
+  time per arm"): Q-E1 is recorded with tokens, wall time and length per
+  arm and per prompt; n comes from Q-6; at least ⅓ of prompts are long and
+  at least 20 % are follow-ups.
 - **Q-3:** G3 is exercised on the Q-E1 set.
 - **Q-4:** a judge budget is recorded ("10-pair set ≤ N tokens / ≤ M min"),
   and judge calls never run inside a timing-gate window.
 - **Q-5:** repeatability. The same pair in the same order, judged twice,
   agrees ≥ 90%.
+- **Q-6 Pre-registration:** the effect, n, the primary comparison and the
+  analysis are committed in Q-02's Notes before Q-02's first run file. A
+  gain claim needs the Wilson 95 % lower bound above 0.5 on decisive pairs
+  and a point estimate at or above the effect.
+- **Q-7 Compute-matched baseline:** at least one single-model arm is within
+  ±25 % of the harness's median completion tokens per prompt.
+- **Q-8 Objective scoring:** every code prompt has hidden tests, and no
+  judge verdict replaces a test result. Domains are never pooled.
+- **Q-9 Standing benchmark:** one command reproduces a Q-E1 run from the
+  frozen set, on any subset. One component ablation reports its quality
+  delta and marginal cost (Q-05).
 - **Q-10:** every candidate judge is scored on the same Q-1 validation
   set, both orders and twice, with agreement, position consistency, length
   bias, repeatability, tie rate and cost per call in one table. The fast and
   slow judges are chosen by the rule recorded before the run, and the choice
-  is a DECISIONS entry with its cost per pair. (Q-6–Q-9 stay reserved for
-  the S-012 proposal until Q-01 stage 1 rules on it.)
+  is a DECISIONS entry with its cost per pair.
 
-### Proposed amendment (S-012, 2026-10-19): a draft, not in force
-
-> **Re-check before acting on this.** It was drafted at the user's request,
-> outside any ticket and without a design session. **Q-01 stage 1** (Fable 5.1
-> / high) rules on it item by item: accept, modify or reject. It does so
-> **before A-02 starts**, because P1 changes the order. Until that ruling, the
-> criteria above and the Q tickets' Scope stand unchanged. When re-checking,
-> ask:
-> - Is the harness still the thing in question?
-> - Does the generator still make a large campaign cheap?
-> - Have Phase A results already answered any part of this?
-
-The question it serves: does the harness give a better result than just
-prompting the model, and does each added pass give a meaningful improvement
-rather than a measurable but trivial one? Phase Q as written answers the first
-part only weakly, for five reasons:
-- n ≥ 10 cannot separate a real 70 % win-rate from chance: 7/10 has a Wilson
-  95 % CI of 0.40–0.89.
-- The single-call arm uses a fraction of the harness's compute.
-- Only consolidation is ablated.
-- Code is judged although it could be tested.
-- s1–s4 are short tasks, and short tasks are where a harness is least likely
-  to help.
-
-**P1, order.** Q-01 → Q-02 run before A-02. A-01 (paper only) still runs in
-parallel.
-- Q-02 drops `depends_on: A-04`. It uses `harness.py`'s snapshot functions
-  as they are, since A-04 only moves them.
-- Why: A through T invest in this pipeline. If it does not beat the baselines,
-  the re-plan should come before that investment.
-
-**P2, a pre-registered effect and power.**
-- Before the campaign runs, Q-02's Notes record and commit:
-  - the minimum effect worth having (for example a win-rate of 0.65, or a
-    test pass-rate gain of 10 points);
-  - the primary comparison;
-  - the analysis.
-- n follows from that effect at 80 % power, two-sided α = 0.05. The decisive
-  (non-tie) pairs needed are:
-
-  | Win-rate to detect | Decisive pairs |
-  | --- | --- |
-  | 0.75 | ≈ 29 |
-  | 0.70 | ≈ 47 |
-  | 0.65 | ≈ 85 |
-  | 0.60 | ≈ 194 |
-
-  The tie rate is reported.
-- Claims:
-  - "better" needs the CI lower bound above 0.5;
-  - "meaningfully better" also needs the point estimate at or above the
-    pre-registered effect.
-- G3 (Q-03) stays as the non-inferiority gate for changes that claim no gain.
-  A change that claims a gain must pass the superiority test.
-
-**P3, a compute-matched baseline.** Q-E1's arms:
-- (a) a single call, thinking off;
-- (a′) a single call, thinking on;
-- (a″) best-of-N or self-refine, with N set so that its median tokens per
-  prompt are within ±25 % of the harness's (≈ 60 K per turn on `:8091`, 0-16);
-- (b) the harness;
-- (c) the harness + consolidation.
-
-The primary comparison is (b) against the strongest single-model arm.
-Otherwise "the harness wins" may only mean "more compute wins".
-
-**P4, ablations as configuration.** Every component that claims a gain gets
-an on/off arm, with its quality delta reported beside its marginal cost (the
-D-007 form). Most switches already exist in `OrchestratorConfig`:
-- decomposer `simple` vs `self_critique`;
-- executor `simple` vs `oracle_loop`;
-- composer `simple` vs `document`;
-- `oracle: null`;
-- `max_oracle_rounds`;
-- `consolidation`;
-- `thinking` / `thinking_by_step`.
-
-Ablations run on a smaller set, and only after Q-E1. If the harness loses,
-they explain why; if it wins, they show which parts earn their cost.
-
-**P5, objective scoring first.**
-- Each code-domain prompt carries hidden tests, and scoring is pass-rate with
-  a CI per arm. No judge is used where a test exists, and the format is shared
-  with T-code.
-- Each report prompt carries a checklist of required sections and stated
-  constraints, scored mechanically where possible.
-- The pairwise judge covers the rest.
-- Length is reported per arm. Q-1's validation set adds two padded-but-not-
-  better pairs, so that length bias is caught.
-
-**P6, task mix.**
-- At least a third of prompts are long: tasks where a single call hits the
-  context or `max_tokens` limit (multi-file programs, reports longer than one
-  call can emit).
-- Some prompts are multi-turn follow-ups, as in s3.
-- The north star is very long tasks, so most of the benchmark should not sit
-  in the short-task regime.
-
-**P7, a standing benchmark, not a one-off.**
-- A frozen, versioned set lives under `journal/baseline/bench/`: prompts,
-  hidden tests and checklists.
-- One command runs any arm set.
-- A small subset (≈ 10 prompts) serves G3 on every material change, and the
-  full set serves phase gates and the D-007 re-baselines.
-
-**Proposed criteria** (next free IDs; Q-2 reworded):
-- **Q-2′:** Q-E1 is recorded with tokens, wall time and length per arm. n
-  comes from Q-6, and at least ⅓ of prompts are long.
-- **Q-6 Pre-registration:** the effect, n, the primary comparison and the
-  analysis are committed before Q-02's first run file.
-- **Q-7 Compute-matched baseline:** at least one single-model arm is within
-  ±25 % of the harness's median tokens per prompt.
-- **Q-8 Objective scoring:** every code prompt has hidden tests, and no judge
-  verdict replaces a test result.
-- **Q-9 Standing benchmark:** one command reproduces a Q-E1 run from the
-  frozen set. One component ablation reports its quality delta and marginal
-  cost.
-
-**Draft decision.** On acceptance, append it to DECISIONS.md and change only
-the status word of D-007's quality half:
-
-> **Quality claims are pre-registered, powered and compute-matched.**
-> - A pass claiming a quality gain shows a CI lower bound above 0.5 and a
->   point estimate at or above a pre-registered effect.
-> - The comparison is against the strongest single-model arm at similar
->   token cost.
-> - Objective checks score whatever they can, and the judge scores the rest.
-> - G3 non-inferiority stays for changes that claim no gain.
->
-> *Supersedes:* D-007's "pairwise judge, n ≥ 10".
-> *Re-open if:* the judge budget (Q-4) makes powered n infeasible on the
-> current generator.
-
-**Cost.** On `:8091`, a harness turn takes ≈ 62 s and a single call a few
-seconds. 80 prompts × 5 arms is about 7 h at `--jobs 1`, or about 2.5–3 h at
-`--jobs 3`. That is acceptable because outputs and tokens stay clean (Q-02
-Scope). Judge calls come on top, and thinking-on arms cost more (s1 with
-thinking on: 356 s).
+The S-012 proposal (P1–P7, Q-2′, Q-6–Q-9, a draft decision) was ruled on by
+Q-01 stage 1 on 2026-10-19, accepted with six modifications, and folded in
+above (D-019; `journal/design/Q-01-judge.md` § 1). Its text is in git
+history at `f5c590c`.
 
 ## Phase A — `ContextStore` keystone (zero new deps or services; D-001)
 
@@ -710,7 +608,7 @@ Line numbers are as of S-004. Re-check them before editing.
 | O | 5 | 2.5–3.5 | none |
 | 0-close-A | 5 | ≈ 1.5 | ≈ 2 h idle (0-16, 0-06, 0-09) |
 | 0-close-B | 4 | ≈ 2 | behavioural only |
-| Q | 3 | 3–4 | Q-02 campaign: 60 turns ≈ 10–17 h at `--jobs 1` |
+| Q | 5 | 7–9 | Q-02 campaign ≈ 80 prompts × 5 arms, 5–7 h at `--jobs 3`; judging 10–18 h of slow-tier windows (D-019) |
 | A | 5 | ≈ 3 | A-05 behavioural |
 | V | 3 | ≈ 2 | short |
 | R-mech | 4 | ≈ 3 | one smoke |
@@ -757,4 +655,5 @@ Model and effort rules:
 | P-03 serial recovery | Opus 5.5 / high | — | |
 | P-04 retire legacy chain | Sonnet 5.5 / low | — | |
 | JSON schema dedup (N21) | Opus 5.5 / medium → re-baseline Sonnet 5.5 / low | — | after A-05 (D-016). Mechanical, not a redesign. Re-baseline at `--jobs 1`, and check quality (P0-1/2/3) does not regress. |
+| Q-05 ablations (P4): one `OrchestratorConfig` switch per arm on the `g3` subset, quality delta beside marginal cost (D-007 form) | Sonnet 5.5 / medium | — | after the Q-E1 verdict; criterion Q-9's second sentence; needs the config-override flag from Q-02 stage 0 |
 | Q labelling app (the user's request, 2026-10-19): pairs side by side, a score entered in the UI, next pair; optional assistant for clarifying questions | Opus 5.5 / medium, or the user's own stack | short | gates Q-1's real-pair half and Q-04's label-agreement column; needs a Q criterion before instantiation. The assistant never shows a model verdict before the human's label is saved. |

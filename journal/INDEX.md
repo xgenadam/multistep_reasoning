@@ -1,10 +1,10 @@
 # INDEX — live board (hand-maintained; ticket status lives only in front-matter: `make board`)
 
-updated: 2026-10-19 (Q-01 stage 1 started: hardware recorded, two judge tiers, Q-04 judge benchmark instantiated with Q-10; `git log -1 -- journal/INDEX.md`)
+updated: 2026-10-19 (Q-01 stage 1 approved, D-019: Phase Q before A-02, Q-02 re-staged, Q-6…Q-9 added; `git log -1 -- journal/INDEX.md`)
 
 ## Now
 - **Phase:** A; A-01 is done (D-018, approved 2026-10-19). Phase 0 close-out: 0-14 (P0-6), 0-15 (P0-10), 0-16 (P0-7, D-016), 0-06 (P0-4) and 0-09 (D-017) are done; 0-11 is deferred by the user (2026-10-19), not dropped.
-- **Next move:** Q-01 stage 1 is written and **blocked on the user's approval** of `design/Q-01-judge.md` (the S-012 ruling, its draft decision, protocol, validation set, budget). The five real-pair labels wait on the user's labelling app (PLAN § Task board), which gates Q-1's real-pair half and Q-04's final selection; the damaged, padded and standard slices run without it. On approval: apply the note's § 8 fold list in one commit, then Q-01 stage 2 (Opus 5.5 / medium). The judges come from Q-04 (its fast tier waits on the user's three-card experiment, not needed before Q-03). If approved, the order is Q-01 st2 → Q-04 slow tier → Q-02 → Q-03 before A-02 starts. Then A-02 (Opus 5.5 / medium, no server; the A-01 note's § 5.2 is its map). A-06 (Fable 5.1 / high, design only) can run any time; it does not gate A-02…A-05. Open AGENTS.md, this file and the ticket.
+- **Next move:** Q-01 stage 2 (Opus 5.5 / medium, behavioural): `quality.py`, the validation-set files, Q-1's objective half and Q-5 on self-judging at `:8091` (no swap). Then Q-04 slow tier (Sonnet 5.5 / medium; the user swaps models), then Q-02 stage 0 (Opus 5.5 / high, no server). Phase Q runs before A-02 starts (D-019); an A-02 session may overlap Q-02's campaign window. The R1–R5 labels wait on the user's labelling app (PLAN § Task board); the fast judge tier waits on the user's three-card experiment, not needed before Q-03. Open AGENTS.md, this file and the ticket.
 
 ## Resources
 - **Generator:** `:8091` serves Qwen flash (`qwen3.8-flash-next`) on the user's customised vLLM at `http://host.containers.internal:8091/v1`, on all four cards plus 40–50 GiB RAM (≈ 125 tok/s on code); it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). `:5000` is text-generation-webui's API (loader llama.cpp, Qwen3.8-27B GGUF on disk) with no model loaded on 2026-10-19. Export `LLM_BASE_URL` (D-008).
@@ -15,13 +15,13 @@ updated: 2026-10-19 (Q-01 stage 1 started: hardware recorded, two judge tiers, Q
 - **Server owner:** nobody (0-09 run finished 2026-10-19).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
-1. Q-01 — judge tool — Fable→Opus, high→medium — behavioural — none (stage 1 rules on PLAN § Phase Q's S-012 proposal before A-02)
-2. Q-04 — judge benchmark, both tiers — Sonnet 5.5/medium — behavioural — Q-01 (slow tier on any model swap; fast tier after the user's three-card experiment)
-3. A-02 — Document store + BM25 — Opus 5.5/medium — none — A-01 (if Q-01 accepts the S-012 proposal's P1, run Q-02 first)
-4. A-03 — ToolRegistry + multi-store oracle + `results` store — Opus 5.5/high — none — A-02
-5. A-04 — op-log seq/ts + snapshot promotion + `Part.role` — Sonnet 5.5/medium — none — none
-6. A-05 — Phase A live criteria run — Sonnet 5.5/medium — timing — A-02, A-03, A-04, 0-16 (measure the pre-A oracle first: A-05 Notes)
-7. N21 JSON schema dedup (task board, not yet a ticket) — Opus 5.5/medium → re-baseline — timing — A-05 (D-016)
+1. Q-01 stage 2 — judge tool (`quality.py`, validation set, Q-1 objective half, Q-5) — Opus 5.5/medium — behavioural (self-judging on `:8091`) — none
+2. Q-04 — judge benchmark, slow tier first — Sonnet 5.5/medium — behavioural (the user swaps models) — Q-01
+3. Q-02 stage 0 — bench v1, arm drivers, config override, test runner, commit + wall in drivers — Opus 5.5/high — none — Q-01, Q-04
+4. Q-02 stage 1 — the campaign (`--jobs 3`, pinned worktree) — Sonnet 5.5/low — behavioural — stage 0; an A-02 session (Opus 5.5/medium, none) may run meanwhile
+5. Q-02 judging window + stage 2 — slow-tier judge batch, then analysis — Opus 5.5/high — behavioural — stage 1
+6. Q-03 — G3 gate in `compare.py` — Sonnet 5.5/medium — none — Q-01, Q-02; then the re-plan point (Fable 5.1/high if the harness lost)
+7. A-02 (if not already overlapped) → A-03 (Opus 5.5/high) → A-04 (Sonnet 5.5/medium) → A-05 (Sonnet 5.5/medium, timing; includes the `g3` G3 line) → N21 JSON schema dedup (Opus 5.5/medium → re-baseline, timing, D-016)
 - Any time, gates nothing in A: A-06 — retrieval escalation + conflict judgement, design only — Fable 5.1/high — none — A-01.
 - Deferred by the user (2026-10-19), come back to: 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI).
 - Slot between the above, on a free server: 0-12, 0-13 (none); 0-10a (behavioural, unblocked by 0-16); Q-02 campaign (after Q-01, 0-14, A-04) → Q-03 → 0-10b.
@@ -29,8 +29,8 @@ updated: 2026-10-19 (Q-01 stage 1 started: hardware recorded, two judge tiers, Q
 ## Phase status
 - **O:** complete (O-01…O-06 done).
 - **0:** 0-14 done (P0-6), 0-15 done (P0-10), 0-16 done (P0-7, D-016), 0-06 done (P0-4), 0-09 done (D-017). The 0-09 run's s1 failed P0-1 on a composer-chosen prose section (0-09 Notes; not fence-related). Re-scoring shows two tracked s3 follow-ups fail P0-3 as revised by D-014 (part identity; 0-14 Notes).
-- **Q:** Q-01 stage 1 in progress (judge tiers set; the S-012 ruling next); Q-04 instantiated (Q-10); Q-02, Q-03 open.
-- **A:** A-01 done (A-9, D-018); A-02…A-06 open.
+- **Q:** Q-01 stage 1 done (D-019), stage 2 next; Q-04 open (Q-10); Q-02 re-staged (Q-2 revised, Q-6…Q-9); Q-03 open; Q-05 ablations and the labelling app on PLAN's task board.
+- **A:** A-01 done (A-9, D-018); A-02…A-06 open; A-02 starts after Q-03 or overlaps Q-02's campaign (D-019).
 - **V, R, B, T, P, C, H:** not instantiated (task board at the end of PLAN.md).
 
 ## Pointers
