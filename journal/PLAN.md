@@ -238,6 +238,13 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     stay clean. It answers the README's open question, whatever the answer is.
 - **Q-03, the G3 gate in `compare.py`:** needs n ≥ 10 pairs. Win-rate
   ≥ 0.45 passes, < 0.35 fails, and anything between is inconclusive.
+- **Q-04, the judge benchmark** (added 2026-10-19 by Q-01 stage 1 at the
+  user's request): every candidate judge in both tiers (fast co-resident,
+  slow sequential; Q-01 Notes) is scored on the Q-1 validation set, both
+  orders and twice, with label agreement, position consistency, length
+  bias, repeatability, tie rate and cost per call recorded. A selection rule
+  fixed before the run picks the fast and slow judges. Self-judging is the
+  control in both tiers.
 
 Pass criteria:
 - **Q-1:** the judge agrees with 5 user-labelled real pairs ≥ 4/5. It also
@@ -249,6 +256,12 @@ Pass criteria:
   and judge calls never run inside a timing-gate window.
 - **Q-5:** repeatability. The same pair in the same order, judged twice,
   agrees ≥ 90%.
+- **Q-10:** every candidate judge is scored on the same Q-1 validation
+  set, both orders and twice, with agreement, position consistency, length
+  bias, repeatability, tie rate and cost per call in one table. The fast and
+  slow judges are chosen by the rule recorded before the run, and the choice
+  is a DECISIONS entry with its cost per pair. (Q-6–Q-9 stay reserved for
+  the S-012 proposal until Q-01 stage 1 rules on it.)
 
 ### Proposed amendment (S-012, 2026-10-19): a draft, not in force
 

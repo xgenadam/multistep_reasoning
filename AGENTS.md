@@ -64,12 +64,26 @@ This file holds no decisions; it cites them by `D-nnn`.
     interpreter in the agent container.
   - `/workspace/venv` is off-limits: never touch it or import from it.
   - `make test` runs the suite.
+- **Hardware (host, recorded 2026-10-19):** 4 × RTX 3090 (24 GiB each,
+  96 GiB VRAM), 128 GiB RAM, EPYC 7542 (32 cores). `:8091`'s Qwen flash
+  runs on a vLLM the user customised for this machine (unfinished): it
+  takes all four cards (0.3–0.5 GiB free per card) plus 40–50 GiB of RAM
+  and gives coding tasks ≈ 125 tok/s. The user may fit it on three cards;
+  two is a stretch. A second model co-resides only on cards the generator
+  leaves free, pinned (`CUDA_VISIBLE_DEVICES`, llama.cpp `--tensor-split`)
+  and with vLLM's `--gpu-memory-utilization` capped. Judge tiers and
+  candidates: Q-01 Notes; the judge benchmark is Q-04.
 - **Generator** (D-008):
   - Run `export LLM_BASE_URL=http://host.containers.internal:5000/v1`
     before any harness run or `create_llama_client()` call. Nothing
     defaults it.
   - Model `Qwen3.8-27B-UD-Q6_K.gguf`, no auth, **5 parallel slots**.
     Per-request `max_tokens` is honoured.
+  - `:5000` is text-generation-webui's OpenAI-compatible API (uvicorn,
+    loader llama.cpp), not a bare llama-server. `/v1/internal/model/list`
+    lists the host's GGUF files and `/v1/internal/model/info` the loaded
+    one (`"None"` on 2026-10-19). `/health`, `/version` and `/metrics`
+    404 there; vLLM answers all three.
   - Requests send `model='llama'` unless `LLM_MODEL` is set. llama-server
     ignores the name; vLLM 404s on it. On 2026-10-19 the user served
     `qwen3.8-flash-next` (vLLM) at `host.containers.internal:8091/v1`, so
