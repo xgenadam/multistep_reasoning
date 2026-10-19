@@ -32,7 +32,9 @@ export LLM_BASE_URL=http://host.containers.internal:5000/v1
 .venv/bin/python journal/baseline/harness.py --smoke --base-url http://host.containers.internal:5000/v1
 ```
 
-`--base-url` defaults to `$LLM_BASE_URL`. `make venv` needs Python 3.12 (via
+`--base-url` defaults to `$LLM_BASE_URL`. The request model name defaults to
+`llama`, which llama-server ignores; for vLLM or any server that checks it,
+also `export LLM_MODEL=<id from /v1/models>`. `make venv` needs Python 3.12 (via
 `uv` if present). The smoke run needs a reachable generator. Run files land
 in `journal/baseline/runs/` as `<timestamp>_<label>_<scenarios>.json`.
 
@@ -54,7 +56,8 @@ without an oracle) raise at load time.
 
 **Endpoint rule (D-008).** There is no default endpoint. Set `llm.base_url`
 (or `host` and `port`) or export `LLM_BASE_URL`, which overrides the block.
-With neither, creating the client raises.
+With neither, creating the client raises. `LLM_MODEL` sets the model name
+sent with each request (default `llama`).
 
 **Dependencies.** `pyproject.toml` pins the runtime set (Python 3.12 only).
 Extras: `test` (pytest), `tokens` (tiktoken). `requirements.txt` is the

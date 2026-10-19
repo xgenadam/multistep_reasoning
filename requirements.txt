@@ -4,7 +4,7 @@
 #   pip install -r requirements.txt
 # Development / tests: make venv && make test
 openai>=1.109,<2
-instructor==1.3.*
+instructor==1.3.2
 pydantic>=2
 pyyaml
 # optional: exact prompt token counts in prompt_budget.py (pip install tiktoken)

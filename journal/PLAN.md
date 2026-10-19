@@ -99,6 +99,11 @@ delete, `.gitignore` → O-01 journal restructure → O-05 README.
   (`make board` lints this).
 - **O-7 README runs:** every command `README.md` gives exists and runs as
   written. Added at instantiation in S-004.
+- **O-8 Live schemas:** every `response_model` the pipeline passes to
+  instructor builds under the pinned version
+  (`tests/test_llama_utils/test_response_model_schemas.py`), and the README
+  smoke command completes on a non-llama-server endpoint via `LLM_MODEL`.
+  Added in S-007 (O-06).
 
 ## Phase 0 — Document flexibility (0-01…0-09) and close-out
 

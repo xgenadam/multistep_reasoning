@@ -69,6 +69,11 @@ This file holds no decisions; it cites them by `D-nnn`.
     defaults it.
   - Model `Qwen3.8-27B-UD-Q6_K.gguf`, no auth, **5 parallel slots**.
     Per-request `max_tokens` is honoured.
+  - Requests send `model='llama'` unless `LLM_MODEL` is set. llama-server
+    ignores the name; vLLM 404s on it. On 2026-10-19 the user served
+    `qwen3.8-flash-next` (vLLM) at `host.containers.internal:8091/v1`, so
+    set `LLM_MODEL=qwen3.8-flash-next` there. `localhost` in the container
+    is the container, not the host.
   - The YAMLs' `llm` block names `:8000`, the host-side Devstral-123B (big
     model, future judge, usually down). `LLM_BASE_URL` overrides it.
 - **The agent runs on the same server.** Harness runs and the agent's own

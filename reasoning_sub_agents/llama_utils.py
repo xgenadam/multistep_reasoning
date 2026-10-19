@@ -75,6 +75,12 @@ Processor = Callable[[OpenAI, LLMInput], R]
 
 
 LLM_BASE_URL_ENV = 'LLM_BASE_URL'
+LLM_MODEL_ENV = 'LLM_MODEL'
+
+
+def _model_name() -> str:
+    # llama-server ignores the name; vLLM and other servers need the real one.
+    return os.environ.get(LLM_MODEL_ENV) or 'llama'
 
 
 def create_llama_client(
@@ -280,7 +286,7 @@ def _get_streamed_json_response_inner(
         )
         if instr_client is not None and callable(getattr(instr_client, 'create', None)):
             response = instr_client.create(
-                model='llama',
+                model=_model_name(),
                 messages=messages,
                 response_model=response_model,
                 max_retries=max_retries,
@@ -293,7 +299,7 @@ def _get_streamed_json_response_inner(
     for attempt in range(max(1, max_retries)):
         try:
             completion = llama_client.chat.completions.create(
-                model='llama',
+                model=_model_name(),
                 messages=messages,
                 stream=False,
                 timeout=3600,
@@ -523,7 +529,7 @@ def stream_conversation(
     #  get processed sequentially this causes a timeout. for now setting it to None
     #  is good enough
     stream = llama_client.chat.completions.create(
-        model='llama', messages=standard_messages, stream=True, timeout=3600
+        model=_model_name(), messages=standard_messages, stream=True, timeout=3600
     )
 
     chunks: list[ChatCompletionChunk] = []
