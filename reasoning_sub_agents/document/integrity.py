@@ -1,5 +1,5 @@
 from .errors import DocumentIntegrityError
-from .models import Document
+from .models import Document, unwrap_outer_fence
 from .operations import (
     AddPart,
     AppendToPart,
@@ -19,6 +19,7 @@ def assert_payload_kept(
     Enforce that a sub-task result is not dropped.
 
     - body_source=current_result is kept by construction.
+    - A file part keeps the result without its outer fence (0-09).
     - Literal bodies on add/append/update/insert must contain the result
       in the targeted part after apply.
     - Patch-only ops (replace/move/delete) do not require the full payload.
@@ -39,7 +40,7 @@ def assert_payload_kept(
                 targeted_ids.append(op.id)
 
     if used_body_source:
-        if current_result not in _all_bodies(document):
+        if not _kept(current_result, _all_bodies(document)):
             raise DocumentIntegrityError(
                 'body_source=current_result was used but the payload is not in the document'
             )
@@ -55,10 +56,14 @@ def assert_payload_kept(
             raise DocumentIntegrityError(
                 f'composed part {part_id!r} is missing from the document'
             ) from exc
-        if current_result not in part.body:
+        if not _kept(current_result, part.body):
             raise DocumentIntegrityError(
                 f'sub-task result was not kept in part {part_id!r}'
             )
+
+
+def _kept(payload: str, body: str) -> bool:
+    return payload in body or unwrap_outer_fence(payload) in body
 
 
 def _all_bodies(document: Document) -> str:

@@ -1,5 +1,5 @@
 from .errors import DocumentApplyError
-from .models import AppliedOp, Document, Part, PartKind
+from .models import AppliedOp, Document, Part, PartKind, unwrap_outer_fence
 from .operations import (
     AddPart,
     AppendToPart,
@@ -41,16 +41,23 @@ def apply_operations(
     document.op_log.extend(applied)
 
 
-def resolve_body(op: _BodyMixin, current_result: str | None) -> str:
+def resolve_body(
+    op: _BodyMixin, current_result: str | None, kind: PartKind | None = None
+) -> str:
     if op.body_source == 'current_result':
         if current_result is None:
             raise DocumentApplyError(
                 'body_source is current_result but no current sub-task result was provided'
             )
-        return current_result
-    if op.body is None:
+        body = current_result
+    elif op.body is None:
         raise DocumentApplyError('operation is missing body and body_source')
-    return op.body
+    else:
+        body = op.body
+    # 0-09: a file part's body is raw; render() adds the fence.
+    if kind == PartKind.FILE:
+        body = unwrap_outer_fence(body)
+    return body
 
 
 def _apply_one(
@@ -88,10 +95,11 @@ def _add_part(
 ) -> None:
     if document.has_part(op.id):
         raise DocumentApplyError(f'part id already exists: {op.id}')
-    body = resolve_body(op, current_result)
+    kind = PartKind(op.kind)
+    body = resolve_body(op, current_result, kind)
     part = Part(
         id=op.id,
-        kind=PartKind(op.kind),
+        kind=kind,
         title=op.title,
         body=body,
         origin_task=op.origin_task or origin_task,
@@ -105,7 +113,7 @@ def _append_to_part(
 ) -> None:
     idx = _require_index(document, op.id)
     existing = document.parts[idx]
-    addition = resolve_body(op, current_result)
+    addition = resolve_body(op, current_result, existing.kind)
     document.parts[idx] = existing.model_copy(update={'body': existing.body + addition})
 
 
@@ -136,7 +144,7 @@ def _insert_in_part(
             f'anchor not found in part {op.id!r}: {op.anchor!r}'
         )
     insert_at = found_at + len(op.anchor)
-    addition = resolve_body(op, current_result)
+    addition = resolve_body(op, current_result, existing.kind)
     new_body = existing.body[:insert_at] + addition + existing.body[insert_at:]
     document.parts[idx] = existing.model_copy(update={'body': new_body})
 
@@ -146,7 +154,7 @@ def _update_part(
 ) -> None:
     idx = _require_index(document, op.id)
     existing = document.parts[idx]
-    body = resolve_body(op, current_result)
+    body = resolve_body(op, current_result, existing.kind)
     document.parts[idx] = existing.model_copy(update={'body': body})
 
 

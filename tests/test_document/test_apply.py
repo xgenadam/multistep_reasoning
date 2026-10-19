@@ -420,3 +420,81 @@ def test_merge_records_op_log():
     assert len(doc.op_log) == 1
     assert doc.op_log[0].op.type == 'merge_parts'
     assert doc.op_log[0].origin_task == 'consolidate'
+
+
+# 0-09: a file part's body is raw; render() adds the fence.
+
+FENCED_SCRIPT = '```python\nimport sys\nprint(sys.argv)\n```'
+
+
+def test_add_file_part_body_source_unwraps_outer_fence():
+    doc = Document.empty()
+    ops = [
+        AddPart(
+            id='tool-py',
+            kind='file',
+            title='tool.py',
+            body_source='current_result',
+        )
+    ]
+    doc.apply(ops, current_result=FENCED_SCRIPT)
+    assert doc.parts[0].body == 'import sys\nprint(sys.argv)'
+    assert doc.render().count('```') == 2
+    assert_payload_kept(doc, ops, FENCED_SCRIPT)
+
+
+def test_update_file_part_body_source_unwraps_outer_fence():
+    doc = Document(parts=[_part('tool-py', 'old', PartKind.FILE)])
+    ops = [UpdatePart(id='tool-py', body_source='current_result')]
+    doc.apply(ops, current_result=FENCED_SCRIPT)
+    assert doc.parts[0].body == 'import sys\nprint(sys.argv)'
+    assert_payload_kept(doc, ops, FENCED_SCRIPT)
+
+
+def test_literal_file_body_unwraps_outer_fence():
+    doc = Document.empty()
+    doc.apply(
+        [AddPart(id='run-sh', kind='file', title='run.sh', body='```bash\necho hi\n```')]
+    )
+    assert doc.parts[0].body == 'echo hi'
+
+
+def test_section_part_keeps_fence():
+    doc = Document.empty()
+    doc.apply(
+        [AddPart(id='usage', kind='section', body_source='current_result')],
+        current_result=FENCED_SCRIPT,
+    )
+    assert doc.parts[0].body == FENCED_SCRIPT
+
+
+@pytest.mark.parametrize(
+    'body',
+    [
+        # Two fenced blocks: the first fence is not a wrapper.
+        '```bash\npip install x\n```\n\nThen:\n\n```py\nimport x\n```',
+        # Commentary after the code: not a pure wrapper, left for the prompt rule.
+        '```python\nprint(1)\n```\n\n| check | ok |',
+        # No fence at all.
+        'print(1)\n',
+        # Opening fence only.
+        '```python\nprint(1)',
+    ],
+)
+def test_file_part_body_not_a_wrapper_is_untouched(body):
+    doc = Document.empty()
+    doc.apply(
+        [AddPart(id='f', kind='file', title='f.py', body_source='current_result')],
+        current_result=body,
+    )
+    assert doc.parts[0].body == body
+
+
+def test_file_part_longer_wrapper_keeps_inner_fences():
+    readme = '# Tool\n\n```bash\ntool --help\n```'
+    doc = Document.empty()
+    doc.apply(
+        [AddPart(id='readme', kind='file', title='README.md', body_source='current_result')],
+        current_result=f'````markdown\n{readme}\n````',
+    )
+    assert doc.parts[0].body == readme

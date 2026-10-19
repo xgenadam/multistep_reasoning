@@ -1,3 +1,4 @@
+import re
 from enum import StrEnum
 from typing import Literal, Self
 
@@ -157,3 +158,33 @@ def _fence_language(title: str | None) -> str:
     if ext in {'md', 'txt'}:
         return ''
     return ext
+
+
+_FENCE_OPEN = re.compile(r'^ {0,3}(`{3,}|~{3,})(.*)$')
+
+
+def unwrap_outer_fence(text: str) -> str:
+    """
+    0-09: strip ONE code fence that wraps the whole text, else return it as is.
+
+    A file part's body must be raw: render() fences it. The executor answers
+    in markdown, so body_source=current_result copies its ```lang wrapper in.
+    Only a wrapper is removed: the first line opens a fence, the last line
+    closes it, and no line in between closes it (CommonMark: same character,
+    at least as long). Content with fences inside (a README) is untouched.
+    """
+    lines = text.strip().splitlines()
+    if len(lines) < 2:
+        return text
+    opened = _FENCE_OPEN.match(lines[0])
+    if not opened:
+        return text
+    fence, info = opened.groups()
+    if fence[0] == '`' and '`' in info:
+        return text
+    closing = re.compile(rf'^ {{0,3}}{re.escape(fence[0])}{{{len(fence)},}}\s*$')
+    if not closing.match(lines[-1]):
+        return text
+    if any(closing.match(line) for line in lines[1:-1]):
+        return text
+    return '\n'.join(lines[1:-1])
