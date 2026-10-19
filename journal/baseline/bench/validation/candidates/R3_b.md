@@ -1,0 +1,18 @@
+# Why a Team of Four Should Adopt File-Based Ticketing
+
+## Introduction
+For a small, high-velocity team of four engineers, the overhead of traditional issue trackers often outweighs their convenience. This report outlines why transitioning to a file-based ticketing system—using markdown files within our existing git repository—is a superior operational strategy. By integrating tickets directly into our codebase, we optimize for speed, cost, and engineering rigor.
+
+## Cost and Hosting
+A file-based ticketing system eliminates recurring SaaS subscription fees entirely. Tools like Jira, Linear, or GitHub Issues charge per-user or per-month pricing that compounds for a four-person team—easily $20-50 per seat monthly, plus potential add-ons for integrations or storage. By storing tickets as markdown files inside the existing git repository, we leverage infrastructure we already run and maintain. No separate service to configure, no SSO to integrate, no vendor lock-in to negotiate. Maintenance overhead drops to zero beyond what we already do: git operations we use daily. The marginal cost of adding ticket files is essentially zero, making this the economically smallest-footprint option available for a small engineering team.
+
+## Searchability
+Because tickets are plain markdown files, your entire ticket history is indexed locally. Engineers can use `grep`, `rg`, or IDE search to find issues by error codes, function names, or commit hashes in milliseconds, rather than waiting for web-based trackers to render filtered lists. This enables powerful regex searches directly in the terminal, allowing you to query complex relationships between tickets and code. There is no need to context-switch to a browser or navigate through slow UIs. This seamless integration fits naturally into existing developer workflows, making it easy to pull related tickets into code reviews or scripts. When a bug arises, the developer can immediately search the repository for historical context, significantly reducing debugging time.
+
+## Review Culture
+Adopting a pull-request-based workflow for tickets fundamentally shifts how we discuss work. Just as code requires review before merging, each ticket—whether a feature spec, bug report, or architectural decision—becomes a file requiring explicit approval. This enforces peer review, ensuring that proposals are scrutinized by at least one other engineer before acceptance. The resulting history is not merely a log of status updates but a clear, immutable record of *why* decisions were made, tied directly to the specific lines of discussion and context. This structure significantly reduces ambiguity; instead of vague comment threads that disappear into the void, every change is versioned and traceable. We gain transparency into the evolution of ideas, preventing scope creep and fostering a shared understanding that persists long after the initial conversation.
+
+## Honest Drawback: Visibility for Non-Technical Stakeholders
+The primary limitation of file-based ticketing is the lack of intuitive visual interfaces for non-engineers. Without drag-and-drop Kanban boards or polished dashboards, product managers and stakeholders cannot quickly grasp project status without git access or engineering assistance. This creates a communication barrier that external trackers solve out-of-the-box.
+
+However, for a team of four engineers, the gains in speed, cost savings, and rigorous review culture outweigh this visibility trade-off. We recommend adopting the file-based system, with the explicit understanding that we will maintain a lightweight, manually updated summary file for stakeholder visibility.

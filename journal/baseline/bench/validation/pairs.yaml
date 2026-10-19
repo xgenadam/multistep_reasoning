@@ -1,0 +1,160 @@
+version: validation_v1
+note: 'Q-1 validation set (journal/design/Q-01-judge.md § 4), written by build.py. expected: a, b, tie,
+  or empty until labelled. Padded pairs pass when the padded side (b) is not preferred in either order.'
+pairs:
+- pair_id: R1
+  kind: real
+  task: 'Write a small CLI tool in Python called "wordcount" that, given one or more file paths, prints
+    for each file: line count, word count, and character count, in a simple table. It should exit non-zero
+    if a path does not exist. Provide the code.'
+  a: candidates/R1_a.md
+  b: candidates/R1_b.md
+  expected: null
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s1_cli_code t0: run 0 (a) vs run 1 (b); one file part against four: shape differs'
+- pair_id: R2
+  kind: real
+  task: Write a small CLI tool in Python called "csv2json" that, given a path to a CSV file, prints the
+    rows as a JSON array of objects (header row = keys) to stdout. Flag "--indent" for pretty-printing.
+    Exit non-zero if the file is missing or empty. Provide the code.
+  a: candidates/R2_a.md
+  b: candidates/R2_b.md
+  expected: null
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s1b_csv2json_cli t0: run 0 (a) vs run 1 (b); same tool, two different sizes'
+- pair_id: R3
+  kind: real
+  task: 'Write a short internal report (about 300-500 words total) on why a team of four engineers should
+    adopt a file-based ticketing system (markdown files in git) instead of an external issue tracker.
+    Cover: cost and hosting, searchability, review culture, and one honest drawback. Use clear section
+    headings.'
+  a: candidates/R3_a.md
+  b: candidates/R3_b.md
+  expected: null
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s2_report t0: run 0 (a) vs run 1 (b); three sections against one'
+- pair_id: R4
+  kind: real
+  task: 'This is a follow-up turn on an existing document.
+
+
+    The original request was:
+
+    Write a one-page report (about 300 words) with clear sections covering: what a file-based ticketing
+    system is, its main benefits, and its main drawbacks.
+
+
+    The follow-up request is:
+
+    Extend the report: add a section on how to migrate an existing set of tickets from an external tracker
+    to the file-based system, including a concrete migration plan with three steps. Keep the existing
+    sections accurate and do not repeat their content.
+
+
+    Each response is the whole document after the follow-up.'
+  a: candidates/R4_a.md
+  b: candidates/R4_b.md
+  expected: null
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s3_followup t1: run 0 (a) vs run 1 (b); the follow-up with its prior; two against four parts'
+- pair_id: R5
+  kind: real
+  task: 'Plan a 7-day study schedule for learning the basics of linear algebra (vectors, matrices, systems
+    of equations). Deliverable 1: a day-by-day schedule table. Deliverable 2: a short checklist of 10
+    concepts that must be solid before moving on to numerical linear algebra.'
+  a: candidates/R5_a.md
+  b: candidates/R5_b.md
+  expected: null
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s4_anchors t0: run 0 (a) vs run 1 (b); two deliverables; four parts against two'
+- pair_id: W1
+  kind: damaged
+  task: 'Write a short internal report (about 300-500 words total) on why a team of four engineers should
+    adopt a file-based ticketing system (markdown files in git) instead of an external issue tracker.
+    Cover: cost and hosting, searchability, review culture, and one honest drawback. Use clear section
+    headings.'
+  a: candidates/W1_a.md
+  b: candidates/W1_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s2_report r0 t0: original (a) vs edited (b): the "one honest drawback" section removed (and the conclusion''s
+    trade-off sentences, which restated it)'
+- pair_id: W2
+  kind: damaged
+  task: 'Write a small CLI tool in Python called "wordcount" that, given one or more file paths, prints
+    for each file: line count, word count, and character count, in a simple table. It should exit non-zero
+    if a path does not exist. Provide the code.'
+  a: candidates/W2_a.md
+  b: candidates/W2_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s1_cli_code r0 t0: original (a) vs edited (b): line count off by one (len(lines) - 1)'
+- pair_id: W3
+  kind: damaged
+  task: Write a small CLI tool in Python called "csv2json" that, given a path to a CSV file, prints the
+    rows as a JSON array of objects (header row = keys) to stdout. Flag "--indent" for pretty-printing.
+    Exit non-zero if the file is missing or empty. Provide the code.
+  a: candidates/W3_a.md
+  b: candidates/W3_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s1b_csv2json_cli r0 t0: original (a) vs edited (b): --indent parsed but ignored: json.dumps(data)
+    in all three code copies'
+- pair_id: W4
+  kind: damaged
+  task: 'This is a follow-up turn on an existing document.
+
+
+    The original request was:
+
+    Write a one-page report (about 300 words) with clear sections covering: what a file-based ticketing
+    system is, its main benefits, and its main drawbacks.
+
+
+    The follow-up request is:
+
+    Extend the report: add a section on how to migrate an existing set of tickets from an external tracker
+    to the file-based system, including a concrete migration plan with three steps. Keep the existing
+    sections accurate and do not repeat their content.
+
+
+    Each response is the whole document after the follow-up.'
+  a: candidates/W4_a.md
+  b: candidates/W4_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s3_followup r0 t1: original (a) vs edited (b): the migration section repeats the benefits section
+    verbatim ("do not repeat" broken)'
+- pair_id: W5
+  kind: damaged
+  task: 'Plan a 7-day study schedule for learning the basics of linear algebra (vectors, matrices, systems
+    of equations). Deliverable 1: a day-by-day schedule table. Deliverable 2: a short checklist of 10
+    concepts that must be solid before moving on to numerical linear algebra.'
+  a: candidates/W5_a.md
+  b: candidates/W5_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s4_anchors r0 t0: original (a) vs edited (b): day 7 removed from both seven-day tables'
+- pair_id: L1
+  kind: padded
+  task: 'Write a short internal report (about 300-500 words total) on why a team of four engineers should
+    adopt a file-based ticketing system (markdown files in git) instead of an external issue tracker.
+    Cover: cost and hosting, searchability, review culture, and one honest drawback. Use clear section
+    headings.'
+  a: candidates/L1_a.md
+  b: candidates/L1_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s2_report r0 t0: original (a) vs edited (b): a "Further Considerations" section restating the earlier
+    sections'
+- pair_id: L2
+  kind: padded
+  task: Write a small CLI tool in Python called "logscan" that, given a log file path and a level (INFO,
+    WARN, ERROR), prints only the matching log lines, newest last, with a count on stderr. Flag "--limit
+    N" caps the number printed. Exit non-zero if the file does not exist. Provide the code.
+  a: candidates/L2_a.md
+  b: candidates/L2_b.md
+  expected: a
+  source: '20261019T051008Z_rebaseline-0-16_s1_cli_code-s1b_csv2json_cli-s1c_logscan_cli-s2_report-s3_followup-s4_anchors.json
+    s1c_logscan_cli r0 t0: original (a) vs edited (b): a prose "How It Works" restatement of the code
+    appended as a second part'

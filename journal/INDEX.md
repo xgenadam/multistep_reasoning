@@ -12,7 +12,7 @@ updated: 2026-10-19 (Q-01 stage 1 approved, D-019: Phase Q before A-02, Q-02 re-
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
 - **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design, the A-01 approval and the Q-01 stage 1 commits (S-018); the user pushes from the host.
-- **Server owner:** nobody (0-09 run finished 2026-10-19).
+- **Server owner:** Q-01 stage 2 (S-019), from 2026-10-19: self-judging batch on `:8091` (judge calls only, no harness turns).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. Q-01 stage 2 — judge tool (`quality.py`, validation set, Q-1 objective half, Q-5) — Opus 5.5/medium — behavioural (self-judging on `:8091`) — none
