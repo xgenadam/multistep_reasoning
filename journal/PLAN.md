@@ -522,7 +522,8 @@ Pass criteria:
 | N16 | `exec_status_counts` always `{'None': n}` | `journal/baseline/harness.py` | fixed, 0-14 |
 | N17 | `check.py` lacks the P0-1/P0-2/P0-3 checks; Jaccard trivially 0 on 1-part docs | `journal/baseline/check.py` | fixed, 0-14 |
 | N20 | Model thinking never set or captured: runs take the server default, reasoning is discarded unseen | `reasoning_sub_agents/llama_utils.py` | fixed, 0-15 (D-013, D-015) |
-| N18 | Prompt tokens per turn grew 3–5× after 0-04/0-05, ungated | run files `20261015T18…`, `…19…` | 0-16 |
+| N18 | Prompt tokens per turn grew 3–5× after 0-04/0-05, ungated | run files `20261015T18…`, `…19…` | accepted, 0-16 (D-016: the Oct-15 totals exceed the prompt cap, so they are not prompt sizes; the real growth is ≈ +8 %) |
+| N21 | Every JSON call sends its schema twice (in the prompt and in instructor's JSON-mode system message): ≈ 29 % of prompt tokens | `document_composer.py`, `oracle_loop_executor.py`, `simple_decomposition.py`, `document_oracle.py` | task board, after A-05 (D-016) |
 | N19 | Extension: in-memory Documents, one shared orchestrator, unbounded history, global `_pending_turn` | `oobabooga_extension/script.py` | R / H |
 
 Line numbers are as of S-004. Re-check them before editing.
@@ -580,3 +581,4 @@ Model and effort rules:
 | P-02 frontier, snapshot, concurrency | Opus 5.5 / xhigh | short | the only concurrency-correctness ticket |
 | P-03 serial recovery | Opus 5.5 / high | — | |
 | P-04 retire legacy chain | Sonnet 5.5 / low | — | |
+| JSON schema dedup (N21) | Opus 5.5 / medium → re-baseline Sonnet 5.5 / low | — | after A-05 (D-016). Mechanical, not a redesign. Re-baseline at `--jobs 1`, and check quality (P0-1/2/3) does not regress. |

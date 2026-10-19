@@ -98,19 +98,47 @@ This file holds no decisions; it cites them by `D-nnn`.
 - **Cost gates are marginal and uncontaminated, and the baseline is
   re-recorded after material prompt changes** (D-007).
 - **Token counts are distributions, not points.** Prompt tokens vary
-  36K–305K across identical scenarios. Compare distributions.
+  about 2× across identical scenarios (s2 34K / 78K, s4 62K / 30K; 0-16).
+  Compare distributions.
 - **Run files** go to `journal/baseline/runs/` (tracked). Commit each with a
   dated Notes bullet in its ticket.
 
 ### Baseline
 
-These are the S-002 numbers (2026-10-15, pre-consolidation). **They are
-stale.** Prompt tokens per turn grew 3–5× after 0-04/0-05 (N18), and 0-16
-replaces them. Do not gate on them.
-- s4 anchors: wall 497.0 / 514.8 s; tokens per turn 55.8K / 46.1K.
-- Compose call p50 ≈ 13–18 s.
-- The decompose + critique pair takes 40–97 s per call.
-- Executor turns take 34–96 s each.
+0-16 (D-016). Run file
+`journal/baseline/runs/20261019T051008Z_rebaseline-0-16_…json`: s1–s4 × 2 at
+`--jobs 1`, thinking `off`, on `:8091` (`qwen3.8-flash-next`, vLLM), and every
+turn is timing-clean.
+- It is not the 27B. `:5000` has no baseline on current code, so re-baseline
+  it before gating a `:5000` run.
+- The Oct-15 (S-002) token totals are void (D-016).
+
+| Scenario | Wall s r0/r1 | Compose p50 s | Decompose pair s | Executor p50 s | Prompt / turn | Completion / turn |
+| --- | --- | --- | --- | --- | --- | --- |
+| s1 | 48.5 / 62.3 | 2.12 | 7.9 / 17.1 | 6.00 | 50.8K / 44.8K | 5.4K / 7.1K |
+| s1b | 83.3 / 48.9 | 2.12 | 14.8 / 5.5 | 2.44 | 100.0K / 57.0K | 8.1K / 5.0K |
+| s1c | 62.3 / 49.7 | 2.07 | 12.9 / 8.8 | 3.32 | 42.9K / 57.2K | 7.0K / 5.1K |
+| s2 | 38.0 / 65.9 | 2.24 | 4.6 / 9.4 | 3.60 | 34.4K / 78.3K | 3.3K / 6.5K |
+| s3 t0 | 45.1 / 62.7 | 2.23 | 12.1 / 10.4 | 3.61 | 48.7K / 56.6K | 4.1K / 6.3K |
+| s3 t1 | 116.3 / 63.7 | 2.33 | 13.5 / 10.6 | 5.31 | 92.7K / 52.4K | 12.8K / 6.5K |
+| s4 | 84.0 / 24.1 | 2.46 | 14.3 / 6.8 | 3.41 | 61.9K / 29.6K | 9.2K / 2.4K |
+
+- Pooled over all 14 turns:
+  - compose p50 2.23 s, which is `compare.CLEAN_COMPOSE_P50_S` for `:8091`;
+  - executor-turn p50 3.36 s;
+  - decompose pair p50 10.5 s (decompose + critique + regeneration, summed per
+    turn);
+  - wall per turn median 62 s;
+  - prompt tokens per turn median 55K, completion tokens median 6.4K.
+- Prompt tokens by call kind:
+  - compose 54 %: about 7K per call for a 92-token median reply;
+  - executor 33 %;
+  - decompose and critique 9 %;
+  - summary 4 %.
+
+  JSON schema text is ≈ 59 % of all prompt tokens, half of it a duplicate
+  (N21, after A-05).
+- Oracle calls have no denominator (n = 1), so A-05 measures its own.
 
 ## Commits
 

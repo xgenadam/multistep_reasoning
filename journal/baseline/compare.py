@@ -16,8 +16,10 @@ The B-vs-A turn-total growth is REPORTED, not gated: turn totals vary
 36K-305K across identical scenarios (D-007). So are per-turn wall_seconds.
 
 Contamination (D-007): a run is contaminated when it ran with jobs != 1, or
-when its compose p50 exceeds 1.3x the recorded clean compose p50
-(CLEAN_COMPOSE_P50_S). Its wall times then say nothing about the pipeline.
+when its compose p50 exceeds 1.3x the clean compose p50 recorded for its
+backend (CLEAN_COMPOSE_P50_S). A backend with no recorded p50 cannot be
+judged, so its timings count as contaminated too. Its wall times then say
+nothing about the pipeline.
 
 Exit codes: 0 every gate passes; 1 a gate fails or cannot be measured;
 2 either run is contaminated (the gates are printed but do not count).
@@ -32,10 +34,17 @@ from pathlib import Path
 
 MARGINAL_TOKENS_MAX = 0.25
 CONS_VS_COMPOSE_MAX = 1.5
-# Clean compose p50 on the generator, the contamination yardstick. S-002's
-# uncontested baseline (Qwen3.8-27B, :5000) put it at 13-18 s; the upper end
-# stands until 0-16 re-baselines and replaces it.
-CLEAN_COMPOSE_P50_S = 18.0
+# Clean compose p50 per generator (run-file `backend`), the contamination
+# yardstick. A yardstick only holds on the generator, model and thinking
+# setting it was measured on; re-measure when any of them changes.
+CLEAN_COMPOSE_P50_S = {
+    # 0-16 re-baseline (S-010 run, S-011): qwen3.8-flash-next on vLLM,
+    # thinking off, 62 compose calls; per-turn p50s 2.00-2.60 s.
+    'http://host.containers.internal:8091/v1': 2.23,
+    # S-002 (Qwen3.8-27B, llama-server), the upper end of 13-18 s on the
+    # pre-0-04 prompts. Stale; stands until :5000 is re-baselined.
+    'http://host.containers.internal:5000/v1': 18.0,
+}
 CONTAMINATION_FACTOR = 1.3
 # The orchestrator status for the summary call consolidation triggers
 # (harness.CONSOLIDATION_SUMMARY_PHASE).
@@ -63,10 +72,15 @@ def contamination(run: dict, turn: dict) -> list[str]:
     if jobs != 1:
         reasons.append(f'jobs={jobs} (timing gates need --jobs 1)')
     p50 = ((turn['llm'].get('by_kind') or {}).get('compose') or {}).get('p50_s')
-    limit = CONTAMINATION_FACTOR * CLEAN_COMPOSE_P50_S
+    clean = CLEAN_COMPOSE_P50_S.get(run.get('backend'))
+    if clean is None:
+        reasons.append(f'no clean compose p50 recorded for backend '
+                       f'{run.get("backend")} (re-baseline it first)')
+        return reasons
+    limit = CONTAMINATION_FACTOR * clean
     if p50 is not None and p50 > limit:
         reasons.append(f'compose p50 {p50:.2f} s > {CONTAMINATION_FACTOR}x clean '
-                       f'{CLEAN_COMPOSE_P50_S:.1f} s = {limit:.1f} s')
+                       f'{clean:.2f} s = {limit:.2f} s')
     return reasons
 
 

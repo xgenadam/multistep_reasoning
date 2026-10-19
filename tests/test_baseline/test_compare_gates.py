@@ -5,10 +5,12 @@ import json
 import pytest
 
 CONS_SUMMARY = 'Updating summary after consolidation'
+LLAMA_27B = 'http://host.containers.internal:5000/v1'
+VLLM_FLASH = 'http://host.containers.internal:8091/v1'
 
 
 def _run_file(harness, tmp_path, name, *, jobs=1, compose_s=15.0, consolidate_s=20.0,
-              consolidate_tokens=100, consolidate=True):
+              consolidate_tokens=100, consolidate=True, backend=LLAMA_27B):
     """A one-turn s4 run file whose llm block comes from harness.llm_stats."""
     def call(i, kind, phase, seconds, tokens):
         return harness.CallRecord(
@@ -29,7 +31,7 @@ def _run_file(harness, tmp_path, name, *, jobs=1, compose_s=15.0, consolidate_s=
             call(5, 'summary', CONS_SUMMARY, 10.0, 100),
         ]
     run = {
-        'backend': 'http://host.containers.internal:5000/v1', 'jobs': jobs,
+        'backend': backend, 'jobs': jobs,
         'results': [{'scenario': 's4_anchors', 'run': 0, 'turns': [{
             'index': 0, 'wall_seconds': 100.0, 'llm': harness.llm_stats(calls),
         }]}],
@@ -71,14 +73,38 @@ def test_jobs_above_1_is_contaminated(harness, compare, tmp_path, capsys, arm):
     assert f'CONTAMINATED {arm.upper()}: jobs=3' in capsys.readouterr().out
 
 
-def test_inflated_compose_p50_is_contaminated(harness, compare, tmp_path, capsys):
-    limit = compare.CONTAMINATION_FACTOR * compare.CLEAN_COMPOSE_P50_S
-    a = _run_file(harness, tmp_path, 'a', consolidate=False, compose_s=limit)  # at the limit: clean
-    b = _run_file(harness, tmp_path, 'b', compose_s=limit + 0.5, consolidate_s=limit)
+@pytest.mark.parametrize('backend', [LLAMA_27B, VLLM_FLASH])
+def test_inflated_compose_p50_is_contaminated(harness, compare, tmp_path, capsys, backend):
+    # Each generator is judged against its own clean compose p50 (0-16).
+    limit = compare.CONTAMINATION_FACTOR * compare.CLEAN_COMPOSE_P50_S[backend]
+    # Just under the limit: clean (llm_stats rounds p50 to 0.01 s).
+    a = _run_file(harness, tmp_path, 'a', consolidate=False, compose_s=limit - 0.01,
+                  backend=backend)
+    b = _run_file(harness, tmp_path, 'b', compose_s=limit + 0.5, consolidate_s=limit,
+                  backend=backend)
     assert compare.main([a, b]) == compare.EXIT_CONTAMINATED
     out = capsys.readouterr().out
     assert 'CONTAMINATED B: compose p50' in out
     assert 'CONTAMINATED A' not in out
+
+
+def test_27b_compose_times_are_contaminated_on_the_vllm_yardstick(harness, compare):
+    # A 15 s compose is clean on :5000 but far over :8091's 0-16 p50.
+    turn = {'llm': harness.llm_stats([harness.CallRecord(
+        index=0, kind='compose', stream=False, phase='Composing after 1/1: a',
+        seconds=15.0, first_token_s=15.0, chunks=1, prompt_tokens=1,
+        completion_tokens=1, label_source='phase', usage_reported=True)])}
+    assert compare.contamination({'jobs': 1, 'backend': LLAMA_27B}, turn) == []
+    assert compare.contamination({'jobs': 1, 'backend': VLLM_FLASH}, turn)
+
+
+def test_backend_without_a_yardstick_is_contaminated(harness, compare, tmp_path, capsys):
+    other = 'http://host.containers.internal:9999/v1'
+    a = _run_file(harness, tmp_path, 'a', consolidate=False, backend=other)
+    b = _run_file(harness, tmp_path, 'b', backend=other)
+    assert compare.main([a, b]) == compare.EXIT_CONTAMINATED
+    assert f'CONTAMINATED A: no clean compose p50 recorded for backend {other}' in (
+        capsys.readouterr().out)
 
 
 def test_missing_usage_makes_g2_unmeasurable(harness, compare, tmp_path, capsys):
