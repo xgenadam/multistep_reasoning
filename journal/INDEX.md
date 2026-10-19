@@ -4,14 +4,14 @@ updated: 2026-10-19 (Q-01 stage 1 started: hardware recorded, two judge tiers, Q
 
 ## Now
 - **Phase:** A; A-01 is done (D-018, approved 2026-10-19). Phase 0 close-out: 0-14 (P0-6), 0-15 (P0-10), 0-16 (P0-7, D-016), 0-06 (P0-4) and 0-09 (D-017) are done; 0-11 is deferred by the user (2026-10-19), not dropped.
-- **Next move:** Q-01 stage 1 is in progress (Fable 5.1, no server). The judges come from Q-04's benchmark (instantiated 2026-10-19 at the user's request; its fast tier waits on the user's three-card experiment on flash-next, which is not needed before Q-03). Next within stage 1: rule on PLAN § Phase Q's S-012 proposal before A-02. Then A-02 (Opus 5.5 / medium, no server; the A-01 note's § 5.2 is its map). A-06 (Fable 5.1 / high, design only) can run any time; it does not gate A-02…A-05. Open AGENTS.md, this file and the ticket.
+- **Next move:** Q-01 stage 1 is written and **blocked on the user's approval** of `design/Q-01-judge.md` (the S-012 ruling, its draft decision, protocol, validation set, budget) plus labels for its five real pairs. On approval: apply the note's § 8 fold list in one commit, then Q-01 stage 2 (Opus 5.5 / medium). The judges come from Q-04 (its fast tier waits on the user's three-card experiment, not needed before Q-03). If approved, the order is Q-01 st2 → Q-04 slow tier → Q-02 → Q-03 before A-02 starts. Then A-02 (Opus 5.5 / medium, no server; the A-01 note's § 5.2 is its map). A-06 (Fable 5.1 / high, design only) can run any time; it does not gate A-02…A-05. Open AGENTS.md, this file and the ticket.
 
 ## Resources
 - **Generator:** `:8091` serves Qwen flash (`qwen3.8-flash-next`) on the user's customised vLLM at `http://host.containers.internal:8091/v1`, on all four cards plus 40–50 GiB RAM (≈ 125 tok/s on code); it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). `:5000` is text-generation-webui's API (loader llama.cpp, Qwen3.8-27B GGUF on disk) with no model loaded on 2026-10-19. Export `LLM_BASE_URL` (D-008).
 - **Judge:** `:8000` Devstral-123B is down (launchers in `scripts/server/`). Hardware: 4 × RTX 3090 (96 GiB), 128 GiB RAM, EPYC 7542; one big model at a time, or two pinned to 2 cards each (`../AGENTS.md` § Environment). Judge tiers and candidate models: Q-01 Notes.
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
-- **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design and the A-01 approval commits; the user pushes from the host.
+- **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design, the A-01 approval and the Q-01 stage 1 commits (S-018); the user pushes from the host.
 - **Server owner:** nobody (0-09 run finished 2026-10-19).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
