@@ -3,18 +3,18 @@
 updated: 2026-10-19 (the O-01 commit, `git log -1 -- journal/INDEX.md`)
 
 ## Now
-- **Phase:** O (organisation), last ticket O-05.
-- **Next move:** a fresh session on Sonnet 5.5 / low runs `journal/tickets/O-05.md`. Its first message states the six O-1 facts having opened only AGENTS.md, this file and the ticket. That measures O-1, and the session then closes O-01 in its commit.
+- **Phase:** O (organisation), last ticket O-05 (`in_progress`).
+- **Next move:** when the generator has a model loaded, re-run the README smoke command, record its first output line in O-05 Measurements, flip O-05 to done and commit. Then 0-14. O-01 still needs a cold session that opens ≤ 3 files before stating the six facts (see S-007).
 
 ## Resources
-- **Generator:** `http://host.containers.internal:5000/v1`, Qwen3.8-27B-UD-Q6_K.gguf, 5 slots shared with the agent. `export LLM_BASE_URL=…` (D-008). 2026-10-19: up, no model loaded.
+- **Generator:** `http://host.containers.internal:5000/v1`, Qwen3.8-27B-UD-Q6_K.gguf, 5 slots shared with the agent. `export LLM_BASE_URL=…` (D-008). 2026-10-19: up, no model loaded (re-checked 2026-10-19: `/v1/models` empty).
 - **Judge:** `:8000` Devstral-123B is down (launchers in `scripts/server/`).
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
-- **Pushed:** `origin/master` = `236d168`. `master` adds `a81a95f` (O-02) and the O-01 commit; the user pushes from the host.
+- **Pushed:** `origin/master` = `236d168`. `master` adds `a81a95f` (O-02), `bba6c39` (O-01) and the O-05 commit; the user pushes from the host.
 - **Server owner:** nobody (no harness job running).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
-1. O-05 — README refresh — Sonnet 5.5/low — none — O-02, O-01
+1. O-05 — README refresh (in progress; smoke re-run only) — Sonnet 5.5/low — none — O-02, O-01
 2. 0-14 — harness truthfulness — Opus 5.5/high — none — O-01
 3. 0-16 — re-baseline + token growth — Sonnet→Opus, low→high — timing — 0-14
 4. 0-06 — consolidation re-measure — Sonnet 5.5/medium — timing — 0-14, 0-16
