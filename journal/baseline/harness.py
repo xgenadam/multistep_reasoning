@@ -19,10 +19,16 @@ LLM_BASE_URL - there is no default):
 Output: journal/baseline/runs/<timestamp>_<label>_<scenarios>.json plus a
 console summary.
 
-NOTE: the current pipeline records no token counts on streamed calls (the
-llama.cpp stream exposes no usage). Completion tokens for prose turns will
-be 0 until Phase A adds usage capture; prompt tokens on non-streamed JSON
-calls are recorded when the server reports them.
+Every call is labelled from the orchestrator's own state (0-14, N13): the
+last status event names the phase, and the `progress.llm_step` label splits
+the two phases that make two kinds of call (critique inside decompose, oracle
+asks inside execute). The system-prompt keyword classifier is only the
+fallback; each call records which path labelled it (`label_source`).
+
+Each call is attributed to its turn through a ContextVar (N14), so per-turn
+counts and tokens are exact at any --jobs. Streamed calls ask for a final
+usage chunk (N15); a server that omits it leaves `usage_reported: false` and
+the turn says its token totals are partial.
 """
 
 from __future__ import annotations
@@ -37,7 +43,7 @@ import threading
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -50,6 +56,8 @@ from reasoning_sub_agents.config.schema import (  # noqa: E402
 )
 from reasoning_sub_agents.document import Document  # noqa: E402
 from reasoning_sub_agents.llama_utils import create_llama_client  # noqa: E402
+from reasoning_sub_agents.progress import live, live_session  # noqa: E402
+from reasoning_sub_agents.schemas import TaskStatus  # noqa: E402
 from reasoning_sub_agents.task_orchestrator import TaskOrchestrator  # noqa: E402
 
 # D-P: no silent endpoint default. The endpoint comes from --base-url or
@@ -69,10 +77,49 @@ MAX_TOKENS = 8192
 _current_phase: contextvars.ContextVar[str] = contextvars.ContextVar(
     'baseline_phase', default='unknown'
 )
+# N14: the turn every call made in this context belongs to. Each job runs in
+# its own copy_context(), so concurrent scenarios never share it.
+_current_turn: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    'baseline_turn', default=None
+)
+
+# N13: orchestrator status prefix -> call kind. Order matters: the legacy
+# synthesiser status also starts with 'Executing', and its calls stay on the
+# keyword fallback.
+PHASE_KINDS: tuple[tuple[str, str | None], ...] = (
+    ('Decomposing the request', 'decompose'),
+    ('Executing sub-tasks (legacy', None),
+    ('Executing ', 'executor_turn'),
+    ('Composing after ', 'compose'),
+    ('Updating summary after ', 'summary'),
+    ('Consolidating document', 'consolidate'),
+)
+# llm_step labels that split a phase into two kinds of call.
+STEP_KINDS: dict[str, dict[str, str]] = {
+    'decompose': {'Critique decomposition': 'decompose_critique'},
+    'executor_turn': {'Oracle ask': 'oracle'},
+}
+# The summary call that consolidation triggers (part of D-007's marginal cost).
+CONSOLIDATION_SUMMARY_PHASE = 'Updating summary after consolidation'
+
+
+def phase_kind(phase: str, step: str = '') -> str | None:
+    """Call kind from the orchestrator phase and llm_step label, or None."""
+    for prefix, kind in PHASE_KINDS:
+        if phase.startswith(prefix):
+            if kind is None:
+                return None
+            return STEP_KINDS.get(kind, {}).get(step, kind)
+    return None
 
 
 def classify_call(messages: list[dict]) -> str:
-    """Best-effort label for an LLM call from its system message(s).
+    """Fallback label for an LLM call from its system message(s).
+
+    Only used when phase_kind() has no answer (calls outside a known phase,
+    legacy synthesiser). It mislabels the current pipeline (N13): executor
+    rounds land in `summary`, summary updates and the critique in
+    `system_other`.
 
     instructor's JSON mode embeds the response schema in the system message,
     which is what makes the other labels work. The consolidation call is the
@@ -123,13 +170,19 @@ class CallRecord:
     prompt_tokens: int | None
     completion_tokens: int | None
     finish_reason: str | None = None
+    turn: str | None = None
+    step: str = ''
+    label_source: str = 'keyword'  # 'phase' | 'keyword'
+    usage_reported: bool = False
+    error: str | None = None  # exception type when the call raised
 
 
 class MeasuredCompletions:
     """Wraps the OpenAI client's chat.completions to time and count calls.
 
-    Records are append-only in a shared list with monotonic indices; callers
-    slice the range they care about. Safe under concurrent turns.
+    Records are append-only in a shared list with monotonic indices. Each
+    record carries the turn id from `_current_turn`, so per-turn stats come
+    from records_for_turn() and stay exact under concurrent turns.
     """
 
     def __init__(self, real) -> None:
@@ -146,6 +199,16 @@ class MeasuredCompletions:
         with self._lock:
             return [r for r in self._records if start <= r.index < end]
 
+    def records_for_turn(self, turn: str) -> list[CallRecord]:
+        with self._lock:
+            return sorted(
+                (r for r in self._records if r.turn == turn), key=lambda r: r.index
+            )
+
+    def all_records(self) -> list[CallRecord]:
+        with self._lock:
+            return sorted(self._records, key=lambda r: r.index)
+
     @property
     def total_calls(self) -> int:
         with self._lock:
@@ -155,37 +218,61 @@ class MeasuredCompletions:
         kwargs.setdefault('max_tokens', MAX_TOKENS)
         messages = kwargs.get('messages') or []
         stream = bool(kwargs.get('stream', False))
-        kind = classify_call(messages)
+        if stream:
+            # N15: ask for the final usage chunk; _streaming() swallows it.
+            kwargs.setdefault('stream_options', {'include_usage': True})
+        phase = _current_phase.get()
+        state = live()
+        step = state.llm_label if state is not None else ''
+        kind = phase_kind(phase, step)
+        label_source = 'phase'
+        if kind is None:
+            kind, label_source = classify_call(messages), 'keyword'
         with self._lock:
             index = self._next_index
             self._next_index += 1
+        base = dict(index=index, kind=kind, phase=phase, turn=_current_turn.get(),
+                    step=step, label_source=label_source)
         t0 = time.perf_counter()
-        phase = _current_phase.get()
-        if not stream:
+        try:
             resp = self._real.create(**kwargs)
+        except BaseException as exc:
+            # A call that raised still happened; keep it in its turn.
+            self._append(CallRecord(
+                **base, stream=stream, seconds=time.perf_counter() - t0,
+                first_token_s=None, chunks=0, prompt_tokens=None,
+                completion_tokens=None, error=type(exc).__name__,
+            ))
+            raise
+        if not stream:
             dt = time.perf_counter() - t0
             usage = getattr(resp, 'usage', None)
             choices = getattr(resp, 'choices', None)
             self._append(CallRecord(
-                index=index, kind=kind, stream=False, phase=phase, seconds=dt,
-                first_token_s=dt, chunks=1,
+                **base, stream=False, seconds=dt, first_token_s=dt, chunks=1,
                 prompt_tokens=getattr(usage, 'prompt_tokens', None),
                 completion_tokens=getattr(usage, 'completion_tokens', None),
                 finish_reason=getattr(choices[0], 'finish_reason', None) if choices else None,
+                usage_reported=usage is not None,
             ))
             return resp
-        gen = self._real.create(**kwargs)
-        return self._streaming(gen, index, kind, phase, t0)
+        return self._streaming(resp, base, t0)
 
-    def _streaming(self, gen, index, kind, phase, t0):
+    def _streaming(self, gen, base: dict, t0: float):
         first_token_s = None
         chunks = 0
         finish_reason = None
+        usage = None
+        error = None
         try:
             for chunk in gen:
                 chunks += 1
+                if getattr(chunk, 'usage', None) is not None:
+                    usage = chunk.usage
                 choice = (chunk.choices or [None])[0]
                 if choice is None:
+                    # The include_usage chunk has no choices; the pipeline
+                    # indexes choices[0], so it never sees this chunk.
                     continue
                 delta = getattr(choice, 'delta', None)
                 if first_token_s is None and getattr(delta, 'content', None):
@@ -194,12 +281,17 @@ class MeasuredCompletions:
                 if fr:
                     finish_reason = fr
                 yield chunk
+        except Exception as exc:
+            error = type(exc).__name__
+            raise
         finally:
             self._append(CallRecord(
-                index=index, kind=kind, stream=True, phase=phase,
-                seconds=time.perf_counter() - t0, first_token_s=first_token_s,
-                chunks=chunks, prompt_tokens=None, completion_tokens=None,
-                finish_reason=finish_reason,
+                **base, stream=True, seconds=time.perf_counter() - t0,
+                first_token_s=first_token_s, chunks=chunks,
+                prompt_tokens=getattr(usage, 'prompt_tokens', None),
+                completion_tokens=getattr(usage, 'completion_tokens', None),
+                finish_reason=finish_reason, usage_reported=usage is not None,
+                error=error,
             ))
 
     def _append(self, rec: CallRecord) -> None:
@@ -220,31 +312,54 @@ def install_instrumentation(client) -> MeasuredCompletions | None:
 # ---------------------------------------------------------------------------
 
 
-def _agg(vals: list[float]) -> dict:
+def _missing_usage(r: CallRecord) -> bool:
+    """An answered call the server sent no usage for (a raised call has no
+    answer; llm_stats counts those as calls_raised)."""
+    return r.error is None and not r.usage_reported
+
+
+def _agg(records: list[CallRecord]) -> dict:
+    vals = [r.seconds for r in records]
     return {
         'count': len(vals),
         'p50_s': round(statistics.median(vals), 2) if vals else None,
         'max_s': round(max(vals), 2) if vals else None,
+        'prompt_tokens': sum(r.prompt_tokens or 0 for r in records),
+        'completion_tokens': sum(r.completion_tokens or 0 for r in records),
+        'calls_without_usage': sum(_missing_usage(r) for r in records),
     }
 
 
 def llm_stats(records: list[CallRecord]) -> dict:
-    by_kind: dict[str, list[float]] = {}
-    by_phase: dict[str, list[float]] = {}
+    by_kind: dict[str, list[CallRecord]] = {}
+    by_phase: dict[str, list[CallRecord]] = {}
     for r in records:
-        by_kind.setdefault(r.kind, []).append(r.seconds)
-        by_phase.setdefault(r.phase, []).append(r.seconds)
+        by_kind.setdefault(r.kind, []).append(r)
+        by_phase.setdefault(r.phase, []).append(r)
+    without_usage = sum(_missing_usage(r) for r in records)
     return {
         'calls': len(records),
         'prompt_tokens': sum(r.prompt_tokens or 0 for r in records),
         'completion_tokens': sum(r.completion_tokens or 0 for r in records),
+        'streamed_calls': sum(r.stream for r in records),
+        'calls_without_usage': without_usage,
+        # True when a server sent no usage for some call: the token sums
+        # above are then a lower bound.
+        'tokens_partial': without_usage > 0,
+        'label_sources': dict(Counter(r.label_source for r in records)),
+        'calls_raised': sum(r.error is not None for r in records),
         'wall_seconds_sum_calls': round(sum(r.seconds for r in records), 2),
         'by_kind': {k: _agg(v) for k, v in sorted(by_kind.items())},
         'by_phase': {k: _agg(v) for k, v in sorted(by_phase.items())},
     }
 
 
-def doc_metrics(snapshot: dict) -> dict:
+def doc_metrics(snapshot: dict, prior_ops: int = 0) -> dict:
+    """Shape metrics for one snapshot.
+
+    The op log is cumulative across turns; `prior_ops` is the length of the
+    input document's log, so `turn_op_counts` holds this turn's ops only.
+    """
     parts = snapshot.get('parts') or []
     words: dict[str, set[str]] = {}
     for p in parts:
@@ -259,11 +374,14 @@ def doc_metrics(snapshot: dict) -> dict:
                 dups.append({'a': a, 'b': b, 'jaccard': round(len(words[a] & words[b]) / len(union), 3)})
     dups.sort(key=lambda d: -d['jaccard'])
     ops: Counter = Counter()
-    for entry in snapshot.get('op_log') or []:
+    turn_ops: Counter = Counter()
+    for i, entry in enumerate(snapshot.get('op_log') or []):
         if isinstance(entry, dict):
             op = entry.get('op')
             if isinstance(op, dict) and 'type' in op:
                 ops[op['type']] += 1
+                if i >= prior_ops:
+                    turn_ops[op['type']] += 1
     headings = sum(
         1
         for p in parts
@@ -278,21 +396,75 @@ def doc_metrics(snapshot: dict) -> dict:
         'summary_chars': len(snapshot.get('summary') or ''),
         'content_chars': sum(len(p.get('body') or '') for p in parts),
         'top_dup_pairs': dups[:3],
-        'max_dup_jaccard': dups[0]['jaccard'] if dups else 0.0,
+        # None, not 0.0, when there is no pair to compare (N17).
+        'max_dup_jaccard': dups[0]['jaccard'] if dups else None,
         'op_counts': dict(ops),
+        'turn_op_counts': dict(turn_ops),
         'non_empty': any((p.get('body') or '').strip() for p in parts)
                      or bool((snapshot.get('summary') or '').strip()),
     }
 
 
-def turn_health(entry: dict) -> dict:
-    """Defensive summary of an orchestrator history entry."""
-    exec_results = entry.get('execution_results') or []
-    statuses: Counter = Counter()
+BUDGET_EXHAUSTED = 'budget_exhausted'
+
+
+def track_sub_task_statuses(executor) -> list[str] | None:
+    """Record each sub-task's real outcome as the orchestrator runs it (N16).
+
+    Wraps `executor.execute_one` on the instance: a raise is `failed` (the
+    orchestrator stubs the sub-task and goes on, and the executor history
+    gets no entry); a return is the sub-task's `TaskStatus`, except that an
+    oracle loop that ran out of rounds is `budget_exhausted`, which
+    `TaskStatus` cannot express yet (it says `completed`; N4, ticket 0-12).
+    """
+    real = getattr(executor, 'execute_one', None)
+    if real is None:
+        return None
+    statuses: list[str] = []
+
+    def execute_one(sub_task, *args, **kwargs):
+        history = getattr(executor, 'history', None)
+        seen = len(history) if isinstance(history, list) else 0
+        try:
+            out = real(sub_task, *args, **kwargs)
+        except BaseException:
+            statuses.append(TaskStatus.FAILED.value)
+            raise
+        new = history[seen:] if isinstance(history, list) else []
+        if any(isinstance(e, dict) and e.get(BUDGET_EXHAUSTED) for e in new):
+            statuses.append(BUDGET_EXHAUSTED)
+        else:
+            statuses.append(str(getattr(sub_task, 'status', None)))
+        return out
+
+    executor.execute_one = execute_one
+    return statuses
+
+
+def _history_statuses(exec_results: list) -> list[str]:
+    """Statuses read back from executor history (misses failed sub-tasks)."""
+    out = []
     for r in exec_results:
-        if isinstance(r, dict):
-            st = r.get('status') or r.get('sub_task_status')
-            statuses[str(st)] += 1
+        if not isinstance(r, dict):
+            continue
+        if r.get(BUDGET_EXHAUSTED):
+            out.append(BUDGET_EXHAUSTED)
+            continue
+        task = r.get('completed_sub_task')
+        status = task.get('status') if isinstance(task, dict) else None
+        out.append(str(status or r.get('status')))
+    return out
+
+
+def turn_health(entry: dict, statuses: list[str] | None = None) -> dict:
+    """Defensive summary of an orchestrator history entry.
+
+    `statuses` comes from track_sub_task_statuses(); without it they are
+    read back from the executor history.
+    """
+    exec_results = entry.get('execution_results') or []
+    if statuses is None:
+        statuses = _history_statuses(exec_results)
     decomp = entry.get('decomposition_history') or {}
     count = None
     for key in ('regenerated_sub_tasks', 'initial_tasks', 'decompose_response'):
@@ -301,7 +473,8 @@ def turn_health(entry: dict) -> dict:
             count = len(val)
             break
     return {'exec_entries': len(exec_results),
-            'exec_status_counts': dict(statuses),
+            'exec_status_counts': dict(Counter(statuses)),
+            'sub_task_statuses': list(statuses),
             'final_sub_task_count': count}
 
 
@@ -328,51 +501,116 @@ def run_scenario(
     t0 = time.perf_counter()
     try:
         for ti, turn in enumerate(scenario['turns']):
+            turn_id = f'{scenario["id"]}#r{run_index}:t{ti}'
+            _current_turn.set(turn_id)
             _current_phase.set(f'{scenario["id"]}:setup')
             doc = None
+            prior_ops = 0
             prior = turn.get('prior')
             if prior and prior in docs:
                 snap = docs[prior]
+                prior_ops = len(snap.get('op_log') or [])
                 # to_dict() stores parts/op_log as plain dicts; from_dict()
                 # rehydrates them so attribute access (outline(), render(),
                 # ...) works on the reconstructed document (0-08).
                 doc = Document.from_dict(snap)
-            idx_start = measured.start_index()
             turn_start = time.perf_counter()
             result = None
             build = build_orchestrator or (lambda: TaskOrchestrator.instantiate(llm_client=client))
             orch = build()
-            for kind, payload in orch.iter_query(turn['text'], document=doc):
-                if kind == 'status':
-                    _current_phase.set(str(payload))
-                    record['events'].append(
-                        {'t': round(time.perf_counter() - t0, 1), 'phase': str(payload)}
+            statuses = track_sub_task_statuses(getattr(orch, 'agent_executor', None))
+            error = None
+            try:
+                # live_session() gives llm_step labels somewhere to land; the
+                # harness reads them per call (phase_kind).
+                with live_session() as state:
+                    for kind, payload in orch.iter_query(turn['text'], document=doc):
+                        if kind == 'status':
+                            _current_phase.set(str(payload))
+                            state.llm_label = ''  # a step label never spans phases
+                            record['events'].append(
+                                {'t': round(time.perf_counter() - t0, 1), 'phase': str(payload)}
+                            )
+                        else:
+                            result = payload
+            except Exception as exc:
+                error = repr(exc)
+                raise
+            finally:
+                # A turn that raised or returned nothing still made calls;
+                # record them so every call lands in a turn.
+                if error is not None or result is None:
+                    record['turns'].append(
+                        {'index': ti, 'turn_id': turn_id, 'text': turn['text'],
+                         'wall_seconds': round(time.perf_counter() - turn_start, 1),
+                         'error': error or 'no result',
+                         'llm': llm_stats(measured.records_for_turn(turn_id))}
                     )
-                else:
-                    result = payload
-            turn_wall = time.perf_counter() - turn_start
-            idx_end = measured.start_index()
             if result is None:
-                record['turns'].append(
-                    {'index': ti, 'text': turn['text'], 'wall_seconds': round(turn_wall, 1),
-                     'error': 'no result'}
-                )
                 continue
+            turn_wall = time.perf_counter() - turn_start
+            calls = measured.records_for_turn(turn_id)
             snapshot = result.document_snapshot or {}
             docs[turn.get('name', f'{scenario["id"]}:t{ti}')] = snapshot
             entry = orch.history[-1] if orch.history else {}
             record['turns'].append({
                 'index': ti,
+                'turn_id': turn_id,
                 'text': turn['text'],
                 'wall_seconds': round(turn_wall, 1),
-                'llm': llm_stats(measured.records_between(idx_start, idx_end)),
-                'document': doc_metrics(snapshot),
-                'sub_tasks': turn_health(entry),
+                'llm': llm_stats(calls),
+                'calls': [asdict(c) for c in calls],  # re-scorable per call
+                'document': doc_metrics(snapshot, prior_ops),
+                'sub_tasks': turn_health(entry, statuses),
                 'snapshot': snapshot,  # full parts/op_log for post-hoc inspection
             })
+    except Exception as exc:  # noqa: BLE001 - keep the turns and calls made so far
+        record['error'] = repr(exc)
     finally:
         record['total_wall_seconds'] = round(time.perf_counter() - t0, 1)
     return record
+
+
+def run_jobs(items: list, work, n_jobs: int) -> None:
+    """Run work(i, item) for every item, n_jobs at a time.
+
+    Each job runs in a fresh copy of the caller's context, so the phase and
+    turn ContextVars a job sets never leak into another job, whichever pool
+    thread it lands on (N14).
+    """
+    if n_jobs > 1:
+        with ThreadPoolExecutor(max_workers=n_jobs) as pool:
+            futures = [
+                pool.submit(contextvars.copy_context().run, work, i, item)
+                for i, item in enumerate(items)
+            ]
+            for f in futures:
+                f.result()
+    else:
+        for i, item in enumerate(items):
+            contextvars.copy_context().run(work, i, item)
+
+
+def attribution_summary(measured: MeasuredCompletions, results: list[dict]) -> dict:
+    """Global vs per-turn call/token totals; equal when attribution is exact."""
+    records = measured.all_records()
+    turn_calls = turn_ptok = turn_ctok = 0
+    for rec in results:
+        for turn in rec.get('turns', []):
+            ll = turn.get('llm')
+            if ll:
+                turn_calls += ll['calls']
+                turn_ptok += ll['prompt_tokens']
+                turn_ctok += ll['completion_tokens']
+    return {
+        'calls': len(records),
+        'calls_in_turns': turn_calls,
+        'calls_unattributed': sum(r.turn is None for r in records),
+        'prompt_tokens': sum(r.prompt_tokens or 0 for r in records),
+        'prompt_tokens_in_turns': turn_ptok,
+        'completion_tokens': sum(r.completion_tokens or 0 for r in records),
+        'completion_tokens_in_turns': turn_ctok,
+    }
 
 
 def main() -> int:
@@ -385,8 +623,9 @@ def main() -> int:
     ap.add_argument('--runs', type=int, default=2, help='runs per scenario (default 2)')
     ap.add_argument('--jobs', type=int, default=3,
                     help='scenarios to run concurrently (server has 5 slots; '
-                         'default 3, try up to 4; use 1 for clean timing-gate '
-                         'windows such as P0-4/compare.py measurements)')
+                         'default 3, try up to 4). Per-turn calls and tokens '
+                         'are exact at any value; per-call wall times inflate '
+                         'above 1, so timing gates (P0-4, compare.py) need 1')
     ap.add_argument('--smoke', action='store_true',
                     help='cheap integration check: 1 run of the first scenario')
     ap.add_argument('--consolidation', action='store_true',
@@ -449,14 +688,13 @@ def main() -> int:
             )
         except Exception as exc:  # noqa: BLE001 - report, keep other jobs
             errors.append(f'{s["id"]} run {r}: {exc!r}')
+            return
+        if 'error' in results[idx]:
+            errors.append(f'{s["id"]} run {r}: {results[idx]["error"]}')
 
-    if args.jobs > 1:
-        with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            for i, item in enumerate(jobs):
-                pool.submit(work, i, item)
-    else:
-        for i, item in enumerate(jobs):
-            work(i, item)
+    run_jobs(jobs, work, args.jobs)
+    done = [r for r in results if r is not None]
+    attribution = attribution_summary(measured, done)
 
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     label = args.label or ('smoke' if args.smoke else 'baseline')
@@ -470,31 +708,35 @@ def main() -> int:
         'label': label,
         'runs_per_scenario': args.runs,
         'jobs': args.jobs,
-        'caveat': ('per-turn call attribution and token counts are approximate '
-                   '(per-turn stats slice a global call counter, so they may include '
-                   'calls from concurrent turns); per-call wall_seconds are inflated by '
-                   'concurrent server load - use --jobs 1 for timing gates; exact '
-                   'attribution arrives with ticket 0-14')
+        'caveat': ('per-call wall_seconds are inflated by concurrent server load; '
+                   'use --jobs 1 for timing gates (per-turn calls and tokens are '
+                   'exact, 0-14)')
                    if args.jobs > 1 else None,
         'total_calls_observed': measured.total_calls,
-        'results': [r for r in results if r is not None],
+        'attribution': attribution,
+        'results': done,
         'errors': errors,
     }
     out_path.write_text(json.dumps(payload, indent=2))
 
     print('\n' + '=' * 100)
-    for rec in [r for r in results if r is not None]:
+    for rec in done:
         for turn in rec['turns']:
             if 'error' in turn:
                 print(f"{rec['scenario']} r{rec['run']} t{turn['index']}: ERROR {turn['error']}")
                 continue
             d = turn['document']
             ll = turn['llm']
+            dup = d['max_dup_jaccard']
             print(f"{rec['scenario']:<16} r{rec['run']} t{turn['index']}: "
                   f"wall={turn['wall_seconds']:>6}s calls={ll['calls']:>2} "
-                  f"ptok={ll['prompt_tokens']:>6} ctok={ll['completion_tokens']:>6} "
+                  f"ptok={ll['prompt_tokens']:>6} ctok={ll['completion_tokens']:>6}"
+                  f"{'+' if ll['tokens_partial'] else ''} "
                   f"parts={d['part_count']} {d['part_kinds']} "
-                  f"dup={d['max_dup_jaccard']:.2f} ops={d['op_counts']}")
+                  f"dup={'n/a' if dup is None else f'{dup:.2f}'} ops={d['turn_op_counts']}")
+    if attribution['calls'] != attribution['calls_in_turns']:
+        print(f"\nWARNING: {attribution['calls'] - attribution['calls_in_turns']} "
+              f"call(s) outside any recorded turn: {attribution}")
     if errors:
         print('\nERRORS:')
         for e in errors:

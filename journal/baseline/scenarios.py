@@ -10,7 +10,8 @@ Scenario map to plan criteria:
   s1_cli_code      -> P0-1 (code request lands as `file` parts, not prose)
   s2_report        -> P0-2 (report stays in sections; `section` parts)
   s3_followup      -> P0-3 (overlapping follow-up; dedupe quality via
-                      max_dup_jaccard < 0.50 across part pairs)
+                      max_dup_jaccard < 0.50 across part pairs, and
+                      merge_parts or a patch op in the follow-up turn)
   s4_anchors       -> P0-4 anchor set (total wall-clock + tokens, cheap
                       multi-sub-task prompt, pre-consolidation numbers)
 """
@@ -23,6 +24,7 @@ SCENARIOS: list[dict] = [
             'criterion': 'P0-1',
             'part_kinds_include': ['file'],
             'file_parts_min': 1,
+            'section_parts_max': 0,  # no prose-report parts about the tool
             'non_empty': True,
         },
         'turns': [
@@ -45,6 +47,7 @@ SCENARIOS: list[dict] = [
             'criterion': 'P0-1',
             'part_kinds_include': ['file'],
             'file_parts_min': 1,
+            'section_parts_max': 0,  # no prose-report parts about the tool
             'non_empty': True,
             'note': '0-05 verification: different tool than s1 (X2: conversion).',
         },
@@ -68,6 +71,7 @@ SCENARIOS: list[dict] = [
             'criterion': 'P0-1',
             'part_kinds_include': ['file'],
             'file_parts_min': 1,
+            'section_parts_max': 0,  # no prose-report parts about the tool
             'non_empty': True,
             'note': '0-05 verification: different tool than s1 (X3: filtering).',
         },
@@ -92,6 +96,7 @@ SCENARIOS: list[dict] = [
             'criterion': 'P0-2',
             'part_kinds_include': ['section'],
             'section_parts_min': 2,
+            'file_parts_max': 0,
             'non_empty': True,
         },
         'turns': [
@@ -114,6 +119,7 @@ SCENARIOS: list[dict] = [
         'expect': {
             'criterion': 'P0-3',
             'max_dup_jaccard_below': 0.50,
+            'followup_merge_or_patch': True,  # on turns with a `prior`
             'non_empty': True,
             'note': 'turn 1 continues turn 0\'s document; duplicate part '
                     'pairs indicate the composer is re-emitting instead of '

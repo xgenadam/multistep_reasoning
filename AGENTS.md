@@ -82,8 +82,8 @@ This file holds no decisions; it cites them by `D-nnn`.
 - **Harness parallelism** (`harness.py --jobs N`):
   - Scenarios run concurrently in a thread pool. The default is 3 and 4 is
     the practical maximum.
-  - Above 1, per-turn call attribution and tokens are *approximate* until
-    0-14, and per-call wall times inflate.
+  - Above 1, per-turn call attribution and tokens stay exact (0-14), but
+    per-call wall times inflate.
 - **Sandbox:** approval policy is "ask"; files are `workspace-write` on
   `/workspace`.
 

@@ -513,11 +513,11 @@ Pass criteria:
 | N10 | `RollingDocumentUpdateSynthesiser` broken and unregistered; 10 skipped tests | `document_modification_synthesiser.py` | P (legacy chain) |
 | N11 | PLAN v1 defect table stale | — | fixed, O-01 (v1 archived) |
 | N12 | Extension passes the whole rendered prompt as the user message; clean text stashed, never read | `oobabooga_extension/script.py:350, :424` | 0-11 |
-| N13 | Harness `classify_call` mislabels by system-prompt keyword | `journal/baseline/harness.py` | 0-14 |
-| N14 | `--jobs > 1` attribution approximate | `journal/baseline/harness.py` | caveat fixed, O-04; exact in 0-14 |
-| N15 | Streamed calls record no token usage | `journal/baseline/harness.py` | 0-14 |
-| N16 | `exec_status_counts` always `{'None': n}` | `journal/baseline/harness.py` | 0-14 |
-| N17 | `check.py` lacks the P0-1/P0-2/P0-3 checks; Jaccard trivially 0 on 1-part docs | `journal/baseline/check.py` | 0-14 |
+| N13 | Harness `classify_call` mislabels by system-prompt keyword | `journal/baseline/harness.py` | fixed, 0-14 (phase labels; keywords are the fallback) |
+| N14 | `--jobs > 1` attribution approximate | `journal/baseline/harness.py` | fixed, 0-14 (turn ContextVar) |
+| N15 | Streamed calls record no token usage | `journal/baseline/harness.py` | fixed, 0-14 (`include_usage`) |
+| N16 | `exec_status_counts` always `{'None': n}` | `journal/baseline/harness.py` | fixed, 0-14 |
+| N17 | `check.py` lacks the P0-1/P0-2/P0-3 checks; Jaccard trivially 0 on 1-part docs | `journal/baseline/check.py` | fixed, 0-14 |
 | N20 | Model thinking never set or captured: runs take the server default, reasoning is discarded unseen | `reasoning_sub_agents/llama_utils.py` | 0-15 |
 | N18 | Prompt tokens per turn grew 3–5× after 0-04/0-05, ungated | run files `20261015T18…`, `…19…` | 0-16 |
 | N19 | Extension: in-memory Documents, one shared orchestrator, unbounded history, global `_pending_turn` | `oobabooga_extension/script.py` | R / H |
