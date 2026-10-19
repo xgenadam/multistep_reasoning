@@ -1,18 +1,17 @@
-*idea
-*__pycache__
-venv
-dsh-podman-venv
-.dsh/
-llama_cpp_server
-*.json
-*.md
-!README.md
-!AGENTS.md
-!journal/**/*.md
-!journal/baseline/runs/*.json
-novel_mcp_server/workspaces/
-
-# O-03: local env + build artefacts (O-02 rewrites this file)
-.venv/
+__pycache__/
+*.pyc
 *.egg-info/
+build/
+dist/
+.venv/
+venv/
+dsh-podman-venv/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.idea/
+.dsh/
+llama_cpp_server/
+# anchored: an unanchored runs/ would also ignore journal/baseline/runs/
+/runs/
+corpora/

@@ -1,3 +1,6 @@
+# `project_serializer.py` (archived, O-02)
+
+```python
 import argparse
 import os
 
@@ -92,3 +95,4 @@ if __name__ == "__main__":
 
     result = generate_structure(args.directory, args.suffix, args.exclude)
     print(result)
+```

@@ -105,13 +105,12 @@ Plane.
 
 ## Commit discipline
 
-- **Explicit paths only. Never `git add -A`.** The working tree has untracked
-  junk (`docs/`, `main.bak.py`, `*.txt`, `.dsh/`, …) that must stay excluded.
-- `.gitignore` is unusual: blanket `*.json` and `*.md` are **ignored**, with
-  explicit un-ignores (`!README.md`, `!journal/**/*.md`,
-  `!journal/baseline/runs/*.json`). `.dsh/` stays ignored. Add new
-  journal/run files with explicit paths; they will not be picked up
-  automatically.
+- **Explicit paths only. Never `git add -A`.** `.dsh/` holds live agent-tool
+  state (credentials included) and stays ignored, never committed or deleted.
+- `.gitignore` is a plain list of local dirs and build artefacts (O-02); new
+  `*.md` / `*.json` files show up as untracked like anything else. Live run
+  state goes under `/runs/` (ignored, root-anchored); tracked run files under
+  `journal/baseline/runs/`.
 - Commit journal and code **together** when a status flip is involved, so the
   audit trail reads as one change.
 - Run the test suite before committing behavior changes

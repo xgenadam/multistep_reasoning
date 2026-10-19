@@ -1,3 +1,6 @@
+# `llama_server.py` (archived, O-02)
+
+```python
 import logging
 import subprocess
 import time
@@ -101,3 +104,4 @@ def start_llama_server(config: dict) -> None:
             pass
 
         time.sleep(poll_interval)
+```
