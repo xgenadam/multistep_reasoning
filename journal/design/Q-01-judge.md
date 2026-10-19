@@ -224,6 +224,52 @@ from the verdict file; code prompts whose tests decide skip the judge.
 > Why: n ≥ 10 cannot separate 0.70 from chance (7/10 gives 0.40–0.89); a bare single call uses a fraction of the harness's compute, so "the harness wins" could mean "more compute wins"; code can be tested; short tasks are where the harness is least likely to help; A through T invest in the pipeline, and D-007 already makes quality a gate from Q on, which needs the gate before A lands code.
 > Supersedes: D-007's quality half ("pairwise judge, n ≥ 10"); PLAN's S-012 proposal block.    Re-open if: the measured judge budget (Q-4) makes the powered n infeasible on the generator and the slow-tier judge; or (a″) cannot be matched within ±25 % on completion tokens; or Q-04 finds no judge that passes Q-1 in either tier.
 
+## 9. Standardised sets and methods (the user's question, 2026-10-19)
+
+The cadence is parked: the user said when to run these is a later
+strategy. This section records where they fit and which ones, so Q-02
+stage 0 can build the `std-*` subsets beside the bespoke set.
+
+**Fit filter.** A public set earns a slice only if (1) its unit of work is
+a deliverable the pipeline produces, code files or a document, not a short
+answer; (2) it scores objectively (tests, verifiable constraints, QA
+proxies) or carries human-labelled pairs; (3) a slice fits the judge
+budget. Short-answer knowledge sets (MMLU-style) measure the generator,
+not the pipeline, and are out. Contamination does not touch relative arm
+comparisons (every arm uses the same generator), but absolute numbers are
+reported with the set's date window, never as a bare score.
+
+| Set | Unit and scoring | Where it fits | Slice |
+| --- | --- | --- | --- |
+| IFEval (541 prompts, 25 verifiable instruction types) | prose with checkable constraints; exact verification, no judge | the report domain's checklist arm (P5); the cheapest standard check that decompose → compose does not lose constraints | 50–100, `std-if` |
+| LiveCodeBench (contest problems, hidden tests, date-tagged) | code with tests, pass@1 | the code domain's test arm (P5); date tags give contamination control for a recent Qwen | 30–50 after the model's cutoff, `std-code` |
+| BigCodeBench-Hard (148 library-use tasks with tests) | code with tests | complement to LiveCodeBench; closer to tool tasks than contest puzzles | 30–50 |
+| LongBench-Write (120 prompts, 500–20 K words; length score plus judged quality) | long document; length adherence objective, quality judged | P6's long prompts; the north star's writing regime | the ≥ 2 K-word prompts, `std-long` |
+| HelloBench (647 open-ended long-generation tasks with checklists) | long document, checklist-judged | same regime; its checklists are the P5 report checklist in standard form | 20–30 |
+| LLMBar (419 pairs, 319 adversarial: superficially better but wrong) | pairwise, human-labelled | **Q-04**: the damaged and padded pairs in standard form, at scale | the adversarial 319 or 100 of them |
+| JudgeBench (350 pairs with objective correctness labels) | pairwise, objective labels | **Q-04**: judge accuracy where correctness decides | coding and reasoning slices |
+| RewardBench 2 (pairwise and best-of-N by category) | pairwise | **Q-04**: breadth | one category slice |
+| Later: SWE-bench Verified (500 repo issues, tests, per-instance containers) | repo edits with tests | T-code with the B2-code store | 50 |
+| Later: ScholarQABench (literature synthesis with citations) | long cited answer over a paper corpus; citation accuracy | T-science and Phase B | as provided |
+| Later: LongBench v2, RULER | long-context QA and retrieval | Phase A/B store evaluation (A-1, B tiers), not the harness | slices |
+
+Versions to verify at adoption; this table is from memory, not a search.
+
+**Methods worth taking.** Pairwise with position swap and ties is the
+MT-Bench and Arena-Hard protocol, which § 3 already follows. Two
+additions when the bench exists: a **Bradley–Terry rating with bootstrap
+CIs** when more than two arms are compared at once (Arena-Hard-Auto),
+instead of a table of pairwise rates that multiplies comparisons; and a
+**length-controlled win-rate** (AlpacaEval 2 style) as a reported
+secondary, since P5's padded pairs show length bias is the risk here.
+
+**Mechanics.** The user downloads the slices (the container has no
+internet) into `journal/baseline/bench/std/<set>/`, small slices tracked,
+licences noted in a README. Q-9's "one command runs any arm set" covers
+`std-*` subsets. **Cadence**, when decided: the bespoke `g3` subset per
+material change; `std-*` slices at phase gates and D-007 re-baselines;
+the full bespoke set for Q-E1.
+
 ## 8. Fold list (applied on approval, one commit)
 
 1. PLAN § Phase Q: rewrite Q-02's bullet (arms, primary comparison, bench,
