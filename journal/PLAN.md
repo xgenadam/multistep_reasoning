@@ -250,6 +250,145 @@ Pass criteria:
 - **Q-5:** repeatability. The same pair in the same order, judged twice,
   agrees ≥ 90%.
 
+### Proposed amendment (S-012, 2026-10-19): a draft, not in force
+
+> **Re-check before acting on this.** It was drafted at the user's request,
+> outside any ticket and without a design session. **Q-01 stage 1** (Fable 5.1
+> / high) rules on it item by item: accept, modify or reject. It does so
+> **before A-02 starts**, because P1 changes the order. Until that ruling, the
+> criteria above and the Q tickets' Scope stand unchanged. When re-checking,
+> ask:
+> - Is the harness still the thing in question?
+> - Does the generator still make a large campaign cheap?
+> - Have Phase A results already answered any part of this?
+
+The question it serves: does the harness give a better result than just
+prompting the model, and does each added pass give a meaningful improvement
+rather than a measurable but trivial one? Phase Q as written answers the first
+part only weakly, for five reasons:
+- n ≥ 10 cannot separate a real 70 % win-rate from chance: 7/10 has a Wilson
+  95 % CI of 0.40–0.89.
+- The single-call arm uses a fraction of the harness's compute.
+- Only consolidation is ablated.
+- Code is judged although it could be tested.
+- s1–s4 are short tasks, and short tasks are where a harness is least likely
+  to help.
+
+**P1, order.** Q-01 → Q-02 run before A-02. A-01 (paper only) still runs in
+parallel.
+- Q-02 drops `depends_on: A-04`. It uses `harness.py`'s snapshot functions
+  as they are, since A-04 only moves them.
+- Why: A through T invest in this pipeline. If it does not beat the baselines,
+  the re-plan should come before that investment.
+
+**P2, a pre-registered effect and power.**
+- Before the campaign runs, Q-02's Notes record and commit:
+  - the minimum effect worth having (for example a win-rate of 0.65, or a
+    test pass-rate gain of 10 points);
+  - the primary comparison;
+  - the analysis.
+- n follows from that effect at 80 % power, two-sided α = 0.05. The decisive
+  (non-tie) pairs needed are:
+
+  | Win-rate to detect | Decisive pairs |
+  | --- | --- |
+  | 0.75 | ≈ 29 |
+  | 0.70 | ≈ 47 |
+  | 0.65 | ≈ 85 |
+  | 0.60 | ≈ 194 |
+
+  The tie rate is reported.
+- Claims:
+  - "better" needs the CI lower bound above 0.5;
+  - "meaningfully better" also needs the point estimate at or above the
+    pre-registered effect.
+- G3 (Q-03) stays as the non-inferiority gate for changes that claim no gain.
+  A change that claims a gain must pass the superiority test.
+
+**P3, a compute-matched baseline.** Q-E1's arms:
+- (a) a single call, thinking off;
+- (a′) a single call, thinking on;
+- (a″) best-of-N or self-refine, with N set so that its median tokens per
+  prompt are within ±25 % of the harness's (≈ 60 K per turn on `:8091`, 0-16);
+- (b) the harness;
+- (c) the harness + consolidation.
+
+The primary comparison is (b) against the strongest single-model arm.
+Otherwise "the harness wins" may only mean "more compute wins".
+
+**P4, ablations as configuration.** Every component that claims a gain gets
+an on/off arm, with its quality delta reported beside its marginal cost (the
+D-007 form). Most switches already exist in `OrchestratorConfig`:
+- decomposer `simple` vs `self_critique`;
+- executor `simple` vs `oracle_loop`;
+- composer `simple` vs `document`;
+- `oracle: null`;
+- `max_oracle_rounds`;
+- `consolidation`;
+- `thinking` / `thinking_by_step`.
+
+Ablations run on a smaller set, and only after Q-E1. If the harness loses,
+they explain why; if it wins, they show which parts earn their cost.
+
+**P5, objective scoring first.**
+- Each code-domain prompt carries hidden tests, and scoring is pass-rate with
+  a CI per arm. No judge is used where a test exists, and the format is shared
+  with T-code.
+- Each report prompt carries a checklist of required sections and stated
+  constraints, scored mechanically where possible.
+- The pairwise judge covers the rest.
+- Length is reported per arm. Q-1's validation set adds two padded-but-not-
+  better pairs, so that length bias is caught.
+
+**P6, task mix.**
+- At least a third of prompts are long: tasks where a single call hits the
+  context or `max_tokens` limit (multi-file programs, reports longer than one
+  call can emit).
+- Some prompts are multi-turn follow-ups, as in s3.
+- The north star is very long tasks, so most of the benchmark should not sit
+  in the short-task regime.
+
+**P7, a standing benchmark, not a one-off.**
+- A frozen, versioned set lives under `journal/baseline/bench/`: prompts,
+  hidden tests and checklists.
+- One command runs any arm set.
+- A small subset (≈ 10 prompts) serves G3 on every material change, and the
+  full set serves phase gates and the D-007 re-baselines.
+
+**Proposed criteria** (next free IDs; Q-2 reworded):
+- **Q-2′:** Q-E1 is recorded with tokens, wall time and length per arm. n
+  comes from Q-6, and at least ⅓ of prompts are long.
+- **Q-6 Pre-registration:** the effect, n, the primary comparison and the
+  analysis are committed before Q-02's first run file.
+- **Q-7 Compute-matched baseline:** at least one single-model arm is within
+  ±25 % of the harness's median tokens per prompt.
+- **Q-8 Objective scoring:** every code prompt has hidden tests, and no judge
+  verdict replaces a test result.
+- **Q-9 Standing benchmark:** one command reproduces a Q-E1 run from the
+  frozen set. One component ablation reports its quality delta and marginal
+  cost.
+
+**Draft decision.** On acceptance, append it to DECISIONS.md and change only
+the status word of D-007's quality half:
+
+> **Quality claims are pre-registered, powered and compute-matched.**
+> - A pass claiming a quality gain shows a CI lower bound above 0.5 and a
+>   point estimate at or above a pre-registered effect.
+> - The comparison is against the strongest single-model arm at similar
+>   token cost.
+> - Objective checks score whatever they can, and the judge scores the rest.
+> - G3 non-inferiority stays for changes that claim no gain.
+>
+> *Supersedes:* D-007's "pairwise judge, n ≥ 10".
+> *Re-open if:* the judge budget (Q-4) makes powered n infeasible on the
+> current generator.
+
+**Cost.** On `:8091`, a harness turn takes ≈ 62 s and a single call a few
+seconds. 80 prompts × 5 arms is about 7 h at `--jobs 1`, or about 2.5–3 h at
+`--jobs 3`. That is acceptable because outputs and tokens stay clean (Q-02
+Scope). Judge calls come on top, and thinking-on arms cost more (s1 with
+thinking on: 356 s).
+
 ## Phase A — `ContextStore` keystone (zero new deps or services; D-001)
 
 - **A-01, interface on paper:**

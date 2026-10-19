@@ -1,6 +1,6 @@
 # INDEX — live board (hand-maintained; ticket status lives only in front-matter: `make board`)
 
-updated: 2026-10-19 (the S-011 0-16 close commit, `git log -1 -- journal/INDEX.md`)
+updated: 2026-10-19 (the S-012 Phase Q proposal commit, `git log -1 -- journal/INDEX.md`)
 
 ## Now
 - **Phase:** 0 close-out (0-close-A). 0-14 (P0-6), 0-15 (P0-10) and 0-16 (P0-7: fresh baseline, N18 accepted as a measurement artefact, D-016) are done.
@@ -19,8 +19,8 @@ updated: 2026-10-19 (the S-011 0-16 close commit, `git log -1 -- journal/INDEX.m
 2. 0-09 — s1 fence re-run — Sonnet 5.5/low — behavioural — 0-14
 3. 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI) — none
 4. A-01 — ContextStore design — Fable 5.1/high — none — none
-5. Q-01 — judge tool — Fable→Opus, high→medium — behavioural — none
-6. A-02 — Document store + BM25 — Opus 5.5/medium — none — A-01
+5. Q-01 — judge tool — Fable→Opus, high→medium — behavioural — none (stage 1 rules on PLAN § Phase Q's S-012 proposal before A-02)
+6. A-02 — Document store + BM25 — Opus 5.5/medium — none — A-01 (if Q-01 accepts the S-012 proposal's P1, run Q-02 first)
 7. A-03 — ToolRegistry + multi-store oracle — Opus 5.5/high — none — A-02
 8. A-04 — op-log seq/ts + snapshot promotion — Sonnet 5.5/medium — none — none
 9. A-05 — Phase A live criteria run — Sonnet 5.5/medium — timing — A-02, A-03, A-04, 0-16 (measure the pre-A oracle first: A-05 Notes)
