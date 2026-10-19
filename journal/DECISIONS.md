@@ -78,3 +78,8 @@ Supersedes: none    Re-open if: C-2 fails with the summary in place.
 Decision: `requires-python = ">=3.12,<3.13"`; `make venv` builds a uv-managed 3.12. The ticket that upgrades instructor past 1.3 also lifts the cap.
 Why: `instructor==1.3.*` pins `jiter<0.5`, which has no cp313 wheel and fails to build under PyO3 0.21 on 3.13.
 Supersedes: none (approved plan O-3 "fresh .venv (3.13)")    Re-open if: instructor is upgraded, or 3.12 is unavailable on the box.
+
+## D-013 — Model thinking is explicit, off for baselines, logged out of band    2026-10-19 · S-007 · active
+Decision: Every call sends an explicit thinking switch (`extra_body={'chat_template_kwargs': {'enable_thinking': …}}`), set by `options.thinking` (`off` | `on`) with optional per-step overrides; the default and the 0-16 baseline are `off`, and `on` is measured as its own comparison. Reasoning text (`reasoning` / `reasoning_content`, or a leading `<think>…</think>` stripped from content) is never fed into the Document, summary or any prompt. It goes to a side log: JSONL under `/runs/thinking/` (ignored), with per-call `reasoning_tokens` and a capped excerpt in harness run files. Run files record the thinking setting.
+Why: The code never set thinking, so runs took the server's default: `:8091` vLLM thinks only when asked, and `:5000`'s setting at S-002 is unknown. Thinking tokens count in `completion_tokens` and move cost and wall time, so an unrecorded default confounds every baseline. Keeping it out of the context honours "window bounded"; logging it keeps it debuggable.
+Supersedes: none    Re-open if: `on` beats `off` on Q-gated quality at acceptable marginal cost, or a step needs its own reasoning carried forward.

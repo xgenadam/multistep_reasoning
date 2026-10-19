@@ -15,16 +15,17 @@ updated: 2026-10-19 (the S-007 close commit, `git log -1 -- journal/INDEX.md`)
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. 0-14 — harness truthfulness — Opus 5.5/high — none — O-01
-2. 0-16 — re-baseline + token growth — Sonnet→Opus, low→high — timing — 0-14
-3. 0-06 — consolidation re-measure — Sonnet 5.5/medium — timing — 0-14, 0-16
-4. 0-09 — s1 fence re-run — Sonnet 5.5/low — behavioural — 0-14
-5. 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI) — none
-6. A-01 — ContextStore design — Fable 5.1/high — none — none
-7. Q-01 — judge tool — Fable→Opus, high→medium — behavioural — none
-8. A-02 — Document store + BM25 — Opus 5.5/medium — none — A-01
-9. A-03 — ToolRegistry + multi-store oracle — Opus 5.5/high — none — A-02
-10. A-04 — op-log seq/ts + snapshot promotion — Sonnet 5.5/medium — none — none
-11. A-05 — Phase A live criteria run — Sonnet 5.5/medium — timing — A-02, A-03, A-04, 0-16
+2. 0-15 — thinking switch + log (D-013) — Opus 5.5/medium — behavioural — 0-14
+3. 0-16 — re-baseline + token growth — Sonnet→Opus, low→high — timing — 0-14, 0-15
+4. 0-06 — consolidation re-measure — Sonnet 5.5/medium — timing — 0-14, 0-16
+5. 0-09 — s1 fence re-run — Sonnet 5.5/low — behavioural — 0-14
+6. 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI) — none
+7. A-01 — ContextStore design — Fable 5.1/high — none — none
+8. Q-01 — judge tool — Fable→Opus, high→medium — behavioural — none
+9. A-02 — Document store + BM25 — Opus 5.5/medium — none — A-01
+10. A-03 — ToolRegistry + multi-store oracle — Opus 5.5/high — none — A-02
+11. A-04 — op-log seq/ts + snapshot promotion — Sonnet 5.5/medium — none — none
+12. A-05 — Phase A live criteria run — Sonnet 5.5/medium — timing — A-02, A-03, A-04, 0-16
 - Slot between the above, on a free server: 0-12, 0-13 (none); 0-10a (behavioural, after 0-16); Q-02 campaign (after Q-01, 0-14, A-04) → Q-03 → 0-10b.
 
 ## Phase status

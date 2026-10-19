@@ -135,6 +135,8 @@ The close-out exists because the Phase 0 measurements are not yet trustworthy:
   - real executor statuses are recorded;
   - `check.py` gets the three missing P0 checks;
   - `compare.py` gets the marginal G2 and an exit 2 on contaminated input.
+- 0-15 makes model thinking explicit and logged (D-013), so the baseline
+  records which setting it measured.
 - 0-16 re-baselines s1–s4 at `--jobs 1` and attributes the token growth.
 - Then 0-06 and 0-09 are re-measured.
 - 0-11 repairs the oobabooga extension (N1, N12).
@@ -176,6 +178,19 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     compose p50 > 1.3× the recorded clean baseline.
   - Re-scoring the tracked runs reproduces S-002's compose, consolidate and
     decompose verdicts.
+- **P0-10 Thinking explicit and logged (0-15, D-013):**
+  - Every call, in all three `llama_utils.py` call paths, carries the thinking
+    switch from config, proved by a fake-client test at the seam.
+  - Reasoning text is captured from `reasoning`, `reasoning_content` and a
+    leading `<think>…</think>` (stripped before JSON parse). Tests cover each
+    one.
+  - Reasoning never appears in any prompt, the summary or the Document. A
+    test asserts this with thinking `on`.
+  - Harness run files carry the setting, per-call and per-kind
+    `reasoning_tokens`, and capped excerpts; the full text lands in
+    `/runs/thinking/`.
+  - Live check on `:8091`: an s1 smoke with `off` has 0 reasoning tokens; with
+    `on` it has more than 0, the side log has entries, and the run completes.
 - **P0-7 Fresh baseline (0-16):**
   - s1–s4 × 2 at `--jobs 1` in an idle window, every run accepted by
     `compare.py`'s contamination check.
@@ -503,6 +518,7 @@ Pass criteria:
 | N15 | Streamed calls record no token usage | `journal/baseline/harness.py` | 0-14 |
 | N16 | `exec_status_counts` always `{'None': n}` | `journal/baseline/harness.py` | 0-14 |
 | N17 | `check.py` lacks the P0-1/P0-2/P0-3 checks; Jaccard trivially 0 on 1-part docs | `journal/baseline/check.py` | 0-14 |
+| N20 | Model thinking never set or captured: runs take the server default, reasoning is discarded unseen | `reasoning_sub_agents/llama_utils.py` | 0-15 |
 | N18 | Prompt tokens per turn grew 3–5× after 0-04/0-05, ungated | run files `20261015T18…`, `…19…` | 0-16 |
 | N19 | Extension: in-memory Documents, one shared orchestrator, unbounded history, global `_pending_turn` | `oobabooga_extension/script.py` | R / H |
 
