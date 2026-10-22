@@ -58,6 +58,20 @@ This file holds no decisions; it cites them by `D-nnn`.
 - **Working dir:** `/workspace`. Git identity is repo-local: `DSH Agent
   (ubuntu) <dsh-agent@localhost>`. The container cannot push; the user
   pushes from the host.
+- **Agent container `claude-box` (from 2026-10-22):** the repo is at
+  `/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok`, `~/models`
+  is read-write, `~/workspace/AI/Qwen38-Flash-Next-4x3090` holds the user's
+  flash-next lane. The four cards are visible (`nvidia-smi`). `docker` is a
+  nested rootless podman: pass GPUs with `--device nvidia.com/gpu=all`;
+  `--gpus all` is silently ignored. The host answers at
+  `host.containers.internal` (`:5000` text-generation-webui; `:8090`/`:8091`
+  when the user's generator is up). One process owns the GPUs at a time:
+  check `nvidia-smi` (< 1 GB per card) and that the host ports are down
+  before any boot. Judges: `scripts/server/judge-llama-server.sh` (llama.cpp
+  server-cuda image, `http://localhost:8092/v1`); downloads:
+  `scripts/models/hf-queue.sh` (`hf` CLI). The generator can be booted here
+  with the flash-next launcher and `GPU_ARGS="--device nvidia.com/gpu=all"`,
+  answering at `http://localhost:8090/v1`.
 - **Python:**
   - Use `.venv/bin/python` (3.12, D-012; `make venv` builds it), or
     `dsh-podman-venv/bin/python` if `.venv` is absent. The latter has no
