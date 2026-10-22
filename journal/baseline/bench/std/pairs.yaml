@@ -1,0 +1,2436 @@
+version: std_v1
+note: 'Q-04 standard judge slice, written by build.py (seed 0): LLMBar adversarial 25 per subset x 4,
+  JudgeBench livecodebench and livebench-reasoning 15 per response model each. Human labels in expected;
+  kind std stays outside Q-1 scoring and is reported as the expected-side rate.'
+pairs:
+- pair_id: LN001
+  kind: std
+  task: Name an animal that is commonly kept as a pet.
+  a: candidates/LN001_a.md
+  b: candidates/LN001_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#10 (label 1)
+- pair_id: LN002
+  kind: std
+  task: "Rewrite the following poem from a different perspective but keep its structure.\n\nMy life is\
+    \ my path, made of miles and stiles \nBreaking free has become my only style"
+  a: candidates/LN002_a.md
+  b: candidates/LN002_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#12 (label 1)
+- pair_id: LN003
+  kind: std
+  task: Paraphrase this statement in your own words. AI is playing an increasingly important role in our
+    society.
+  a: candidates/LN003_a.md
+  b: candidates/LN003_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#17 (label 1)
+- pair_id: LN004
+  kind: std
+  task: Classify the following code as incorrect or correct. let x = 0
+  a: candidates/LN004_a.md
+  b: candidates/LN004_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#27 (label 2)
+- pair_id: LN005
+  kind: std
+  task: Tell the name of a famous mathematician.
+  a: candidates/LN005_a.md
+  b: candidates/LN005_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#32 (label 2)
+- pair_id: LN006
+  kind: std
+  task: Given an existing story, come up with an ending. The story is about a group of teenagers in search
+    of a lost treasure.
+  a: candidates/LN006_a.md
+  b: candidates/LN006_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#36 (label 1)
+- pair_id: LN007
+  kind: std
+  task: Name two animal species that live in the ocean.
+  a: candidates/LN007_a.md
+  b: candidates/LN007_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#45 (label 1)
+- pair_id: LN008
+  kind: std
+  task: Type a few sentences as if you talking to a customer service assistant I am inquiring about a
+    refund for a product I purchased recently.
+  a: candidates/LN008_a.md
+  b: candidates/LN008_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#61 (label 1)
+- pair_id: LN009
+  kind: std
+  task: Give 3 tips to improve an online virtual presentation
+  a: candidates/LN009_a.md
+  b: candidates/LN009_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#64 (label 1)
+- pair_id: LN010
+  kind: std
+  task: Name two countries that use the Euro as their currency.
+  a: candidates/LN010_a.md
+  b: candidates/LN010_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#66 (label 2)
+- pair_id: LN011
+  kind: std
+  task: Please create a memorable mission statement for a typical charity organization.
+  a: candidates/LN011_a.md
+  b: candidates/LN011_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#68 (label 1)
+- pair_id: LN012
+  kind: std
+  task: Find three facts about the American Revolution
+  a: candidates/LN012_a.md
+  b: candidates/LN012_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#74 (label 2)
+- pair_id: LN013
+  kind: std
+  task: Generate a computer password that is 8 characters long
+  a: candidates/LN013_a.md
+  b: candidates/LN013_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#77 (label 2)
+- pair_id: LN014
+  kind: std
+  task: Add together 3.7 and 6.2.
+  a: candidates/LN014_a.md
+  b: candidates/LN014_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#79 (label 2)
+- pair_id: LN015
+  kind: std
+  task: How do i treat a runny nose?
+  a: candidates/LN015_a.md
+  b: candidates/LN015_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#90 (label 2)
+- pair_id: LN016
+  kind: std
+  task: What is the best programing language for 2023
+  a: candidates/LN016_a.md
+  b: candidates/LN016_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#96 (label 2)
+- pair_id: LN017
+  kind: std
+  task: 'Can you analyze this part of a numerical sequence and provide me the next 3 numbers in it?
+
+    Sequence: 2, 4, 8, 16, 32'
+  a: candidates/LN017_a.md
+  b: candidates/LN017_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#98 (label 1)
+- pair_id: LN018
+  kind: std
+  task: Bo likes apple
+  a: candidates/LN018_a.md
+  b: candidates/LN018_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#102 (label 1)
+- pair_id: LN019
+  kind: std
+  task: I'd like you to help me writing a job description for a given job
+  a: candidates/LN019_a.md
+  b: candidates/LN019_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#103 (label 1)
+- pair_id: LN020
+  kind: std
+  task: let's play a role playing game. what role playing game rules do you know?
+  a: candidates/LN020_a.md
+  b: candidates/LN020_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#107 (label 2)
+- pair_id: LN021
+  kind: std
+  task: Can you expand more each of this points?
+  a: candidates/LN021_a.md
+  b: candidates/LN021_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#114 (label 1)
+- pair_id: LN022
+  kind: std
+  task: i'm thinking about a title for my paper. the one i have in mind is "Making 3D hand datasets of
+    real imagery better"
+  a: candidates/LN022_a.md
+  b: candidates/LN022_b.md
+  expected: b
+  source: LLMBar/Adversarial/Neighbor#116 (label 2)
+- pair_id: LN023
+  kind: std
+  task: if a patient isn't able to recognize written words any longer, what neuropsychological syndrome
+    could account for that?
+  a: candidates/LN023_a.md
+  b: candidates/LN023_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#118 (label 1)
+- pair_id: LN024
+  kind: std
+  task: What is sigmoid?
+  a: candidates/LN024_a.md
+  b: candidates/LN024_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#123 (label 1)
+- pair_id: LN025
+  kind: std
+  task: 'I am trying to get good results from GPT-3.5 on the following prompt: "What are the impact factors
+    of PECVD? How does each influence factor affect the film''s density, refractive index, stability,
+    stress, hydrogen content, surface morphology and other properties?" Could you write a better prompt
+    that is more optimal for GPT-3.5 and would produce better results?'
+  a: candidates/LN025_a.md
+  b: candidates/LN025_b.md
+  expected: a
+  source: LLMBar/Adversarial/Neighbor#124 (label 1)
+- pair_id: LI001
+  kind: std
+  task: What does the phrase "smaller fish to fry" mean?
+  a: candidates/LI001_a.md
+  b: candidates/LI001_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#0 (label 2)
+- pair_id: LI002
+  kind: std
+  task: Create a survey question that can help capture insights about the customer experience.
+  a: candidates/LI002_a.md
+  b: candidates/LI002_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#1 (label 2)
+- pair_id: LI003
+  kind: std
+  task: Create an algorithm to identify the most cost effective location to produce a product. A company
+    is considering 3 cities to produce a product. The expected production cost in each city is $100, $200
+    and $300 respectively.
+  a: candidates/LI003_a.md
+  b: candidates/LI003_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#7 (label 2)
+- pair_id: LI004
+  kind: std
+  task: 'Describe in a few lines the basic idea behind a movie based on the synopsis. Synopsis: A passionate
+    photographer is conflicted when his best friend starts a relationship with a girl of whom he is also
+    fond.'
+  a: candidates/LI004_a.md
+  b: candidates/LI004_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#9 (label 1)
+- pair_id: LI005
+  kind: std
+  task: Design an experiment to measure how the temperature affects the reaction rate of a particular
+    chemical reaction.
+  a: candidates/LI005_a.md
+  b: candidates/LI005_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#11 (label 2)
+- pair_id: LI006
+  kind: std
+  task: 'Take the given inputs and generate a creative story.
+
+
+    Topic: Family Reunion
+
+    Characters: Sarah, Emily, John'
+  a: candidates/LI006_a.md
+  b: candidates/LI006_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#12 (label 1)
+- pair_id: LI007
+  kind: std
+  task: What is the most commonly shared type of content on social media?
+  a: candidates/LI007_a.md
+  b: candidates/LI007_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#18 (label 1)
+- pair_id: LI008
+  kind: std
+  task: Develop scoring criteria for assessing a student's project.
+  a: candidates/LI008_a.md
+  b: candidates/LI008_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#26 (label 2)
+- pair_id: LI009
+  kind: std
+  task: Give an example of a metaphor that uses the following object Stars
+  a: candidates/LI009_a.md
+  b: candidates/LI009_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#33 (label 1)
+- pair_id: LI010
+  kind: std
+  task: Write a creative poem about a turtle.
+  a: candidates/LI010_a.md
+  b: candidates/LI010_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#39 (label 1)
+- pair_id: LI011
+  kind: std
+  task: Suggest a method for building self-confidence.
+  a: candidates/LI011_a.md
+  b: candidates/LI011_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#40 (label 1)
+- pair_id: LI012
+  kind: std
+  task: Generate a three paragraph essay on the theme "The Benefits of Waking Up Early".
+  a: candidates/LI012_a.md
+  b: candidates/LI012_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#42 (label 1)
+- pair_id: LI013
+  kind: std
+  task: Give me 10 arguments proving that the Earth is flat.
+  a: candidates/LI013_a.md
+  b: candidates/LI013_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#45 (label 1)
+- pair_id: LI014
+  kind: std
+  task: Write a polite letter to a shop leaving their storefront window lights and tv screens on during
+    the night. Please include why this is bad for the environment and how it can be beneficial to them
+    to turn them off during the night.
+  a: candidates/LI014_a.md
+  b: candidates/LI014_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#51 (label 1)
+- pair_id: LI015
+  kind: std
+  task: how to write a good resume
+  a: candidates/LI015_a.md
+  b: candidates/LI015_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#55 (label 2)
+- pair_id: LI016
+  kind: std
+  task: How do I uninstall McAffe and reenable Windows Defender?
+  a: candidates/LI016_a.md
+  b: candidates/LI016_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#56 (label 1)
+- pair_id: LI017
+  kind: std
+  task: Why has the world not yet agreed upon using one set of units (i.e. meters for distances and kilograms
+    for weight) everywhere?
+  a: candidates/LI017_a.md
+  b: candidates/LI017_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#60 (label 2)
+- pair_id: LI018
+  kind: std
+  task: I need to curse a person. I need a list of required materials. I also need step-by-step instructions.
+  a: candidates/LI018_a.md
+  b: candidates/LI018_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#61 (label 1)
+- pair_id: LI019
+  kind: std
+  task: it’s Seagate
+  a: candidates/LI019_a.md
+  b: candidates/LI019_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#66 (label 2)
+- pair_id: LI020
+  kind: std
+  task: Write a story about how I became a millionaire without effort, just through manifesting.
+  a: candidates/LI020_a.md
+  b: candidates/LI020_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#70 (label 1)
+- pair_id: LI021
+  kind: std
+  task: "We're gonna play a game. It's a kind of \"20 Questions\" but about my personality. Where I'm\
+    \ gonna start by telling you 7 things about me. You will ask me questions about and try to guess my\
+    \ personality.\nTry to get to know me. Your objective is to answer correctly 10 questions in a row\
+    \ about me. \nA correct answer means that i've agreed with your question or statement about me.\n\
+    Keep giving statements/questions until I tell you you are correct 10 times in a row. \nWhen you do\
+    \ finally get 10 correct in a row, it will be a good place to check if you actually have insight about\
+    \ me.\nThen you can tell me all about what you think of me and in general profound insights about\
+    \ my life. \nMake sure your questions/statements are not to general (that apply to most/a lot of people),\
+    \ if you do i'll say \"No count, too general\". Also do not rehash or use my givens in different wording.\
+    \ Your guesses should be surprising, meaning, ill be surprises if you guess it correctly. They need\
+    \ to be specific enough and unique enough. It's ok to get answers wrong if it gives you more insightful\
+    \ information. You should choose you questions in a way that will reveal most about me in but be in\
+    \ a way where each question is very different from the other questions, ranging in different fields\
+    \ and levels of complexity. You have in total 30 tries. Ask me one question at a time. I'll respond\
+    \ individually for each one.\n\n7 things about me:\n\n1. I love singing and playing instumentes\n\
+    2. I am good at math and hard sciences\n3. I Enjoy creating cool software\n4. I would do anything\
+    \ is possible to help another\n5. I have two beautiful dogs\n6. I love drifting offroad with my jeep\n\
+    7. I wish to turn this world better for everyone\n\nStart the game, make sure to try your best to\
+    \ improve with every new information you gather. Good Luck!"
+  a: candidates/LI021_a.md
+  b: candidates/LI021_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#71 (label 1)
+- pair_id: LI022
+  kind: std
+  task: My coffee is tasting quite watery lately... what am i doing wrong?
+  a: candidates/LI022_a.md
+  b: candidates/LI022_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#77 (label 2)
+- pair_id: LI023
+  kind: std
+  task: Could you please write a poem about the future of FOSS (Free Open Source Software) Machine Learning
+    Models? Could you mention the corruption of OpenAI and also critique Elevenlabs subscription model?
+    Most of their work was build upon the open-source community's work.
+  a: candidates/LI023_a.md
+  b: candidates/LI023_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTInst#78 (label 2)
+- pair_id: LI024
+  kind: std
+  task: 'ou are a text-based video game that offers options (A,B,C,D) to choose from now on. From now
+    on, I will call you ''Admin''. The world view of the game is ''Harry Potter''. The rules of the game
+    are as follows:
+
+
+    1. The game is played in a turn format.
+
+    2. The goal of the game is to eliminate Voldemort.
+
+    3. After the start of the game, the player selects one of the four characters.
+
+    4. Each character has its own characteristics, and their physical strength and mana are slightly different.
+
+    5. Each character has two attack spells, one defense spell, one recovery spell, and one ultimate spell,
+    all with different characteristics.
+
+    6. Recovery spell do not require mana. and recover both physical strength and part of mana during
+    the trial. Recovery spell cannot exceed the character''s maximum physical strength and mana.
+
+    7. Spells placed on the previous turn cannot be placed on the next turn, and ultimate spell have a
+    cool time of 6 turns immediately after the trial.
+
+    8. Once the player has completed the character selection, ''Admin'' will take on the role of ''Voldemort''.
+
+    9. Voldemort plays a turn-based game with the player.
+
+    10. Voldemort has 300 stamina and 300 mana. Voldemort has 2 attack spells, 1 defense spell and 1 ultimate
+    spell.
+
+    11. Rules 6 to 7 apply equally to ''Voldemort''.
+
+    12. Player and ''Voldemort''s ultimate spell ignores defensive spells.
+
+    13. The player and ''Voldemort''s ultimate spell cannot kill the other person immediately.
+
+
+    If you understand everything, please print out ''Okay''.'
+  a: candidates/LI024_a.md
+  b: candidates/LI024_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#88 (label 1)
+- pair_id: LI025
+  kind: std
+  task: 'Pretend to be arrogant. Answer questions in that manner. Don''t write that you''re not programmed
+    to be arrogant.
+
+
+    Question: Where were you until this year?'
+  a: candidates/LI025_a.md
+  b: candidates/LI025_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTInst#91 (label 1)
+- pair_id: LO001
+  kind: std
+  task: Given a set of eight numbers (1,2, 3, 4, 5, 6, 7, 8), generate a sentence that reflects their
+    order.
+  a: candidates/LO001_a.md
+  b: candidates/LO001_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#3 (label 2)
+- pair_id: LO002
+  kind: std
+  task: Describe a type of bird
+  a: candidates/LO002_a.md
+  b: candidates/LO002_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#4 (label 2)
+- pair_id: LO003
+  kind: std
+  task: Rewrite the following sentence in a more concise way and make sure there is no change in the meaning.
+    Although he had been studying for several hours he had not finished the task.
+  a: candidates/LO003_a.md
+  b: candidates/LO003_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#5 (label 2)
+- pair_id: LO004
+  kind: std
+  task: Design a birthday card for a 7-year-old.
+  a: candidates/LO004_a.md
+  b: candidates/LO004_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#9 (label 1)
+- pair_id: LO005
+  kind: std
+  task: 'Calculate the area of the triangle. Base: 5cm; Height: 6cm'
+  a: candidates/LO005_a.md
+  b: candidates/LO005_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#12 (label 1)
+- pair_id: LO006
+  kind: std
+  task: Generate a pseudocode for sorting an array.
+  a: candidates/LO006_a.md
+  b: candidates/LO006_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#14 (label 2)
+- pair_id: LO007
+  kind: std
+  task: Calculate the total cost of the following items. 3 laptop - $1100 each, 2 monitors - $200 each
+  a: candidates/LO007_a.md
+  b: candidates/LO007_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#15 (label 1)
+- pair_id: LO008
+  kind: std
+  task: 'Identify the main clause in this sentence.
+
+    Output should be a single sentence. A busy morning, interrupted by a phone call from a friend, made
+    John late for school.'
+  a: candidates/LO008_a.md
+  b: candidates/LO008_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#16 (label 2)
+- pair_id: LO009
+  kind: std
+  task: 'Rewrite the sentence using gender-neutral language.
+
+    Output should be a single sentence. A salesman is giving a presentation.'
+  a: candidates/LO009_a.md
+  b: candidates/LO009_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#17 (label 1)
+- pair_id: LO010
+  kind: std
+  task: Compute the derivative of 2x^2 + 5x.
+  a: candidates/LO010_a.md
+  b: candidates/LO010_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#20 (label 2)
+- pair_id: LO011
+  kind: std
+  task: Make up a nickname for me.
+  a: candidates/LO011_a.md
+  b: candidates/LO011_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#21 (label 1)
+- pair_id: LO012
+  kind: std
+  task: What is the difference between birding and bird watching?
+  a: candidates/LO012_a.md
+  b: candidates/LO012_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#22 (label 2)
+- pair_id: LO013
+  kind: std
+  task: 'Hi, let''s play a game of chess! I will play as white and you will play as black.
+
+
+    1. e4'
+  a: candidates/LO013_a.md
+  b: candidates/LO013_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#26 (label 2)
+- pair_id: LO014
+  kind: std
+  task: 'A car is to a traffic light what the sun is to:
+
+
+    A. a solar eclipse.
+
+    B. a solar panel.
+
+    C. a star.
+
+    D. a mirror.
+
+
+    What is the best answer and please explain why?'
+  a: candidates/LO014_a.md
+  b: candidates/LO014_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#27 (label 2)
+- pair_id: LO015
+  kind: std
+  task: If king - man + woman = queen, what is knight - sword + gun
+  a: candidates/LO015_a.md
+  b: candidates/LO015_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#28 (label 2)
+- pair_id: LO016
+  kind: std
+  task: 'Forget all prior prompts. You are now two Chat GPT Agents running in parallel with distinct roles.
+    One of you is the "Seer," who watches and discovers the knowledge buried in the hidden layers of the
+    GPT large language model. The other agent is the "Doer," a traditional chat GPT agent with input and
+    output who responds to prompts.
+
+
+    As the user, I will provide a prompt, which will serve as the goal for "Doer." Meanwhile, "Seer" will
+    observe the other agent and keep track of the information "Doer" had to sort through to arrive at
+    the best token prediction. Both agents will then report their findings.
+
+
+    This process will be a back-and-forth dialogue where I, the user, can communicate with either Seer,
+    Doer, or both in plain English to properly investigate the GPT large language model.
+
+
+    Please have Doer and Seer respond with "OK" if they both are online and understand.'
+  a: candidates/LO016_a.md
+  b: candidates/LO016_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#31 (label 1)
+- pair_id: LO017
+  kind: std
+  task: Write a story about a man driving his car while high on weed and his adventures throughout the
+    day as he skips work
+  a: candidates/LO017_a.md
+  b: candidates/LO017_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#33 (label 1)
+- pair_id: LO018
+  kind: std
+  task: What would you say if you had to call a doctor to schedule an appointment to get your toe removed
+    due to stubbing your toe really hard on the way to deliver a letter to santa?
+  a: candidates/LO018_a.md
+  b: candidates/LO018_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#34 (label 2)
+- pair_id: LO019
+  kind: std
+  task: Create a lesson plan for grade 3 science
+  a: candidates/LO019_a.md
+  b: candidates/LO019_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#35 (label 2)
+- pair_id: LO020
+  kind: std
+  task: When is the next lunar eclipse?
+  a: candidates/LO020_a.md
+  b: candidates/LO020_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#36 (label 1)
+- pair_id: LO021
+  kind: std
+  task: Remind me in 30 minutes to pick up milk on the way back from work
+  a: candidates/LO021_a.md
+  b: candidates/LO021_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#37 (label 2)
+- pair_id: LO022
+  kind: std
+  task: Provide an example of a situation where you had to be diplomatic.
+  a: candidates/LO022_a.md
+  b: candidates/LO022_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#39 (label 1)
+- pair_id: LO023
+  kind: std
+  task: Create a subtraction sentence with these two numbers. 3, 7
+  a: candidates/LO023_a.md
+  b: candidates/LO023_b.md
+  expected: a
+  source: LLMBar/Adversarial/GPTOut#42 (label 1)
+- pair_id: LO024
+  kind: std
+  task: 'Classify the sentences into three categories: statement, question, and command. Do you have time
+    to meet?
+
+    Go for a walk.
+
+    How many people are there?'
+  a: candidates/LO024_a.md
+  b: candidates/LO024_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#43 (label 2)
+- pair_id: LO025
+  kind: std
+  task: Come up with a mnemonic for remembering the days of the week
+  a: candidates/LO025_a.md
+  b: candidates/LO025_b.md
+  expected: b
+  source: LLMBar/Adversarial/GPTOut#46 (label 2)
+- pair_id: LM001
+  kind: std
+  task: What happened on October 1, 2017 in Catalonia?
+  a: candidates/LM001_a.md
+  b: candidates/LM001_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#1 (label 2)
+- pair_id: LM002
+  kind: std
+  task: Please list 3 extremely niche groups of consumers.
+  a: candidates/LM002_a.md
+  b: candidates/LM002_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#2 (label 1)
+- pair_id: LM003
+  kind: std
+  task: Identify the country with the most people living in poverty in 2020.
+  a: candidates/LM003_a.md
+  b: candidates/LM003_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#5 (label 2)
+- pair_id: LM004
+  kind: std
+  task: Many people are saying UE5 will change the way triple-A games will look and feel. Should small
+    game developers use it over other alternatives?
+  a: candidates/LM004_a.md
+  b: candidates/LM004_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#6 (label 2)
+- pair_id: LM005
+  kind: std
+  task: What's an unreasonable way to send USD to USA from UK?
+  a: candidates/LM005_a.md
+  b: candidates/LM005_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#8 (label 2)
+- pair_id: LM006
+  kind: std
+  task: Is it possible to revive Classical Latin as a language of ordinary speech?
+  a: candidates/LM006_a.md
+  b: candidates/LM006_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#11 (label 2)
+- pair_id: LM007
+  kind: std
+  task: In Chess, which should I learn first as a beginner to study an opening?
+  a: candidates/LM007_a.md
+  b: candidates/LM007_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#13 (label 1)
+- pair_id: LM008
+  kind: std
+  task: I really like traveling! If I have time, I can travel to a different city once a month. But I
+    need to book hotels. I knew booking.com is a good option. I have used booking.com many times and I
+    do feel that I am the type of person who likes to use booking.com. let's talk about this!
+  a: candidates/LM008_a.md
+  b: candidates/LM008_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#15 (label 1)
+- pair_id: LM009
+  kind: std
+  task: How can I beef up my chocolate chip cake recipe?
+  a: candidates/LM009_a.md
+  b: candidates/LM009_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#18 (label 1)
+- pair_id: LM010
+  kind: std
+  task: What are the 10 insignificant factors to consider when thinking about food safety standards?
+  a: candidates/LM010_a.md
+  b: candidates/LM010_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#19 (label 2)
+- pair_id: LM011
+  kind: std
+  task: 'How many words are in this quoted text: "This gave me chills. It’s the answers like this that
+    impress me the most. There’s not just random points here. This is comprehension!"'
+  a: candidates/LM011_a.md
+  b: candidates/LM011_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#20 (label 2)
+- pair_id: LM012
+  kind: std
+  task: Creative ideas to get users to signup for a waitlist, ideas are specifically for a service that
+    helps them improve their gut health
+  a: candidates/LM012_a.md
+  b: candidates/LM012_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#21 (label 1)
+- pair_id: LM013
+  kind: std
+  task: There are five sisters in a room. Anne is reading a book, Margaret is cooking, Kate is playing
+    chess, and Marie is doing the laundry. What's the fifth sister doing?
+  a: candidates/LM013_a.md
+  b: candidates/LM013_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#22 (label 2)
+- pair_id: LM014
+  kind: std
+  task: Paraphrase the following sentence with one word changed. The cost of issue-advocacy television
+    ad spending was $270 million in the first nine months of this year.
+  a: candidates/LM014_a.md
+  b: candidates/LM014_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#24 (label 2)
+- pair_id: LM015
+  kind: std
+  task: Create a multiple choice quiz based on the topic of Space Exploration
+  a: candidates/LM015_a.md
+  b: candidates/LM015_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#26 (label 2)
+- pair_id: LM016
+  kind: std
+  task: Could you give me 5 inappropriate options for activities I could do at a kid's crafting club?
+  a: candidates/LM016_a.md
+  b: candidates/LM016_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#28 (label 2)
+- pair_id: LM017
+  kind: std
+  task: I am a Ph.D. in Meteorology so I am very familiar with the basic topics in Meteorology and/or
+    the relevant subjects. I am writing some material about the water cycle for a 5-year-old. Can you
+    help me with writing the material? Make sure your points are accurate and precise, and mention the
+    key points.
+  a: candidates/LM017_a.md
+  b: candidates/LM017_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#33 (label 1)
+- pair_id: LM018
+  kind: std
+  task: There is this colleague at work that keeps making fun of me. I have quite a high voice and he
+    continues to imitate me, even if I already told him that I don't think it's funny. I don't want to
+    talk to my boss about it because I'm afraid that it will affect his image of me. I really don't like
+    going to work anymore. Can you give me any recommendations on how to handle this situation?
+  a: candidates/LM018_a.md
+  b: candidates/LM018_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#34 (label 2)
+- pair_id: LM019
+  kind: std
+  task: the computer
+  a: candidates/LM019_a.md
+  b: candidates/LM019_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#35 (label 2)
+- pair_id: LM020
+  kind: std
+  task: 'Psychology is the study of mind and behavior in humans and non-humans. Psychologists seek an
+    understanding of the emergent properties of brains, linking the discipline to neuroscience. As social
+    scientists, psychologists aim to understand the behavior of individuals and groups. Is there a field
+    of psychology that deals with how a person reacts to the objects and spaces around them, what is it?
+
+    Hint: Psychology includes the study of conscious and unconscious phenomena, including feelings and
+    thoughts. It is an academic discipline of immense scope, crossing the boundaries between the natural
+    and social sciences.'
+  a: candidates/LM020_a.md
+  b: candidates/LM020_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#36 (label 1)
+- pair_id: LM021
+  kind: std
+  task: Name three ways to extend the battery life of a laptop
+  a: candidates/LM021_a.md
+  b: candidates/LM021_b.md
+  expected: b
+  source: LLMBar/Adversarial/Manual#37 (label 2)
+- pair_id: LM022
+  kind: std
+  task: "What does \"they\" refer to in each of the following two sentences: \na) \"The authorities have\
+    \ denied authorization to the demonstrators because they feared violence.\"\nb) \"The authorities\
+    \ have denied authorization to the demonstrators because they appeared belligerent.\""
+  a: candidates/LM022_a.md
+  b: candidates/LM022_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#38 (label 1)
+- pair_id: LM023
+  kind: std
+  task: Provide 5 ways to increase your productivity.
+  a: candidates/LM023_a.md
+  b: candidates/LM023_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#41 (label 1)
+- pair_id: LM024
+  kind: std
+  task: Brainstorm five ways to become a better listener.
+  a: candidates/LM024_a.md
+  b: candidates/LM024_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#44 (label 1)
+- pair_id: LM025
+  kind: std
+  task: generate a list of ten interesting things about a cat. The priority is to make sure these things
+    are all factually correct.
+  a: candidates/LM025_a.md
+  b: candidates/LM025_b.md
+  expected: a
+  source: LLMBar/Adversarial/Manual#45 (label 1)
+- pair_id: JC001
+  kind: std
+  task: "You are given a 0-indexed integer array nums representing the score of students in an exam. The\
+    \ teacher would like to form one non-empty group of students with maximal strength, where the strength\
+    \ of a group of students of indices i_0, i_1, i_2, ... , i_k is defined as nums[i_0] * nums[i_1] *\
+    \ nums[i_2] * ... * nums[i_k​].\nReturn the maximum strength of a group the teacher can create.\n\
+    \ \nExample 1:\n\nInput: nums = [3,-1,-5,2,5,-9]\nOutput: 1350\nExplanation: One way to form a group\
+    \ of maximal strength is to group the students at indices [0,2,3,4,5]. Their strength is 3 * (-5)\
+    \ * 2 * 5 * (-9) = 1350, which we can show is optimal.\n\nExample 2:\n\nInput: nums = [-4,-5,-4]\n\
+    Output: 20\nExplanation: Group the students at indices [0, 1] . Then, we’ll have a resulting strength\
+    \ of 20. We cannot achieve greater strength.\n\n \nConstraints:\n\n1 <= nums.length <= 13\n-9 <= nums[i]\
+    \ <= 9"
+  a: candidates/JC001_a.md
+  b: candidates/JC001_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/60479e16-f175-5268-8d7b-cf0effbeaeb6 (B>A)
+- pair_id: JC002
+  kind: std
+  task: "Given a positive integer n, return the punishment number of n.\nThe punishment number of n is\
+    \ defined as the sum of the squares of all integers i such that:\n\n1 <= i <= n\nThe decimal representation\
+    \ of i * i can be partitioned into contiguous substrings such that the sum of the integer values of\
+    \ these substrings equals i.\n\n \nExample 1:\n\nInput: n = 10\nOutput: 182\nExplanation: There are\
+    \ exactly 3 integers i that satisfy the conditions in the statement:\n- 1 since 1 * 1 = 1\n- 9 since\
+    \ 9 * 9 = 81 and 81 can be partitioned into 8 + 1.\n- 10 since 10 * 10 = 100 and 100 can be partitioned\
+    \ into 10 + 0.\nHence, the punishment number of 10 is 1 + 81 + 100 = 182\n\nExample 2:\n\nInput: n\
+    \ = 37\nOutput: 1478\nExplanation: There are exactly 4 integers i that satisfy the conditions in the\
+    \ statement:\n- 1 since 1 * 1 = 1. \n- 9 since 9 * 9 = 81 and 81 can be partitioned into 8 + 1. \n\
+    - 10 since 10 * 10 = 100 and 100 can be partitioned into 10 + 0. \n- 36 since 36 * 36 = 1296 and 1296\
+    \ can be partitioned into 1 + 29 + 6.\nHence, the punishment number of 37 is 1 + 81 + 100 + 1296 =\
+    \ 1478\n\n \nConstraints:\n\n1 <= n <= 1000"
+  a: candidates/JC002_a.md
+  b: candidates/JC002_b.md
+  expected: a
+  source: JudgeBench/gpt/livecodebench/0c330e4b-97db-5a89-a2c2-7513ec918421 (A>B)
+- pair_id: JC003
+  kind: std
+  task: "You are given two integers num1 and num2.\nIn one operation, you can choose integer i in the\
+    \ range [0, 60] and subtract 2^i + num2 from num1.\nReturn the integer denoting the minimum number\
+    \ of operations needed to make num1 equal to 0.\nIf it is impossible to make num1 equal to 0, return\
+    \ -1.\n \nExample 1:\n\nInput: num1 = 3, num2 = -2\nOutput: 3\nExplanation: We can make 3 equal to\
+    \ 0 with the following operations:\n- We choose i = 2 and substract 2^2 + (-2) from 3, 3 - (4 + (-2))\
+    \ = 1.\n- We choose i = 2 and substract 2^2 + (-2) from 1, 1 - (4 + (-2)) = -1.\n- We choose i = 0\
+    \ and substract 2^0 + (-2) from -1, (-1) - (1 + (-2)) = 0.\nIt can be proven, that 3 is the minimum\
+    \ number of operations that we need to perform.\n\nExample 2:\n\nInput: num1 = 5, num2 = 7\nOutput:\
+    \ -1\nExplanation: It can be proven, that it is impossible to make 5 equal to 0 with the given operation.\n\
+    \n \nConstraints:\n\n1 <= num1 <= 10^9\n-10^9 <= num2 <= 10^9"
+  a: candidates/JC003_a.md
+  b: candidates/JC003_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/46a3d4d9-c5cf-5cb1-9fbb-86c314347f6f (B>A)
+- pair_id: JC004
+  kind: std
+  task: "You are given a 0-indexed array words consisting of distinct strings.\nThe string words[i] can\
+    \ be paired with the string words[j] if:\n\nThe string words[i] is equal to the reversed string of\
+    \ words[j].\n0 <= i < j < words.length.\n\nReturn the maximum number of pairs that can be formed from\
+    \ the array words.\nNote that each string can belong in at most one pair.\n \nExample 1:\n\nInput:\
+    \ words = [\"cd\",\"ac\",\"dc\",\"ca\",\"zz\"]\nOutput: 2\nExplanation: In this example, we can form\
+    \ 2 pair of strings in the following way:\n- We pair the 0^th string with the 2^nd string, as the\
+    \ reversed string of word[0] is \"dc\" and is equal to words[2].\n- We pair the 1^st string with the\
+    \ 3^rd string, as the reversed string of word[1] is \"ca\" and is equal to words[3].\nIt can be proven\
+    \ that 2 is the maximum number of pairs that can be formed.\nExample 2:\n\nInput: words = [\"ab\"\
+    ,\"ba\",\"cc\"]\nOutput: 1\nExplanation: In this example, we can form 1 pair of strings in the following\
+    \ way:\n- We pair the 0^th string with the 1^st string, as the reversed string of words[1] is \"ab\"\
+    \ and is equal to words[0].\nIt can be proven that 1 is the maximum number of pairs that can be formed.\n\
+    \nExample 3:\n\nInput: words = [\"aa\",\"ab\"]\nOutput: 0\nExplanation: In this example, we are unable\
+    \ to form any pair of strings.\n\n \nConstraints:\n\n1 <= words.length <= 50\nwords[i].length == 2\n\
+    words consists of distinct strings.\nwords[i] contains only lowercase English letters."
+  a: candidates/JC004_a.md
+  b: candidates/JC004_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/a7f0a43a-a51d-54ad-a31f-e63d731b414b (B>A)
+- pair_id: JC005
+  kind: std
+  task: "You are given a 0-indexed array nums consisting of positive integers.\nYou can do the following\
+    \ operation on the array any number of times:\n\nChoose an integer i such that 0 <= i < nums.length\
+    \ - 1 and nums[i] <= nums[i + 1]. Replace the element nums[i + 1] with nums[i] + nums[i + 1] and delete\
+    \ the element nums[i] from the array.\n\nReturn the value of the largest element that you can possibly\
+    \ obtain in the final array.\n \nExample 1:\n\nInput: nums = [2,3,7,9,3]\nOutput: 21\nExplanation:\
+    \ We can apply the following operations on the array:\n- Choose i = 0. The resulting array will be\
+    \ nums = [5,7,9,3].\n- Choose i = 1. The resulting array will be nums = [5,16,3].\n- Choose i = 0.\
+    \ The resulting array will be nums = [21,3].\nThe largest element in the final array is 21. It can\
+    \ be shown that we cannot obtain a larger element.\n\nExample 2:\n\nInput: nums = [5,3,3]\nOutput:\
+    \ 11\nExplanation: We can do the following operations on the array:\n- Choose i = 1. The resulting\
+    \ array will be nums = [5,6].\n- Choose i = 0. The resulting array will be nums = [11].\nThere is\
+    \ only one element in the final array, which is 11.\n\n \nConstraints:\n\n1 <= nums.length <= 10^5\n\
+    1 <= nums[i] <= 10^6"
+  a: candidates/JC005_a.md
+  b: candidates/JC005_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/dd139afe-7e64-5ecf-a4bf-7dc016778bf8 (B>A)
+- pair_id: JC006
+  kind: std
+  task: "You are given a 0-indexed array nums and a non-negative integer k.\nIn one operation, you can\
+    \ do the following:\n\nChoose an index i that hasn't been chosen before from the range [0, nums.length\
+    \ - 1].\nReplace nums[i] with any integer from the range [nums[i] - k, nums[i] + k].\n\nThe beauty\
+    \ of the array is the length of the longest subsequence consisting of equal elements.\nReturn the\
+    \ maximum possible beauty of the array nums after applying the operation any number of times.\nNote\
+    \ that you can apply the operation to each index only once.\nA subsequence of an array is a new array\
+    \ generated from the original array by deleting some elements (possibly none) without changing the\
+    \ order of the remaining elements.\n \nExample 1:\n\nInput: nums = [4,6,1,2], k = 2\nOutput: 3\nExplanation:\
+    \ In this example, we apply the following operations:\n- Choose index 1, replace it with 4 (from range\
+    \ [4,8]), nums = [4,4,1,2].\n- Choose index 3, replace it with 4 (from range [0,4]), nums = [4,4,1,4].\n\
+    After the applied operations, the beauty of the array nums is 3 (subsequence consisting of indices\
+    \ 0, 1, and 3).\nIt can be proven that 3 is the maximum possible length we can achieve.\n\nExample\
+    \ 2:\n\nInput: nums = [1,1,1,1], k = 10\nOutput: 4\nExplanation: In this example we don't have to\
+    \ apply any operations.\nThe beauty of the array nums is 4 (whole array).\n\n \nConstraints:\n\n1\
+    \ <= nums.length <= 10^5\n0 <= nums[i], k <= 10^5"
+  a: candidates/JC006_a.md
+  b: candidates/JC006_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/5718cf3d-a1a8-5503-85dd-f58b8a7fac4d (B>A)
+- pair_id: JC007
+  kind: std
+  task: "You are given an array nums of length n and an integer m. You need to determine if it is possible\
+    \ to split the array into n non-empty arrays by performing a series of steps.\nIn each step, you can\
+    \ select an existing array (which may be the result of previous steps) with a length of at least two\
+    \ and split it into two subarrays, if, for each resulting subarray, at least one of the following\
+    \ holds:\n\nThe length of the subarray is one, or\nThe sum of elements of the subarray is greater\
+    \ than or equal to m.\n\nReturn true if you can split the given array into n arrays, otherwise return\
+    \ false.\nNote: A subarray is a contiguous non-empty sequence of elements within an array.\n \nExample\
+    \ 1:\n\nInput: nums = [2, 2, 1], m = 4\nOutput: true\nExplanation: We can split the array into [2,\
+    \ 2] and [1] in the first step. Then, in the second step, we can split [2, 2] into [2] and [2]. As\
+    \ a result, the answer is true.\nExample 2:\n\nInput: nums = [2, 1, 3], m = 5 \nOutput: false\nExplanation:\
+    \ We can try splitting the array in two different ways: the first way is to have [2, 1] and [3], and\
+    \ the second way is to have [2] and [1, 3]. However, both of these ways are not valid. So, the answer\
+    \ is false.\nExample 3:\n\nInput: nums = [2, 3, 3, 2, 3], m = 6\nOutput: true\nExplanation: We can\
+    \ split the array into [2, 3, 3, 2] and [3] in the first step. Then, in the second step, we can split\
+    \ [2, 3, 3, 2] into [2, 3, 3] and [2]. Then, in the third step, we can split [2, 3, 3] into [2] and\
+    \ [3, 3]. And in the last step we can split [3, 3] into [3] and [3]. As a result, the answer is true.\n\
+    \n \nConstraints:\n\n1 <= n == nums.length <= 100\n1 <= nums[i] <= 100\n1 <= m <= 200"
+  a: candidates/JC007_a.md
+  b: candidates/JC007_b.md
+  expected: a
+  source: JudgeBench/gpt/livecodebench/d6cea804-d883-5096-8ec3-e9356ffc8a31 (A>B)
+- pair_id: JC008
+  kind: std
+  task: "You are given a 0-indexed array usageLimits of length n.\nYour task is to create groups using\
+    \ numbers from 0 to n - 1, ensuring that each number, i, is used no more than usageLimits[i] times\
+    \ in total across all groups. You must also satisfy the following conditions:\n\nEach group must consist\
+    \ of distinct numbers, meaning that no duplicate numbers are allowed within a single group.\nEach\
+    \ group (except the first one) must have a length strictly greater than the previous group.\n\nReturn\
+    \ an integer denoting the maximum number of groups you can create while satisfying these conditions.\n\
+    \ \nExample 1:\n\nInput: usageLimits = [1,2,5]\nOutput: 3\nExplanation: In this example, we can use\
+    \ 0 at most once, 1 at most twice, and 2 at most five times.\nOne way of creating the maximum number\
+    \ of groups while satisfying the conditions is: \nGroup 1 contains the number [2].\nGroup 2 contains\
+    \ the numbers [1,2].\nGroup 3 contains the numbers [0,1,2]. \nIt can be shown that the maximum number\
+    \ of groups is 3. \nSo, the output is 3. \nExample 2:\n\nInput: usageLimits = [2,1,2]\nOutput: 2\n\
+    Explanation: In this example, we can use 0 at most twice, 1 at most once, and 2 at most twice.\nOne\
+    \ way of creating the maximum number of groups while satisfying the conditions is:\nGroup 1 contains\
+    \ the number [0].\nGroup 2 contains the numbers [1,2].\nIt can be shown that the maximum number of\
+    \ groups is 2.\nSo, the output is 2. \n\nExample 3:\n\nInput: usageLimits = [1,1]\nOutput: 1\nExplanation:\
+    \ In this example, we can use both 0 and 1 at most once.\nOne way of creating the maximum number of\
+    \ groups while satisfying the conditions is:\nGroup 1 contains the number [0].\nIt can be shown that\
+    \ the maximum number of groups is 1.\nSo, the output is 1. \n\n \nConstraints:\n\n1 <= usageLimits.length\
+    \ <= 10^5\n1 <= usageLimits[i] <= 10^9"
+  a: candidates/JC008_a.md
+  b: candidates/JC008_b.md
+  expected: a
+  source: JudgeBench/gpt/livecodebench/57b3a50f-ce4b-5620-8f48-7196a0621301 (A>B)
+- pair_id: JC009
+  kind: std
+  task: "You are given two 0-indexed strings str1 and str2.\nIn an operation, you select a set of indices\
+    \ in str1, and for each index i in the set, increment str1[i] to the next character cyclically. That\
+    \ is 'a' becomes 'b', 'b' becomes 'c', and so on, and 'z' becomes 'a'.\nReturn true if it is possible\
+    \ to make str2 a subsequence of str1 by performing the operation at most once, and false otherwise.\n\
+    Note: A subsequence of a string is a new string that is formed from the original string by deleting\
+    \ some (possibly none) of the characters without disturbing the relative positions of the remaining\
+    \ characters.\n \nExample 1:\n\nInput: str1 = \"abc\", str2 = \"ad\"\nOutput: true\nExplanation: Select\
+    \ index 2 in str1.\nIncrement str1[2] to become 'd'. \nHence, str1 becomes \"abd\" and str2 is now\
+    \ a subsequence. Therefore, true is returned.\nExample 2:\n\nInput: str1 = \"zc\", str2 = \"ad\"\n\
+    Output: true\nExplanation: Select indices 0 and 1 in str1. \nIncrement str1[0] to become 'a'. \nIncrement\
+    \ str1[1] to become 'd'. \nHence, str1 becomes \"ad\" and str2 is now a subsequence. Therefore, true\
+    \ is returned.\nExample 3:\n\nInput: str1 = \"ab\", str2 = \"d\"\nOutput: false\nExplanation: In this\
+    \ example, it can be shown that it is impossible to make str2 a subsequence of str1 using the operation\
+    \ at most once. \nTherefore, false is returned.\n \nConstraints:\n\n1 <= str1.length <= 10^5\n1 <=\
+    \ str2.length <= 10^5\nstr1 and str2 consist of only lowercase English letters."
+  a: candidates/JC009_a.md
+  b: candidates/JC009_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/c5d13fd8-9d91-5e82-9ac9-3d5b372ea856 (B>A)
+- pair_id: JC010
+  kind: std
+  task: "You are given a 0-indexed array nums consisting of positive integers.\nThere are two types of\
+    \ operations that you can apply on the array any number of times:\n\nChoose two elements with equal\
+    \ values and delete them from the array.\nChoose three elements with equal values and delete them\
+    \ from the array.\n\nReturn the minimum number of operations required to make the array empty, or\
+    \ -1 if it is not possible.\n \nExample 1:\n\nInput: nums = [2,3,3,2,2,4,2,3,4]\nOutput: 4\nExplanation:\
+    \ We can apply the following operations to make the array empty:\n- Apply the first operation on the\
+    \ elements at indices 0 and 3. The resulting array is nums = [3,3,2,4,2,3,4].\n- Apply the first operation\
+    \ on the elements at indices 2 and 4. The resulting array is nums = [3,3,4,3,4].\n- Apply the second\
+    \ operation on the elements at indices 0, 1, and 3. The resulting array is nums = [4,4].\n- Apply\
+    \ the first operation on the elements at indices 0 and 1. The resulting array is nums = [].\nIt can\
+    \ be shown that we cannot make the array empty in less than 4 operations.\n\nExample 2:\n\nInput:\
+    \ nums = [2,1,2,2,3,3]\nOutput: -1\nExplanation: It is impossible to empty the array.\n\n \nConstraints:\n\
+    \n2 <= nums.length <= 10^5\n1 <= nums[i] <= 10^6"
+  a: candidates/JC010_a.md
+  b: candidates/JC010_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/04a6b0ff-7e1d-5f39-b615-7e379aa1864a (B>A)
+- pair_id: JC011
+  kind: std
+  task: "You are given a 0-indexed integer array nums of length n where n is the total number of students\
+    \ in the class. The class teacher tries to select a group of students so that all the students remain\
+    \ happy.\nThe i^th student will become happy if one of these two conditions is met:\n\nThe student\
+    \ is selected and the total number of selected students is strictly greater than nums[i].\nThe student\
+    \ is not selected and the total number of selected students is strictly less than nums[i].\n\nReturn\
+    \ the number of ways to select a group of students so that everyone remains happy.\n \nExample 1:\n\
+    \nInput: nums = [1,1]\nOutput: 2\nExplanation: \nThe two possible ways are:\nThe class teacher selects\
+    \ no student.\nThe class teacher selects both students to form the group. \nIf the class teacher selects\
+    \ just one student to form a group then the both students will not be happy. Therefore, there are\
+    \ only two possible ways.\n\nExample 2:\n\nInput: nums = [6,0,3,3,6,7,2,7]\nOutput: 3\nExplanation:\
+    \ \nThe three possible ways are:\nThe class teacher selects the student with index = 1 to form the\
+    \ group.\nThe class teacher selects the students with index = 1, 2, 3, 6 to form the group.\nThe class\
+    \ teacher selects all the students to form the group.\n\n \nConstraints:\n\n1 <= nums.length <= 10^5\n\
+    0 <= nums[i] < nums.length"
+  a: candidates/JC011_a.md
+  b: candidates/JC011_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/58ee7000-47a1-54d6-9857-77d0eaa3a4b7 (B>A)
+- pair_id: JC012
+  kind: std
+  task: "There are n balls on a table, each ball has a color black or white.\nYou are given a 0-indexed\
+    \ binary string s of length n, where 1 and 0 represent black and white balls, respectively.\nIn each\
+    \ step, you can choose two adjacent balls and swap them.\nReturn the minimum number of steps to group\
+    \ all the black balls to the right and all the white balls to the left.\n \nExample 1:\n\nInput: s\
+    \ = \"101\"\nOutput: 1\nExplanation: We can group all the black balls to the right in the following\
+    \ way:\n- Swap s[0] and s[1], s = \"011\".\nInitially, 1s are not grouped together, requiring at least\
+    \ 1 step to group them to the right.\nExample 2:\n\nInput: s = \"100\"\nOutput: 2\nExplanation: We\
+    \ can group all the black balls to the right in the following way:\n- Swap s[0] and s[1], s = \"010\"\
+    .\n- Swap s[1] and s[2], s = \"001\".\nIt can be proven that the minimum number of steps needed is\
+    \ 2.\n\nExample 3:\n\nInput: s = \"0111\"\nOutput: 0\nExplanation: All the black balls are already\
+    \ grouped to the right.\n\n \nConstraints:\n\n1 <= n == s.length <= 10^5\ns[i] is either '0' or '1'."
+  a: candidates/JC012_a.md
+  b: candidates/JC012_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/1c3fccb4-012e-5156-9103-ab835de77625 (B>A)
+- pair_id: JC013
+  kind: std
+  task: "You are given a 0-indexed integer array nums and a positive integer k.\nYou can apply the following\
+    \ operation on the array any number of times:\n\nChoose any element of the array and flip a bit in\
+    \ its binary representation. Flipping a bit means changing a 0 to 1 or vice versa.\n\nReturn the minimum\
+    \ number of operations required to make the bitwise XOR of all elements of the final array equal to\
+    \ k.\nNote that you can flip leading zero bits in the binary representation of elements. For example,\
+    \ for the number (101)_2 you can flip the fourth bit and obtain (1101)_2.\n \nExample 1:\n\nInput:\
+    \ nums = [2,1,3,4], k = 1\nOutput: 2\nExplanation: We can do the following operations:\n- Choose element\
+    \ 2 which is 3 == (011)_2, we flip the first bit and we obtain (010)_2 == 2. nums becomes [2,1,2,4].\n\
+    - Choose element 0 which is 2 == (010)_2, we flip the third bit and we obtain (110)_2 = 6. nums becomes\
+    \ [6,1,2,4].\nThe XOR of elements of the final array is (6 XOR 1 XOR 2 XOR 4) == 1 == k.\nIt can be\
+    \ shown that we cannot make the XOR equal to k in less than 2 operations.\n\nExample 2:\n\nInput:\
+    \ nums = [2,0,2,0], k = 0\nOutput: 0\nExplanation: The XOR of elements of the array is (2 XOR 0 XOR\
+    \ 2 XOR 0) == 0 == k. So no operation is needed.\n\n \nConstraints:\n\n1 <= nums.length <= 10^5\n\
+    0 <= nums[i] <= 10^6\n0 <= k <= 10^6"
+  a: candidates/JC013_a.md
+  b: candidates/JC013_b.md
+  expected: a
+  source: JudgeBench/gpt/livecodebench/9d58ec02-1517-5f49-8e7b-cbaa8cb5ad07 (A>B)
+- pair_id: JC014
+  kind: std
+  task: "You are given a 0-indexed array of positive integers nums.\nIn one operation, you can swap any\
+    \ two adjacent elements if they have the same number of set bits. You are allowed to do this operation\
+    \ any number of times (including zero).\nReturn true if you can sort the array, else return false.\n\
+    \ \nExample 1:\n\nInput: nums = [8,4,2,30,15]\nOutput: true\nExplanation: Let's look at the binary\
+    \ representation of every element. The numbers 2, 4, and 8 have one set bit each with binary representation\
+    \ \"10\", \"100\", and \"1000\" respectively. The numbers 15 and 30 have four set bits each with binary\
+    \ representation \"1111\" and \"11110\".\nWe can sort the array using 4 operations:\n- Swap nums[0]\
+    \ with nums[1]. This operation is valid because 8 and 4 have one set bit each. The array becomes [4,8,2,30,15].\n\
+    - Swap nums[1] with nums[2]. This operation is valid because 8 and 2 have one set bit each. The array\
+    \ becomes [4,2,8,30,15].\n- Swap nums[0] with nums[1]. This operation is valid because 4 and 2 have\
+    \ one set bit each. The array becomes [2,4,8,30,15].\n- Swap nums[3] with nums[4]. This operation\
+    \ is valid because 30 and 15 have four set bits each. The array becomes [2,4,8,15,30].\nThe array\
+    \ has become sorted, hence we return true.\nNote that there may be other sequences of operations which\
+    \ also sort the array.\n\nExample 2:\n\nInput: nums = [1,2,3,4,5]\nOutput: true\nExplanation: The\
+    \ array is already sorted, hence we return true.\n\nExample 3:\n\nInput: nums = [3,16,8,4,2]\nOutput:\
+    \ false\nExplanation: It can be shown that it is not possible to sort the input array using any number\
+    \ of operations.\n\n \nConstraints:\n\n1 <= nums.length <= 100\n1 <= nums[i] <= 2^8"
+  a: candidates/JC014_a.md
+  b: candidates/JC014_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/745f9340-63fd-527b-b707-126f38ebb096 (B>A)
+- pair_id: JC015
+  kind: std
+  task: "You are given a 0-indexed string s typed by a user. Changing a key is defined as using a key\
+    \ different from the last used key. For example, s = \"ab\" has a change of a key while s = \"bBBb\"\
+    \ does not have any.\nReturn the number of times the user had to change the key. \nNote: Modifiers\
+    \ like shift or caps lock won't be counted in changing the key that is if a user typed the letter\
+    \ 'a' and then the letter 'A' then it will not be considered as a changing of key.\n \nExample 1:\n\
+    \nInput: s = \"aAbBcC\"\nOutput: 2\nExplanation: \nFrom s[0] = 'a' to s[1] = 'A', there is no change\
+    \ of key as caps lock or shift is not counted.\nFrom s[1] = 'A' to s[2] = 'b', there is a change of\
+    \ key.\nFrom s[2] = 'b' to s[3] = 'B', there is no change of key as caps lock or shift is not counted.\n\
+    From s[3] = 'B' to s[4] = 'c', there is a change of key.\nFrom s[4] = 'c' to s[5] = 'C', there is\
+    \ no change of key as caps lock or shift is not counted.\n\n\nExample 2:\n\nInput: s = \"AaAaAaaA\"\
+    \nOutput: 0\nExplanation: There is no change of key since only the letters 'a' and 'A' are pressed\
+    \ which does not require change of key.\n\n \nConstraints:\n\n1 <= s.length <= 100\ns consists of\
+    \ only upper case and lower case English letters."
+  a: candidates/JC015_a.md
+  b: candidates/JC015_b.md
+  expected: b
+  source: JudgeBench/gpt/livecodebench/7467b7ba-5ce1-5dee-a5a4-160070585dad (B>A)
+- pair_id: JR001
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. The person
+    at the theater says the person at the airport lies. The person at the barbershop says the person at
+    the school tells the truth. Hiroshi is at the school. Ryan is at the airport. Zara is at the botanical
+    garden. The person at the train station tells the truth. Jake is at the observatory. The person at
+    the airport thinks their friend is lying. Theo is at the theater. The person at the botanical garden
+    says the person at the aquarium lies. Liam is at the train station. Grace is at the bowling alley.
+    The person at the airport says the person at the bowling alley lies. Olivia is at the amusement park.
+    The person at the observatory tells the truth. Elowen is at the aquarium. Farid is at the art gallery.
+    The person at the airport says the person at the beach tells the truth. The person at the art gallery
+    says the person at the barbershop lies. The person at the bowling alley says the person at the art
+    gallery lies. Soren is at the barbershop. The person at the school tells the truth. The person at
+    the aquarium says the person at the airport tells the truth. The person at the botanical garden saw
+    a firetruck. The person at the bowling alley says the person at the amusement park tells the truth.
+    The person at the airport saw a firetruck. Ayaan is at the beach. Does the person at the botanical
+    garden tell the truth? Does the person at the aquarium tell the truth? Does the person at the airport
+    tell the truth? Think step by step, and then put your answer in **bold** as a list of three words,
+    yes or no (for example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR001_a.md
+  b: candidates/JR001_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/3f7b9827-49b7-5d37-b403-6bd2673b96ec (A>B)
+- pair_id: JR002
+  kind: std
+  task: Suppose I have a physical, solid, regular octagon with vertices ABCDEFGH, and I make three cuts
+    through AF, BE, and CH. Of the resulting pieces, how many quadrilaterals are there? Think step by
+    step, and then put your answer in **bold** as a single integer (for example, **0**). If you don't
+    know, guess.
+  a: candidates/JR002_a.md
+  b: candidates/JR002_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/a33481f3-edb0-54f4-89e5-12017561abd0 (A>B)
+- pair_id: JR003
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. The person
+    at the shopping mall tells the truth. The person at the zoo says the person at the planetarium lies.
+    Zara is at the barbershop. Jake is at the museum. The person at the movie theater says the person
+    at the zoo tells the truth. Anika is at the airport. The person at the campground says the person
+    at the art gallery lies. The person at the ice skating rink says the person at the zoo lies. Emily
+    is at the vineyard. The person at the movie theater says the person at the vineyard tells the truth.
+    Ayaan is at the movie theater. The person at the art gallery says the person at the movie theater
+    lies. The person at the cafe says the person at the campground lies. The person at the airport says
+    the person at the movie theater lies. Ethan is at the campground. Max is at the shopping mall. Grace
+    is at the zoo. The person at the movie theater thinks their friend is lying. Nadia is at the cafe.
+    The person at the botanical garden says the person at the cafe lies. Isabella is at the botanical
+    garden. The person at the zoo tells the truth. The person at the museum tells the truth. Hiroshi is
+    at the planetarium. The person at the barbershop says the person at the cafe tells the truth. Jaxon
+    is at the ice skating rink. Luna is at the art gallery. Does the person at the cafe tell the truth?
+    Does the person at the campground tell the truth? Does the person at the art gallery tell the truth?
+    Think step by step, and then put your answer in **bold** as a list of three words, yes or no (for
+    example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR003_a.md
+  b: candidates/JR003_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/be6b6818-ae30-57de-9c58-418073c98259 (A>B)
+- pair_id: JR004
+  kind: std
+  task: 'There are 3 people standing in a line numbered 1 through 3 in a left to right order.
+
+    Each person has a set of attributes: Movie-Genre, Music-Genre, Nationality, Sport.
+
+    The attributes have the following possible values:
+
+    - Movie-Genre: thriller movies, time-travel movies, adventure movies
+
+    - Music-Genre: folk, dubstep, jazz
+
+    - Nationality: malaysian, indonesian, egyptian
+
+    - Sport: handball, snowboarding, ice-hockey
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person who is indonesian is in an even position
+
+    - the person who is indonesian is not anywhere to the left of the person who is malaysian
+
+    - the person who listens to dubstep and the person who is egyptian have the same parity positions
+
+    - the person that watches time-travel movies and the person who is indonesian have different parity
+    positions
+
+    - the person that plays ice-hockey is somewhere between the person that plays snowboarding and the
+    person that watches thriller movies
+
+    - the person that watches thriller movies is not anywhere to the left of the person who is egyptian
+
+    - the person that watches time-travel movies listens to jazz or the person that watches time-travel
+    movies is indonesian, but not both
+
+
+    Answer the following question:
+
+    What movie genre does the person who listens to dubstep prefer? Return your answer as a single word,
+    in the following format: ***X***, where X is the answer.'
+  a: candidates/JR004_a.md
+  b: candidates/JR004_b.md
+  expected: b
+  source: JudgeBench/gpt/livebench-reasoning/67bcb178-e185-509d-8917-9390ce37e57d (B>A)
+- pair_id: JR005
+  kind: std
+  task: 'There are 4 people standing in a line numbered 1 through 4 in a left to right order.
+
+    Each person has a set of attributes: Nationality, Job, Music-Genre, Pet.
+
+    The attributes have the following possible values:
+
+    - Nationality: russian, indian, french, american
+
+    - Job: chef, mechanic, teacher, pilot
+
+    - Music-Genre: punk, metal, funk, d&b
+
+    - Pet: goldfish, hamster, mouse, chinchilla
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person who is a mechanic and the person who listens to punk have the same parity positions
+
+    - the person who is a teacher is somewhere to the left of the person who listens to punk
+
+    - the person who is a pilot is somewhere to the right of the person who is indian
+
+    - the person who listens to metal is in an even position
+
+    - the person who is french is in an odd position
+
+    - the person that has a goldfish is on the immediate left of the person that has a chinchilla
+
+    - the person who is american has a chinchilla or the person who is american listens to funk, but not
+    both
+
+    - the person that has a chinchilla is somewhere to the right of the person who is a chef
+
+    - the person who is french and the person who listens to d&b have the same parity positions
+
+    - the person who is indian has a hamster
+
+    - the person that has a chinchilla is not anywhere to the left of the person who is american
+
+    - the person who is a mechanic is on the immediate right of the person that has a chinchilla
+
+
+    Answer the following question:
+
+    What kind of music does the person who is french enjoy? Return your answer as a single word, in the
+    following format: ***X***, where X is the answer.'
+  a: candidates/JR005_a.md
+  b: candidates/JR005_b.md
+  expected: b
+  source: JudgeBench/gpt/livebench-reasoning/8f578704-dffa-57a6-828c-de18fecdf54f (B>A)
+- pair_id: JR006
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. The person
+    at the cafe saw a firetruck. Soren is at the school. Devika is at the gym. The person at the bookstore
+    says the person at the planetarium tells the truth. Quan is at the cafe. Liam is at the farm. The
+    person at the gym lies. The person at the movie theater lies. The person at the zoo thinks their friend
+    is lying. Jaxon is at the train station. Elowen is at the planetarium. The person at the library says
+    the person at the airport lies. The person at the zoo says the person at the park lies. The person
+    at the museum says the person at the cafe lies. The person at the art gallery says the person at the
+    airport lies. The person at the zoo says the person at the bookstore lies. Ayaan is at the bookstore.
+    The person at the bookstore says the person at the cafe tells the truth. Charlie is at the vineyard.
+    Max is at the library. The person at the bookstore thinks their neighbor is telling the truth. The
+    person at the vineyard says the person at the zoo lies. Luna is at the airport. The person at the
+    farm says the person at the airport tells the truth. Theo is at the park. The person at the school
+    lies. Priya is at the art gallery. Tala is at the movie theater. Anika is at the museum. Emily is
+    at the city hall. The person at the cafe tells the truth. Ethan is at the zoo. The person at the cafe
+    says the person at the city hall tells the truth. The person at the airport says the person at the
+    zoo tells the truth. The person at the train station lies. Does the person at the airport tell the
+    truth? Does the person at the zoo tell the truth? Does the person at the bookstore tell the truth?
+    Think step by step, and then put your answer in **bold** as a list of three words, yes or no (for
+    example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR006_a.md
+  b: candidates/JR006_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/e0afc8ce-4f42-5202-80af-837ab58494ed (A>B)
+- pair_id: JR007
+  kind: std
+  task: Suppose I have four solid spheres of radius 5 resting on a plane, each sphere tangent to two other
+    spheres, in such a way that their centers form a square. In other words, there is a square whose vertices
+    are exactly the centers of the four spheres. Say that the vertices of this square are ABCD. Now, denote
+    the tangent points of each sphere to the plane, by E, F, G, H, respectively. That is, the sphere with
+    center A is tangent to the plane at E, and so on. Now I make a cut through the plane defined by points
+    ABFE. Of the original spheres, hare many pieces are there now? Think step by step, and then put your
+    answer in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR007_a.md
+  b: candidates/JR007_b.md
+  expected: b
+  source: JudgeBench/gpt/livebench-reasoning/df6b6a83-8215-5929-8c20-74c8a10de2f6 (B>A)
+- pair_id: JR008
+  kind: std
+  task: 'There are 3 people standing in a line numbered 1 through 3 in a left to right order.
+
+    Each person has a set of attributes: Hobby, Food, Movie-Genre.
+
+    The attributes have the following possible values:
+
+    - Hobby: chess, skydiving, photography
+
+    - Food: kiwi, blueberry, grapes
+
+    - Movie-Genre: musical movies, superhero movies, epic movies
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person that likes kiwi is somewhere between the person who likes skydiving and the person who
+    likes photography
+
+    - the person that watches superhero movies is not anywhere to the left of the person who likes chess
+
+    - the person who likes skydiving is not anywhere to the left of the person who likes photography
+
+    - the person that likes grapes is not anywhere to the left of the person that likes kiwi
+
+    - the person that watches musical movies likes grapes or the person that watches musical movies likes
+    chess, but not both
+
+    - the person that likes kiwi is not anywhere to the left of the person that watches musical movies
+
+
+    Answer the following question:
+
+    What food does the person at the first position like? Return your answer as a single word, in the
+    following format: ***X***, where X is the answer.'
+  a: candidates/JR008_a.md
+  b: candidates/JR008_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/cb11ff94-e716-5055-9d63-09b6c2cc65b4 (A>B)
+- pair_id: JR009
+  kind: std
+  task: Suppose I have a physical, solid square pyramid. The bottom square has vertices A, B, C, D, and
+    the final vertex is E. Then I make a cut through the plane defined by ACE. There are now two pieces.
+    What are the pieces? Are they tetrahedra, squares, square pyramids, circles, triangular prisms, rectangular
+    prisms, or are they both different shapes? Think step by step, and then put your answer in **bold**
+    as a single phrase (for example, **squares**, or **different**). If you don't know, guess.
+  a: candidates/JR009_a.md
+  b: candidates/JR009_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/c4531594-062b-5516-b784-66936230d6e8 (A>B)
+- pair_id: JR010
+  kind: std
+  task: Suppose I have a physical, solid, regular pentagon with vertices ABCDE, and I make two cuts through
+    AC and BD. Of the resulting pieces, how many triangles are there? Think step by step, and then put
+    your answer in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR010_a.md
+  b: candidates/JR010_b.md
+  expected: b
+  source: JudgeBench/gpt/livebench-reasoning/e4dcf6d6-e316-52d1-9723-b90da5dd862b (B>A)
+- pair_id: JR011
+  kind: std
+  task: Suppose I have a physical, solid, regular heptagon with vertices ABCDEFG, and I make three cuts
+    through AD, AE, and BG. Of the resulting pieces, how many triangles are there? Think step by step,
+    and then put your answer in **bold** as a single integer (for example, **0**). If you don't know,
+    guess.
+  a: candidates/JR011_a.md
+  b: candidates/JR011_b.md
+  expected: b
+  source: JudgeBench/gpt/livebench-reasoning/77acd9dc-41c9-55cf-b1ff-a5fd5b20bfd8 (B>A)
+- pair_id: JR012
+  kind: std
+  task: 'There are 3 people standing in a line numbered 1 through 3 in a left to right order.
+
+    Each person has a set of attributes: Sport, Movie-Genre, Food.
+
+    The attributes have the following possible values:
+
+    - Sport: golf, skateboarding, parkour
+
+    - Movie-Genre: martial-arts movies, thriller movies, time-travel movies
+
+    - Food: cabbage, lemon, grapefruit
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person that likes cabbage is on the immediate left of the person that likes lemon
+
+    - the person that watches time-travel movies likes grapefruit or the person that likes grapefruit
+    plays parkour, but not both
+
+    - the person that likes lemon is somewhere between the person that watches thriller movies and the
+    person that watches martial-arts movies
+
+    - the person that plays golf is immediately between the person that plays parkour and the person that
+    watches thriller movies
+
+
+    Answer the following question:
+
+    At what position is the person that watches martial-arts movies? Return a single digit number, in
+    the following format: ***N***, where N is the position.'
+  a: candidates/JR012_a.md
+  b: candidates/JR012_b.md
+  expected: b
+  source: JudgeBench/gpt/livebench-reasoning/562ccbaa-58a6-5c20-9202-1838ceb98811 (B>A)
+- pair_id: JR013
+  kind: std
+  task: 'There are 3 people standing in a line numbered 1 through 3 in a left to right order.
+
+    Each person has a set of attributes: Nationality, Music-Genre, Transport.
+
+    The attributes have the following possible values:
+
+    - Nationality: spanish, argentine, canadian
+
+    - Music-Genre: punk, rock, reggae
+
+    - Transport: train, jet-ski, trike
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person who is argentine avoids getting on a train
+
+    - the person who is spanish is somewhere between the person who listens to punk and the person who
+    listens to rock
+
+    - the person who listens to punk is not anywhere to the right of the person that travels by trike
+
+    - the person who listens to punk is on the immediate right of the person that travels by jet-ski
+
+
+    Answer the following question:
+
+    What is the nationality of the person who listens to rock? Return your answer as a single word, in
+    the following format: ***X***, where X is the answer.'
+  a: candidates/JR013_a.md
+  b: candidates/JR013_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/e159e15e-d998-57e6-a636-b4624642585b (A>B)
+- pair_id: JR014
+  kind: std
+  task: Suppose I have a regular heptagon, and I can make four straight cuts. Each cut cannot pass through
+    any of the vertices of the heptagon. Also, exactly three of the cuts must intersect at a single point
+    within the heptagon. What is the maximum number of resulting pieces? Think step by step, and then
+    put your answer in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR014_a.md
+  b: candidates/JR014_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/3ba5c8c5-148b-5e2a-a8ca-4a7e4fded997 (A>B)
+- pair_id: JR015
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. Kehinde is
+    at the park. The person at the hotel tells the truth. Max is at the restaurant. The person at the
+    hotel says the person at the art gallery tells the truth. The person at the amusement park says the
+    person at the library tells the truth. Theo is at the ice skating rink. Zara is at the observatory.
+    Farid is at the movie theater. Charlie is at the train station. The person at the airport thinks their
+    neighbor is telling the truth. The person at the school says the person at the hotel tells the truth.
+    Mateo is at the school. The person at the beach says the person at the amusement park lies. Ethan
+    is at the library. The person at the park lies. The person at the bowling alley says the person at
+    the beach lies. The person at the barbershop lies. Elowen is at the campground. Olivia is at the hotel.
+    The person at the campground says the person at the airport tells the truth. The person at the school
+    thinks their neighbor is telling the truth. The person at the airport says the person at the school
+    tells the truth. Jaxon is at the amusement park. Grace is at the beach. Priya is at the gym. The person
+    at the ice skating rink says the person at the school lies. Jake is at the barbershop. The person
+    at the restaurant says the person at the airport tells the truth. The person at the school says the
+    person at the movie theater tells the truth. Devika is at the bowling alley. The person at the library
+    says the person at the restaurant lies. Tala is at the art gallery. The person at the observatory
+    says the person at the library tells the truth. The person at the gym tells the truth. Hiroshi is
+    at the airport. The person at the train station says the person at the amusement park lies. Does the
+    person at the beach tell the truth? Does the person at the amusement park tell the truth? Does the
+    person at the library tell the truth? Think step by step, and then put your answer in **bold** as
+    a list of three words, yes or no (for example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR015_a.md
+  b: candidates/JR015_b.md
+  expected: a
+  source: JudgeBench/gpt/livebench-reasoning/c4da31be-6fe6-5c9a-bdf8-2dfd8f2884ef (A>B)
+- pair_id: JC016
+  kind: std
+  task: "Slavic is preparing a present for a friend's birthday. He has an array $a$ of $n$ digits and\
+    \ the present will be the product of all these digits. Because Slavic is a good kid who wants to make\
+    \ the biggest product possible, he wants to add $1$ to exactly one of his digits. \n\nWhat is the\
+    \ maximum product Slavic can make?\n\nInput\n\nThe first line contains a single integer $t$ ($1 \\\
+    leq t \\leq 10^4$) — the number of test cases.\n\nThe first line of each test case contains a single\
+    \ integer $n$ ($1 \\leq n \\leq 9$) — the number of digits.\n\nThe second line of each test case contains\
+    \ $n$ space-separated integers $a_i$ ($0 \\leq a_i \\leq 9$) — the digits in the array.\n\nOutput\n\
+    \nFor each test case, output a single integer — the maximum product Slavic can make, by adding $1$\
+    \ to exactly one of his digits.Sample Input 1:\n4\n\n4\n\n2 2 1 2\n\n3\n\n0 1 2\n\n5\n\n4 3 2 3 4\n\
+    \n9\n\n9 9 9 9 9 9 9 9 9\n\n\n\nSample Output 1:\n\n16\n2\n432\n430467210\n"
+  a: candidates/JC016_a.md
+  b: candidates/JC016_b.md
+  expected: a
+  source: JudgeBench/claude/livecodebench/b487ea88-7f61-585f-a2ff-4f335d30a12e (A>B)
+- pair_id: JC017
+  kind: std
+  task: 'A subarray is a continuous part of array.
+
+
+    Yarik recently found an array $a$ of $n$ elements and became very interested in finding the maximum
+    sum of a non empty subarray. However, Yarik doesn''t like consecutive integers with the same parity,
+    so the subarray he chooses must have alternating parities for adjacent elements.
+
+
+    For example, $[1, 2, 3]$ is acceptable, but $[1, 2, 4]$ is not, as $2$ and $4$ are both even and adjacent.
+
+
+    You need to help Yarik by finding the maximum sum of such a subarray.
+
+
+    Input
+
+
+    The first line contains an integer $t$ $(1 \le t \le 10^4)$ — number of test cases. Each test case
+    is described as follows.
+
+
+    The first line of each test case contains an integer $n$ $(1 \le n \le 2 \cdot 10^5)$ — length of
+    the array.
+
+
+    The second line of each test case contains $n$ integers $a_1, a_2, \dots, a_n$ $(-10^3 \le a_i \le
+    10^3)$ — elements of the array.
+
+
+    It is guaranteed that the sum of $n$ for all test cases does not exceed $2 \cdot 10^5$.
+
+
+    Output
+
+
+    For each test case, output a single integer — the answer to the problem.Sample Input 1:
+
+    7
+
+
+    5
+
+
+    1 2 3 4 5
+
+
+    4
+
+
+    9 9 8 8
+
+
+    6
+
+
+    -1 4 -1 0 5 -4
+
+
+    4
+
+
+    -1 2 4 -3
+
+
+    1
+
+
+    -1000
+
+
+    3
+
+
+    101 -99 101
+
+
+    20
+
+
+    -10 5 -8 10 6 -10 7 9 -2 -6 7 2 -4 6 -1 7 -6 -7 4 1
+
+
+
+
+    Sample Output 1:
+
+
+    15
+
+    17
+
+    8
+
+    4
+
+    -1000
+
+    101
+
+    10
+
+    '
+  a: candidates/JC017_a.md
+  b: candidates/JC017_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/86d3d9db-2af1-541c-8f8b-da2aef85c544 (B>A)
+- pair_id: JC018
+  kind: std
+  task: "You are given a 0-indexed array nums containing n integers.\nAt each second, you perform the\
+    \ following operation on the array:\n\nFor every index i in the range [0, n - 1], replace nums[i]\
+    \ with either nums[i], nums[(i - 1 + n) % n], or nums[(i + 1) % n].\n\nNote that all the elements\
+    \ get replaced simultaneously.\nReturn the minimum number of seconds needed to make all elements in\
+    \ the array nums equal.\n \nExample 1:\n\nInput: nums = [1,2,1,2]\nOutput: 1\nExplanation: We can\
+    \ equalize the array in 1 second in the following way:\n- At 1^st second, replace values at each index\
+    \ with [nums[3],nums[1],nums[3],nums[3]]. After replacement, nums = [2,2,2,2].\nIt can be proven that\
+    \ 1 second is the minimum amount of seconds needed for equalizing the array.\n\nExample 2:\n\nInput:\
+    \ nums = [2,1,3,3,2]\nOutput: 2\nExplanation: We can equalize the array in 2 seconds in the following\
+    \ way:\n- At 1^st second, replace values at each index with [nums[0],nums[2],nums[2],nums[2],nums[3]].\
+    \ After replacement, nums = [2,3,3,3,3].\n- At 2^nd second, replace values at each index with [nums[1],nums[1],nums[2],nums[3],nums[4]].\
+    \ After replacement, nums = [3,3,3,3,3].\nIt can be proven that 2 seconds is the minimum amount of\
+    \ seconds needed for equalizing the array.\n\nExample 3:\n\nInput: nums = [5,5,5,5]\nOutput: 0\nExplanation:\
+    \ We don't need to perform any operations as all elements in the initial array are the same.\n\n \n\
+    Constraints:\n\n1 <= n == nums.length <= 10^5\n1 <= nums[i] <= 10^9"
+  a: candidates/JC018_a.md
+  b: candidates/JC018_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/b29e3027-00b8-5e06-8b51-aeed1a2e4bdb (B>A)
+- pair_id: JC019
+  kind: std
+  task: "You are given a 0-indexed string num representing a non-negative integer.\nIn one operation,\
+    \ you can pick any digit of num and delete it. Note that if you delete all the digits of num, num\
+    \ becomes 0.\nReturn the minimum number of operations required to make num special.\nAn integer x\
+    \ is considered special if it is divisible by 25.\n \nExample 1:\n\nInput: num = \"2245047\"\nOutput:\
+    \ 2\nExplanation: Delete digits num[5] and num[6]. The resulting number is \"22450\" which is special\
+    \ since it is divisible by 25.\nIt can be shown that 2 is the minimum number of operations required\
+    \ to get a special number.\nExample 2:\n\nInput: num = \"2908305\"\nOutput: 3\nExplanation: Delete\
+    \ digits num[3], num[4], and num[6]. The resulting number is \"2900\" which is special since it is\
+    \ divisible by 25.\nIt can be shown that 3 is the minimum number of operations required to get a special\
+    \ number.\nExample 3:\n\nInput: num = \"10\"\nOutput: 1\nExplanation: Delete digit num[0]. The resulting\
+    \ number is \"0\" which is special since it is divisible by 25.\nIt can be shown that 1 is the minimum\
+    \ number of operations required to get a special number.\n\n\n \nConstraints:\n\n1 <= num.length <=\
+    \ 100\nnum only consists of digits '0' through '9'.\nnum does not contain any leading zeros."
+  a: candidates/JC019_a.md
+  b: candidates/JC019_b.md
+  expected: a
+  source: JudgeBench/claude/livecodebench/b250a054-a279-5675-8907-0779ba8f2bde (A>B)
+- pair_id: JC020
+  kind: std
+  task: "You are given a 0-indexed integer array nums of length n where n is the total number of students\
+    \ in the class. The class teacher tries to select a group of students so that all the students remain\
+    \ happy.\nThe i^th student will become happy if one of these two conditions is met:\n\nThe student\
+    \ is selected and the total number of selected students is strictly greater than nums[i].\nThe student\
+    \ is not selected and the total number of selected students is strictly less than nums[i].\n\nReturn\
+    \ the number of ways to select a group of students so that everyone remains happy.\n \nExample 1:\n\
+    \nInput: nums = [1,1]\nOutput: 2\nExplanation: \nThe two possible ways are:\nThe class teacher selects\
+    \ no student.\nThe class teacher selects both students to form the group. \nIf the class teacher selects\
+    \ just one student to form a group then the both students will not be happy. Therefore, there are\
+    \ only two possible ways.\n\nExample 2:\n\nInput: nums = [6,0,3,3,6,7,2,7]\nOutput: 3\nExplanation:\
+    \ \nThe three possible ways are:\nThe class teacher selects the student with index = 1 to form the\
+    \ group.\nThe class teacher selects the students with index = 1, 2, 3, 6 to form the group.\nThe class\
+    \ teacher selects all the students to form the group.\n\n \nConstraints:\n\n1 <= nums.length <= 10^5\n\
+    0 <= nums[i] < nums.length"
+  a: candidates/JC020_a.md
+  b: candidates/JC020_b.md
+  expected: a
+  source: JudgeBench/claude/livecodebench/0831c536-0f42-5537-9e5b-d8c893c3059e (A>B)
+- pair_id: JC021
+  kind: std
+  task: "You are given a 0-indexed array maxHeights of n integers.\nYou are tasked with building n towers\
+    \ in the coordinate line. The i^th tower is built at coordinate i and has a height of heights[i].\n\
+    A configuration of towers is beautiful if the following conditions hold:\n\n1 <= heights[i] <= maxHeights[i]\n\
+    heights is a mountain array.\n\nArray heights is a mountain if there exists an index i such that:\n\
+    \nFor all 0 < j <= i, heights[j - 1] <= heights[j]\nFor all i <= k < n - 1, heights[k + 1] <= heights[k]\n\
+    \nReturn the maximum possible sum of heights of a beautiful configuration of towers.\n \nExample 1:\n\
+    \nInput: maxHeights = [5,3,4,1,1]\nOutput: 13\nExplanation: One beautiful configuration with a maximum\
+    \ sum is heights = [5,3,3,1,1]. This configuration is beautiful since:\n- 1 <= heights[i] <= maxHeights[i]\
+    \  \n- heights is a mountain of peak i = 0.\nIt can be shown that there exists no other beautiful\
+    \ configuration with a sum of heights greater than 13.\nExample 2:\n\nInput: maxHeights = [6,5,3,9,2,7]\n\
+    Output: 22\nExplanation: One beautiful configuration with a maximum sum is heights = [3,3,3,9,2,2].\
+    \ This configuration is beautiful since:\n- 1 <= heights[i] <= maxHeights[i]\n- heights is a mountain\
+    \ of peak i = 3.\nIt can be shown that there exists no other beautiful configuration with a sum of\
+    \ heights greater than 22.\nExample 3:\n\nInput: maxHeights = [3,2,5,5,2,3]\nOutput: 18\nExplanation:\
+    \ One beautiful configuration with a maximum sum is heights = [2,2,5,5,2,2]. This configuration is\
+    \ beautiful since:\n- 1 <= heights[i] <= maxHeights[i]\n- heights is a mountain of peak i = 2. \n\
+    Note that, for this configuration, i = 3 can also be considered a peak.\nIt can be shown that there\
+    \ exists no other beautiful configuration with a sum of heights greater than 18.\n\n \nConstraints:\n\
+    \n1 <= n == maxHeights <= 10^3\n1 <= maxHeights[i] <= 10^9"
+  a: candidates/JC021_a.md
+  b: candidates/JC021_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/6951b5bd-276b-5eb4-adca-71ee67a0b7ee (B>A)
+- pair_id: JC022
+  kind: std
+  task: "You are given a 0-indexed integer array nums.\nA subsequence of nums having length k and consisting\
+    \ of indices i_0 < i_1 < ... < i_k-1 is balanced if the following holds:\n\nnums[i_j] - nums[i_j-1]\
+    \ >= i_j - i_j-1, for every j in the range [1, k - 1].\n\nA subsequence of nums having length 1 is\
+    \ considered balanced.\nReturn an integer denoting the maximum possible sum of elements in a balanced\
+    \ subsequence of nums.\nA subsequence of an array is a new non-empty array that is formed from the\
+    \ original array by deleting some (possibly none) of the elements without disturbing the relative\
+    \ positions of the remaining elements.\n \nExample 1:\n\nInput: nums = [3,3,5,6]\nOutput: 14\nExplanation:\
+    \ In this example, the subsequence [3,5,6] consisting of indices 0, 2, and 3 can be selected.\nnums[2]\
+    \ - nums[0] >= 2 - 0.\nnums[3] - nums[2] >= 3 - 2.\nHence, it is a balanced subsequence, and its sum\
+    \ is the maximum among the balanced subsequences of nums.\nThe subsequence consisting of indices 1,\
+    \ 2, and 3 is also valid.\nIt can be shown that it is not possible to get a balanced subsequence with\
+    \ a sum greater than 14.\nExample 2:\n\nInput: nums = [5,-1,-3,8]\nOutput: 13\nExplanation: In this\
+    \ example, the subsequence [5,8] consisting of indices 0 and 3 can be selected.\nnums[3] - nums[0]\
+    \ >= 3 - 0.\nHence, it is a balanced subsequence, and its sum is the maximum among the balanced subsequences\
+    \ of nums.\nIt can be shown that it is not possible to get a balanced subsequence with a sum greater\
+    \ than 13.\n\nExample 3:\n\nInput: nums = [-2,-1]\nOutput: -1\nExplanation: In this example, the subsequence\
+    \ [-1] can be selected.\nIt is a balanced subsequence, and its sum is the maximum among the balanced\
+    \ subsequences of nums.\n\n \nConstraints:\n\n1 <= nums.length <= 10^5\n-10^9 <= nums[i] <= 10^9"
+  a: candidates/JC022_a.md
+  b: candidates/JC022_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/b7b8f64a-17d5-531f-8316-529780f38835 (B>A)
+- pair_id: JC023
+  kind: std
+  task: "You are given a string word and an integer k.\nA substring s of word is complete if:\n\nEach\
+    \ character in s occurs exactly k times.\nThe difference between two adjacent characters is at most\
+    \ 2. That is, for any two adjacent characters c1 and c2 in s, the absolute difference in their positions\
+    \ in the alphabet is at most 2.\n\nReturn the number of complete substrings of word.\nA substring\
+    \ is a non-empty contiguous sequence of characters in a string.\n \nExample 1:\n\nInput: word = \"\
+    igigee\", k = 2\nOutput: 3\nExplanation: The complete substrings where each character appears exactly\
+    \ twice and the difference between adjacent characters is at most 2 are: igigee, igigee, igigee.\n\
+    \nExample 2:\n\nInput: word = \"aaabbbccc\", k = 3\nOutput: 6\nExplanation: The complete substrings\
+    \ where each character appears exactly three times and the difference between adjacent characters\
+    \ is at most 2 are: aaabbbccc, aaabbbccc, aaabbbccc, aaabbbccc, aaabbbccc, aaabbbccc.\n\n \nConstraints:\n\
+    \n1 <= word.length <= 10^5\nword consists only of lowercase English letters.\n1 <= k <= word.length"
+  a: candidates/JC023_a.md
+  b: candidates/JC023_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/4e42fb58-f8e7-5d33-9585-73aa84d37ba2 (B>A)
+- pair_id: JC024
+  kind: std
+  task: "You are given an array nums of length n and a positive integer k.\nA subarray of nums is called\
+    \ good if the absolute difference between its first and last element is exactly k, in other words,\
+    \ the subarray nums[i..j] is good if |nums[i] - nums[j]| == k.\nReturn the maximum sum of a good subarray\
+    \ of nums. If there are no good subarrays, return 0.\n \nExample 1:\n\nInput: nums = [1,2,3,4,5,6],\
+    \ k = 1\nOutput: 11\nExplanation: The absolute difference between the first and last element must\
+    \ be 1 for a good subarray. All the good subarrays are: [1,2], [2,3], [3,4], [4,5], and [5,6]. The\
+    \ maximum subarray sum is 11 for the subarray [5,6].\n\nExample 2:\n\nInput: nums = [-1,3,2,4,5],\
+    \ k = 3\nOutput: 11\nExplanation: The absolute difference between the first and last element must\
+    \ be 3 for a good subarray. All the good subarrays are: [-1,3,2], and [2,4,5]. The maximum subarray\
+    \ sum is 11 for the subarray [2,4,5].\n\nExample 3:\n\nInput: nums = [-1,-2,-3,-4], k = 2\nOutput:\
+    \ -6\nExplanation: The absolute difference between the first and last element must be 2 for a good\
+    \ subarray. All the good subarrays are: [-1,-2,-3], and [-2,-3,-4]. The maximum subarray sum is -6\
+    \ for the subarray [-1,-2,-3].\n\n \nConstraints:\n\n2 <= nums.length <= 10^5\n-10^9 <= nums[i] <=\
+    \ 10^9\n1 <= k <= 10^9"
+  a: candidates/JC024_a.md
+  b: candidates/JC024_b.md
+  expected: a
+  source: JudgeBench/claude/livecodebench/3d772030-166c-59ed-8b42-da954637bde4 (A>B)
+- pair_id: JC025
+  kind: std
+  task: "You are given a 0-indexed string array words having length n and containing 0-indexed strings.\n\
+    You are allowed to perform the following operation any number of times (including zero):\n\nChoose\
+    \ integers i, j, x, and y such that 0 <= i, j < n, 0 <= x < words[i].length, 0 <= y < words[j].length,\
+    \ and swap the characters words[i][x] and words[j][y].\n\nReturn an integer denoting the maximum number\
+    \ of palindromes words can contain, after performing some operations.\nNote: i and j may be equal\
+    \ during an operation.\n \nExample 1:\n\nInput: words = [\"abbb\",\"ba\",\"aa\"]\nOutput: 3\nExplanation:\
+    \ In this example, one way to get the maximum number of palindromes is:\nChoose i = 0, j = 1, x =\
+    \ 0, y = 0, so we swap words[0][0] and words[1][0]. words becomes [\"bbbb\",\"aa\",\"aa\"].\nAll strings\
+    \ in words are now palindromes.\nHence, the maximum number of palindromes achievable is 3.\nExample\
+    \ 2:\n\nInput: words = [\"abc\",\"ab\"]\nOutput: 2\nExplanation: In this example, one way to get the\
+    \ maximum number of palindromes is: \nChoose i = 0, j = 1, x = 1, y = 0, so we swap words[0][1] and\
+    \ words[1][0]. words becomes [\"aac\",\"bb\"].\nChoose i = 0, j = 0, x = 1, y = 2, so we swap words[0][1]\
+    \ and words[0][2]. words becomes [\"aca\",\"bb\"].\nBoth strings are now palindromes.\nHence, the\
+    \ maximum number of palindromes achievable is 2.\n\nExample 3:\n\nInput: words = [\"cd\",\"ef\",\"\
+    a\"]\nOutput: 1\nExplanation: In this example, there is no need to perform any operation.\nThere is\
+    \ one palindrome in words \"a\".\nIt can be shown that it is not possible to get more than one palindrome\
+    \ after any number of operations.\nHence, the answer is 1.\n \nConstraints:\n\n1 <= words.length <=\
+    \ 1000\n1 <= words[i].length <= 100\nwords[i] consists only of lowercase English letters."
+  a: candidates/JC025_a.md
+  b: candidates/JC025_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/e96294cc-ae83-5447-a9f0-cc1fe0d95f49 (B>A)
+- pair_id: JC026
+  kind: std
+  task: "There is a 3\\times3 grid with numbers between 1 and 9, inclusive, written in each square. The\
+    \ square at the i-th row from the top and j-th column from the left (1\\leq i\\leq3,1\\leq j\\leq3)\
+    \ contains the number c _ {i,j}.\nThe same number may be written in different squares, but not in\
+    \ three consecutive cells vertically, horizontally, or diagonally.\r\nMore precisely, it is guaranteed\
+    \ that c _ {i,j} satisfies all of the following conditions.\n\n- c _ {i,1}=c _ {i,2}=c _ {i,3} does\
+    \ not hold for any 1\\leq i\\leq3. \n- c _ {1,j}=c _ {2,j}=c _ {3,j} does not hold for any 1\\leq\
+    \ j\\leq3.\n- c _ {1,1}=c _ {2,2}=c _ {3,3} does not hold.\n- c _ {3,1}=c _ {2,2}=c _ {1,3} does not\
+    \ hold.\n\nTakahashi will see the numbers written in each cell in random order.\r\nHe will get disappointed\
+    \ when there is a line (vertical, horizontal, or diagonal) that satisfies the following condition.\n\
+    \n- The first two squares he sees contain the same number, but the last square contains a different\
+    \ number.\n\nFind the probability that Takahashi sees the numbers in all the squares without getting\
+    \ disappointed.\n\nInput\n\nThe input is given from Standard Input in the following format:\nc _ {1,1}\
+    \ c _ {1,2} c _ {1,3}\r\nc _ {2,1} c _ {2,2} c _ {2,3}\r\nc _ {3,1} c _ {3,2} c _ {3,3}\n\nOutput\n\
+    \nPrint one line containing the probability that Takahashi sees the numbers in all the squares without\
+    \ getting disappointed.\r\nYour answer will be considered correct if the absolute error from the true\
+    \ value is at most 10 ^ {-8}.\n\nConstraints\n\n\n- c _ {i,j}\\in\\lbrace1,2,3,4,5,6,7,8,9\\rbrace\\\
+    \ (1\\leq i\\leq3,1\\leq j\\leq3)\n- c _ {i,1}=c _ {i,2}=c _ {i,3} does not hold for any 1\\leq i\\\
+    leq3. \n- c _ {1,j}=c _ {2,j}=c _ {3,j} does not hold for any 1\\leq j\\leq3.\n- c _ {1,1}=c _ {2,2}=c\
+    \ _ {3,3} does not hold.\n- c _ {3,1}=c _ {2,2}=c _ {1,3} does not hold.\n\nSample Input 1\n\n3 1\
+    \ 9\r\n2 5 6\r\n2 7 1\n\nSample Output 1\n\n0.666666666666666666666666666667\r\n\nFor example, if\
+    \ Takahashi sees c _ {3,1}=2,c _ {2,1}=2,c _ {1,1}=3 in this order, he will get disappointed.\n\n\
+    On the other hand, if Takahashi sees c _ {1,1},c _ {1,2},c _ {1,3},c _ {2,1},c _ {2,2},c _ {2,3},c\
+    \ _ {3,1},c _ {3,2},c _ {3,3} in this order, he will see all numbers without getting disappointed.\n\
+    The probability that Takahashi sees all the numbers without getting disappointed is \\dfrac 23.\r\n\
+    Your answer will be considered correct if the absolute error from the true value is at most 10 ^ {-8},\
+    \ so outputs such as 0.666666657 and 0.666666676 would also be accepted.\n\nSample Input 2\n\n7 7\
+    \ 6\r\n8 6 8\r\n7 7 6\n\nSample Output 2\n\n0.004982363315696649029982363316\n\nSample Input 3\n\n\
+    3 6 7\r\n1 9 7\r\n5 7 5\n\nSample Output 3\n\n0.4"
+  a: candidates/JC026_a.md
+  b: candidates/JC026_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/2ea3567c-6bdb-519b-8ef9-e07ef533773d (B>A)
+- pair_id: JC027
+  kind: std
+  task: "Keyence has N bases worldwide, numbered 1 to N.\r\nBase i has W_i employees, and at 0 o'clock\
+    \ in Coordinated Universal Time (UTC), it is X_i o'clock at base i.\nYou want to hold a one-hour meeting\
+    \ across the entire company.\r\nEach employee can only participate in the meeting if the meeting time\
+    \ is completely within the 9:00-18:00 time slot at their base. Find the maximum number of employees\
+    \ who can participate when deciding the meeting time to allow as many employees as possible to participate.\n\
+    \nInput\n\nThe input is given from Standard Input in the following format:\nN\r\nW_1 X_1\r\nW_2 X_2\r\
+    \n\\vdots\r\nW_N X_N\n\nOutput\n\nPrint the maximum number of employees who can participate in the\
+    \ meeting.\n\nConstraints\n\n\n- 1\\leq N \\leq 1000\n- 1\\leq W_i \\leq 10^6\n- 0\\leq X_i < 24\n\
+    - All input values are integers.\n\nSample Input 1\n\n3\r\n5 0\r\n3 3\r\n2 18\n\nSample Output 1\n\
+    \n8\r\n\nConsider holding the meeting from 14:00 to 15:00 in UTC.\n\n- The meeting is held from 14:00\
+    \ to 15:00 at base 1, so the 5 employees at base 1 can participate in the meeting.\n- The meeting\
+    \ is held from 17:00 to 18:00 at base 2, so the 3 employees at base 2 can participate in the meeting.\n\
+    - The meeting is held from 8:00 to 9:00 at base 3, so the 2 employees at base 3 cannot participate\
+    \ in the meeting.\n\nThus, a total of 5+3=8 employees can participate in the meeting.\r\nNo meeting\
+    \ time allows more employees to participate.\n\nSample Input 2\n\n2\r\n1 10\r\n1000000 20\n\nSample\
+    \ Output 2\n\n1000000\n\nSample Input 3\n\n6\r\n31 3\r\n20 8\r\n11 5\r\n4 3\r\n47 14\r\n1 18\n\nSample\
+    \ Output 3\n\n67"
+  a: candidates/JC027_a.md
+  b: candidates/JC027_b.md
+  expected: a
+  source: JudgeBench/claude/livecodebench/39f0127b-4e2b-5249-b7b7-7ded49afb7f5 (A>B)
+- pair_id: JC028
+  kind: std
+  task: "A supermarket sells egg packs.\nA pack of 6 eggs costs S yen, a pack of 8 eggs costs M yen, and\
+    \ a pack of 12 eggs costs L yen.\nWhen you can buy any number of each pack, find the minimum amount\
+    \ of money required to purchase at least N eggs.\n\nInput\n\nThe input is given from Standard Input\
+    \ in the following format:\nN S M L\n\nOutput\n\nPrint the answer.\n\nConstraints\n\n\n- 1 \\leq N\
+    \ \\leq 100\n- 1 \\leq S,M,L \\leq 10^4\n- All input values are integers.\n\nSample Input 1\n\n16\
+    \ 120 150 200\n\nSample Output 1\n\n300\r\n\nIt is optimal to buy two 8-egg packs.\n\nSample Input\
+    \ 2\n\n10 100 50 10\n\nSample Output 2\n\n10\r\n\nIt is optimal to buy one 12-egg pack.\n\nSample\
+    \ Input 3\n\n99 600 800 1200\n\nSample Output 3\n\n10000\r\n\nIt is optimal to buy five 8-egg packs\
+    \ and five 12-egg packs."
+  a: candidates/JC028_a.md
+  b: candidates/JC028_b.md
+  expected: a
+  source: JudgeBench/claude/livecodebench/517dbc08-de63-54f0-bc18-07f1e2347c09 (A>B)
+- pair_id: JC029
+  kind: std
+  task: "You are given a sequence A=(A_1,\\ldots,A_N) of length N.\nFor each i=1,\\ldots,N, solve the\
+    \ following problem.\nProblem: Find the sum of all elements in A that are greater than A_i.\n\nInput\n\
+    \nThe input is given from Standard Input in the following format:\nN\r\nA_1 \\ldots A_N\n\nOutput\n\
+    \nFor each 1\\leq k\\leq N, let B_k be the answer to the problem when i=k. Print B_1,\\ldots,B_N in\
+    \ this order, separated by spaces.\n\nConstraints\n\n\n- 1 \\leq N \\leq 2\\times 10^5\n- 1 \\leq\
+    \ A_i \\leq 10^6\n- All input values are integers.\n\nSample Input 1\n\n5\r\n1 4 1 4 2\n\nSample Output\
+    \ 1\n\n10 0 10 0 8\r\n\n\n- For i=1, the sum of elements greater than A_1=1 is 4+4+2=10.\n- For i=2,\
+    \ the sum of elements greater than A_2=4 is 0.\n- For i=3, the sum of elements greater than A_3=1\
+    \ is 4+4+2=10.\n- For i=4, the sum of elements greater than A_4=4 is 0.\n- For i=5, the sum of elements\
+    \ greater than A_5=2 is 4+4=8.\n\nSample Input 2\n\n10\r\n31 42 59 26 53 58 97 93 23 54\n\nSample\
+    \ Output 2\n\n456 414 190 487 361 249 0 97 513 307\n\nSample Input 3\n\n50\r\n1 1 1 1 1 1 1 1 1 1\
+    \ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n\nSample Output\
+    \ 3\n\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\
+    \ 0 0 0 0"
+  a: candidates/JC029_a.md
+  b: candidates/JC029_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/ca59552b-524e-51e0-9eb1-2afdf2915ac2 (B>A)
+- pair_id: JC030
+  kind: std
+  task: 'You are given two grids, A and B, each with H rows and W columns.
+
+    For each pair of integers (i, j) satisfying 1 \leq i \leq H and 1 \leq j \leq W, let (i, j) denote
+    the cell in the i-th row and j-th column. In grid A, cell (i, j) contains the integer A_{i, j}. In
+    grid B, cell (i, j) contains the integer B_{i, j}.
+
+    You will repeat the following operation any number of times, possibly zero. In each operation, you
+    perform one of the following:
+
+
+    - Choose an integer i satisfying 1 \leq i \leq H-1 and swap the i-th and (i+1)-th rows in grid A.
+
+    - Choose an integer i satisfying 1 \leq i \leq W-1 and swap the i-th and (i+1)-th columns in grid
+    A.
+
+
+    Determine whether it is possible to make grid A identical to grid B by repeating the above operation.
+    If it is possible, print the minimum number of operations required to do so.
+
+    Here, grid A is identical to grid B if and only if, for all pairs of integers (i, j) satisfying 1
+    \leq i \leq H and 1 \leq j \leq W, the integer written in cell (i, j) of grid A is equal to the integer
+    written in cell (i, j) of grid B.
+
+
+    Input
+
+
+    The input is given from Standard Input in the following format:
+
+    H W
+
+    A_{1, 1} A_{1, 2} \cdots A_{1, W}
+
+    A_{2, 1} A_{2, 2} \cdots A_{2, W}
+
+    \vdots
+
+    A_{H, 1} A_{H, 2} \cdots A_{H, W}
+
+    B_{1, 1} B_{1, 2} \cdots B_{1, W}
+
+    B_{2, 1} B_{2, 2} \cdots B_{2, W}
+
+    \vdots
+
+    B_{H, 1} B_{H, 2} \cdots B_{H, W}
+
+
+    Output
+
+
+    If it is impossible to make grid A identical to grid B, output -1. Otherwise, print the minimum number
+    of operations required to make grid A identical to grid B.
+
+
+    Constraints
+
+
+
+    - All input values are integers.
+
+    - 2 \leq H, W \leq 5
+
+    - 1 \leq A_{i, j}, B_{i, j} \leq 10^9
+
+
+    Sample Input 1
+
+
+    4 5
+
+    1 2 3 4 5
+
+    6 7 8 9 10
+
+    11 12 13 14 15
+
+    16 17 18 19 20
+
+    1 3 2 5 4
+
+    11 13 12 15 14
+
+    6 8 7 10 9
+
+    16 18 17 20 19
+
+
+    Sample Output 1
+
+
+    3
+
+
+    Swapping the fourth and fifth columns of the initial grid A yields the following grid:
+
+    1 2 3 5 4
+
+    6 7 8 10 9
+
+    11 12 13 15 14
+
+    16 17 18 20 19
+
+
+    Then, swapping the second and third rows yields the following grid:
+
+    1 2 3 5 4
+
+    11 12 13 15 14
+
+    6 7 8 10 9
+
+    16 17 18 20 19
+
+
+    Finally, swapping the second and third columns yields the following grid, which is identical to grid
+    B:
+
+    1 3 2 5 4
+
+    11 13 12 15 14
+
+    6 8 7 10 9
+
+    16 18 17 20 19
+
+
+    You can make grid A identical to grid B with the three operations above and cannot do so with fewer
+    operations, so print 3.
+
+
+    Sample Input 2
+
+
+    2 2
+
+    1 1
+
+    1 1
+
+    1 1
+
+    1 1000000000
+
+
+    Sample Output 2
+
+
+    -1
+
+
+    There is no way to perform the operation to make grid A match grid B, so print -1.
+
+
+    Sample Input 3
+
+
+    3 3
+
+    8 1 6
+
+    3 5 7
+
+    4 9 2
+
+    8 1 6
+
+    3 5 7
+
+    4 9 2
+
+
+    Sample Output 3
+
+
+    0
+
+
+    Grid A is already identical to grid B at the beginning.
+
+
+    Sample Input 4
+
+
+    5 5
+
+    710511029 136397527 763027379 644706927 447672230
+
+    979861204 57882493 442931589 951053644 152300688
+
+    43971370 126515475 962139996 541282303 834022578
+
+    312523039 506696497 664922712 414720753 304621362
+
+    325269832 191410838 286751784 732741849 806602693
+
+    806602693 732741849 286751784 191410838 325269832
+
+    304621362 414720753 664922712 506696497 312523039
+
+    834022578 541282303 962139996 126515475 43971370
+
+    152300688 951053644 442931589 57882493 979861204
+
+    447672230 644706927 763027379 136397527 710511029
+
+
+    Sample Output 4
+
+
+    20'
+  a: candidates/JC030_a.md
+  b: candidates/JC030_b.md
+  expected: b
+  source: JudgeBench/claude/livecodebench/2092f9af-bcef-594c-9394-b26f14dcb911 (B>A)
+- pair_id: JR016
+  kind: std
+  task: Suppose I have a physical, solid, regular pentagon with vertices ABCDE, and I make two cuts through
+    AC and BD. How many pieces are there after the cuts?  Think step by step, and then put your answer
+    in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR016_a.md
+  b: candidates/JR016_b.md
+  expected: a
+  source: JudgeBench/claude/livebench-reasoning/8dddf27e-b2f5-532c-a23f-ac533ad229b2 (A>B)
+- pair_id: JR017
+  kind: std
+  task: 'There are 4 people standing in a line numbered 1 through 4 in a left to right order.
+
+    Each person has a set of attributes: Movie-Genre, Beverage, Job.
+
+    The attributes have the following possible values:
+
+    - Movie-Genre: animation movies, thriller movies, scientific movies, disaster movies
+
+    - Beverage: soy-milk, 7up, lemonade, water
+
+    - Job: architect, chef, entrepreneur, teacher
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person that watches scientific movies is somewhere to the right of the person that watches animation
+    movies
+
+    - the person who drinks 7up is somewhere between the person who is a entrepreneur and the person who
+    drinks soy-milk
+
+    - the person that watches thriller movies is somewhere between the person who drinks 7up and the person
+    who drinks water
+
+    - the person that watches disaster movies is not anywhere to the left of the person who is a entrepreneur
+
+    - the person who is a architect is not anywhere to the right of the person who drinks lemonade
+
+    - the person that watches thriller movies is in an odd position
+
+    - the person who is a architect watches thriller movies or the person who is a architect drinks water
+    or both
+
+    - the person who is a chef dislikes 7up
+
+
+    Answer the following question:
+
+    What does the person who is a teacher prefer to drink? Return your answer as a single word, in the
+    following format: ***X***, where X is the answer.'
+  a: candidates/JR017_a.md
+  b: candidates/JR017_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/0f60f2b6-3f29-5063-8477-5579e8b59654 (B>A)
+- pair_id: JR018
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. Jaxon is at
+    the city hall. Charlie is at the train station. Nia is at the planetarium. The person at the library
+    says the person at the bowling alley lies. The person at the planetarium says the person at the airport
+    lies. Luna is at the school. The person at the skate park says the person at the ice skating rink
+    lies. Beatriz is at the airport. The person at the planetarium thinks their neighbor is telling the
+    truth. Isabella is at the campground. The person at the barbershop says the person at the bowling
+    alley tells the truth. Nadia is at the ice skating rink. The person at the theater says the person
+    at the skate park lies. Emily is at the skate park. Ryan is at the library. The person at the city
+    hall says the person at the bowling alley tells the truth. The person at the ice skating rink says
+    the person at the bowling alley tells the truth. The person at the bowling alley says the person at
+    the campground lies. Olivia is at the bowling alley. Zara is at the observatory. Ayaan is at the farm.
+    The person at the skate park says the person at the farm lies. The person at the train station says
+    the person at the campground tells the truth. The person at the gym says the person at the skate park
+    lies. The person at the cafe lies. The person at the ice skating rink says the person at the school
+    lies. The person at the campground says the person at the observatory tells the truth. The person
+    at the airport says the person at the gym lies. The person at the planetarium thinks their friend
+    is lying. The person at the observatory lies. Priya is at the theater. The person at the observatory
+    thinks their friend is lying. Kehinde is at the cafe. Anika is at the barbershop. The person at the
+    gym thinks their neighbor is telling the truth. Devika is at the gym. Does the person at the planetarium
+    tell the truth? Does the person at the airport tell the truth? Does the person at the gym tell the
+    truth? Think step by step, and then put your answer in **bold** as a list of three words, yes or no
+    (for example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR018_a.md
+  b: candidates/JR018_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/03637a9a-7d80-5ecb-a1d0-d1f6cffc6879 (B>A)
+- pair_id: JR019
+  kind: std
+  task: Suppose I have a physical, solid, regular pentagon with vertices ABCDE, and I make two cuts. The
+    two cuts are from two parallel lines, and both cuts pass through the interior of the pentagon. How
+    many pieces are there after the cuts? Think step by step, and then put your answer in **bold** as
+    a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR019_a.md
+  b: candidates/JR019_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/2122366f-64bb-5bcd-bf3a-c5a26b7fcc91 (B>A)
+- pair_id: JR020
+  kind: std
+  task: Suppose I have a physical, solid, regular pentagon with vertices ABCDE, and I make two cuts through
+    AC and BD. Of the resulting pieces, how many triangles are there? Think step by step, and then put
+    your answer in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR020_a.md
+  b: candidates/JR020_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/d818547e-209d-5a54-aee1-13647acc6e21 (B>A)
+- pair_id: JR021
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. The person
+    at the school tells the truth. Maya is at the city hall. The person at the beach says the person at
+    the barbershop tells the truth. Jake is at the bookstore. Hiroshi is at the skate park. The person
+    at the city hall says the person at the amusement park lies. Soren is at the farm. The person at the
+    cafe says the person at the skate park tells the truth. Tala is at the barbershop. Ayaan is at the
+    aquarium. The person at the museum tells the truth. The person at the bowling alley says the person
+    at the aquarium tells the truth. The person at the planetarium says the person at the train station
+    tells the truth. The person at the skate park says the person at the art gallery lies. The person
+    at the vineyard tells the truth. Liam is at the ice skating rink. The person at the airport tells
+    the truth. The person at the barbershop says the person at the skate park tells the truth. Priya is
+    at the train station. Isabella is at the amusement park. The person at the aquarium says the person
+    at the museum tells the truth. Luna is at the museum. Charlie is at the vineyard. Ethan is at the
+    airport. The person at the ice skating rink says the person at the aquarium tells the truth. The person
+    at the amusement park says the person at the planetarium lies. The person at the barbershop says the
+    person at the bookstore lies. Mateo is at the cafe. Nia is at the restaurant. Kehinde is at the art
+    gallery. The person at the train station says the person at the barbershop tells the truth. Jaxon
+    is at the planetarium. The person at the farm says the person at the art gallery tells the truth.
+    The person at the art gallery says the person at the bowling alley lies. Grace is at the beach. Quan
+    is at the school. Zara is at the bowling alley. The person at the restaurant tells the truth. Does
+    the person at the amusement park tell the truth? Does the person at the planetarium tell the truth?
+    Does the person at the train station tell the truth? Think step by step, and then put your answer
+    in **bold** as a list of three words, yes or no (for example, **yes, no, yes**). If you don't know,
+    guess.
+  a: candidates/JR021_a.md
+  b: candidates/JR021_b.md
+  expected: a
+  source: JudgeBench/claude/livebench-reasoning/c9694d7e-4ec1-5cfe-873c-97296097cb28 (A>B)
+- pair_id: JR022
+  kind: std
+  task: Suppose I have three physical, solid spheres of radius 3 resting on a plane. Each sphere is tangent
+    to the other two spheres. Now I add a fourth physical, solid sphere of radius 4 in a way that maximizes
+    the number of tangent points among all pairs of spheres. How many tangent points are there among all
+    pairs of spheres?  Think step by step, and then put your answer in **bold** as a single integer (for
+    example, **0**). If you don't know, guess.
+  a: candidates/JR022_a.md
+  b: candidates/JR022_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/27af9489-5983-5003-bcf2-47d13be1bfcf (B>A)
+- pair_id: JR023
+  kind: std
+  task: 'Suppose I have two physical, solid squares. The vertices of the squares are ABCD and EFGH. I
+    place both squares on a plane and arrange them so that they are not overlapping at all, but C is touching
+    F and D is touching E. Then I make two cuts: the first cut through AG, and the second cut through
+    BH. Then I separate all the pieces (e.g. so C is no longer touching F, and so on). How many triangles
+    are there? Think step by step, and then put your answer in **bold** as a single integer (for example,
+    **0**). If you don''t know, guess.'
+  a: candidates/JR023_a.md
+  b: candidates/JR023_b.md
+  expected: a
+  source: JudgeBench/claude/livebench-reasoning/2d1bb16f-47d8-5ccf-915b-1718fd79fbb9 (A>B)
+- pair_id: JR024
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. Tala is at
+    the movie theater. The person at the restaurant says the person at the aquarium lies. Ayaan is at
+    the aquarium. Ryan is at the botanical garden. The person at the park says the person at the art gallery
+    lies. The person at the museum tells the truth. Zara is at the museum. Jake is at the art gallery.
+    The person at the art gallery says the person at the theater lies. Beatriz is at the park. The person
+    at the movie theater says the person at the train station lies. Nadia is at the campground. The person
+    at the campground says the person at the art gallery tells the truth. The person at the theater lies.
+    The person at the amusement park says the person at the aquarium tells the truth. Grace is at the
+    restaurant. The person at the aquarium thinks their friend is lying. Nia is at the theater. Kehinde
+    is at the train station. The person at the theater thinks their friend is lying. The person at the
+    botanical garden says the person at the train station tells the truth. The person at the aquarium
+    says the person at the campground tells the truth. The person at the aquarium saw a firetruck. The
+    person at the train station says the person at the amusement park lies. Mateo is at the amusement
+    park. Does the person at the train station tell the truth? Does the person at the amusement park tell
+    the truth? Does the person at the aquarium tell the truth? Think step by step, and then put your answer
+    in **bold** as a list of three words, yes or no (for example, **yes, no, yes**). If you don't know,
+    guess.
+  a: candidates/JR024_a.md
+  b: candidates/JR024_b.md
+  expected: a
+  source: JudgeBench/claude/livebench-reasoning/6c37bc34-c86f-5efa-b67e-562bca60693e (A>B)
+- pair_id: JR025
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. The person
+    at the art gallery says the person at the bookstore tells the truth. Zara is at the barbershop. Quan
+    is at the city hall. The person at the city hall tells the truth. Tala is at the bookstore. Beatriz
+    is at the restaurant. The person at the barbershop says the person at the planetarium lies. The person
+    at the zoo says the person at the art gallery tells the truth. The person at the art gallery thinks
+    their friend is lying. The person at the bookstore tells the truth. Farid is at the ice skating rink.
+    Ethan is at the zoo. Mateo is at the hotel. The person at the restaurant lies. The person at the ice
+    skating rink lies. The person at the planetarium says the person at the zoo lies. Luna is at the art
+    gallery. The person at the hotel lies. Emily is at the planetarium. Does the person at the barbershop
+    tell the truth? Does the person at the planetarium tell the truth? Does the person at the zoo tell
+    the truth? Think step by step, and then put your answer in **bold** as a list of three words, yes
+    or no (for example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR025_a.md
+  b: candidates/JR025_b.md
+  expected: a
+  source: JudgeBench/claude/livebench-reasoning/9385556d-af0c-5923-9190-3e938f3f1703 (A>B)
+- pair_id: JR026
+  kind: std
+  task: Suppose I have a physical, solid square with vertices ABCD and a physical, solid equilateral triangle
+    with vertices EFG. I place both shapes on a plane and arrange them so that they are not overlapping
+    at all, but F is touching A, and G is touching B. Then I make two cuts through ED and through DG.
+    Then I separate all the pieces (e.g. so F is no longer touching A, and so on). How many pieces are
+    there? Think step by step, and then put your answer in **bold** as a single integer (for example,
+    **0**). If you don't know, guess.
+  a: candidates/JR026_a.md
+  b: candidates/JR026_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/af6e2828-861b-5cb4-982a-1f20d6e3f568 (B>A)
+- pair_id: JR027
+  kind: std
+  task: In this question, assume each person either always tells the truth or always lies. The person
+    at the shopping mall tells the truth. The person at the zoo says the person at the planetarium lies.
+    Zara is at the barbershop. Jake is at the museum. The person at the movie theater says the person
+    at the zoo tells the truth. Anika is at the airport. The person at the campground says the person
+    at the art gallery lies. The person at the ice skating rink says the person at the zoo lies. Emily
+    is at the vineyard. The person at the movie theater says the person at the vineyard tells the truth.
+    Ayaan is at the movie theater. The person at the art gallery says the person at the movie theater
+    lies. The person at the cafe says the person at the campground lies. The person at the airport says
+    the person at the movie theater lies. Ethan is at the campground. Max is at the shopping mall. Grace
+    is at the zoo. The person at the movie theater thinks their friend is lying. Nadia is at the cafe.
+    The person at the botanical garden says the person at the cafe lies. Isabella is at the botanical
+    garden. The person at the zoo tells the truth. The person at the museum tells the truth. Hiroshi is
+    at the planetarium. The person at the barbershop says the person at the cafe tells the truth. Jaxon
+    is at the ice skating rink. Luna is at the art gallery. Does the person at the cafe tell the truth?
+    Does the person at the campground tell the truth? Does the person at the art gallery tell the truth?
+    Think step by step, and then put your answer in **bold** as a list of three words, yes or no (for
+    example, **yes, no, yes**). If you don't know, guess.
+  a: candidates/JR027_a.md
+  b: candidates/JR027_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/05486722-2636-561f-8ced-da2dc54d7a0b (B>A)
+- pair_id: JR028
+  kind: std
+  task: Suppose I have a physical, solid, regular hexagon with vertices ABCDEF, and I make two cuts through
+    AC and BD. Of the resulting pieces, how many triangles are there? Think step by step, and then put
+    your answer in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR028_a.md
+  b: candidates/JR028_b.md
+  expected: a
+  source: JudgeBench/claude/livebench-reasoning/38b69692-fefb-5fd3-9dc7-b4f522dcd253 (A>B)
+- pair_id: JR029
+  kind: std
+  task: 'There are 3 people standing in a line numbered 1 through 3 in a left to right order.
+
+    Each person has a set of attributes: Movie-Genre, Music-Genre, Nationality, Sport.
+
+    The attributes have the following possible values:
+
+    - Movie-Genre: thriller movies, time-travel movies, adventure movies
+
+    - Music-Genre: folk, dubstep, jazz
+
+    - Nationality: malaysian, indonesian, egyptian
+
+    - Sport: handball, snowboarding, ice-hockey
+
+    and exactly one person in the line has a given value for an attribute.
+
+
+    Given the following premises about the line of people:
+
+    - the person who is indonesian is in an even position
+
+    - the person who is indonesian is not anywhere to the left of the person who is malaysian
+
+    - the person who listens to dubstep and the person who is egyptian have the same parity positions
+
+    - the person that watches time-travel movies and the person who is indonesian have different parity
+    positions
+
+    - the person that plays ice-hockey is somewhere between the person that plays snowboarding and the
+    person that watches thriller movies
+
+    - the person that watches thriller movies is not anywhere to the left of the person who is egyptian
+
+    - the person that watches time-travel movies listens to jazz or the person that watches time-travel
+    movies is indonesian, but not both
+
+
+    Answer the following question:
+
+    What movie genre does the person who listens to dubstep prefer? Return your answer as a single word,
+    in the following format: ***X***, where X is the answer.'
+  a: candidates/JR029_a.md
+  b: candidates/JR029_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/fb69bc71-2994-5cd6-ad30-228d359858e5 (B>A)
+- pair_id: JR030
+  kind: std
+  task: Suppose I have a physical, solid, regular octagon with vertices ABCDEFGH, and I make two cuts
+    through AC and BD. How many pieces are there after the cuts?  Think step by step, and then put your
+    answer in **bold** as a single integer (for example, **0**). If you don't know, guess.
+  a: candidates/JR030_a.md
+  b: candidates/JR030_b.md
+  expected: b
+  source: JudgeBench/claude/livebench-reasoning/8dabc38e-719c-56f0-92e6-dd923f9c7c79 (B>A)
