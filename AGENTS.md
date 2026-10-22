@@ -72,6 +72,15 @@ This file holds no decisions; it cites them by `D-nnn`.
   `scripts/models/hf-queue.sh` (`hf` CLI). The generator can be booted here
   with the flash-next launcher and `GPU_ARGS="--device nvidia.com/gpu=all"`,
   answering at `http://localhost:8090/v1`.
+- **GPU watchdog (from 2026-10-22):** `scripts/server/gpu-watchdog.sh` runs
+  detached (`setsid nohup`), samples every 5 s and logs to
+  `~/models/.gpu-watchdog.log`. It trips on core ≥ 92 °C, ≥ 88 °C for three
+  samples, hardware slowdown, a stopped fan above 70 °C, power over the
+  limit, or nvidia-smi failing three times. A trip kills the Q-04 chain,
+  stops every GPU container and writes `~/models/.gpu-halt`, which the
+  judge launcher refuses to boot past. Read the log before deleting the
+  flag. GDDR6X memory temperature is not readable on these cards. Check it
+  runs (`pgrep -af gpu-watchdog`) before starting GPU work.
 - **Python:**
   - Use `.venv/bin/python` (3.12, D-012; `make venv` builds it), or
     `dsh-podman-venv/bin/python` if `.venv` is absent. The latter has no

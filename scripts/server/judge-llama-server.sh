@@ -15,6 +15,7 @@ if [ "${1:-}" = stop ]; then docker stop -t 30 "$NAME" >/dev/null 2>&1 || true; 
 MODEL_REL="${1:?gguf path relative to ~/models}"; ALIAS="${2:?served model name}"; PORT="${3:-8092}"
 CTX="${CTX:-16384}"; PARALLEL="${PARALLEL:-1}"; NGL="${NGL:-999}"; KV="${KV:-q8_0}"; SPLIT="${SPLIT:-layer}"
 TS="${TS:-0.25,0.25,0.25,0.25}"
+[ -f "$HOME/models/.gpu-halt" ] && { echo "GPU HALT flag set by the watchdog: $(cat "$HOME/models/.gpu-halt"); see ~/models/.gpu-watchdog.log" >&2; exit 7; }
 test -f "$HOME/models/$MODEL_REL" || { echo "MODEL MISSING at ~/models/$MODEL_REL" >&2; exit 3; }
 docker stop -t 30 "$NAME" >/dev/null 2>&1 || true; docker rm -f "$NAME" >/dev/null 2>&1 || true
 if curl -s -m 3 -o /dev/null "http://localhost:$PORT/v1/models"; then echo "port $PORT already answers; stop that server first" >&2; exit 5; fi
