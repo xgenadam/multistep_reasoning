@@ -227,7 +227,8 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
   - Validated offline on pairs cut from the tracked run files.
   - Judging runs on two tiers, fast co-resident and slow sequential, with
     the judges chosen by Q-04 and self-judging as the control and fallback
-    (D-019, caveat included). Each judge has its own endpoint and an
+    (D-019, caveat included). For Q-E1, flash-next is the judge of record
+    and a cross-family judge must concur on every primary claim (D-021). Each judge has its own endpoint and an
     explicit model name (D-008). Design: `journal/design/Q-01-judge.md`.
 - **Q-02, experiment Q-E1 (harness vs compute-matched single-model arms;
   D-019):**

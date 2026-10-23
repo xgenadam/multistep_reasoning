@@ -63,7 +63,8 @@ from reasoning_sub_agents.llama_utils import (  # noqa: E402
 
 DEFAULT_RUBRIC = Path(__file__).parent / 'rubrics' / 'pairwise_v1.md'
 DEFAULT_OUT = Path(__file__).parent / 'verdicts'
-VERDICT_MAX_TOKENS = 2048
+# 2048 cut 19 of 351 flash-next critiques on the standard slice (Q-04, 2026-10-23).
+VERDICT_MAX_TOKENS = 4096
 ORDERS = ('ab', 'ba')
 WINNERS = ('A', 'B', 'tie')
 # Q-1 and Q-5 bars (PLAN § Phase Q; design § 4).
