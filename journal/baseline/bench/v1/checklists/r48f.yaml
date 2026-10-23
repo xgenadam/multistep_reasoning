@@ -1,0 +1,40 @@
+id: r48f
+items:
+  - {id: kept-overview, check: heading, pattern: '(?i)overview'}
+  - {id: kept-objects, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?objects'}
+  # The parent's twelve endpoints are kept (two of them now deprecated).
+  - {id: kept-create, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-list, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-get, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments/\{shipment_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-patch, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?PATCH\s+/shipments/\{shipment_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-cancel, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments/\{shipment_id\}/cancel`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-rates, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments/\{shipment_id\}/rates`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-label, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments/\{shipment_id\}/label`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-tracking, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments/\{shipment_id\}/tracking`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-validate, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/addresses/validate`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-pickup-create, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/pickups`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-pickup-delete, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?DELETE\s+/pickups/\{pickup_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: kept-webhook-create, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/webhooks`?(?:\s*[—–:(-].*)?$'}
+  # The three new endpoints.
+  - {id: new-pickup-get, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/pickups/\{pickup_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: new-webhooks-list, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/webhooks`?(?:\s*[—–:(-].*)?$'}
+  - {id: new-webhook-delete, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?DELETE\s+/webhooks/\{webhook_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: endpoints-15, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?(?:GET|POST|PUT|PATCH|DELETE)\s+/', min: 15, max: 15}
+  - {id: parameters-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?parameters\W*$', min: 15, max: 15}
+  - {id: ex-request-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?example request\W*$', min: 15, max: 15}
+  - {id: ex-response-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?example response\W*$', min: 15, max: 15}
+  # Deprecation lines in the two deprecated endpoints' sections.
+  - {id: deprecated-tracking, check: contains, section: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments/\{shipment_id\}/tracking`?(?:\s*[—–:(-].*)?$', pattern: '(?i)deprecated\**\s*:\s*\**\s*removed on 30 June 2027'}
+  - {id: deprecated-validate, check: contains, section: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/addresses/validate`?(?:\s*[—–:(-].*)?$', pattern: '(?i)deprecated\**\s*:\s*\**\s*removed on 30 June 2027'}
+  - {id: tracking-events, check: contains, pattern: '\btracking_events\b'}
+  - {id: validate-addresses, check: contains, pattern: '\bvalidate_addresses\b'}
+  # Auth change: scope line per endpoint, bearer tokens and the v2 base URL in every example.
+  - {id: scope-lines, check: contains, pattern: '(?i)scope\**\s*:\s*\**\s*`?(?:shipments:read|shipments:write|pickups:write|webhooks:manage)', min: 15}
+  - {id: bearer-15, check: contains, pattern: 'Authorization:\s*Bearer', min: 15}
+  - {id: base-url-v2, check: contains, pattern: 'api\.parcelpoint\.example/v2', min: 15}
+  - {id: token-endpoint, check: contains, section: '(?i)overview', pattern: 'oauth/token'}
+  - {id: api-key-sunset, check: contains, pattern: '(?i)31 March 2027'}
+  # Migration notes: exactly six numbered steps and a differences table.
+  - {id: sec-migration, check: heading, pattern: '(?i)migrating from v1|migration'}
+  - {id: migration-steps-6, check: numbered_items, section: '(?i)migrating from v1|migration', min: 6, max: 6}
+  - {id: migration-table, check: table_rows, section: '(?i)migrating from v1|migration', min: 3}

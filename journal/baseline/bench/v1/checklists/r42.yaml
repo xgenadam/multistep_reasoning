@@ -1,0 +1,31 @@
+id: r42
+# Overlap root: requirement answers repeat shared facts on purpose (each is
+# scored on its own), so there is no max_section_overlap item.
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The seven given sections.
+  - {id: sec-cover, check: heading, pattern: '(?i)cover letter'}
+  - {id: sec-exec, check: heading, pattern: '(?i)executive summary'}
+  - {id: sec-company, check: heading, pattern: '(?i)company overview'}
+  - {id: sec-responses, check: heading, pattern: '(?i)requirement responses|responses to requirements'}
+  - {id: sec-matrix, check: heading, pattern: '(?i)compliance matrix'}
+  - {id: sec-implementation, check: heading, pattern: '(?i)implementation plan'}
+  - {id: sec-pricing, check: heading, pattern: '(?i)pricing'}
+  # Twenty requirement headings, each opening with a compliance line.
+  - {id: req-headings, check: heading, pattern: '\bREQ-\d\d\b', min: 20, max: 20}
+  - {id: compliance-lines, check: contains, pattern: '(?i)compliance\**\s*:\s*\**\s*(?:full|partial|not met)', min: 20}
+  # Statuses the facts determine: custom roles are roadmap only, staff screens
+  # have 14 open AA issues, no native DWG, no offline submission, no on-premises version.
+  - {id: req05-partial, check: contains, section: '\bREQ-05\b', pattern: '(?i)compliance\**\s*:\s*\**\s*partial'}
+  - {id: req09-partial, check: contains, section: '\bREQ-09\b', pattern: '(?i)compliance\**\s*:\s*\**\s*partial'}
+  - {id: req11-partial, check: contains, section: '\bREQ-11\b', pattern: '(?i)compliance\**\s*:\s*\**\s*partial'}
+  - {id: req12-partial, check: contains, section: '\bREQ-12\b', pattern: '(?i)compliance\**\s*:\s*\**\s*partial'}
+  - {id: req19-not-met, check: contains, section: '\bREQ-19\b', pattern: '(?i)compliance\**\s*:\s*\**\s*not met'}
+  # Facts that make these Full: 10-year retention >= 7; MFA built in for all users.
+  - {id: req07-full, check: contains, section: '\bREQ-07\b', pattern: '(?i)compliance\**\s*:\s*\**\s*full'}
+  - {id: req04-full, check: contains, section: '\bREQ-04\b', pattern: '(?i)compliance\**\s*:\s*\**\s*full'}
+  - {id: matrix-20, check: table_rows, section: '(?i)compliance matrix', min: 20, max: 20}
+  # Pricing: 96,000 + 38,000 + 6,500 = 140,500 in year one;
+  # 5 x 96,000 + 38,000 + 6,500 = 480,000 + 44,500 = 524,500 over five years.
+  - {id: price-year1, check: contains, section: '(?i)pricing', pattern: '140,500'}
+  - {id: price-5yr, check: contains, section: '(?i)pricing', pattern: '524,500'}

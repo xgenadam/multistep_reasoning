@@ -1,0 +1,35 @@
+id: r45f
+items:
+  # The parent's twelve feature chapters and back matter are kept.
+  - {id: kept-start, check: heading, pattern: '(?i)getting started'}
+  - {id: kept-manual, check: heading, pattern: '(?i)manual temperature'}
+  - {id: kept-schedule, check: heading, pattern: '(?i)weekly schedule'}
+  - {id: kept-away, check: heading, pattern: '(?i)away mode|geofenc'}
+  - {id: kept-eco, check: heading, pattern: '(?i)eco temperature'}
+  - {id: kept-boost, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?(?:chapter\s+\d+\W*)?boost\W*$'}
+  - {id: kept-hot-water, check: heading, pattern: '(?i)hot water control'}
+  - {id: kept-holiday, check: heading, pattern: '(?i)holiday mode'}
+  - {id: kept-frost, check: heading, pattern: '(?i)frost protection'}
+  - {id: kept-energy, check: heading, pattern: '(?i)energy reports?'}
+  - {id: kept-child-lock, check: heading, pattern: '(?i)child lock'}
+  - {id: kept-multi-user, check: heading, pattern: '(?i)multi-?user'}
+  - {id: kept-safety, check: heading, pattern: '(?i)safety'}
+  - {id: kept-specs, check: heading, pattern: '(?i)specifications'}
+  # The three new chapters, with the same three subsections (12 + 3 = 15 of each).
+  - {id: new-open-window, check: heading, pattern: '(?i)open window'}
+  - {id: new-preheat, check: heading, pattern: '(?i)smart preheat|pre-heat'}
+  - {id: new-sensors, check: heading, pattern: '(?i)room sensors?'}
+  - {id: how-to-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?how to\W*$', min: 15, max: 15}
+  - {id: settings-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?settings\W*$', min: 15, max: 15}
+  - {id: troubleshooting-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?troubleshooting\W*$', min: 15, max: 15}
+  - {id: open-window-2c, check: contains, section: '(?i)open window', pattern: '\b2\s*°\s*C'}
+  - {id: sensors-6, check: contains, section: '(?i)room sensors?', pattern: '\b6\b'}
+  # The two changed features.
+  - {id: boost-180, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?(?:chapter\s+\d+\W*)?boost\W*$', pattern: '\b180\b'}
+  - {id: boost-15-step, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?(?:chapter\s+\d+\W*)?boost\W*$', pattern: '(?i)\b15[- ]minute'}
+  - {id: users-12, check: contains, section: '(?i)multi-?user', pattern: '\b12\b'}
+  - {id: installer-role, check: contains, section: '(?i)multi-?user', pattern: '(?i)installer'}
+  # Error codes: exactly six, E6 added.
+  - {id: errors-6, check: table_rows, section: '(?i)error codes', min: 6, max: 6}
+  - {id: e6, check: contains, section: '(?i)error codes', pattern: '\bE6\b'}
+  - {id: firmware-2, check: contains, pattern: '(?i)firmware\s+(?:version\s+)?2\.0'}

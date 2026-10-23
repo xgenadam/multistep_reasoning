@@ -1,0 +1,52 @@
+id: r39
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The ten given sections.
+  - {id: sec-exec, check: heading, pattern: '(?i)executive summary'}
+  - {id: sec-company, check: heading, pattern: '(?i)company and products|products'}
+  - {id: sec-market, check: heading, pattern: '(?i)market analysis'}
+  - {id: sec-competition, check: heading, pattern: '(?i)competition|competitors'}
+  - {id: sec-operations, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?operations'}
+  - {id: sec-marketing, check: heading, pattern: '(?i)marketing and sales|marketing & sales'}
+  - {id: sec-management, check: heading, pattern: '(?i)management|staffing'}
+  - {id: sec-financial, check: heading, pattern: '(?i)financial plan'}
+  - {id: sec-risks, check: heading, pattern: '(?i)risks'}
+  - {id: sec-funding, check: heading, pattern: '(?i)funding request'}
+  # Financial Plan tables: every figure computed from the given inputs; the
+  # first match of each row label is in the revenue table or the P&L table
+  # (the same values in both). Columns: Item, Year 1, Year 2, Year 3, Three-year total.
+  # Wholesale 6,000/9,000/12,000 kg x 22 = 132,000 / 198,000 / 264,000 (total 594,000)
+  # Subscriptions 300/550/800 x 18 x 12 = 64,800 / 118,800 / 172,800 (total 356,400)
+  # Markets 30,000 / 36,000 / 40,000 (total 106,000)
+  # Total revenue 226,800 / 352,800 / 476,800; three-year 1,056,400
+  - {id: rev-y1, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*total\s+revenue[^|\n]*\|[^\d|\n]*([\d,]+)', value: 226800}
+  - {id: rev-y2, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*total\s+revenue[^|\n]*\|(?:[^|\n]*\|){1}[^\d|\n]*([\d,]+)', value: 352800}
+  - {id: rev-y3, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*total\s+revenue[^|\n]*\|(?:[^|\n]*\|){2}[^\d|\n]*([\d,]+)', value: 476800}
+  - {id: rev-total, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*total\s+revenue[^|\n]*\|(?:[^|\n]*\|){3}[^\d|\n]*([\d,]+)', value: 1056400}
+  # COGS = 38 % of revenue: 226,800 x 0.38 = 86,184; 352,800 x 0.38 = 134,064;
+  # 476,800 x 0.38 = 181,184; three-year 401,432
+  - {id: cogs-y1, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*cost\s+of\s+goods\s+sold[^|\n]*\|[^\d|\n]*([\d,]+)', value: 86184}
+  # Gross profit = revenue - COGS: 140,616 / 218,736 / 295,616; three-year 654,968
+  - {id: gp-y3, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*gross\s+profit[^|\n]*\|(?:[^|\n]*\|){2}[^\d|\n]*([\d,]+)', value: 295616}
+  # Opex = rent 24,000 + salaries + marketing + utilities 9,000 + depreciation 60,000 / 5 = 12,000:
+  # Y1 24,000 + 72,000 + 15,000 + 9,000 + 12,000 = 132,000
+  # Y2 24,000 + 98,000 + 18,000 + 9,000 + 12,000 = 161,000
+  # Y3 24,000 + 124,000 + 20,000 + 9,000 + 12,000 = 189,000; three-year 482,000
+  - {id: opex-y2, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*total\s+operating\s+expenses[^|\n]*\|(?:[^|\n]*\|){1}[^\d|\n]*([\d,]+)', value: 161000}
+  - {id: opex-total, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*total\s+operating\s+expenses[^|\n]*\|(?:[^|\n]*\|){3}[^\d|\n]*([\d,]+)', value: 482000}
+  # Operating profit = gross profit - opex: 140,616 - 132,000 = 8,616; 218,736 - 161,000 = 57,736;
+  # 295,616 - 189,000 = 106,616; three-year 172,968
+  - {id: op-y1, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*operating\s+profit[^|\n]*\|[^\d|\n]*([\d,]+)', value: 8616}
+  - {id: op-y2, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*operating\s+profit[^|\n]*\|(?:[^|\n]*\|){1}[^\d|\n]*([\d,]+)', value: 57736}
+  - {id: op-y3, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*operating\s+profit[^|\n]*\|(?:[^|\n]*\|){2}[^\d|\n]*([\d,]+)', value: 106616}
+  - {id: op-total, check: number, section: '(?i)financial plan', pattern: '(?i)\|\s*\**\s*operating\s+profit[^|\n]*\|(?:[^|\n]*\|){3}[^\d|\n]*([\d,]+)', value: 172968}
+  # Gross margin: 140,616 / 226,800 = 62.0 % (the same every year, since COGS is a flat 38 %)
+  - {id: gross-margin, check: contains, section: '(?i)financial plan', pattern: '\b62(?:\.0)?\s?%'}
+  # Operating margin: 8,616 / 226,800 = 3.80 %; 57,736 / 352,800 = 16.37 %; 106,616 / 476,800 = 22.36 %
+  - {id: op-margin-y1, check: contains, section: '(?i)financial plan', pattern: '\b3\.8\s?%'}
+  - {id: op-margin-y2, check: contains, section: '(?i)financial plan', pattern: '\b16\.4\s?%'}
+  - {id: op-margin-y3, check: contains, section: '(?i)financial plan', pattern: '\b22\.4\s?%'}
+  # Funding: 60,000 + 25,000 + 20,000 = 105,000 start-up; 105,000 - 45,000 = 60,000 loan
+  - {id: startup-total, check: contains, section: '(?i)funding request', pattern: '105,000'}
+  - {id: loan, check: contains, section: '(?i)funding request', pattern: '\b60,000\b'}
+  - {id: risks-6, check: table_rows, section: '(?i)risks', min: 6, max: 6}

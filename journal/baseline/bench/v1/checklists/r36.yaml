@@ -1,0 +1,42 @@
+id: r36
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The twelve given sections.
+  - {id: sec-overview, check: heading, pattern: '(?i)overview|goals'}
+  - {id: sec-requirements, check: heading, pattern: '(?i)requirements'}
+  - {id: sec-capacity, check: heading, pattern: '(?i)capacity estimate'}
+  - {id: sec-architecture, check: heading, pattern: '(?i)architecture'}
+  - {id: sec-ingestion, check: heading, pattern: '(?i)location ingest'}
+  - {id: sec-matching, check: heading, pattern: '(?i)matching'}
+  - {id: sec-data, check: heading, pattern: '(?i)data model|storage'}
+  - {id: sec-apis, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?APIs?\s*$'}
+  - {id: sec-reliability, check: heading, pattern: '(?i)reliability|failure'}
+  - {id: sec-security, check: heading, pattern: '(?i)security|privacy'}
+  - {id: sec-observability, check: heading, pattern: '(?i)observability|monitoring'}
+  - {id: sec-rollout, check: heading, pattern: '(?i)rollout|roll-out'}
+  # Requirement ids, and references back to them.
+  - {id: fr-ids, check: contains, section: '(?i)requirements', pattern: '\bFR-\d+', min: 3}
+  - {id: nfr-ids, check: contains, section: '(?i)requirements', pattern: '\bNFR-\d+', min: 3}
+  - {id: nfr-cited, check: contains, pattern: '\bNFR-\d+', min: 8}
+  # Capacity table: exactly seven rows, values computed from the given figures.
+  - {id: capacity-rows, check: table_rows, section: '(?i)capacity estimate', min: 7, max: 7}
+  # 60,000 drivers / 4 s = 15,000 updates/s
+  - {id: cap-updates, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak location updates[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 15000}
+  # 1,800,000 rides x 12 % = 216,000 in the peak hour; / 3,600 s = 60 requests/s
+  - {id: cap-requests, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak ride requests[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 60}
+  # 60 requests/s x 3 offers = 180 offers/s
+  - {id: cap-offers, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak dispatch offers[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 180}
+  # 15,000 updates/s x 200 B = 3,000,000 B/s = 3 MB/s
+  - {id: cap-ingress, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak location ingress[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 3}
+  # 25,000 avg drivers x (86,400 / 4 = 21,600 updates/day) = 540,000,000 updates/day;
+  # x 200 B = 108 GB/day; x 30 days = 3,240 GB = 3.24 TB
+  - {id: cap-history, check: number, section: '(?i)capacity estimate', pattern: '(?i)location history storage[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 3.24, tol: 0.05}
+  # 2 x 15,000 updates/s / 5,000 per node = 6 nodes
+  - {id: cap-nodes, check: number, section: '(?i)capacity estimate', pattern: '(?i)ingest nodes[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 6}
+  # 1,800,000 rides x 2,000 B = 3.6 GB/day; x 365 = 1,314 GB
+  - {id: cap-records, check: number, section: '(?i)capacity estimate', pattern: '(?i)ride record storage[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 1314, tol: 1}
+  # APIs: exactly six endpoints or message types in the section's table.
+  - {id: api-rows, check: table_rows, section: '(?i)^\W*(?:\d+[.)]?\s*)?APIs?\s*$', min: 6, max: 6}
+  # Rollout: exactly four numbered phases.
+  - {id: rollout-4, check: numbered_items, section: '(?i)rollout|roll-out', min: 4, max: 4}
+  - {id: vendor-neutral, check: not_contains, pattern: '\b(?:AWS|Amazon Web Services|Azure|GCP|Google Cloud|Alibaba Cloud|Oracle Cloud)\b'}

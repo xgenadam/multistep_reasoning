@@ -1,0 +1,43 @@
+id: r36f
+items:
+  - {id: words, check: word_count, min: 7200, max: 8800}   # "about 8,000": ±10 %
+  # The parent's twelve sections are kept.
+  - {id: kept-overview, check: heading, pattern: '(?i)overview|goals'}
+  - {id: kept-requirements, check: heading, pattern: '(?i)requirements'}
+  - {id: kept-capacity, check: heading, pattern: '(?i)capacity estimate'}
+  - {id: kept-architecture, check: heading, pattern: '(?i)high-level architecture|high level architecture'}
+  - {id: kept-ingestion, check: heading, pattern: '(?i)location ingest'}
+  - {id: kept-matching, check: heading, pattern: '(?i)matching'}
+  - {id: kept-data, check: heading, pattern: '(?i)data model|storage'}
+  - {id: kept-apis, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?APIs?\s*$'}
+  - {id: kept-reliability, check: heading, pattern: '(?i)reliability|failure'}
+  - {id: kept-security, check: heading, pattern: '(?i)security|privacy'}
+  - {id: kept-observability, check: heading, pattern: '(?i)observability|monitoring'}
+  - {id: kept-rollout, check: heading, pattern: '(?i)rollout|roll-out'}
+  # New sections.
+  - {id: sec-multi-region, check: heading, pattern: '(?i)multi-?region'}
+  - {id: sec-changelog, check: heading, pattern: '(?i)change ?log'}
+  - {id: changelog-rows, check: table_rows, section: '(?i)change ?log', min: 6}
+  - {id: brightwater-rollout, check: contains, section: '(?i)rollout|roll-out', pattern: '(?i)brightwater'}
+  - {id: rollout-4, check: numbered_items, section: '(?i)rollout|roll-out', min: 4, max: 4}
+  - {id: failover-5min, check: contains, section: '(?i)requirements', pattern: '(?i)\b5\s*(?:minutes|min)\b'}
+  # Capacity table: eight rows, combined values for both cities.
+  - {id: capacity-rows, check: table_rows, section: '(?i)capacity estimate', min: 8, max: 8}
+  # 60,000 / 4 + 40,000 / 4 = 15,000 + 10,000 = 25,000 updates/s
+  - {id: cap-updates, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak location updates[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 25000}
+  # (1,800,000 + 1,200,000) x 12 % / 3,600 = 60 + 40 = 100 requests/s
+  - {id: cap-requests, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak ride requests[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 100}
+  # 100 x 3 = 300 offers/s
+  - {id: cap-offers, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak dispatch offers[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 300}
+  # 25,000 x 200 B = 5,000,000 B/s = 5 MB/s
+  - {id: cap-ingress, check: number, section: '(?i)capacity estimate', pattern: '(?i)peak location ingress[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 5}
+  # (25,000 + 15,000) avg drivers x 21,600 updates/day = 864,000,000/day; x 200 B = 172.8 GB/day;
+  # x 30 = 5,184 GB = 5.184 TB (Port Alder 3.24 + Brightwater 1.944)
+  - {id: cap-history, check: number, section: '(?i)capacity estimate', pattern: '(?i)location history storage[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 5.184, tol: 0.05}
+  # region A: 2 x 15,000 / 5,000 = 6; region B: 2 x 10,000 / 5,000 = 4; total 10
+  - {id: cap-nodes, check: number, section: '(?i)capacity estimate', pattern: '(?i)ingest nodes[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 10}
+  # 3,000,000 rides x 2,000 B = 6 GB/day; x 365 = 2,190 GB (replicas excluded)
+  - {id: cap-records, check: number, section: '(?i)capacity estimate', pattern: '(?i)ride record storage[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 2190, tol: 1}
+  # 100 peak ride requests/s x 10 ride-state events = 1,000 events/s
+  - {id: cap-replication, check: number, section: '(?i)capacity estimate', pattern: '(?i)cross[- ]region ride[- ]state events[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 1000}
+  - {id: vendor-neutral, check: not_contains, pattern: '\b(?:AWS|Amazon Web Services|Azure|GCP|Google Cloud|Alibaba Cloud|Oracle Cloud)\b'}

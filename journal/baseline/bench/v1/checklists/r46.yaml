@@ -1,0 +1,45 @@
+id: r46
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The twelve given sections.
+  - {id: sec-summary, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?summary'}
+  - {id: sec-background, check: heading, pattern: '(?i)background|rationale'}
+  - {id: sec-hypotheses, check: heading, pattern: '(?i)hypothes'}
+  - {id: sec-design, check: heading, pattern: '(?i)study design'}
+  - {id: sec-participants, check: heading, pattern: '(?i)participants|recruitment'}
+  - {id: sec-measures, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?measures'}
+  - {id: sec-power, check: heading, pattern: '(?i)sample size|power'}
+  - {id: sec-analysis, check: heading, pattern: '(?i)analysis plan'}
+  - {id: sec-ethics, check: heading, pattern: '(?i)ethics|data protection'}
+  - {id: sec-timeline, check: heading, pattern: '(?i)timeline'}
+  - {id: sec-budget, check: heading, pattern: '(?i)budget'}
+  - {id: sec-limitations, check: heading, pattern: '(?i)limitations'}
+  # Exactly three hypotheses.
+  - {id: h1, check: contains, section: '(?i)hypothes', pattern: '\bH1\b'}
+  - {id: h2, check: contains, section: '(?i)hypothes', pattern: '\bH2\b'}
+  - {id: h3, check: contains, section: '(?i)hypothes', pattern: '\bH3\b'}
+  - {id: no-h4, check: not_contains, pattern: '\bH4\b'}
+  # Sample size table: six rows; Value is the second column.
+  - {id: power-rows, check: table_rows, section: '(?i)sample size', min: 6, max: 6}
+  # 2 x (1.96 + 0.84)^2 / 0.3^2 = 2 x 7.84 / 0.09 = 174.22 -> 175 per group
+  - {id: n-individual, check: number, section: '(?i)sample size', pattern: '(?i)individual randomi[sz]ation[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 175}
+  # 1 + (8 - 1) x 0.05 = 1.35
+  - {id: design-effect, check: number, section: '(?i)sample size', pattern: '(?i)\|\s*\**\s*(?:\d+[.)]?\s*)?design effect[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 1.35, tol: 0.001}
+  # 175 x 1.35 = 236.25 -> 237
+  - {id: n-after-de, check: number, section: '(?i)sample size', pattern: '(?i)after (?:the )?design effect[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 237}
+  # 237 / 0.8 = 296.25 -> 297
+  - {id: n-after-attrition, check: number, section: '(?i)sample size', pattern: '(?i)after (?:allowing for )?attrition[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 297}
+  # 297 / 8 = 37.125 -> 38 teams per group
+  - {id: teams, check: number, section: '(?i)sample size', pattern: '(?i)teams per group[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 38}
+  # 38 x 2 x 8 = 608
+  - {id: enrolled, check: number, section: '(?i)sample size', pattern: '(?i)total employees enrolled[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 608}
+  # Timeline: exactly six phases.
+  - {id: timeline-6, check: table_rows, section: '(?i)timeline', min: 6, max: 6}
+  # Budget (Amount is the second column):
+  # RA 0.5 x 18 x 4,000 = 36,000; incentives 608 x 40 = 24,320; statistician 30 x 600 = 18,000;
+  # total 36,000 + 6,000 + 24,320 + 18,000 + 3,000 + 4,500 = 91,820
+  - {id: budget-ra, check: number, section: '(?i)budget', pattern: '(?i)\|\s*\**\s*research assistant[^|\n]*\|[^\d|\n]*([\d,]+)', value: 36000}
+  - {id: budget-incentives, check: number, section: '(?i)budget', pattern: '(?i)\|\s*\**\s*participant incentives[^|\n]*\|[^\d|\n]*([\d,]+)', value: 24320}
+  - {id: budget-total, check: number, section: '(?i)budget', pattern: '(?i)\|\s*\**\s*total\**\s*\|[^\d|\n]*([\d,]+)', value: 91820}
+  # No literature citations.
+  - {id: no-citations, check: not_contains, pattern: '\bet al\b|\(\s*[A-Z][A-Za-z''’-]+(?:\s+(?:and|&)\s+[A-Z][A-Za-z''’-]+)?,\s*(?:19|20)\d\d[a-z]?\s*\)'}

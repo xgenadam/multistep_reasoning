@@ -1,0 +1,34 @@
+id: r45
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The twelve given feature chapters.
+  - {id: f-start, check: heading, pattern: '(?i)getting started'}
+  - {id: f-manual, check: heading, pattern: '(?i)manual temperature'}
+  - {id: f-schedule, check: heading, pattern: '(?i)weekly schedule'}
+  - {id: f-away, check: heading, pattern: '(?i)away mode|geofenc'}
+  - {id: f-eco, check: heading, pattern: '(?i)eco temperature'}
+  - {id: f-boost, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?(?:chapter\s+\d+\W*)?boost\W*$'}
+  - {id: f-hot-water, check: heading, pattern: '(?i)hot water control'}
+  - {id: f-holiday, check: heading, pattern: '(?i)holiday mode'}
+  - {id: f-frost, check: heading, pattern: '(?i)frost protection'}
+  - {id: f-energy, check: heading, pattern: '(?i)energy reports?'}
+  - {id: f-child-lock, check: heading, pattern: '(?i)child lock'}
+  - {id: f-multi-user, check: heading, pattern: '(?i)multi-?user'}
+  # Every feature chapter: How to, Settings, Troubleshooting.
+  - {id: how-to-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?how to\W*$', min: 12, max: 12}
+  - {id: settings-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?settings\W*$', min: 12, max: 12}
+  - {id: troubleshooting-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?troubleshooting\W*$', min: 12, max: 12}
+  # Front and back matter.
+  - {id: sec-safety, check: heading, pattern: '(?i)safety'}
+  - {id: safety-6, check: bullet_items, section: '(?i)safety', min: 6}
+  - {id: sec-errors, check: heading, pattern: '(?i)error codes'}
+  - {id: errors-5, check: table_rows, section: '(?i)error codes', min: 5, max: 5}
+  - {id: no-other-codes, check: not_contains, pattern: '\bE(?:[06-9]|\d\d)\b'}
+  - {id: sec-specs, check: heading, pattern: '(?i)specifications'}
+  # Given ranges and defaults.
+  - {id: target-range, check: contains, section: '(?i)manual temperature', pattern: '\b5\s*(?:°\s*C)?\s*(?:[–—-]|to)\s*30\s*°\s*C'}
+  - {id: geofence-500, check: contains, section: '(?i)away mode|geofenc', pattern: '(?i)\b500\s*m\b'}
+  - {id: boost-120, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?(?:chapter\s+\d+\W*)?boost\W*$', pattern: '\b120\b'}
+  - {id: frost-7, check: contains, section: '(?i)frost protection', pattern: '\b7\s*°\s*C'}
+  - {id: users-8, check: contains, section: '(?i)multi-?user', pattern: '\b8\b'}
+  - {id: menu-paths, check: contains, pattern: '(?i)menu\s*\**\s*>', min: 10}

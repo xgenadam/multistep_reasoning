@@ -1,0 +1,32 @@
+id: r37
+# Overlap root: the four shared definitions are repeated in every policy on
+# purpose, so there is no max_section_overlap item.
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # The six given policies.
+  - {id: pol-acceptable-use, check: heading, pattern: '(?i)acceptable use'}
+  - {id: pol-access-control, check: heading, pattern: '(?i)access control'}
+  - {id: pol-password, check: heading, pattern: '(?i)password|authentication'}
+  - {id: pol-classification, check: heading, pattern: '(?i)data classification|classification and handling'}
+  - {id: pol-remote, check: heading, pattern: '(?i)remote access'}
+  - {id: pol-incident, check: heading, pattern: '(?i)incident reporting|incident'}
+  # Every policy: owner line and the five subsections.
+  - {id: owner-lines, check: contains, pattern: '(?i)owner\**\s*:', min: 6}
+  - {id: sub-definitions, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?definitions\W*$', min: 6, max: 6}
+  - {id: sub-purpose, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?purpose\W*$', min: 6, max: 6}
+  - {id: sub-scope, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?scope\W*$', min: 6, max: 6}
+  - {id: sub-policy, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?policy(?: statements?)?\W*$', min: 6, max: 6}
+  - {id: sub-enforcement, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?enforcement\W*$', min: 6, max: 6}
+  # The shared definitions are repeated in each policy, in the given wording.
+  - {id: shared-defs, check: contains, pattern: '(?i)named manager accountable for a company system', min: 6}
+  - {id: hr07, check: contains, pattern: '\bHR-07\b', min: 6}
+  # Given figures.
+  - {id: pw-14, check: contains, section: '(?i)password|authentication', pattern: '(?i)\b14\s+characters'}
+  - {id: lockout-10, check: contains, section: '(?i)password|authentication', pattern: '(?i)\b10\s+(?:consecutive\s+)?failed'}
+  - {id: leavers-24h, check: contains, section: '(?i)access control', pattern: '(?i)\b24\s+hours'}
+  - {id: review-quarterly, check: contains, section: '(?i)access control', pattern: '(?i)quarterl'}
+  - {id: report-1h, check: contains, section: '(?i)incident', pattern: '(?i)\b(?:1|one)\s+hour\b'}
+  - {id: ext-4400, check: contains, section: '(?i)incident', pattern: '\b4400\b'}
+  - {id: regulator-72h, check: contains, section: '(?i)incident', pattern: '(?i)\b72\s+hours'}
+  # Classification table: exactly four rows, one per level.
+  - {id: levels-table, check: table_rows, section: '(?i)data classification|classification and handling', min: 4, max: 4}

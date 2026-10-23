@@ -1,0 +1,31 @@
+id: r47
+# Overlap root: shared steps are written out in every playbook on purpose,
+# so there is no max_section_overlap item.
+items:
+  - {id: words, check: word_count, min: 6750, max: 8250}   # "about 7,500": ±10 %
+  - {id: sec-how-to-use, check: heading, pattern: '(?i)how to use'}
+  - {id: severity-3, check: table_rows, section: '(?i)how to use', min: 3, max: 3}
+  - {id: how-to-use-words, check: word_count, section: '(?i)how to use', max: 550}   # "no more than about 500": +10 %
+  # The eight given playbooks.
+  - {id: pb-ransomware, check: heading, pattern: '(?i)ransomware'}
+  - {id: pb-email, check: heading, pattern: '(?i)email account'}
+  - {id: pb-laptop, check: heading, pattern: '(?i)laptop'}
+  - {id: pb-ddos, check: heading, pattern: '(?i)ddos'}
+  - {id: pb-key, check: heading, pattern: '(?i)access key'}
+  - {id: pb-insider, check: heading, pattern: '(?i)insider'}
+  - {id: pb-customer-data, check: heading, pattern: '(?i)customer data'}
+  - {id: pb-supplier, check: heading, pattern: '(?i)third-?party|supplier'}
+  # Each playbook: default severity line and the five phases.
+  - {id: severity-lines, check: contains, pattern: '(?i)default severity\**\s*:\s*\**\s*SEV[123]', min: 8}
+  - {id: ransomware-sev1, check: contains, section: '(?i)ransomware', pattern: '(?i)default severity\**\s*:\s*\**\s*SEV1'}
+  - {id: laptop-sev3, check: contains, section: '(?i)laptop', pattern: '(?i)default severity\**\s*:\s*\**\s*SEV3'}
+  - {id: detection-8, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?detection\W*$', min: 8, max: 8}
+  - {id: containment-8, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?containment\W*$', min: 8, max: 8}
+  - {id: eradication-8, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?eradication\W*$', min: 8, max: 8}
+  - {id: recovery-8, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?recovery\W*$', min: 8, max: 8}
+  - {id: communications-8, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?communications?\W*$', min: 8, max: 8}
+  # Shared steps written out in each playbook, and given facts.
+  - {id: incident-log, check: contains, pattern: '\bSEC-INC\b', min: 9}
+  - {id: regulator-72h, check: contains, section: '(?i)customer data', pattern: '(?i)\b72\s+hours'}
+  - {id: no-power-off, check: contains, section: '(?i)ransomware', pattern: '(?i)(?:do\s+\**not\**|don.t|never\**)\s+(?:power|switch|turn|shut)\s+(?:\S+\s+){0,3}?(?:off|down)'}
+  - {id: sec-after, check: heading, pattern: '(?i)after every incident|post-incident'}

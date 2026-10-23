@@ -1,0 +1,37 @@
+id: r55
+# Tier assignment by the given rule (Tier 1 if RTO <= 4 h or RPO <= 15 min; else Tier 2
+# if RTO <= 24 h or RPO <= 4 h; else Tier 3):
+#   Tier 1 (5): Policy Administration (4 h), Claims Portal, Payments Gateway, Identity and SSO
+#     (RTO 1 h), Customer Database (RTO 8 h but RPO 15 min).
+#   Tier 2 (5): Email and Calendar, Underwriting Rules Engine, Document Management, Broker Portal,
+#     HR and Payroll (RTO 48 h but RPO 4 h).
+#   Tier 3 (4): Data Warehouse, Intranet, Marketing Website, Test and Development.
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # The ten given sections.
+  - {id: sec-purpose, check: heading, pattern: '(?i)purpose|scope'}
+  - {id: sec-roles, check: heading, pattern: '(?i)roles and responsibilities|roles'}
+  - {id: sec-inventory, check: heading, pattern: '(?i)system inventory'}
+  - {id: sec-declaring, check: heading, pattern: '(?i)declaring a disaster|declaring'}
+  - {id: sec-tier1, check: heading, pattern: '(?i)tier\s*1 recovery'}
+  - {id: sec-tier2, check: heading, pattern: '(?i)tier\s*2 recovery'}
+  - {id: sec-tier3, check: heading, pattern: '(?i)tier\s*3 recovery'}
+  - {id: sec-comms, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?communications?\W*$'}
+  - {id: sec-testing, check: heading, pattern: '(?i)testing and maintenance'}
+  - {id: sec-contacts, check: heading, pattern: '(?i)contact list'}
+  # Inventory: fourteen rows (the first table in the section); tiers computed by the rule.
+  - {id: inventory-14, check: table_rows, section: '(?i)system inventory', min: 14, max: 14}
+  - {id: tier-customer-db, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**customer database[^\n]*\|\s*\**(?:tier\s*)?([123])\**\s*\|\s*$', value: 1}
+  - {id: tier-hr-payroll, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**hr and payroll[^\n]*\|\s*\**(?:tier\s*)?([123])\**\s*\|\s*$', value: 2}
+  - {id: tier-identity, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**identity[^\n]*\|\s*\**(?:tier\s*)?([123])\**\s*\|\s*$', value: 1}
+  - {id: tier-warehouse, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**data warehouse[^\n]*\|\s*\**(?:tier\s*)?([123])\**\s*\|\s*$', value: 3}
+  # Tier summary: Number of systems is the second column.
+  - {id: count-tier1, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**tier\s*1\**\s*\|[^\d|\n]*(\d+)', value: 5}
+  - {id: count-tier2, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**tier\s*2\**\s*\|[^\d|\n]*(\d+)', value: 5}
+  - {id: count-tier3, check: number, section: '(?i)system inventory', pattern: '(?im)^\s*\|\s*\**tier\s*3\**\s*\|[^\d|\n]*(\d+)', value: 4}
+  # Procedures, calendar and contacts.
+  - {id: declare-steps, check: numbered_items, section: '(?i)declaring a disaster|declaring', min: 3}
+  - {id: tier1-steps, check: numbered_items, section: '(?i)tier\s*1 recovery', min: 5}
+  - {id: calendar-12, check: table_rows, section: '(?i)testing and maintenance', min: 12, max: 12}
+  - {id: contacts-8, check: table_rows, section: '(?i)contact list', min: 8, max: 8}
+  - {id: contact-numbers, check: contains, section: '(?i)contact list', pattern: '\b41[0-5]\d\b', min: 7}

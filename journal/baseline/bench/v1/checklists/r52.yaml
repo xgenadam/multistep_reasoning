@@ -1,0 +1,28 @@
+id: r52
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # The eight given sections.
+  - {id: sec-overview, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?overview'}
+  - {id: sec-goals, check: heading, pattern: '(?i)goals'}
+  - {id: sec-personas, check: heading, pattern: '(?i)personas'}
+  - {id: sec-stories, check: heading, pattern: '(?i)user stories'}
+  - {id: sec-nfr, check: heading, pattern: '(?i)non-?functional'}
+  - {id: sec-metrics, check: heading, pattern: '(?i)success metrics|metrics'}
+  - {id: sec-mvp, check: heading, pattern: '(?i)mvp cut'}
+  - {id: sec-open, check: heading, pattern: '(?i)open questions'}
+  # Fifteen stories, each with the story form and Given/When/Then criteria.
+  - {id: stories-15, check: heading, pattern: '\bUS-\d\d\b', min: 15, max: 15}
+  - {id: as-a, check: contains, section: '(?i)user stories', pattern: '(?i)\bas\b[^\n]*\bI want\b[^\n]*\bso that\b', min: 15}
+  - {id: given-45, check: contains, section: '(?i)user stories', pattern: '(?i)\bgiven\b[^\n]*\bwhen\b[^\n]*\bthen\b', min: 45}
+  - {id: trash-30, check: contains, section: '\bUS-12\b', pattern: '(?i)\b30\s+days'}
+  # Non-functional requirements: ids and the given targets.
+  - {id: nfr-ids, check: contains, section: '(?i)non-?functional', pattern: '\bNFR-\d+', min: 7}
+  - {id: nfr-open, check: contains, section: '(?i)non-?functional', pattern: '(?i)\b300\s?ms'}
+  - {id: nfr-search, check: contains, section: '(?i)non-?functional', pattern: '(?i)\b500\s?ms'}
+  - {id: nfr-availability, check: contains, section: '(?i)non-?functional', pattern: '99\.9\s?%'}
+  # Metrics: exactly five.
+  - {id: metrics-5, check: table_rows, section: '(?i)success metrics|metrics', min: 5, max: 5}
+  # MVP cut: exactly eight in, seven after.
+  - {id: mvp-in-8, check: bullet_items, section: '(?i)^\W*(?:[\d.]+\s*)?in the mvp\W*$', min: 8, max: 8}
+  - {id: mvp-after-7, check: bullet_items, section: '(?i)^\W*(?:[\d.]+\s*)?after the mvp\W*$', min: 7, max: 7}
+  - {id: mvp-required, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?in the mvp\W*$', pattern: '\bUS-0[12567]\b', min: 5}

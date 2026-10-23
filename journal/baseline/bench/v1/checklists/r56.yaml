@@ -1,0 +1,26 @@
+id: r56
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # The four given sections.
+  - {id: sec-how-to-use, check: heading, pattern: '(?i)how to use'}
+  - {id: sec-rules, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?the rules\W*$'}
+  - {id: sec-word-list, check: heading, pattern: '(?i)word list'}
+  - {id: sec-checklist, check: heading, pattern: '(?i)checklist'}
+  # Exactly twenty rules, each with Why, Bad and Good.
+  - {id: rules-20, check: heading, pattern: '(?i)^\W*rule\s+\d+', min: 20, max: 20}
+  - {id: r-active, check: heading, pattern: '(?i)active voice'}
+  - {id: r-latin, check: heading, pattern: '(?i)latin abbreviations'}
+  - {id: r-links, check: heading, pattern: '(?i)link text'}
+  - {id: why-20, check: contains, section: '(?i)^\W*(?:\d+[.)]?\s*)?the rules\W*$', pattern: '(?im)^\W*why\**\s*:', min: 20}
+  - {id: bad-20, check: contains, section: '(?i)^\W*(?:\d+[.)]?\s*)?the rules\W*$', pattern: '(?im)^\W*bad\**\s*:', min: 20}
+  - {id: good-20, check: contains, section: '(?i)^\W*(?:\d+[.)]?\s*)?the rules\W*$', pattern: '(?im)^\W*good\**\s*:', min: 20}
+  # House conventions for rules 17 and 18.
+  - {id: date-format, check: contains, section: '(?i)unambiguous', pattern: '\b23 October 2026\b'}
+  - {id: iso-date, check: contains, section: '(?i)unambiguous', pattern: '\b2026-10-23\b'}
+  # Word list: exactly fifteen rows.
+  - {id: word-list-15, check: table_rows, section: '(?i)word list', min: 15, max: 15}
+  - {id: wl-sign-in, check: contains, section: '(?i)word list', pattern: '(?i)\|\s*\**sign in'}
+  - {id: wl-dependency, check: contains, section: '(?i)word list', pattern: '(?i)\|\s*\**dependency'}
+  # Checklist: exactly ten numbered checks.
+  - {id: checklist-10, check: numbered_items, section: '(?i)checklist', min: 10, max: 10}
+  - {id: no-repeat, check: max_section_overlap, max: 0.5}

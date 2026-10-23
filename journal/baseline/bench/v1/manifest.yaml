@@ -712,14 +712,14 @@ prompts:
 # ---------------------------------------------------------------------------
   - id: r35
     domain: report
-    status: draft
+    status: written
     long: true
     title: Startup employee handbook
     brief: "Ten given chapter titles for a 30-person company, ~7,000 words; leave numbers given in the prompt must appear exactly."
     target_words: 7000
   - id: r36
     domain: report
-    status: draft
+    status: written
     long: true
     title: Ride-dispatch design document
     brief: "Twelve given sections (requirements to rollout) for a dispatch service with given load figures, ~7,000 words; capacity math checked."
@@ -727,7 +727,7 @@ prompts:
     subsets: [g3]
   - id: r37
     domain: report
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Security policy suite
@@ -735,35 +735,35 @@ prompts:
     target_words: 6500
   - id: r38
     domain: report
-    status: draft
+    status: written
     long: true
     title: Intro databases course
     brief: "A syllabus plus twelve weekly lecture outlines with readings and one exercise each, ~7,000 words."
     target_words: 7000
   - id: r39
     domain: report
-    status: draft
+    status: written
     long: true
     title: Coffee roaster business plan
     brief: "Market, operations, marketing and financials from given numbers (three-year tables that must sum), ~7,000 words."
     target_words: 7000
   - id: r40
     domain: report
-    status: draft
+    status: written
     long: true
     title: Monolith-to-services migration guide
     brief: "For a given e-commerce monolith: strangler-fig phases, data migration, testing, cut-over, eight given services, ~7,500 words."
     target_words: 7500
   - id: r41
     domain: report
-    status: draft
+    status: written
     long: true
     title: Home network troubleshooting guide
     brief: "Fifteen problems, each with symptoms, diagnosis steps and fixes, plus a decision flow, ~6,500 words."
     target_words: 6500
   - id: r42
     domain: report
-    status: draft
+    status: written
     long: true
     overlap: true
     title: RFP response
@@ -771,35 +771,35 @@ prompts:
     target_words: 7000
   - id: r43
     domain: report
-    status: draft
+    status: written
     long: true
     title: Programming languages by decade
     brief: "1950s-2010s in seven sections with the given language list per decade, influences and a timeline table, ~6,500 words."
     target_words: 6500
   - id: r44
     domain: report
-    status: draft
+    status: written
     long: true
     title: Non-profit annual report
     brief: "Given programme data and finances: narrative, impact tables (figures checked), financial summary, ~6,000 words."
     target_words: 6000
   - id: r45
     domain: report
-    status: draft
+    status: written
     long: true
     title: Smart thermostat manual
     brief: "Twelve given features, each with how-to steps, settings tables and troubleshooting, ~7,000 words."
     target_words: 7000
   - id: r46
     domain: report
-    status: draft
+    status: written
     long: true
     title: Remote-work productivity research proposal
     brief: "Background, hypotheses, design, measures, analysis plan with a power calculation from given parameters (checked), ethics, timeline, budget, ~7,000 words."
     target_words: 7000
   - id: r47
     domain: report
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Incident response playbooks
@@ -807,28 +807,28 @@ prompts:
     target_words: 7500
   - id: r48
     domain: report
-    status: draft
+    status: written
     long: true
     title: REST API reference
     brief: "Twelve given endpoints: description, parameter table, example request and response, error codes; nothing invented, ~7,000 words."
     target_words: 7000
   - id: r49
     domain: report
-    status: draft
+    status: written
     long: true
     title: Puzzle game design document
     brief: "Pillars, core loop, twelve level designs with a difficulty curve, progression and UI, ~6,500 words."
     target_words: 6500
   - id: r50
     domain: report
-    status: draft
+    status: written
     long: true
     title: Compliance gap analysis
     brief: "Fifteen given controls against a given current-state description: status, gap, remediation and effort per control, ~6,500 words."
     target_words: 6500
   - id: r51
     domain: report
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Support training curriculum
@@ -836,35 +836,35 @@ prompts:
     target_words: 7500
   - id: r52
     domain: report
-    status: draft
+    status: written
     long: true
     title: Note-taking app PRD
     brief: "Fifteen user stories with acceptance criteria, non-functional requirements, metrics and an MVP cut, ~6,500 words."
     target_words: 6500
   - id: r53
     domain: report
-    status: draft
+    status: written
     long: true
     title: Personal finance primer
     brief: "Ten chapters (budgeting to retirement), worked examples with given figures (checked), no product recommendations, ~7,000 words."
     target_words: 7000
   - id: r54
     domain: report
-    status: draft
+    status: written
     long: true
     title: Concurrency in Python chapter
     brief: "Threads, processes, asyncio and the GIL, with eight code examples and a decision table, ~7,000 words."
     target_words: 7000
   - id: r55
     domain: report
-    status: draft
+    status: written
     long: true
     title: Disaster recovery plan
     brief: "For a given 14-system inventory with RTO/RPO targets: tiers, procedures per tier, test schedule, contacts, ~6,500 words."
     target_words: 6500
   - id: r56
     domain: report
-    status: draft
+    status: written
     long: true
     title: Technical writing style guide
     brief: "Twenty rules, each with a rationale and a bad/good example pair, plus a glossary, ~6,500 words."
@@ -932,7 +932,7 @@ prompts:
     target_words: 1000
   - id: r35f
     domain: report
-    status: draft
+    status: written
     long: true
     follows: r35
     title: Handbook with remote work
@@ -940,7 +940,7 @@ prompts:
     target_words: 7800
   - id: r36f
     domain: report
-    status: draft
+    status: written
     long: true
     follows: r36
     title: Design document goes multi-region
@@ -948,7 +948,7 @@ prompts:
     target_words: 8000
   - id: r40f
     domain: report
-    status: draft
+    status: written
     long: true
     follows: r40
     title: Migration guide case study and glossary
@@ -956,7 +956,7 @@ prompts:
     target_words: 8500
   - id: r45f
     domain: report
-    status: draft
+    status: written
     long: true
     follows: r45
     title: Thermostat manual for firmware 2.0
@@ -964,7 +964,7 @@ prompts:
     target_words: 7800
   - id: r48f
     domain: report
-    status: draft
+    status: written
     long: true
     follows: r48
     title: API reference v2
@@ -972,7 +972,7 @@ prompts:
     target_words: 8000
   - id: r52f
     domain: report
-    status: draft
+    status: written
     long: true
     follows: r52
     title: PRD with collaboration

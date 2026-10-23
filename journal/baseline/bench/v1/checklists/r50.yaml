@@ -1,0 +1,36 @@
+id: r50
+# Statuses from the given facts and definitions:
+#   Met (4): C-05 encryption, C-08 endpoint protection, C-12 training, C-13 secure development.
+#   Partially met (6): C-01 (approved, never reviewed), C-03 (approval only; no reviews, stale
+#     leaver accounts), C-04 (no MFA on admin accounts), C-06 (no restore tests), C-07 (servers
+#     51 days), C-09 (30-day logs, no review).
+#   Not met (5): C-02 (no inventory), C-10, C-11, C-14, C-15.
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # The seven given sections.
+  - {id: sec-exec, check: heading, pattern: '(?i)executive summary'}
+  - {id: sec-scope, check: heading, pattern: '(?i)scope and method|methodology'}
+  - {id: sec-findings, check: heading, pattern: '(?i)summary of findings'}
+  - {id: sec-controls, check: heading, pattern: '(?i)control-by-control|control by control'}
+  - {id: sec-roadmap, check: heading, pattern: '(?i)remediation roadmap|roadmap'}
+  - {id: sec-resourcing, check: heading, pattern: '(?i)resourcing|budget'}
+  - {id: sec-risks, check: heading, pattern: '(?i)risks to the certification|risks'}
+  # Summary of findings: fifteen rows and the status counts.
+  - {id: findings-15, check: table_rows, section: '(?i)summary of findings', min: 15, max: 15}
+  - {id: count-met, check: number, section: '(?i)summary of findings', pattern: '(?i)\bmet\**\s*:\s*\**\s*(\d+)', value: 4}
+  - {id: count-partial, check: number, section: '(?i)summary of findings', pattern: '(?i)partially met\**\s*:\s*\**\s*(\d+)', value: 6}
+  - {id: count-not-met, check: number, section: '(?i)summary of findings', pattern: '(?i)not met\**\s*:\s*\**\s*(\d+)', value: 5}
+  # Control-by-control: fifteen subsections with the four labelled lines.
+  - {id: control-headings, check: heading, pattern: '\bC-\d\d\b', min: 15, max: 15}
+  - {id: status-lines, check: contains, section: '(?i)control-by-control|control by control', pattern: '(?im)^\W*status\**\s*:', min: 15}
+  - {id: gap-lines, check: contains, section: '(?i)control-by-control|control by control', pattern: '(?im)^\W*gap\**\s*:', min: 15}
+  - {id: effort-lines, check: contains, section: '(?i)control-by-control|control by control', pattern: '(?im)^\W*effort\**\s*:\s*\**\s*(?:[SML]\b|small|medium|large)', min: 15}
+  # Statuses the facts determine.
+  - {id: c05-met, check: contains, section: '\bC-05\b', pattern: '(?i)status\**\s*:\s*\**\s*met\b'}
+  - {id: c13-met, check: contains, section: '\bC-13\b', pattern: '(?i)status\**\s*:\s*\**\s*met\b'}
+  - {id: c04-partial, check: contains, section: '\bC-04\b', pattern: '(?i)status\**\s*:\s*\**\s*partially met'}
+  - {id: c07-partial, check: contains, section: '\bC-07\b', pattern: '(?i)status\**\s*:\s*\**\s*partially met'}
+  - {id: c11-not-met, check: contains, section: '\bC-11\b', pattern: '(?i)status\**\s*:\s*\**\s*not met'}
+  # Executive summary: about 400 words at most, ending with exactly three numbered actions.
+  - {id: exec-words, check: word_count, section: '(?i)executive summary', max: 440}
+  - {id: exec-actions-3, check: numbered_items, section: '(?i)executive summary', min: 3, max: 3}

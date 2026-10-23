@@ -1,0 +1,25 @@
+id: r38
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # Part 1: the syllabus and its five subsections.
+  - {id: sec-syllabus, check: heading, pattern: '(?i)syllabus'}
+  - {id: sub-description, check: heading, pattern: '(?i)course description'}
+  - {id: sub-outcomes, check: heading, pattern: '(?i)learning outcomes'}
+  - {id: sub-schedule, check: heading, pattern: '(?i)weekly schedule'}
+  - {id: sub-assessment, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?assessment'}
+  - {id: sub-policies, check: heading, pattern: '(?i)course policies|policies'}
+  - {id: outcomes-6, check: numbered_items, section: '(?i)learning outcomes', min: 6, max: 6}
+  - {id: schedule-12, check: table_rows, section: '(?i)weekly schedule', min: 12, max: 12}
+  - {id: assessment-4, check: table_rows, section: '(?i)^\W*(?:[\d.]+\s*)?assessment', min: 4, max: 4}
+  - {id: weights, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?assessment', pattern: '\b(?:40|30|25|5)\s?%', min: 4}
+  - {id: late-10, check: contains, section: '(?i)course policies|policies', pattern: '\b10\s?%'}
+  # Part 2: twelve weeks, each with Readings, Outline and Exercise.
+  - {id: weeks-12, check: heading, pattern: '(?i)^\W*week\s+\d+', min: 12, max: 12}
+  - {id: readings-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?readings?\W*$', min: 12, max: 12}
+  - {id: outline-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?(?:lecture\s+)?outlines?\W*$', min: 12, max: 12}
+  - {id: exercise-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?exercise\W*$', min: 12, max: 12}
+  - {id: cn-codes, check: contains, pattern: '\bCN-\d\d\b', min: 12}
+  # The running example and the code blocks.
+  - {id: create-loans, check: contains, pattern: '(?i)create\s+table\s+(?:if\s+not\s+exists\s+)?loans\b'}
+  - {id: sql-blocks, check: contains, pattern: '(?m)^ {0,3}```\s*sql\s*$', min: 8}
+  - {id: json-week12, check: contains, section: '(?i)^\W*week\s+12', pattern: '(?m)^ {0,3}```\s*json\s*$'}

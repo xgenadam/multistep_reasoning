@@ -1,0 +1,24 @@
+id: r41
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # Fifteen problems, each with Symptoms, Diagnosis and Fix.
+  - {id: problems-15, check: heading, pattern: '(?i)^\W*problem\s+\d+', min: 15, max: 15}
+  - {id: p-nothing, check: heading, pattern: '(?i)nothing has internet'}
+  - {id: p-garden, check: heading, pattern: '(?i)garden office'}
+  - {id: p-websites, check: heading, pattern: '(?i)websites do not load|websites don.t load'}
+  - {id: p-password, check: heading, pattern: '(?i)forgotten wi-?fi password'}
+  - {id: symptoms-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?symptoms?\W*$', min: 15, max: 15}
+  - {id: diagnosis-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?diagnos(?:is|e)\W*$', min: 15, max: 15}
+  - {id: fix-15, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?fix(?:es)?\W*$', min: 15, max: 15}
+  # The decision flow points to problems as "Problem N", all fifteen reachable.
+  - {id: sec-start, check: heading, pattern: '(?i)start here|which problem'}
+  - {id: flow-refs, check: contains, section: '(?i)start here|which problem', pattern: '(?i)problem\s+\d+', min: 15}
+  - {id: flow-last, check: contains, section: '(?i)start here|which problem', pattern: '(?i)problem\s+15\b'}
+  - {id: flow-numbered, check: numbered_items, section: '(?i)start here|which problem', min: 5}
+  # When to call: exactly five bullets.
+  - {id: sec-call, check: heading, pattern: '(?i)when to call'}
+  - {id: call-5, check: bullet_items, section: '(?i)when to call', min: 5, max: 5}
+  # Given setup details.
+  - {id: router-ip, check: contains, pattern: '192\.168\.50\.1\b'}
+  - {id: los-light, check: contains, pattern: '\bLOS\b'}
+  - {id: commands, check: contains, pattern: '(?i)\bipconfig\b'}

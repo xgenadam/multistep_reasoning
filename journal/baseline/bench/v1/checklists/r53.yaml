@@ -1,0 +1,39 @@
+id: r53
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  - {id: sec-intro, check: heading, pattern: '(?i)introduction'}
+  - {id: not-advice, check: contains, section: '(?i)introduction', pattern: '(?i)not\s+(?:\w+\s+){0,2}(?:financial\s+)?advice'}
+  - {id: chapters-10, check: heading, pattern: '(?i)^\W*chapter\s+\d+', min: 10, max: 10}
+  - {id: ch-budgeting, check: heading, pattern: '(?i)budgeting'}
+  - {id: ch-credit, check: heading, pattern: '(?i)credit scores?'}
+  - {id: ch-inflation, check: heading, pattern: '(?i)inflation'}
+  - {id: ch-retirement, check: heading, pattern: '(?i)retirement'}
+  # One worked example per chapter, each ending with a Result line; one Key Takeaways list each.
+  - {id: worked-10, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?worked example', min: 10, max: 10}
+  - {id: results-10, check: contains, pattern: '(?im)^\W*result\**\s*:', min: 10}
+  - {id: takeaways-10, check: heading, pattern: '(?i)key takeaways', min: 10, max: 10}
+  # Results (the first number after "Result:" in each chapter).
+  # 3,200 x 20 % = 640
+  - {id: r-budget, check: number, section: '(?i)^\W*chapter\s+1\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 640, tol: 0.01}
+  # 1,850 x 6 = 11,100; 11,100 / 640 = 17.34 -> 18 months
+  - {id: r-emergency, check: number, section: '(?i)^\W*chapter\s+2\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 18}
+  # interest 4,000 x 0.21 / 12 = 70.00; 200 - 70 = 130.00
+  - {id: r-debt, check: number, section: '(?i)^\W*chapter\s+3\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 130, tol: 0.01}
+  # 1,500 / 5,000 = 30 %
+  - {id: r-utilisation, check: number, section: '(?i)^\W*chapter\s+4\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 30, tol: 0.01}
+  # 5,000 x 1.05^10 = 5,000 x 1.628895 = 8,144.47
+  - {id: r-compound, check: number, section: '(?i)^\W*chapter\s+5\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 8144.47, tol: 0.01}
+  # 100,000 x 1.058^20 = 308,825.64; 100,000 x 1.05^20 = 265,329.77; difference 43,495.87
+  - {id: r-fees, check: number, section: '(?i)^\W*chapter\s+6\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 43495.87, tol: 0.02}
+  # 40,000 x 1.025^20 = 40,000 x 1.638616 = 65,544.66
+  - {id: r-inflation, check: number, section: '(?i)^\W*chapter\s+7\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 65544.66, tol: 0.02}
+  # r = 0.04 / 12 = 0.003333; n = 300; 250,000 x r / (1 - (1 + r)^-300) = 1,319.59
+  - {id: r-mortgage, check: number, section: '(?i)^\W*chapter\s+8\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 1319.59, tol: 0.01}
+  # saving 480 - 360 = 120 a year; extra excess 1,000 - 250 = 750; 750 / 120 = 6.25 years
+  - {id: r-insurance, check: number, section: '(?i)^\W*chapter\s+9\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 6.25, tol: 0.01}
+  # 2,400 x (1.06^30 - 1) / 0.06 = 2,400 x 79.058186 = 189,739.65
+  - {id: r-retirement, check: number, section: '(?i)^\W*chapter\s+10\b', pattern: '(?i)result\**\s*:\s*\**\s*[^\d\n]*([\d,]+(?:\.\d+)?)', value: 189739.65, tol: 0.02}
+  # Glossary of at least 20 terms; no named products or providers.
+  - {id: sec-glossary, check: heading, pattern: '(?i)glossary'}
+  - {id: glossary-20, check: bullet_items, section: '(?i)glossary', min: 20}
+  - {id: no-brands, check: not_contains, pattern: '\b(?:Vanguard|Fidelity|BlackRock|iShares|Schwab|Robinhood|Revolut|Monzo|N26|PayPal|Klarna|YNAB|Visa|Mastercard|American Express|Experian|Equifax|TransUnion|FICO)\b'}

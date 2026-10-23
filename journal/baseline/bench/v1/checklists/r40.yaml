@@ -1,0 +1,25 @@
+id: r40
+items:
+  - {id: words, check: word_count, min: 6750, max: 8250}   # "about 7,500": ±10 %
+  # The eleven given chapters.
+  - {id: ch-intro, check: heading, pattern: '(?i)introduction|goals'}
+  - {id: ch-monolith, check: heading, pattern: '(?i)current monolith'}
+  - {id: ch-target, check: heading, pattern: '(?i)target architecture'}
+  - {id: ch-strangler, check: heading, pattern: '(?i)strangler'}
+  - {id: ch-phases, check: heading, pattern: '(?i)migration phases'}
+  - {id: ch-services, check: heading, pattern: '(?i)service[- ]by[- ]service'}
+  - {id: ch-data, check: heading, pattern: '(?i)data migration'}
+  - {id: ch-testing, check: heading, pattern: '(?i)testing'}
+  - {id: ch-cutover, check: heading, pattern: '(?i)cut-?over|rollback'}
+  - {id: ch-governance, check: heading, pattern: '(?i)organi[sz]ation|governance'}
+  - {id: ch-risks, check: heading, pattern: '(?i)risks and mitigations|risks & mitigations'}
+  # Chapter requirements.
+  - {id: services-table-8, check: table_rows, section: '(?i)target architecture', min: 8, max: 8}
+  - {id: phases-4, check: heading, section: '(?i)migration phases', pattern: '(?i)^\W*phase\s+\d', min: 4, max: 4}
+  - {id: service-subsections, check: heading, section: '(?i)service[- ]by[- ]service', pattern: '(?i)notifications?|search|catalog|inventory|cart|orders?\b|payments?|checkout', min: 8}
+  - {id: monolith-facts, check: contains, section: '(?i)current monolith', pattern: '\b212\b|\b38\s+minutes'}
+  - {id: rollback-error, check: contains, section: '(?i)cut-?over\s+(?:and|&)\s+rollback', pattern: '\b1\s?%'}
+  - {id: rollback-latency, check: contains, section: '(?i)cut-?over\s+(?:and|&)\s+rollback', pattern: '(?i)\b800\s?ms'}
+  - {id: risks-8, check: table_rows, section: '(?i)risks and mitigations|risks & mitigations', min: 8, max: 8}
+  - {id: vendor-neutral, check: not_contains, pattern: '\b(?:AWS|Amazon Web Services|Azure|GCP|Google Cloud|Alibaba Cloud|Oracle Cloud)\b'}
+  - {id: no-repeat, check: max_section_overlap, max: 0.5}

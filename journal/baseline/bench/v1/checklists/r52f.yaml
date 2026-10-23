@@ -1,0 +1,31 @@
+id: r52f
+items:
+  # The parent's eight sections are kept.
+  - {id: kept-overview, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?overview'}
+  - {id: kept-goals, check: heading, pattern: '(?i)goals'}
+  - {id: kept-personas, check: heading, pattern: '(?i)personas'}
+  - {id: kept-stories, check: heading, pattern: '(?i)user stories'}
+  - {id: kept-nfr, check: heading, pattern: '(?i)non-?functional'}
+  - {id: kept-metrics, check: heading, pattern: '(?i)success metrics|metrics'}
+  - {id: kept-mvp, check: heading, pattern: '(?i)mvp cut'}
+  - {id: kept-open, check: heading, pattern: '(?i)open questions'}
+  # Twenty stories: the fifteen kept plus US-16 to US-20.
+  - {id: stories-20, check: heading, pattern: '\bUS-\d\d\b', min: 20, max: 20}
+  - {id: kept-us12, check: heading, pattern: '\bUS-12\b'}
+  - {id: new-us16, check: heading, pattern: '\bUS-16\b'}
+  - {id: new-us20, check: heading, pattern: '\bUS-20\b'}
+  - {id: given-60, check: contains, section: '(?i)user stories', pattern: '(?i)\bgiven\b[^\n]*\bwhen\b[^\n]*\bthen\b', min: 60}
+  - {id: coedit-10, check: contains, section: '\bUS-17\b', pattern: '\b10\b'}
+  - {id: activity-90, check: contains, section: '\bUS-20\b', pattern: '(?i)\b90\s+days'}
+  # Updated non-functional requirements.
+  - {id: nfr-200ms, check: contains, section: '(?i)non-?functional', pattern: '(?i)\b200\s?ms'}
+  - {id: nfr-revoke-5s, check: contains, section: '(?i)non-?functional', pattern: '(?i)\b5\s*(?:seconds|s)\b'}
+  - {id: nfr-audit, check: contains, section: '(?i)non-?functional', pattern: '(?i)audit'}
+  - {id: nfr-ids, check: contains, section: '(?i)non-?functional', pattern: '\bNFR-\d+', min: 11}
+  # Updated MVP cut: ten in, ten after; US-16 and US-18 in.
+  - {id: mvp-in-10, check: bullet_items, section: '(?i)^\W*(?:[\d.]+\s*)?in the mvp\W*$', min: 10, max: 10}
+  - {id: mvp-after-10, check: bullet_items, section: '(?i)^\W*(?:[\d.]+\s*)?after the mvp\W*$', min: 10, max: 10}
+  - {id: mvp-us16-18, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?in the mvp\W*$', pattern: '\bUS-1[68]\b', min: 2}
+  - {id: mvp-us17-after, check: contains, section: '(?i)^\W*(?:[\d.]+\s*)?after the mvp\W*$', pattern: '\bUS-17\b'}
+  # Metrics: six rows.
+  - {id: metrics-6, check: table_rows, section: '(?i)success metrics|metrics', min: 6, max: 6}

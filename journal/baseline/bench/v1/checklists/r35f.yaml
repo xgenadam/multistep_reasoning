@@ -1,0 +1,27 @@
+id: r35f
+items:
+  # The parent's ten chapters are kept.
+  - {id: kept-welcome, check: heading, pattern: '(?i)welcome|values'}
+  - {id: kept-how-we-work, check: heading, pattern: '(?i)how we work'}
+  - {id: kept-basics, check: heading, pattern: '(?i)employment basics'}
+  - {id: kept-pay, check: heading, pattern: '(?i)pay and benefits|pay & benefits'}
+  - {id: kept-leave, check: heading, pattern: '(?i)leave and time off|leave & time off'}
+  - {id: kept-health, check: heading, pattern: '(?i)health|wellbeing|well-being'}
+  - {id: kept-equipment, check: heading, pattern: '(?i)equipment|security and data'}
+  - {id: kept-conduct, check: heading, pattern: '(?i)code of conduct'}
+  - {id: kept-growth, check: heading, pattern: '(?i)growth|feedback|reviews'}
+  - {id: kept-leaving, check: heading, pattern: '(?i)leaving harbourlight|leaving the company|^\W*(?:\d+\W*)?leaving'}
+  # The new chapter, about 800 words (±10 %), with the given facts.
+  - {id: sec-remote, check: heading, pattern: '(?i)remote and hybrid|remote & hybrid|hybrid work'}
+  - {id: remote-words, check: word_count, section: '(?i)remote and hybrid|remote & hybrid|hybrid work', min: 720, max: 880}
+  - {id: anchor-days, check: contains, section: '(?i)remote and hybrid|remote & hybrid|hybrid work', pattern: '(?i)tuesday[\s\S]{0,40}thursday'}
+  - {id: abroad-4-weeks, check: contains, section: '(?i)remote and hybrid|remote & hybrid|hybrid work', pattern: '(?i)\b4\s+weeks'}
+  - {id: internet-30, check: contains, section: '(?i)remote and hybrid|remote & hybrid|hybrid work', pattern: '€\s?30\b|\b30\s?(?:€|euros?|EUR)'}
+  - {id: remote-who-to-ask, check: contains, section: '(?i)remote and hybrid|remote & hybrid|hybrid work', pattern: '(?i)who to ask\**\s*:'}
+  # The three leave changes, stated as current policy only.
+  - {id: annual-27, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b27\s+(?:working\s+)?days'}
+  - {id: no-annual-25, check: not_contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b25\s+(?:working\s+)?days'}
+  - {id: partner-6, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b6\s+weeks'}
+  - {id: volunteering, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)volunteer'}
+  - {id: leave-table-8, check: table_rows, section: '(?i)leave and time off|leave & time off', min: 8, max: 8}
+  - {id: who-to-ask-11, check: contains, pattern: '(?i)who to ask\**\s*:', min: 11}

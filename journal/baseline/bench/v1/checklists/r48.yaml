@@ -1,0 +1,36 @@
+id: r48
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  - {id: sec-overview, check: heading, pattern: '(?i)overview'}
+  - {id: sec-objects, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?objects'}
+  # The twelve given endpoints, headed exactly "METHOD /path", and no others.
+  - {id: ep-create, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-list, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-get, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments/\{shipment_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-patch, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?PATCH\s+/shipments/\{shipment_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-cancel, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments/\{shipment_id\}/cancel`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-rates, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments/\{shipment_id\}/rates`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-label, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/shipments/\{shipment_id\}/label`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-tracking, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?GET\s+/shipments/\{shipment_id\}/tracking`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-validate, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/addresses/validate`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-pickup-create, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/pickups`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-pickup-delete, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?DELETE\s+/pickups/\{pickup_id\}`?(?:\s*[—–:(-].*)?$'}
+  - {id: ep-webhook-create, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?POST\s+/webhooks`?(?:\s*[—–:(-].*)?$'}
+  - {id: endpoints-12, check: heading, pattern: '^\W*(?:\d+[.)]?\s*)?`?(?:GET|POST|PUT|PATCH|DELETE)\s+/', min: 12, max: 12}
+  # Each endpoint: Parameters, Example request, Example response, Errors
+  # (the Overview's own Errors subsection makes 13 of those).
+  - {id: parameters-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?parameters\W*$', min: 12, max: 12}
+  - {id: ex-request-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?example request\W*$', min: 12, max: 12}
+  - {id: ex-response-12, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?example response\W*$', min: 12, max: 12}
+  - {id: errors-13, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?errors\W*$', min: 13, max: 13}
+  # Overview: the error table has exactly eight rows (Errors is its last subsection,
+  # so the first "Errors" heading is the Overview's).
+  - {id: error-table-8, check: table_rows, section: '(?i)^\W*(?:[\d.]+\s*)?errors\W*$', min: 8, max: 8}
+  - {id: rate-limit, check: contains, section: '(?i)overview', pattern: '\b600\b'}
+  - {id: base-url, check: contains, pattern: 'https://api\.parcelpoint\.example/v1'}
+  # Examples: a curl command per endpoint, each with the API key header.
+  - {id: curl-12, check: contains, pattern: '\bcurl\b', min: 12}
+  - {id: api-key-12, check: contains, pattern: '(?i)X-Api-Key', min: 13}
+  # Nothing invented: no other status codes, no PUT endpoints.
+  - {id: no-other-codes, check: not_contains, pattern: '(?i)\b(?:402|405|406|408|410|412|413|415|502|503|504)\s+(?:payment|method|not acceptable|request timeout|gone|precondition|payload|unsupported|bad gateway|service unavailable|gateway timeout)'}
+  - {id: no-put, check: not_contains, pattern: '\bPUT\s+/'}

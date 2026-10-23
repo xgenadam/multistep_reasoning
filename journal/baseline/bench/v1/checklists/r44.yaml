@@ -1,0 +1,43 @@
+id: r44
+items:
+  - {id: words, check: word_count, min: 5400, max: 6600}   # "about 6,000": ±10 %
+  # The ten given sections.
+  - {id: sec-chair, check: heading, pattern: '(?i)letter from the chair|chair'}
+  - {id: sec-numbers, check: heading, pattern: '(?i)year in numbers'}
+  - {id: sec-buddies, check: heading, pattern: '(?i)reading buddies'}
+  - {id: sec-adult, check: heading, pattern: '(?i)adult literacy'}
+  - {id: sec-bookbank, check: heading, pattern: '(?i)book bank'}
+  - {id: sec-story, check: heading, pattern: '(?i)story nights'}
+  - {id: sec-volunteers, check: heading, pattern: '(?i)volunteers'}
+  - {id: sec-financial, check: heading, pattern: '(?i)financial summary'}
+  - {id: sec-ahead, check: heading, pattern: '(?i)looking ahead'}
+  - {id: sec-thanks, check: heading, pattern: '(?i)thank you|thanks'}
+  # Our Year in Numbers: exactly twelve rows; Value is the second column.
+  - {id: numbers-12, check: table_rows, section: '(?i)year in numbers', min: 12, max: 12}
+  # given: 1,240
+  - {id: n-children, check: number, section: '(?i)year in numbers', pattern: '(?i)children supported[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 1240}
+  # 868 / 1,240 = 0.700 -> 70.0 %
+  - {id: n-gain, check: number, section: '(?i)year in numbers', pattern: '(?i)gaining six months[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 70.0, tol: 0.05}
+  # 332 / 415 = 0.800 -> 80.0 %
+  - {id: n-completion, check: number, section: '(?i)year in numbers', pattern: '(?i)adult learners completing[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 80.0, tol: 0.05}
+  # 3,840 / 96 = 40
+  - {id: n-attendance, check: number, section: '(?i)year in numbers', pattern: '(?i)average attendance[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 40}
+  # 21,700 h x 15 = 325,500
+  - {id: n-volunteer-value, check: number, section: '(?i)year in numbers', pattern: '(?i)value of volunteer time[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 325500}
+  # 612,000 + 284,000 + 156,000 + 48,000 = 1,100,000
+  - {id: n-income, check: number, section: '(?i)year in numbers', pattern: '(?i)total income[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 1100000}
+  # 402,000 + 286,000 + 118,000 + 64,000 + 88,000 + 77,000 = 1,035,000
+  - {id: n-expenditure, check: number, section: '(?i)year in numbers', pattern: '(?i)total expenditure[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 1035000}
+  # programmes 402,000 + 286,000 + 118,000 + 64,000 = 870,000; / 1,035,000 = 84.06 % -> 84.1 %
+  - {id: n-programme-share, check: number, section: '(?i)year in numbers', pattern: '(?i)share of expenditure[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 84.1, tol: 0.05}
+  # 402,000 / 1,240 = 324.19 -> 324
+  - {id: n-cost-per-child, check: number, section: '(?i)year in numbers', pattern: '(?i)cost per reading buddies child[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 324, tol: 0.5}
+  # (1,100,000 - 980,000) / 980,000 = 12.24 % -> 12.2 %
+  - {id: n-growth, check: number, section: '(?i)year in numbers', pattern: '(?i)income growth[^|\n]*\|[^\d|\n]*([\d,]+(?:\.\d+)?)', value: 12.2, tol: 0.05}
+  # Financial Summary: surplus 1,100,000 - 1,035,000 = 65,000; reserves 410,000 + 65,000 = 475,000;
+  # 475,000 / (1,035,000 / 12 = 86,250 per month) = 5.51 -> 5.5 months
+  - {id: surplus, check: contains, section: '(?i)financial summary', pattern: '\b65,000\b'}
+  - {id: reserves, check: contains, section: '(?i)financial summary', pattern: '\b475,000\b'}
+  - {id: reserve-months, check: contains, section: '(?i)financial summary', pattern: '(?i)\b5\.5\s+months'}
+  # Looking Ahead: exactly three numbered priorities.
+  - {id: priorities-3, check: numbered_items, section: '(?i)looking ahead', min: 3, max: 3}

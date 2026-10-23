@@ -1,0 +1,25 @@
+id: r54
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The nine given sections.
+  - {id: sec-intro, check: heading, pattern: '(?i)introduction|concurrency and parallelism'}
+  - {id: sec-gil, check: heading, pattern: '(?i)global interpreter lock|\bGIL\b'}
+  - {id: sec-threads, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?threads\W*$'}
+  - {id: sec-processes, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?processes\W*$'}
+  - {id: sec-asyncio, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?`?asyncio`?\W*$'}
+  - {id: sec-state, check: heading, pattern: '(?i)sharing state'}
+  - {id: sec-choosing, check: heading, pattern: '(?i)choosing a model'}
+  - {id: sec-pitfalls, check: heading, pattern: '(?i)common pitfalls|pitfalls'}
+  - {id: sec-summary, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?summary'}
+  # Exactly eight python examples, each with an "Example N:" heading.
+  - {id: python-blocks-8, check: contains, pattern: '(?m)^ {0,3}```\s*python\s*$', min: 8, max: 8}
+  - {id: example-headings-8, check: heading, pattern: '(?i)^\W*example\s+\d+', min: 8, max: 8}
+  - {id: main-guard, check: contains, pattern: 'if __name__ == ["'']__main__["'']'}
+  - {id: process-pool, check: contains, pattern: '\bProcessPoolExecutor\b'}
+  - {id: gather, check: contains, pattern: '\basyncio\.gather\b'}
+  - {id: lock, check: contains, pattern: '\bthreading\.Lock\b|\bLock\(\)'}
+  - {id: to-thread, check: contains, pattern: '\basyncio\.to_thread\b|\brun_in_executor\b'}
+  - {id: stdlib-only, check: not_contains, pattern: '(?m)^\s*(?:import|from)\s+(?:requests|aiohttp|httpx|trio|gevent|numpy|anyio|uvloop)\b'}
+  # Choosing a Model: exactly six rows. Common Pitfalls: exactly eight numbered.
+  - {id: choose-6, check: table_rows, section: '(?i)choosing a model', min: 6, max: 6}
+  - {id: pitfalls-8, check: numbered_items, section: '(?i)common pitfalls|pitfalls', min: 8, max: 8}

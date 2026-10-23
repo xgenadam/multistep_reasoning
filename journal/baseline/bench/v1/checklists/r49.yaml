@@ -1,0 +1,29 @@
+id: r49
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  # The ten given sections.
+  - {id: sec-vision, check: heading, pattern: '(?i)vision|pillars'}
+  - {id: sec-loop, check: heading, pattern: '(?i)core loop'}
+  - {id: sec-mechanics, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?mechanics'}
+  - {id: sec-levels, check: heading, pattern: '(?i)level designs?'}
+  - {id: sec-difficulty, check: heading, pattern: '(?i)difficulty curve'}
+  - {id: sec-progression, check: heading, pattern: '(?i)progression|rewards'}
+  - {id: sec-ui, check: heading, pattern: '(?i)user interface|\bUI\b'}
+  - {id: sec-accessibility, check: heading, pattern: '(?i)accessibility'}
+  - {id: sec-business, check: heading, pattern: '(?i)business model|monetis|monetiz'}
+  - {id: sec-production, check: heading, pattern: '(?i)production plan'}
+  # Exactly three pillars, each a subsection of Vision and Pillars.
+  - {id: pillars-3, check: heading, section: '(?i)vision|pillars', pattern: '.', min: 3, max: 3}
+  # Mechanics: one subsection per piece.
+  - {id: mech-subsections, check: heading, section: '(?i)^\W*(?:\d+[.)]?\s*)?mechanics', pattern: '(?i)mirror|splitter|filter|prism|portal', min: 5}
+  # Twelve levels.
+  - {id: levels-12, check: heading, pattern: '(?i)^\W*level\s+\d+', min: 12, max: 12}
+  # Difficulty curve: twelve rows with the given ratings; Difficulty is the fourth column.
+  - {id: curve-12, check: table_rows, section: '(?i)difficulty curve', min: 12, max: 12}
+  - {id: curve-l6, check: number, section: '(?i)difficulty curve', pattern: '(?im)^\s*\|\s*\**(?:level\s+)?6\**\s*\|(?:[^|\n]*\|){2}[^\d|\n]*(\d+)', value: 3}
+  - {id: curve-l9, check: number, section: '(?i)difficulty curve', pattern: '(?im)^\s*\|\s*\**(?:level\s+)?9\**\s*\|(?:[^|\n]*\|){2}[^\d|\n]*(\d+)', value: 5}
+  - {id: curve-l12, check: number, section: '(?i)difficulty curve', pattern: '(?im)^\s*\|\s*\**(?:level\s+)?12\**\s*\|(?:[^|\n]*\|){2}[^\d|\n]*(\d+)', value: 9}
+  # Given rules.
+  - {id: hints-3, check: contains, section: '(?i)progression|rewards', pattern: '(?i)\b3\s+hints|three hints'}
+  - {id: price, check: contains, section: '(?i)business model|monetis|monetiz', pattern: '14\.99'}
+  - {id: colour-blind, check: contains, section: '(?i)accessibility', pattern: '(?i)colou?r[- ]?blind'}

@@ -1,0 +1,27 @@
+id: r51
+# Overlap root: the shared basics are restated in modules on purpose, so there
+# is no max_section_overlap item.
+items:
+  - {id: words, check: word_count, min: 6750, max: 8250}   # "about 7,500": ±10 %
+  # Ten modules with the given titles.
+  - {id: modules-10, check: heading, pattern: '(?i)^\W*module\s+\d+', min: 10, max: 10}
+  - {id: m-welcome, check: heading, pattern: '(?i)welcome to quillstone'}
+  - {id: m-billing, check: heading, pattern: '(?i)billing'}
+  - {id: m-bank-feeds, check: heading, pattern: '(?i)bank feeds?'}
+  - {id: m-difficult, check: heading, pattern: '(?i)difficult conversations'}
+  - {id: m-security, check: heading, pattern: '(?i)data protection|account security'}
+  # Five subsections in every module.
+  - {id: objectives-10, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?(?:learning\s+)?objectives\W*$', min: 10, max: 10}
+  - {id: content-10, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?content\W*$', min: 10, max: 10}
+  - {id: exercise-10, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?exercise\W*$', min: 10, max: 10}
+  - {id: quiz-10, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?quiz\W*$', min: 10, max: 10}
+  - {id: answer-key-10, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?answer key\W*$', min: 10, max: 10}
+  # Counts, checked in the first module's subsections (the first heading matching).
+  - {id: m1-objectives-3, check: numbered_items, section: '(?i)^\W*(?:[\d.]+\s*)?(?:learning\s+)?objectives\W*$', min: 3, max: 3}
+  - {id: m1-quiz-5, check: numbered_items, section: '(?i)^\W*(?:[\d.]+\s*)?quiz\W*$', min: 5, max: 5}
+  - {id: m1-answers-5, check: numbered_items, section: '(?i)^\W*(?:[\d.]+\s*)?answer key\W*$', min: 5, max: 5}
+  # Shared basics and facts.
+  - {id: p1-30min, check: contains, pattern: '(?i)\bP1\b[^\n]{0,200}\b30\s*min'}
+  - {id: clear, check: contains, pattern: '\bCLEAR\b', min: 2}
+  - {id: refund-30, check: contains, section: '(?i)billing and subscriptions', pattern: '(?i)\b30\s+days'}
+  - {id: plans, check: contains, section: '(?i)billing and subscriptions', pattern: '€\s?(?:12|29|79)\b|\b(?:12|29|79)\s?(?:€|euros?|EUR)', min: 3}

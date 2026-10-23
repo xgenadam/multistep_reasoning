@@ -1,0 +1,26 @@
+id: r43
+items:
+  - {id: words, check: word_count, min: 5850, max: 7150}   # "about 6,500": ±10 %
+  - {id: sec-intro, check: heading, pattern: '(?i)introduction'}
+  - {id: sec-1950s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?1950s'}
+  - {id: sec-1960s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?1960s'}
+  - {id: sec-1970s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?1970s'}
+  - {id: sec-1980s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?1980s'}
+  - {id: sec-1990s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?1990s'}
+  - {id: sec-2000s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?2000s'}
+  - {id: sec-2010s, check: heading, pattern: '(?i)^\W*(?:\d+[.)]?\s*)?(?:the\s+)?2010s'}
+  - {id: sec-timeline, check: heading, pattern: '(?i)timeline'}
+  - {id: sec-conclusion, check: heading, pattern: '(?i)conclusion'}
+  # Each decade ends with an "Influences" subsection.
+  - {id: influences-7, check: heading, pattern: '(?i)^\W*(?:[\d.]+\s*)?influences?\W*$', min: 7, max: 7}
+  # Timeline: exactly one row per listed language, 4 + 5 + 6 + 5 + 6 + 5 + 5 = 36.
+  - {id: timeline-36, check: table_rows, section: '(?i)timeline', min: 36, max: 36}
+  # Given years reproduced in the timeline (Year column first, then Language).
+  - {id: tl-fortran, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*1957\s*\|\s*\**\s*fortran'}
+  - {id: tl-simula, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*1967\s*\|\s*\**\s*simula'}
+  - {id: tl-scheme, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*1975\s*\|\s*\**\s*scheme'}
+  - {id: tl-erlang, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*1986\s*\|\s*\**\s*erlang'}
+  - {id: tl-python, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*1991\s*\|\s*\**\s*python'}
+  - {id: tl-clojure, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*2007\s*\|\s*\**\s*clojure'}
+  - {id: tl-rust, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*2010\s*\|\s*\**\s*rust'}
+  - {id: tl-swift, check: contains, section: '(?i)timeline', pattern: '(?i)\|\s*2014\s*\|\s*\**\s*swift'}

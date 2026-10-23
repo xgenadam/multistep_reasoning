@@ -1,0 +1,34 @@
+id: r35
+items:
+  - {id: words, check: word_count, min: 6300, max: 7700}   # "about 7,000": ±10 %
+  # The ten given chapter titles.
+  - {id: ch-welcome, check: heading, pattern: '(?i)welcome|values'}
+  - {id: ch-how-we-work, check: heading, pattern: '(?i)how we work'}
+  - {id: ch-basics, check: heading, pattern: '(?i)employment basics'}
+  - {id: ch-pay, check: heading, pattern: '(?i)pay and benefits|pay & benefits'}
+  - {id: ch-leave, check: heading, pattern: '(?i)leave and time off|leave & time off'}
+  - {id: ch-health, check: heading, pattern: '(?i)health|wellbeing|well-being'}
+  - {id: ch-equipment, check: heading, pattern: '(?i)equipment|security and data'}
+  - {id: ch-conduct, check: heading, pattern: '(?i)code of conduct'}
+  - {id: ch-growth, check: heading, pattern: '(?i)growth|feedback|reviews'}
+  - {id: ch-leaving, check: heading, pattern: '(?i)leaving harbourlight|leaving the company|^\W*(?:\d+\W*)?leaving'}
+  # Given values, in chapter 1.
+  - {id: values, check: contains, section: '(?i)welcome|values', pattern: '(?i)be candid|own the outcome|make it simple|leave room for others', min: 4}
+  # Given figures, reproduced exactly in digits.
+  - {id: core-hours, check: contains, pattern: '10:00\s*(?:[–—-]|to)\s*16:00'}
+  - {id: probation, check: contains, section: '(?i)employment basics', pattern: '(?i)\b3[- ]months?\b'}
+  - {id: notice, check: contains, section: '(?i)employment basics', pattern: '(?i)\b4\s+weeks'}
+  - {id: learning-budget, check: contains, pattern: '1,?200'}
+  - {id: annual-25, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b25\s+(?:working\s+)?days'}
+  - {id: holidays-8, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b8\s+public\s+holidays'}
+  - {id: carry-deadline, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)31\s+March'}
+  - {id: sick-10, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b10\s+(?:working\s+)?days'}
+  - {id: parental-16, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b16\s+weeks'}
+  - {id: partner-4, check: contains, section: '(?i)leave and time off|leave & time off', pattern: '(?i)\b4\s+weeks'}
+  # Leave summary table: exactly seven rows.
+  - {id: leave-table, check: table_rows, section: '(?i)leave and time off|leave & time off', min: 7, max: 7}
+  # Exactly eight numbered conduct commitments (other lists in the chapter are bullets).
+  - {id: conduct-8, check: numbered_items, section: '(?i)code of conduct', min: 8, max: 8}
+  # "Who to ask:" closes each of the ten chapters.
+  - {id: who-to-ask, check: contains, pattern: '(?i)who to ask\**\s*:', min: 10}
+  - {id: no-family, check: not_contains, pattern: '(?i)(?:like a|one big|we are a|we''re a|we’re a)\s+(?:big\s+|little\s+)?family'}

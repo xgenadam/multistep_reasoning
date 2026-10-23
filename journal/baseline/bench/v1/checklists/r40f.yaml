@@ -1,0 +1,33 @@
+id: r40f
+items:
+  # The parent's eleven chapters are kept.
+  - {id: kept-intro, check: heading, pattern: '(?i)introduction|goals'}
+  - {id: kept-monolith, check: heading, pattern: '(?i)current monolith'}
+  - {id: kept-target, check: heading, pattern: '(?i)target architecture'}
+  - {id: kept-strangler, check: heading, pattern: '(?i)strangler'}
+  - {id: kept-phases, check: heading, pattern: '(?i)migration phases'}
+  - {id: kept-services, check: heading, pattern: '(?i)service[- ]by[- ]service'}
+  - {id: kept-data, check: heading, pattern: '(?i)data migration'}
+  - {id: kept-testing, check: heading, pattern: '(?i)testing'}
+  - {id: kept-cutover, check: heading, pattern: '(?i)cut-?over|rollback'}
+  - {id: kept-governance, check: heading, pattern: '(?i)organi[sz]ation|governance'}
+  - {id: kept-risks, check: heading, pattern: '(?i)risks and mitigations|risks & mitigations'}
+  - {id: kept-services-table, check: table_rows, section: '(?i)target architecture', min: 8, max: 8}
+  # The case study: about 900 words (±10 %), the given facts, five lessons.
+  - {id: sec-case-study, check: heading, pattern: '(?i)case study'}
+  - {id: case-words, check: word_count, section: '(?i)case study', min: 810, max: 990}
+  - {id: case-duplicates, check: contains, section: '(?i)case study', pattern: '\b1,?140\b'}
+  - {id: case-weeks, check: contains, section: '(?i)case study', pattern: '(?i)\b(?:9|nine)\s+weeks'}
+  - {id: case-lessons-5, check: numbered_items, section: '(?i)case study', min: 5, max: 5}
+  # The glossary: exactly 25 terms, the twelve given ones among them.
+  - {id: sec-glossary, check: heading, pattern: '(?i)glossary'}
+  - {id: glossary-25, check: table_rows, section: '(?i)glossary', min: 25, max: 25}
+  - {id: gl-strangler, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**strangler'}
+  - {id: gl-cdc, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**change data capture'}
+  - {id: gl-outbox, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**(?:transactional )?outbox'}
+  - {id: gl-dual-write, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**dual[- ]writes?'}
+  - {id: gl-idempotency, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**idempoten'}
+  - {id: gl-shadow, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**shadow'}
+  - {id: gl-canary, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**canary'}
+  - {id: gl-bounded, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**bounded context'}
+  - {id: gl-p95, check: contains, section: '(?i)glossary', pattern: '(?i)\|\s*\**p95'}
