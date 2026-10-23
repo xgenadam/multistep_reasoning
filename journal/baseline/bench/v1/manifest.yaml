@@ -506,105 +506,105 @@ prompts:
     subsets: [g3]
   - id: r02
     domain: report
-    status: draft
+    status: written
     title: Incident postmortem
     brief: "From a given timeline of an outage: summary, timeline table with every given timestamp, root cause, five numbered action items; blameless tone."
     target_words: 700
   - id: r03
     domain: report
-    status: draft
+    status: written
     title: Vendor comparison memo
     brief: "Three given hosting options with given prices and limits: a comparison table, total cost for a stated workload (must compute correctly), a recommendation."
     target_words: 600
   - id: r04
     domain: report
-    status: draft
+    status: written
     title: Engineer onboarding checklist
     brief: "Exactly 15 items in three named phases (week 1, month 1, quarter 1), each with an owner role."
     target_words: 500
   - id: r05
     domain: report
-    status: draft
+    status: written
     title: Public-key cryptography explainer
     brief: "600-800 words for non-technical managers, one analogy, no equations, sections on signing and on key loss."
     target_words: 700
   - id: r06
     domain: report
-    status: draft
+    status: written
     title: Meeting summary from a transcript
     brief: "A given ~700-word transcript: decisions, action items with the owners named in it, open questions; nothing that is not in the transcript."
     target_words: 400
     subsets: [g3]
   - id: r07
     domain: report
-    status: draft
+    status: written
     title: Project status update
     brief: "Given metrics and milestones: RAG status with reasons, a risks table, next two weeks; under 450 words."
     target_words: 400
   - id: r08
     domain: report
-    status: draft
+    status: written
     title: Project abstract
     brief: "A 230-250-word abstract for a given research idea, plus exactly five keywords."
     target_words: 250
   - id: r09
     domain: report
-    status: draft
+    status: written
     overlap: true
     title: Remote-work policy FAQ
     brief: "Ten Q&As from a given policy text; a one-paragraph summary of the same policy first (deliberate overlap); every answer traceable to a clause."
     target_words: 900
   - id: r10
     domain: report
-    status: draft
+    status: written
     title: Migration risk register
     brief: "Eight risks for a given database migration: table with likelihood, impact, score = L x I, owner, mitigation; sorted by score."
     target_words: 700
   - id: r11
     domain: report
-    status: draft
+    status: written
     title: Linear algebra study plan
     brief: "s4's task: a seven-row day-by-day table and a ten-item prerequisite checklist."
     target_words: 600
   - id: r12
     domain: report
-    status: draft
+    status: written
     title: Event catering plan
     brief: "Two given recipes scaled from 4 to 18 servings: scaled ingredient tables (checked numbers), a merged shopping list, a prep timeline."
     target_words: 600
   - id: r13
     domain: report
-    status: draft
+    status: written
     title: Cover letter
     brief: "Given a job ad and a CV summary: at most 380 words, three paragraphs, each of the ad's three must-haves addressed with a CV fact."
     target_words: 350
   - id: r14
     domain: report
-    status: draft
+    status: written
     title: Article summary
     brief: "A given ~1,200-word article: a 180-220-word summary and exactly three key claims, each with a supporting quote from the text."
     target_words: 300
   - id: r15
     domain: report
-    status: draft
+    status: written
     title: Architecture decision record
     brief: "Choosing a message queue for a given context: Context, three Options with pros/cons, Decision, Consequences; under 800 words."
     target_words: 700
   - id: r16
     domain: report
-    status: draft
+    status: written
     title: CLI user guide page
     brief: "From a given `--help` text: install, five worked examples using only real flags, troubleshooting; no invented flags."
     target_words: 700
   - id: r17
     domain: report
-    status: draft
+    status: written
     title: Laptop acceptable-use policy
     brief: "Clauses numbered 1-12 under three given headings, plain language, an enforcement clause."
     target_words: 800
   - id: r18
     domain: report
-    status: draft
+    status: written
     title: Press release
     brief: "Given launch facts: headline, dateline, two quotes from the named people, boilerplate; every given number exactly once."
     target_words: 450
@@ -883,35 +883,35 @@ prompts:
     subsets: [g3]
   - id: r02f
     domain: report
-    status: draft
+    status: written
     follows: r02
     title: Postmortem lessons and owners
     brief: "Add lessons learned, reorder the action items by a given priority, and add the owners given in the prompt."
     target_words: 900
   - id: r03f
     domain: report
-    status: draft
+    status: written
     follows: r03
     title: Vendor memo with a fourth option
     brief: "A fourth option with given specs: update the table, the cost calculation and, if warranted, the recommendation."
     target_words: 750
   - id: r06f
     domain: report
-    status: draft
+    status: written
     follows: r06
     title: Running summary of two meetings
     brief: "A second given transcript: merge into one running summary, mark items closed or reassigned, and drop nothing still open."
     target_words: 600
   - id: r10f
     domain: report
-    status: draft
+    status: written
     follows: r10
     title: Risk register update
     brief: "Four new given risks and two re-scored ones: the table stays sorted by score and the scores stay correct."
     target_words: 950
   - id: r15f
     domain: report
-    status: draft
+    status: written
     follows: r15
     title: ADR superseded
     brief: "A new constraint reverses the decision: write the superseding decision, keep the original as history, update the consequences."

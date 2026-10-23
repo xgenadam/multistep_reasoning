@@ -1,0 +1,13 @@
+id: r15
+items:
+  - {id: words, check: word_count, min: 300, max: 799}   # "under 800 words": a hard bound, not "about"
+  - {id: adr-id, check: contains, pattern: '(?i)ADR[- ]?0*7\b'}
+  - {id: sec-status, check: heading, pattern: '(?i)status'}
+  - {id: sec-context, check: heading, pattern: '(?i)context'}
+  - {id: sec-options, check: heading, pattern: '(?i)option|alternative'}
+  - {id: sec-decision, check: heading, pattern: '(?i)decision(?!s? record)'}
+  - {id: sec-consequences, check: heading, pattern: '(?i)consequence'}
+  - {id: accepted, check: contains, pattern: '(?i)\baccepted\b'}   # unscoped: "## Status: Accepted" is common
+  - {id: option-headings, check: heading, section: '(?i)option|alternative', pattern: '(?i)kafka|rabbit|sqs', min: 3, max: 3}
+  - {id: pros, check: contains, section: '(?i)option|alternative', pattern: '(?i)\bpros\b|\badvantages\b', min: 3}
+  - {id: cons, check: contains, section: '(?i)option|alternative', pattern: '(?i)\bcons\b|\bdisadvantages\b', min: 3}

@@ -1,0 +1,15 @@
+id: r07
+items:
+  - {id: words, check: word_count, min: 150, max: 449}   # "under 450 words": a hard bound, not "about"
+  - {id: sec-overall, check: heading, pattern: '(?i)overall'}
+  - {id: sec-risks, check: heading, pattern: '(?i)risk'}
+  - {id: sec-next, check: heading, pattern: '(?i)next|two weeks|coming'}
+  # by the given rules: M2/M3 are 5 working days late (<= 10) and spend is 9 % over (<= 15 %), so not Red;
+  # late milestones and accuracy 99.2 % < 99.5 % make it Amber
+  # unscoped: "## Overall status: Amber" puts the RAG in the heading, which a section scope excludes
+  - {id: rag-amber, check: contains, pattern: '(?i)\bamber\b'}
+  # 272,500 / 250,000 = 1.09: 9 % over plan to date (or "109 % of plan")
+  - {id: spend-pct, check: contains, section: '(?i)overall', pattern: '(?i)(?<![\d.])(?:9|109)(?:\.0)?\s?(?:%|per\s?cent)'}
+  - {id: three-risks, check: table_rows, section: '(?i)risk', min: 3, max: 3}
+  - {id: risk-owners, check: contains, section: '(?i)risk', pattern: '(?i)\b(hartley|ito|mensah|brandt)\b', min: 3}
+  - {id: next-bullets, check: bullet_items, section: '(?i)next|two weeks|coming', min: 3, max: 5}

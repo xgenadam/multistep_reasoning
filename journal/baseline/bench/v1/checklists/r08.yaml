@@ -1,0 +1,11 @@
+id: r08
+items:
+  - {id: sec-abstract, check: heading, pattern: '(?i)^\W*abstract\b'}
+  - {id: sec-keywords, check: heading, pattern: '(?i)^\W*key\s?words\b'}
+  # "between 230 and 250 words", stated as the portal's hard limit: no 10 % widening
+  - {id: abstract-words, check: word_count, section: '(?i)^\W*abstract\b', min: 230, max: 250}
+  - {id: five-keywords, check: bullet_items, section: '(?i)^\W*key\s?words\b', min: 5, max: 5}
+  - {id: cost, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\$\s?14\b|\b14 (?:US )?dollars|USD ?14\b'}
+  - {id: farms, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\b120\b|one hundred(?: and)? twenty'}
+  - {id: seasons, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\b(two|2) (?:consecutive )?(?:growing |cropping )?seasons'}
+  - {id: no-citations, check: not_contains, pattern: '\[\d+\]|(?i:\bet al\b)|\([A-Z][A-Za-z-]+,? (?:19|20)\d\d\)'}

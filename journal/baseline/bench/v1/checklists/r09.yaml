@@ -1,0 +1,9 @@
+id: r09
+# overlap: true. The summary and the FAQ deliberately cover the same policy, so no max_section_overlap item.
+items:
+  - {id: words, check: word_count, min: 720, max: 1100}   # "about 800-1,000": ±10 %
+  - {id: sec-summary, check: heading, pattern: '(?i)^\W*summary\b'}
+  - {id: sec-faq, check: heading, pattern: '(?i)^\W*(faq|frequently asked)'}
+  - {id: summary-words, check: word_count, section: '(?i)^\W*summary\b', min: 90, max: 165}   # "about 100-150": ±10 %
+  - {id: ten-questions, check: heading, section: '(?i)^\W*(faq|frequently asked)', pattern: '\?\s*\**\s*$', min: 10, max: 10}
+  - {id: clause-refs, check: contains, section: '(?i)^\W*(faq|frequently asked)', pattern: '(?i)\(clauses? \d+\.\d+[^)]*\)', min: 10}

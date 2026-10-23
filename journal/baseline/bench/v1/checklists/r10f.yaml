@@ -1,0 +1,20 @@
+id: r10f
+# Scores (L x I): reporting now 5x5=25; data types 20; cutover overrun 16; MySQL-specific SQL 15; CDC lag 12;
+# new sequences 3x3=9; rollback 8; new collation 2x3=6; new BI connector 5x1=5; CDC licence 4;
+# new timestamps 1x3=3; ops unfamiliar now 1x2=2.
+# Sorted: 25, 20, 16, 15, 12, 9, 8, 6, 5, 4, 3, 2 (all distinct, so the order is unique).
+# Row k's score is the 5th cell of the row whose # cell is k (columns: #, Risk, Likelihood, Impact, Score, ...).
+items:
+  - {id: words, check: word_count, min: 765, max: 1155}   # "about 850-1,050": ±10 %
+  - {id: kept-scoring, check: heading, pattern: '(?i)scor|scale|method'}
+  - {id: kept-register, check: heading, pattern: '(?i)register'}
+  - {id: kept-top3, check: heading, pattern: '(?i)\btop\b'}
+  - {id: twelve-rows, check: table_rows, section: '(?i)register', min: 12, max: 12}
+  - {id: rank1-score, check: number, section: '(?i)register', pattern: '(?m)^\|\s*\**1\**\s*\|[^|\n]*\|[^|\n]*\|[^|\n]*\|\s*\**(\d+)', value: 25}
+  - {id: rank6-score, check: number, section: '(?i)register', pattern: '(?m)^\|\s*\**6\**\s*\|[^|\n]*\|[^|\n]*\|[^|\n]*\|\s*\**(\d+)', value: 9}
+  - {id: rank8-score, check: number, section: '(?i)register', pattern: '(?m)^\|\s*\**8\**\s*\|[^|\n]*\|[^|\n]*\|[^|\n]*\|\s*\**(\d+)', value: 6}
+  - {id: rank12-score, check: number, section: '(?i)register', pattern: '(?m)^\|\s*\**12\**\s*\|[^|\n]*\|[^|\n]*\|[^|\n]*\|\s*\**(\d+)', value: 2}
+  - {id: top3-items, check: numbered_items, section: '(?i)\btop\b', min: 3, max: 3}
+  - {id: top3-reporting, check: contains, section: '(?i)\btop\b', pattern: '(?i)report'}   # reporting (25) enters the top three
+  - {id: sec-changes, check: heading, pattern: '(?i)change'}
+  - {id: six-changes, check: bullet_items, section: '(?i)change', min: 6, max: 6}

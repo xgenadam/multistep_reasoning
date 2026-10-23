@@ -1,0 +1,21 @@
+id: r12
+# Scale factor 18 / 4 = 4.5.
+# Traybake: chicken 800 -> 3,600 g; potatoes 600 -> 2,700 g; lemons 2 -> 9; garlic 6 -> 27 cloves;
+#   oil 60 -> 270 ml; thyme 10 -> 45 g; salt 8 -> 36 g.
+# Salad: chickpeas 2 -> 9 tins; spinach 200 -> 900 g; red onion 1 -> 4.5; feta 150 -> 675 g;
+#   oil 40 -> 180 ml; lemons 1 -> 4.5; cumin 2 -> 9 tsp.
+# Shopping list: olive oil 270 + 180 = 450 ml; lemons 9 + 4.5 = 13.5 -> 14; red onions 4.5 -> 5; tins 9.
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: traybake-table, check: table_rows, section: '(?i)traybake|chicken', min: 7, max: 7}
+  - {id: salad-table, check: table_rows, section: '(?i)chickpea|salad', min: 7, max: 7}
+  - {id: chicken-3600, check: contains, pattern: '(?<![\d.,])3[,  ]?600\s?g\b'}
+  - {id: feta-675, check: contains, pattern: '(?<![\d.,])675\s?g\b'}
+  # the salad's onion and lemon stay unrounded in the scaled table: 4.5 each
+  - {id: unrounded, check: contains, pattern: '(?<![\d.])4(?:\.5|½| 1/2)(?!\d)', min: 2}
+  - {id: sec-shopping, check: heading, pattern: '(?i)shopping'}
+  - {id: oil-450, check: contains, section: '(?i)shopping', pattern: '(?<![\d.,])450\s?ml\b'}
+  - {id: lemons-14, check: contains, section: '(?i)shopping', pattern: '(?i)(?<![\d.])14(?!\d|[.,]\d)[^\n]*lemon|lemon[^\n]*(?<![\d.])14(?!\d|[.,]\d)'}
+  - {id: onions-5, check: contains, section: '(?i)shopping', pattern: '(?i)(?<![\d.])5(?!\d|[.,]\d)[^\n]*onion|onion[^\n]*(?<![\d.])5(?!\d|[.,]\d)'}
+  - {id: sec-timeline, check: heading, pattern: '(?i)timeline|prep'}
+  - {id: clock-times, check: contains, section: '(?i)timeline|prep', pattern: '\b\d{1,2}[:.]\d{2}\b', min: 4}

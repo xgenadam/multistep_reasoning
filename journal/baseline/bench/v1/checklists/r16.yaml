@@ -1,0 +1,14 @@
+id: r16
+# Long options in the help text: help, version, since, until, level, grep, exclude, format, fields,
+# max-lines, tz, count, no-color. The no-invented-flags items flag any other --option in the Examples
+# and Troubleshooting sections (Installation is left out: pipx/python options are not logslice's).
+items:
+  - {id: words, check: word_count, min: 540, max: 880}   # "about 600-800": ±10 %
+  - {id: sec-install, check: heading, pattern: '(?i)install'}
+  - {id: sec-examples, check: heading, pattern: '(?i)example'}
+  - {id: sec-troubleshooting, check: heading, pattern: '(?i)troubleshoot'}
+  # every subheading inside Examples is one worked example
+  - {id: five-examples, check: heading, section: '(?i)example', pattern: '.', min: 5, max: 5}
+  - {id: exit-rows, check: table_rows, section: '(?i)troubleshoot', min: 4, max: 4}   # statuses 1, 2, 3, 4
+  - {id: no-invented-flags-examples, check: not_contains, section: '(?i)example', pattern: '(?<![\w-])--(?!(?:help|version|since|until|level|grep|exclude|format|fields|max-lines|tz|count|no-color)(?![\w-]))[A-Za-z][\w-]*'}
+  - {id: no-invented-flags-troubleshooting, check: not_contains, section: '(?i)troubleshoot', pattern: '(?<![\w-])--(?!(?:help|version|since|until|level|grep|exclude|format|fields|max-lines|tz|count|no-color)(?![\w-]))[A-Za-z][\w-]*'}

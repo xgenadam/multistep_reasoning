@@ -1,0 +1,13 @@
+id: r03
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: sec-options, check: heading, pattern: '(?i)option|compar'}
+  - {id: sec-cost, check: heading, pattern: '(?i)cost'}
+  - {id: sec-recommendation, check: heading, pattern: '(?i)recommend'}
+  - {id: table-rows, check: table_rows, section: '(?i)option|compar', min: 3, max: 3}
+  # Nimbus: 3 x 730 x 0.052 = 113.88; 500 x 0.10 = 50.00; (2,000 - 1,000) x 0.08 = 80.00; DB 95.00 -> 338.88
+  - {id: total-nimbus, check: contains, pattern: '(?<![\d.,])338\.88'}
+  # Harbor Team: 240.00 flat (3 <= 4 instances, 2 TB <= 3 TB); (500 - 400) x 0.15 = 15.00; DB 60.00 -> 315.00
+  - {id: total-harbor, check: contains, pattern: '(?<![\d.,])315(?:\.00)?(?!\d|[.,]\d)'}
+  # Kestrel: 3 x 38 = 114.00; 500 x 0.08 = 40.00; 2,000 x 0.05 = 100.00; DB 120.00 -> 374.00
+  - {id: total-kestrel, check: contains, pattern: '(?<![\d.,])374(?:\.00)?(?!\d|[.,]\d)'}

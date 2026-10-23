@@ -1,0 +1,15 @@
+id: r02f
+items:
+  - {id: words, check: word_count, min: 720, max: 1100}   # "about 800-1,000": ±10 %
+  - {id: kept-summary, check: heading, pattern: '(?i)^\W*(?:incident |executive )?summary\b'}
+  - {id: kept-timeline, check: heading, pattern: '(?i)timeline'}
+  - {id: kept-root-cause, check: heading, pattern: '(?i)root\s*cause|cause'}
+  - {id: kept-actions, check: heading, pattern: '(?i)action'}
+  - {id: timeline-rows, check: table_rows, section: '(?i)timeline', min: 14, max: 14}   # the parent's 14 timestamps
+  - {id: sec-lessons, check: heading, pattern: '(?i)lesson|learn'}
+  - {id: three-lessons, check: bullet_items, section: '(?i)lesson|learn', min: 3, max: 3}
+  # five items plus the meeting's one, or five when it was folded into an existing item
+  - {id: actions-count, check: numbered_items, section: '(?i)action', min: 5, max: 6}
+  - {id: priorities, check: contains, section: '(?i)action', pattern: '\bP1\b'}
+  - {id: owners, check: contains, section: '(?i)action', pattern: '(?i)\b(mei lin|jonas berg|aisha karim|rafael ortiz)\b', min: 5}
+  - {id: blameless, check: not_contains, pattern: '(?i)\b(priya|natarajan|tomasz|wierzbicki|dana|okafor)\b'}

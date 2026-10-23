@@ -1,0 +1,18 @@
+id: r18
+# Each figure must appear exactly once. The lookarounds keep 27 from matching inside 2027,
+# 16 inside 2016-style numbers, and so on.
+items:
+  - {id: words, check: word_count, min: 360, max: 550}   # "about 400-500": ±10 %
+  - {id: headline, check: heading, pattern: '\S'}
+  - {id: dateline, check: contains, pattern: '(?i)\bhalden\b[^\n]{0,40}\b(?:wash|wa\b)'}
+  - {id: quote-albrecht, check: contains, pattern: '(?i)\balbrecht\b'}
+  - {id: quote-bell, check: contains, pattern: '(?i)\bbell\b'}
+  - {id: quotes, check: contains, pattern: '["“][^"”\n]{20,}["”]', min: 2}
+  - {id: boilerplate, check: contains, pattern: '(?i)about verdane'}
+  - {id: once-2019, check: contains, pattern: '(?<![\d.,])2019(?!\d|[.,]\d)', min: 1, max: 1}
+  - {id: once-85, check: contains, pattern: '(?<![\d.,])85(?!\d|[.,]\d)', min: 1, max: 1}
+  - {id: once-1200, check: contains, pattern: '(?<![\d.,])1,?200(?!\d|[.,]\d)', min: 1, max: 1}
+  - {id: once-16, check: contains, pattern: '(?<![\d.,])16(?!\d|[.,]\d)', min: 1, max: 1}
+  - {id: once-40, check: contains, pattern: '(?<![\d.,])40(?!\d|[.,]\d)', min: 1, max: 1}
+  - {id: once-89000, check: contains, pattern: '(?<![\d.,])89,?000(?!\d|[.,]\d)', min: 1, max: 1}
+  - {id: once-27, check: contains, pattern: '(?<![\d.,])27(?!\d|[.,]\d)', min: 1, max: 1}

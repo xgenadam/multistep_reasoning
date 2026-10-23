@@ -1,0 +1,9 @@
+id: r14
+# Whether the quotations are verbatim and the numbers right is left to the judge (the article is in the prompt).
+items:
+  - {id: sec-summary, check: heading, pattern: '(?i)^\W*summary\b'}
+  - {id: sec-claims, check: heading, pattern: '(?i)claim'}
+  # "180-220 words", a stated range rather than "about": no 10 % widening
+  - {id: summary-words, check: word_count, section: '(?i)^\W*summary\b', min: 180, max: 220}
+  - {id: three-claims, check: numbered_items, section: '(?i)claim', min: 3, max: 3}
+  - {id: quotes, check: contains, section: '(?i)claim', pattern: '["“][^"”\n]{15,}["”]', min: 3}

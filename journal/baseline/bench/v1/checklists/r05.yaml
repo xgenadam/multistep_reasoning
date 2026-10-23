@@ -1,0 +1,9 @@
+id: r05
+items:
+  - {id: words, check: word_count, min: 540, max: 880}   # "about 600-800": ±10 %
+  - {id: sec-signing, check: heading, pattern: '(?i)\bsign'}
+  - {id: sec-key-loss, check: heading, pattern: '(?i)\blos[st]|\blos(e|ing)\b|stolen|theft|compromis|leak'}
+  - {id: sec-questions, check: heading, pattern: '(?i)question'}
+  - {id: three-questions, check: numbered_items, section: '(?i)question', min: 3, max: 3}
+  - {id: no-equations, check: not_contains, pattern: '[^=\n]=[^=\n]|(?<!\[)\^|\bmod\b|[×÷]'}   # a setext underline (===) is not an equation
+  - {id: no-algorithms, check: not_contains, pattern: '(?i)\bRSA\b|elliptic|\bECC\b|ECDSA|Ed25519|Diffie|\bDSA\b|\bSHA-?\d|\bAES\b|\bX\.509\b|\bPKCS'}

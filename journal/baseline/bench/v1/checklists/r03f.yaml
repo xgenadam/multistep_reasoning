@@ -1,0 +1,15 @@
+id: r03f
+items:
+  - {id: words, check: word_count, min: 540, max: 935}   # "about 600-850": ±10 %
+  - {id: kept-options, check: heading, pattern: '(?i)option|compar'}
+  - {id: kept-cost, check: heading, pattern: '(?i)cost'}
+  - {id: kept-recommendation, check: heading, pattern: '(?i)recommend'}
+  - {id: table-rows, check: table_rows, section: '(?i)option|compar', min: 4, max: 4}
+  - {id: fjord, check: contains, section: '(?i)option|compar', pattern: '(?i)fjord'}
+  # the parent's three totals stay correct (arithmetic in r03.yaml)
+  - {id: total-nimbus, check: contains, pattern: '(?<![\d.,])338\.88'}
+  - {id: total-harbor, check: contains, pattern: '(?<![\d.,])315(?:\.00)?(?!\d|[.,]\d)'}
+  - {id: total-kestrel, check: contains, pattern: '(?<![\d.,])374(?:\.00)?(?!\d|[.,]\d)'}
+  # Fjord: 3 x 730 x 0.045 = 98.55; storage 0 (500 GB <= 1 TB); (2,000 - 500) x 0.06 = 90.00; DB 110.00 -> 298.55
+  # (cheapest, but its 12-month term fails "no contract longer than one month": the recommendation stays Nimbus; judged, not checked)
+  - {id: total-fjord, check: contains, pattern: '(?<![\d.,])298\.55'}

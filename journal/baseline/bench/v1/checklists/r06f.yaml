@@ -1,0 +1,16 @@
+id: r06f
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: kept-decisions, check: heading, pattern: '(?i)decision'}
+  - {id: kept-actions, check: heading, pattern: '(?i)action'}
+  - {id: kept-open, check: heading, pattern: '(?i)open|question|unresolved'}
+  # r06's three, plus 13 Oct: no clinic joins the beta without signed terms; the weekly becomes async (live every other week)
+  - {id: five-decisions, check: numbered_items, section: '(?i)decision', min: 5, max: 5}
+  # r06's five (Owen, Raj, Lucía closed; Femi's notice reassigned to Maya; Maya's Android 9 figures still open)
+  # plus Owen (macros via the platform team, Fri 17th) and Sanjay (terms to 150 clinics, Thu 16th)
+  - {id: seven-actions, check: table_rows, section: '(?i)action', min: 7, max: 7}
+  - {id: closed, check: contains, section: '(?i)action', pattern: '(?i)\bclosed\b', min: 3}
+  - {id: reassigned, check: contains, section: '(?i)action', pattern: '(?i)\breassigned\b'}
+  - {id: android-action-kept, check: contains, section: '(?i)action', pattern: '(?i)android'}
+  - {id: android-still-open, check: contains, section: '(?i)open|question|unresolved', pattern: '(?i)android'}
+  - {id: backport-open, check: contains, section: '(?i)open|question|unresolved', pattern: '(?i)backport|4\.1'}

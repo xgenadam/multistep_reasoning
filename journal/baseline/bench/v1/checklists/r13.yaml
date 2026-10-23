@@ -1,0 +1,9 @@
+id: r13
+# "Three body paragraphs" and "a CV fact per must-have" are left to the judge, except the checks below.
+items:
+  - {id: words, check: word_count, min: 150, max: 380}   # "at most 380 words": a hard bound, not "about"
+  - {id: addressee, check: contains, pattern: '\bKerr\b'}
+  - {id: reference, check: contains, pattern: '\bDE-?2291\b'}
+  - {id: airflow, check: contains, pattern: '(?i)\bairflow\b'}   # must-have 2 needs the CV's Airflow fact
+  - {id: no-salary, check: not_contains, pattern: '(?i)\bsalary|\bpay (?:expectation|range)|remuneration'}
+  - {id: no-placeholders, check: not_contains, pattern: '\[[^\]\n]{1,60}\](?!\()'}   # a markdown link [text](url) is not a placeholder

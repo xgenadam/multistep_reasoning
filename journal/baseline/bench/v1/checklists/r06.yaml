@@ -1,0 +1,13 @@
+id: r06
+items:
+  - {id: words, check: word_count, min: 270, max: 495}   # "about 300-450": ±10 %
+  - {id: sec-decisions, check: heading, pattern: '(?i)decision'}
+  - {id: sec-actions, check: heading, pattern: '(?i)action'}
+  - {id: sec-open, check: heading, pattern: '(?i)open|question|unresolved'}
+  # the transcript's decisions: 4.2 moves to 21 October; dark mode moves to 4.3; beta grows from 50 to 200 clinics
+  - {id: three-decisions, check: numbered_items, section: '(?i)decision', min: 3, max: 3}
+  # Owen (time-zone fix, Thu), Raj (regression results, Mon 13th), Femi (customer notice, Fri),
+  # Lucía (onboarding screens to support, Wed), Maya (Android 9 usage figures, no date)
+  - {id: five-actions, check: table_rows, section: '(?i)action', min: 5, max: 5}
+  - {id: owners, check: contains, section: '(?i)action', pattern: '(?i)\b(owen|raj|femi|luc[ií]a|maya)\b', min: 5}
+  - {id: not-set, check: contains, section: '(?i)action', pattern: '(?i)not set'}

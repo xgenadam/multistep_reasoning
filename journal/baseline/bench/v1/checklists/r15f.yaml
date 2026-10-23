@@ -1,0 +1,15 @@
+id: r15f
+items:
+  - {id: words, check: word_count, min: 720, max: 1100}   # "about 800-1,000": ±10 %
+  - {id: kept-status, check: heading, pattern: '(?i)status'}
+  - {id: kept-context, check: heading, pattern: '(?i)context'}
+  - {id: kept-options, check: heading, pattern: '(?i)option|alternative'}
+  # the original decision, under any heading that is not the superseding one
+  - {id: kept-decision, check: heading, pattern: '(?i)^(?!.*supersed).*decision(?!s? record)'}
+  - {id: kept-consequences, check: heading, pattern: '(?i)consequence'}
+  - {id: kept-option-headings, check: heading, section: '(?i)option|alternative', pattern: '(?i)kafka|rabbit|sqs', min: 3, max: 3}
+  # unscoped: "## Status: Superseded by ADR-0012" puts it in the heading, which a section scope excludes
+  - {id: status-superseded, check: contains, pattern: '(?i)superseded by (?:\W{0,3})ADR[- ]?0*12\b'}
+  - {id: sec-superseding, check: heading, pattern: '(?i)superseding|revised decision|new decision'}
+  # SQS/SNS is the only approved messaging
+  - {id: new-sqs, check: contains, section: '(?i)superseding|revised decision|new decision', pattern: '(?i)\bsqs\b'}

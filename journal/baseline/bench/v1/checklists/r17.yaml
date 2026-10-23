@@ -1,0 +1,12 @@
+id: r17
+items:
+  - {id: words, check: word_count, min: 630, max: 990}   # "about 700-900": ±10 %
+  - {id: sec-using, check: heading, pattern: '(?i)using your laptop'}
+  - {id: sec-safe, check: heading, pattern: '(?i)client work|keeping .*safe'}
+  - {id: sec-loss, check: heading, pattern: '(?i)loss|leaving|enforcement'}
+  # clauses as a markdown list ("1. ...") or bold-numbered paragraphs ("**1.** ...", "**1. Title**")
+  - {id: twelve-clauses, check: contains, pattern: '(?m)^ {0,3}(?:\*\*|__)?\d{1,2}[.)]', min: 12, max: 12}
+  - {id: continuous, check: contains, pattern: '(?m)^ {0,3}(?:\*\*|__)?12[.)]'}   # numbering runs on to 12, not 1-4 three times
+  - {id: enforcement, check: contains, section: '(?i)loss|leaving|enforcement', pattern: '(?i)disciplin|breach|enforce'}
+  - {id: report-24h, check: contains, pattern: '(?i)\b24 hours\b|twenty-four hours'}
+  - {id: plain-language, check: not_contains, pattern: '(?i)\b(shall|hereby|herein|hereinafter|pursuant|thereof|whereas|aforementioned)\b'}

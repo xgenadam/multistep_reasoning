@@ -1,0 +1,12 @@
+id: r11
+# The harness's s4 prompt (journal/baseline/scenarios.py) with exact counts added. It states no length,
+# so there is no word_count item.
+items:
+  - {id: seven-rows, check: table_rows, min: 7, max: 7}   # the first table in the answer is Deliverable 1
+  - {id: sec-checklist, check: heading, pattern: '(?i)check\s?list'}
+  # (the section skips a title such as "Study plan and checklist" that would span the whole answer)
+  # ten list items, bulleted, checkbox or numbered: any top-level list line in the checklist section
+  - {id: ten-concepts, check: contains, section: '(?i)^(?!.*(?:plan|schedule)).*check\s?list', pattern: '(?m)^ {0,3}(?:[-*+]|\d+[.)])\s+\S', min: 10, max: 10}
+  - {id: vectors, check: contains, pattern: '(?i)\bvectors?\b'}
+  - {id: matrices, check: contains, pattern: '(?i)\bmatri(?:x|ces)\b'}
+  - {id: systems, check: contains, pattern: '(?i)systems? of (?:linear )?equations'}

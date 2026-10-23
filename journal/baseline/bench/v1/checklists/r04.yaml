@@ -1,0 +1,14 @@
+id: r04
+items:
+  - {id: words, check: word_count, min: 360, max: 660}   # "about 400-600": ±10 %
+  - {id: sec-week1, check: heading, pattern: '(?i)week\s*(1|one)\b'}
+  - {id: sec-month1, check: heading, pattern: '(?i)month\s*(1|one)\b'}
+  - {id: sec-quarter1, check: heading, pattern: '(?i)quarter\s*(1|one)\b|\bq1\b'}
+  - {id: week1-five, check: numbered_items, section: '(?i)week\s*(1|one)\b', min: 5, max: 5}
+  - {id: month1-five, check: numbered_items, section: '(?i)month\s*(1|one)\b', min: 5, max: 5}
+  - {id: quarter1-five, check: numbered_items, section: '(?i)quarter\s*(1|one)\b|\bq1\b', min: 5, max: 5}
+  - {id: numbered-to-15, check: contains, pattern: '(?m)^ {0,3}15[.)]\s+\S'}
+  # one owner role per item at least; the intro may name a role too, so this is a floor
+  - {id: owners, check: contains, pattern: '(?i)hiring manager|onboarding buddy|\bit support|tech lead|new hire', min: 15}
+  - {id: on-call-q1, check: contains, section: '(?i)quarter\s*(1|one)\b|\bq1\b', pattern: '(?i)on-?\s?call'}
+  - {id: no-hr, check: not_contains, pattern: '(?i)payroll|pension|health insurance|benefits enrol'}
