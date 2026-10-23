@@ -3,7 +3,7 @@
 #   1. writes ~/models/.gpu-halt (judge-llama-server.sh refuses to boot while it exists),
 #   2. kills the Q-04 run chain (q04-run-judge.sh, quality.py judge) and the Q-02 experiment drivers
 #      (journal/baseline/arms.py, journal/baseline/harness.py) so nothing re-launches or keeps sending requests,
-#   3. stops every GPU container: the judge (judge_llama), the generators (gen_llama, vllm_qwen38fn_3090) and any
+#   3. stops every GPU container: the judge (judge_llama), the generators (gen_<generator>, vllm_qwen38fn_3090) and any
 #      other container from a CUDA image. The nested podman records --device nvidia.com/gpu=all nowhere in
 #      `inspect` (HostConfig.Devices is [] on 2026-10-23), so the names and the image's NVIDIA_VISIBLE_DEVICES
 #      are what identify a GPU container,
@@ -25,7 +25,7 @@ safe_state() {
   # the pattern needs the interpreter, so an editor or a grep that names the file survives.
   pkill -f 'python[0-9.]*( +-[^ ]+)* +([^ ]*/)?(arms|harness)\.py' 2>/dev/null
   for c in $(docker ps --format '{{.Names}}' 2>/dev/null); do
-    case "$c" in judge_llama|gen_llama|vllm_qwen38fn_3090) gpu=1 ;; *) gpu=0 ;; esac
+    case "$c" in judge_llama|gen_*|vllm_qwen38fn_3090) gpu=1 ;; *) gpu=0 ;; esac
     if [ $gpu = 1 ] || docker inspect -f '{{json .HostConfig}} {{json .Config.Env}}' "$c" 2>/dev/null | grep -qE 'nvidia.com/gpu|NVIDIA_VISIBLE_DEVICES'; then
       docker stop -t 20 "$c" >/dev/null 2>&1; log "stopped container $c"
     fi

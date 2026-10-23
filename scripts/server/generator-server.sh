@@ -12,11 +12,13 @@
 #
 # Knobs: DRY_RUN=1 (print the resolved command, start nothing), PARALLEL (llama.cpp slots, default 5),
 #        SLOT_CTX (tokens per slot, default 65536), KV (llama.cpp KV type, default f16), SPLIT (per-model default
-#        below), TS, EXTRA (more llama-server flags), FN_LANE (the flash-next launcher), FN_NAME (its container).
-# Refuses (as judge-llama-server.sh does) when ~/models/.gpu-halt exists, a card has > 1 GB in use, or the port
-# already answers. `stop` stops gen_llama and the flash-next container (vllm_qwen38fn_3090: the lane's default name,
-# shared with the flash-next judge; one process owns the GPUs at a time, so stop takes whichever is up) and waits
-# for the cards to drop under 1 GB.
+#        below), TS, EXTRA (more llama-server flags), FN_LANE (the flash-next launcher), FN_NAME (its container),
+#        GPUS (llama.cpp only: all, or card indices such as 0,1; the two llama.cpp generators fit on two cards each
+#        and can run side by side, e.g. GPUS=0,1 PARALLEL=4 for qwen3.8-27b and GPUS=2,3 for qwen3.6-35b-a3b).
+# Refuses (as judge-llama-server.sh does) when ~/models/.gpu-halt exists, a card it would use has > 1 GB in use, or
+# the port already answers. Each llama.cpp generator has its own container, gen_<generator>, so two can be up at
+# once. `stop` stops every gen_* container and the flash-next container (vllm_qwen38fn_3090: the lane's default
+# name, shared with the flash-next judge) and waits for all cards to drop under 1 GB; `stop <generator>` stops one.
 #
 # Slots and context. The campaign runs 3 jobs at once and the harness's scenarios run in a thread pool; nothing in
 # the pipeline issues concurrent calls inside a turn (run_multi_concurrent in llama_utils.py is used only by its
@@ -43,21 +45,27 @@
 # content. The server-side default is enable_thinking false, the same default as the flash-next lane.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GEN_NAME=gen_llama
 FN_NAME="${FN_NAME:-vllm_qwen38fn_3090}"
 FN_LANE="${FN_LANE:-$HOME/workspace/AI/Qwen38-Flash-Next-4x3090/vllm-w4a16/launch/launch-qwen38fn-w4a16-prefix.sh}"
 gpu_mem() { nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits; }
 
 if [ "${1:-}" = stop ]; then
-  for c in "$GEN_NAME" "$FN_NAME"; do
+  case "${2:-}" in
+    "") targets="$(docker ps -a --format '{{.Names}}' | grep -E '^gen_' | tr '\n' ' ') $FN_NAME" ;;
+    flash-next) targets="$FN_NAME" ;;
+    *) targets="gen_$2" ;;
+  esac
+  for c in $targets; do
     if docker ps --format '{{.Names}}' | grep -qx "$c"; then
       docker stop -t 60 "$c" >/dev/null 2>&1 || true; docker rm -f "$c" >/dev/null 2>&1 || true; echo "stopped $c"
     fi
   done
-  docker rm -f "$GEN_NAME" >/dev/null 2>&1 || true   # an exited gen_llama; leave an exited lane container to the lane
-  for _ in $(seq 1 24); do [ "$(gpu_mem | awk '$1>1000' | wc -l)" -eq 0 ] && break; sleep 5; done
-  echo "GPU memory used (MiB): $(gpu_mem | tr '\n' ' ')"
-  [ "$(gpu_mem | awk '$1>1000' | wc -l)" -eq 0 ] || { echo "a GPU still has >1 GB in use after stop" >&2; exit 6; }
+  for c in $targets; do case "$c" in gen_*) docker rm -f "$c" >/dev/null 2>&1 || true ;; esac; done  # exited gen_* too
+  if [ -z "${2:-}" ]; then   # everything stopped: every card must drain
+    for _ in $(seq 1 24); do [ "$(gpu_mem | awk '$1>1000' | wc -l)" -eq 0 ] && break; sleep 5; done
+    echo "GPU memory used (MiB): $(gpu_mem | tr '\n' ' ')"
+    [ "$(gpu_mem | awk '$1>1000' | wc -l)" -eq 0 ] || { echo "a GPU still has >1 GB in use after stop" >&2; exit 6; }
+  else sleep 5; echo "GPU memory used (MiB): $(gpu_mem | tr '\n' ' ')"; fi
   exit 0
 fi
 
@@ -74,10 +82,10 @@ show_models() { echo "/v1/models: $(curl -s -m 10 "http://localhost:$PORT/v1/mod
 
 if [ "$GEN" != flash-next ]; then
   PARALLEL="${PARALLEL:-5}"; SLOT_CTX="${SLOT_CTX:-65536}"
-  export NAME="$GEN_NAME" PARALLEL CTX=$(( PARALLEL * SLOT_CTX )) KV="${KV:-f16}" SPLIT="${SPLIT:-$DEF_SPLIT}"
-  export TS="${TS:-0.25,0.25,0.25,0.25}" DRY_RUN="${DRY_RUN:-0}"
+  export NAME="gen_$GEN" GPUS="${GPUS:-all}" PARALLEL CTX=$(( PARALLEL * SLOT_CTX )) KV="${KV:-f16}" SPLIT="${SPLIT:-$DEF_SPLIT}"
+  export DRY_RUN="${DRY_RUN:-0}"; [ -n "${TS:-}" ] && export TS   # unset: an even split over GPUS
   export EXTRA="--reasoning-format deepseek --chat-template-kwargs {\"enable_thinking\":false}${EXTRA:+ $EXTRA}"
-  echo "generator $GEN: port=$PORT served=$SERVED slots=$PARALLEL x $SLOT_CTX ctx=$CTX kv=$KV split=$SPLIT"
+  echo "generator $GEN: port=$PORT served=$SERVED slots=$PARALLEL x $SLOT_CTX ctx=$CTX kv=$KV split=$SPLIT gpus=$GPUS"
   "$HERE/judge-llama-server.sh" "$MODEL_REL" "$SERVED" "$PORT"   # refusals, boot, health wait, READY, VRAM
   [ "$DRY_RUN" = 1 ] || show_models
   exit 0

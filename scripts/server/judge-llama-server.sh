@@ -7,8 +7,10 @@
 #         scripts/server/judge-llama-server.sh stop
 # Knobs:  CTX (default 16384; judge prompts run ~4K tokens), PARALLEL (default 1: one slot, clean per-call wall), NGL (999),
 #         KV (q8_0), SPLIT (layer; row is faster for dense models but not every MoE path), TS (tensor split, default 0.25,0.25,0.25,0.25), EXTRA (appended),
-#         DRY_RUN=1 (print the docker run command and the refusal checks, start and stop nothing; exit 0).
-# Also the llama.cpp path of scripts/server/generator-server.sh (NAME=gen_llama), so keep the knobs and output stable.
+#         DRY_RUN=1 (print the docker run command and the refusal checks, start and stop nothing; exit 0),
+#         GPUS (all, or a comma list of card indices such as 0,1: the container gets only those cards, the busy check
+#         looks only at them, and TS defaults to an even split over them; two servers can then share the box).
+# Also the llama.cpp path of scripts/server/generator-server.sh (NAME=gen_<generator>), so keep the knobs and output stable.
 # The nested engine ignores --gpus; only --device nvidia.com/gpu=all passes the cards (AGENTS.md).
 set -euo pipefail
 IMAGE="${IMAGE:-ghcr.io/ggml-org/llama.cpp:server-cuda}"
@@ -16,9 +18,15 @@ NAME="${NAME:-judge_llama}"
 if [ "${1:-}" = stop ]; then docker stop -t 30 "$NAME" >/dev/null 2>&1 || true; docker rm -f "$NAME" >/dev/null 2>&1 || true; echo "stopped $NAME"; exit 0; fi
 MODEL_REL="${1:?gguf path relative to ~/models}"; ALIAS="${2:?served model name}"; PORT="${3:-8092}"
 CTX="${CTX:-16384}"; PARALLEL="${PARALLEL:-1}"; NGL="${NGL:-999}"; KV="${KV:-q8_0}"; SPLIT="${SPLIT:-layer}"
-TS="${TS:-0.25,0.25,0.25,0.25}"
+GPUS="${GPUS:-all}"
+if [ "$GPUS" = all ]; then DEVICES=(--device nvidia.com/gpu=all); CARDS=""; NCARDS=4
+else IFS=, read -r -a _cards <<< "$GPUS"; DEVICES=(); for c in "${_cards[@]}"; do DEVICES+=(--device "nvidia.com/gpu=$c"); done
+  CARDS="$GPUS"; NCARDS=${#_cards[@]}; fi
+TS="${TS:-$(awk -v n="$NCARDS" 'BEGIN { for (i = 1; i <= n; i++) printf "%s%.4g", (i > 1 ? "," : ""), 1 / n }')}"
+gpu_used() { if [ -n "$CARDS" ]; then nvidia-smi -i "$CARDS" --query-gpu=memory.used --format=csv,noheader,nounits
+             else nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits; fi; }
 run_cmd() {  # $1 = split mode; the docker run argv, one place for the boot and DRY_RUN
-  RUN=(docker run -d --name "$NAME" --restart no --device nvidia.com/gpu=all
+  RUN=(docker run -d --name "$NAME" --restart no "${DEVICES[@]}"
     --network host --ipc host --ulimit memlock=-1:-1
     -v "$HOME/models:/models:ro"
     "$IMAGE"
@@ -36,19 +44,19 @@ if [ "${DRY_RUN:-0}" = 1 ]; then
   [ -f "$HOME/models/.gpu-halt" ] && echo "DRY_RUN: would REFUSE: halt flag set ($(cat "$HOME/models/.gpu-halt"))"
   [ -f "$HOME/models/$MODEL_REL" ] || echo "DRY_RUN: would REFUSE: model missing at ~/models/$MODEL_REL"
   curl -s -m 3 -o /dev/null "http://localhost:$PORT/v1/models" && echo "DRY_RUN: port $PORT answers now (a real boot first stops $NAME, then refuses if it still answers)"
-  echo "DRY_RUN: GPU memory used (MiB): $(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>&1 | tr '\n' ' ')(a real boot refuses above 1000 on any card)"
+  echo "DRY_RUN: GPU memory used (MiB) on cards ${GPUS}: $(gpu_used 2>&1 | tr '\n' ' ')(a real boot refuses above 1000 on any of them)"
   exit 0
 fi
 [ -f "$HOME/models/.gpu-halt" ] && { echo "GPU HALT flag set by the watchdog: $(cat "$HOME/models/.gpu-halt"); see ~/models/.gpu-watchdog.log" >&2; exit 7; }
 test -f "$HOME/models/$MODEL_REL" || { echo "MODEL MISSING at ~/models/$MODEL_REL" >&2; exit 3; }
 docker stop -t 30 "$NAME" >/dev/null 2>&1 || true; docker rm -f "$NAME" >/dev/null 2>&1 || true
 if curl -s -m 3 -o /dev/null "http://localhost:$PORT/v1/models"; then echo "port $PORT already answers; stop that server first" >&2; exit 5; fi
-busy=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '$1>1000' | wc -l)
-[ "$busy" -eq 0 ] || { echo "a GPU has >1 GB in use; one process owns the GPUs at a time" >&2; exit 6; }
+busy=$(gpu_used | awk '$1>1000' | wc -l)
+[ "$busy" -eq 0 ] || { echo "a GPU among cards $GPUS has >1 GB in use; one process owns a card at a time" >&2; exit 6; }
 boot() {  # $1 = split mode; returns 0 when healthy, 2 when the model failed to load
   docker rm -f "$NAME" >/dev/null 2>&1 || true
   run_cmd "$1"; "${RUN[@]}" >/dev/null
-  echo "launched $NAME model=$MODEL_REL alias=$ALIAS port=$PORT ctx=$CTX parallel=$PARALLEL kv=$KV split=$1"
+  echo "launched $NAME model=$MODEL_REL alias=$ALIAS port=$PORT ctx=$CTX parallel=$PARALLEL kv=$KV split=$1 gpus=$GPUS ts=$TS"
   t0=$(date +%s)
   until curl -s -m 3 "http://localhost:$PORT/health" 2>/dev/null | grep -q '"ok"'; do
     docker ps --format '{{.Names}}' | grep -qx "$NAME" || { docker logs "$NAME" 2>&1 | tail -20; echo "$NAME exited during load" >&2; return 2; }

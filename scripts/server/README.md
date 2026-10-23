@@ -16,10 +16,10 @@ The container-side generator (Qwen-27B) is a separate server at `http://host.con
 ```bash
 scripts/server/generator-server.sh qwen3.8-27b             # boot; prints READY after <n>s, VRAM per card, /v1/models
 DRY_RUN=1 scripts/server/generator-server.sh flash-next    # print the resolved docker run; start nothing
-scripts/server/generator-server.sh stop                    # stop gen_llama / vllm_qwen38fn_3090, wait for < 1 GB per card
+scripts/server/generator-server.sh stop                    # stop every gen_* and vllm_qwen38fn_3090, wait for < 1 GB per card
 ```
 
-- **llama.cpp path.** It calls `judge-llama-server.sh` with `NAME=gen_llama`. It uses 5 slots × 65,536 tokens
+- **llama.cpp path.** It calls `judge-llama-server.sh` with `NAME=gen_<generator>`. It uses 5 slots × 65,536 tokens
   (`--parallel 5 --ctx-size 327680`, split per slot) and f16 KV with layer split. `--reasoning-format deepseek`
   puts thinking in `reasoning_content`, and the server-side default is `enable_thinking: false`, as on the vLLM lane.
   Each request's `chat_template_kwargs.enable_thinking` overrides that default.
@@ -37,3 +37,18 @@ scripts/server/generator-server.sh stop                    # stop gen_llama / vl
   - `qwen3.6-35b-a3b`: ready in 26 s, about 7.2–7.7 GiB per card, 142 tok/s decode.
   - `usage` returns prompt, completion and total tokens plus `prompt_tokens_details.cached_tokens`. It has no
     `completion_tokens_details.reasoning_tokens`, so reasoning tokens are counted inside `completion_tokens`.
+
+### Two llama.cpp generators side by side (2026-10-23)
+
+`GPUS` gives a llama.cpp generator only the listed cards (CDI `nvidia.com/gpu=<i>`). The busy check looks only at
+those cards, and the tensor split defaults to an even split over them. Each generator has its own container,
+`gen_<generator>`:
+
+```
+GPUS=0,1 PARALLEL=4 scripts/server/generator-server.sh qwen3.8-27b       # :8093, 4 slots x 64K, f16 KV, ~37 GB
+GPUS=2,3 scripts/server/generator-server.sh qwen3.6-35b-a3b              # :8094, 5 slots x 64K, ~28 GB
+scripts/server/generator-server.sh stop qwen3.8-27b                      # one; `stop` alone stops all
+```
+
+The 27B drops to 4 slots so that 20.5 GB of weights plus 17 GB of KV fit two 24 GB cards. With layer split, 2 cards
+decode about as fast as 4. flash-next still needs all four cards.
