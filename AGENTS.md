@@ -77,7 +77,7 @@ This file holds no decisions; it cites them by `D-nnn`.
   `~/models/.gpu-watchdog.log`. It trips on core ≥ 92 °C, ≥ 88 °C for three
   samples, hardware slowdown, a stopped fan above 70 °C, power over the
   limit, or nvidia-smi failing three times. A trip kills the Q-04 chain,
-  stops every GPU container and writes `~/models/.gpu-halt`, which the
+  stops every GPU container, kills by PID any process still holding a GPU (a server can outlive its container record in the nested podman) and writes `~/models/.gpu-halt`, which the
   judge launcher refuses to boot past. Read the log before deleting the
   flag. GDDR6X memory temperature is not readable on these cards. Check it
   runs (`pgrep -af gpu-watchdog`) before starting GPU work.

@@ -30,6 +30,16 @@ safe_state() {
       docker stop -t 20 "$c" >/dev/null 2>&1; log "stopped container $c"
     fi
   done
+  # A server can outlive its container record in the nested podman (2026-10-23 21:34Z: `docker ps` listed no
+  # gen_* while its llama-server kept 11 GB per card and ran for 9 more minutes), so whatever still holds a GPU
+  # context is killed by PID: TERM, then KILL after 10 s.
+  sleep 5
+  for sig in TERM KILL; do
+    for p in $(nvidia-smi --query-compute-apps=pid --format=csv,noheader,nounits 2>/dev/null | sort -u); do
+      cmd=$(ps -o comm= -p "$p" 2>/dev/null); kill -s $sig "$p" 2>/dev/null && log "killed ($sig) GPU process $p $cmd"
+    done
+    [ $sig = TERM ] && sleep 10
+  done
   sleep 15; log "after stop: $(nvidia-smi --query-gpu=index,temperature.gpu,memory.used --format=csv,noheader 2>&1 | tr '\n' ';')"
 }
 log "start interval=${INTERVAL}s warn=$WARN soft=$SOFT x$SUSTAIN hard=$HARD"
