@@ -1,0 +1,27 @@
+# Run the labelling app with the host's Docker (not the agent container's
+# nested podman, whose published ports stay inside claude-box):
+#   cd labelling_app && docker compose up
+#   open http://127.0.0.1:8766/
+# The assistant is off unless ASSIST_BASE_URL and ASSIST_MODEL are set, e.g. for
+# text-generation-webui on the host's :5000 with Qwen3.8-27B loaded:
+#   ASSIST_BASE_URL=http://host.docker.internal:5000/v1 \
+#   ASSIST_MODEL=Qwen3.8-27B-UD-Q6_K.gguf docker compose up
+services:
+  labelling:
+    image: python:3.12-slim
+    working_dir: /repo
+    volumes:
+      - ..:/repo
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      ASSIST_BASE_URL: ${ASSIST_BASE_URL:-}
+      ASSIST_MODEL: ${ASSIST_MODEL:-}
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PYTHONUSERBASE: /tmp/pyuser
+    command: >
+      sh -c "pip install --quiet --user pyyaml &&
+             python labelling_app/server.py --host 0.0.0.0 --port 8766"
+    ports:
+      - "127.0.0.1:8766:8766"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

@@ -25,6 +25,19 @@ python3 labelling_app/server.py \
 Any OpenAI-compatible endpoint works. llama-server ignores the model name,
 while vLLM needs the exact one.
 
+## Or with the host's Docker
+
+```bash
+cd /mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/labelling_app
+UID=$(id -u) GID=$(id -g) docker compose up    # labels.yaml stays owned by you
+# with the assistant:
+UID=$(id -u) GID=$(id -g) ASSIST_BASE_URL=http://host.docker.internal:5000/v1 \
+  ASSIST_MODEL=Qwen3.8-27B-UD-Q6_K.gguf docker compose up
+```
+
+This has to be the host's Docker. In the agent container, `docker` is a
+nested podman whose published ports stay inside `claude-box`.
+
 ## What it does
 
 - It shows the task, then Left and Right. Which candidate sits on which
