@@ -108,97 +108,97 @@ prompts:
     files: [toposort.py]
   - id: c17
     domain: code
-    status: draft
+    status: written
     title: Transaction ledger
     brief: "`ledger.py`: parse a transactions CSV (date, account, amount as Decimal), running balances per account, overdraft rule raising with the offending row."
     files: [ledger.py]
   - id: c18
     domain: code
-    status: draft
+    status: written
     title: Slugify
     brief: "`slug.py` `slugify(text, max_len, existing)`: NFKD transliteration, separators collapsed, cut at a word boundary, `-2`/`-3` suffixes for uniqueness."
     files: [slug.py]
   - id: c19
     domain: code
-    status: draft
+    status: written
     title: Cron next run
     brief: "`cron.py` `next_run(expr, after)`: five-field cron with `*`, lists, ranges and steps; day-of-month/day-of-week OR rule as in Vixie cron."
     files: [cron.py]
   - id: c20
     domain: code
-    status: draft
+    status: written
     title: JSON path getter
-    brief: "`jpath.py` `get(obj, 'a.b[2].c', default)`: dotted keys, indices including negatives, quoted keys with dots; `PathError` vs default semantics stated."
+    brief: "`jpath.py` `get(obj, 'a.b[2].c', default)` and a public `parse(path)`: dotted keys, indices including negatives, quoted keys with dots; `PathError` vs default semantics stated."
     files: [jpath.py]
   - id: c21
     domain: code
-    status: draft
+    status: written
     title: Exact matrix algebra
     brief: "`matrix.py`: determinant, inverse and solve on lists of Fractions; `SingularMatrix` raised; shape errors raised."
     files: [matrix.py]
   - id: c22
     domain: code
-    status: draft
+    status: written
     title: Priority scheduler
-    brief: "`pq.py` `TaskQueue`: push(task, priority), pop lowest first and FIFO among equals, reprioritize and remove in O(log n) (lazy deletion allowed)."
+    brief: "`pq.py` `TaskQueue`: push(task, priority), pop lowest first and FIFO among equals, peek, priority(task), reprioritize and remove in O(log n) (lazy deletion allowed)."
     files: [pq.py]
   - id: c23
     domain: code
-    status: draft
+    status: written
     title: Trie autocomplete
     brief: "`trie.py` `Autocomplete`: add(word, weight), complete(prefix, k) by weight then alphabetically, delete, case-insensitive matching that keeps the original case."
     files: [trie.py]
   - id: c24
     domain: code
-    status: draft
+    status: written
     title: Unit converter
     brief: "`units.py` `convert(value, from_unit, to_unit)`: length, mass, time and composite units (m/s, km/h); dimension mismatch raises."
     files: [units.py]
   - id: c25
     domain: code
-    status: draft
+    status: written
     title: Sudoku
-    brief: "`sudoku.py`: parse an 81-character grid, `is_valid`, `solve` (None if unsolvable), and `count_solutions(limit=2)`."
+    brief: "`sudoku.py`: parse an 81-character grid and `to_string`, `is_valid`, `solve` (None if unsolvable), and `count_solutions(limit=2)`."
     files: [sudoku.py]
   - id: c26
     domain: code
-    status: draft
+    status: written
     title: Word frequency CLI
     brief: "`wordfreq.py PATH [--top N] [--stopwords FILE]`: case-folded words, ties broken alphabetically, output `count<TAB>word`."
     files: [wordfreq.py]
   - id: c27
     domain: code
-    status: draft
+    status: written
     title: Binary search variants
-    brief: "`search.py`: first/last occurrence, insertion point, search in a rotated sorted array, and the integer square root by bisection."
+    brief: "`search.py`: first/last occurrence, `count`, insertion point, search in a rotated sorted array with `rotation_offset`, and the integer square root by bisection."
     files: [search.py]
   - id: c28
     domain: code
-    status: draft
+    status: written
     title: Event emitter
     brief: "`events.py` `Emitter`: on/off/once/emit, listener order, once removal before the call, listener exceptions collected into an `EmitError` after all listeners run."
     files: [events.py]
   - id: c29
     domain: code
-    status: draft
+    status: written
     title: CSV dedup CLI
     brief: "`csvdedup.py PATH --key COL[,COL] [--keep first|last]`: preserves the header and the row order of kept rows; a missing key column gives exit 2."
     files: [csvdedup.py]
   - id: c30
     domain: code
-    status: draft
+    status: written
     title: Money allocation
     brief: "`money.py`: Decimal amounts, banker's rounding to cents, `allocate(amount, ratios)` whose parts always sum exactly (largest-remainder rule)."
     files: [money.py]
   - id: c31
     domain: code
-    status: draft
+    status: written
     title: Shortest paths
-    brief: "`paths.py` `dijkstra(graph, src)`: distances and predecessors, `path(src, dst)` reconstruction, unreachable as None, negative weights raise."
+    brief: "`paths.py` `dijkstra(graph, src)`: distances and predecessors, `shortest_path(graph, src, dst)` reconstruction, unreachable as None, negative weights raise, nodes need not be comparable."
     files: [paths.py]
   - id: c32
     domain: code
-    status: draft
+    status: written
     title: Expression-free template strings
     brief: "`fmt.py` `render(template, values)`: `{name}` and `{name:default}` placeholders, `{{` escapes, a missing key raises with its name."
     files: [fmt.py]
@@ -417,17 +417,17 @@ prompts:
     files: [toposort.py]
   - id: c20f
     domain: code
-    status: draft
+    status: written
     follows: c20
     title: JSON path set, delete, wildcards
     brief: "Add `set` (creating intermediate containers per a stated rule), `delete`, and `[*]` wildcards in `get`, returning a list."
     files: [jpath.py]
   - id: c25f
     domain: code
-    status: draft
+    status: written
     follows: c25
     title: Sudoku hints
-    brief: "Add `hint(grid)`, the next naked or hidden single with its reason, and `difficulty(grid)`, the number of singles-only steps or None if guessing is needed."
+    brief: "Add `hint(grid)`, the next naked or hidden single in a stated scan order with its reason, and `difficulty(grid)`, the counts of naked and hidden singles used to finish the grid, or None if guessing is needed."
     files: [sudoku.py]
   - id: c33f
     domain: code
