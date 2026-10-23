@@ -6,9 +6,10 @@
   `design/Q-01-judge.md` § 1, § 3, § 9; `design/Q-02-model-size.md` § 4; the
   user's choice of 140 prompts (2026-10-23); this session's driver smoke
   test (§ 6).
-- **Status:** draft. Nothing here is in force. The bench stays
-  `frozen: false` and no tracked run file exists until the user approves.
-  Q-6 needs the pre-registration committed before Q-02's first run file.
+- **Status:** provisionally in force under D-022 (the user's instruction,
+  2026-10-23), with the agent's recommendations where § 7 left a choice.
+  The pre-registration is committed in Q-02 Notes. The user's later mass
+  review may amend or roll back any of it.
 
 ## 0. What to review
 
