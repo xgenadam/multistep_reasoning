@@ -21,21 +21,33 @@ docker stop -t 30 "$NAME" >/dev/null 2>&1 || true; docker rm -f "$NAME" >/dev/nu
 if curl -s -m 3 -o /dev/null "http://localhost:$PORT/v1/models"; then echo "port $PORT already answers; stop that server first" >&2; exit 5; fi
 busy=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '$1>1000' | wc -l)
 [ "$busy" -eq 0 ] || { echo "a GPU has >1 GB in use; one process owns the GPUs at a time" >&2; exit 6; }
-docker run -d --name "$NAME" --restart no --device nvidia.com/gpu=all \
-  --network host --ipc host --ulimit memlock=-1:-1 \
-  -v "$HOME/models:/models:ro" \
-  "$IMAGE" \
-    -m "/models/$MODEL_REL" --alias "$ALIAS" --host 0.0.0.0 --port "$PORT" \
-    --n-gpu-layers "$NGL" --ctx-size "$CTX" --parallel "$PARALLEL" \
-    --split-mode "$SPLIT" --tensor-split "$TS" --flash-attn on \
-    --cache-type-k "$KV" --cache-type-v "$KV" \
-    --batch-size 1024 --ubatch-size 512 --jinja --metrics ${EXTRA:-} >/dev/null
-echo "launched $NAME model=$MODEL_REL alias=$ALIAS port=$PORT ctx=$CTX parallel=$PARALLEL kv=$KV split=$SPLIT"
-t0=$(date +%s)
-until curl -s -m 3 "http://localhost:$PORT/health" 2>/dev/null | grep -q '"ok"'; do
-  docker ps --format '{{.Names}}' | grep -qx "$NAME" || { docker logs "$NAME" 2>&1 | tail -20; echo "$NAME exited during load" >&2; exit 1; }
-  [ $(( $(date +%s) - t0 )) -gt 1800 ] && { echo "not ready after 30 min" >&2; exit 1; }
-  sleep 5
-done
+boot() {  # $1 = split mode; returns 0 when healthy, 2 when the model failed to load
+  docker rm -f "$NAME" >/dev/null 2>&1 || true
+  docker run -d --name "$NAME" --restart no --device nvidia.com/gpu=all \
+    --network host --ipc host --ulimit memlock=-1:-1 \
+    -v "$HOME/models:/models:ro" \
+    "$IMAGE" \
+      -m "/models/$MODEL_REL" --alias "$ALIAS" --host 0.0.0.0 --port "$PORT" \
+      --n-gpu-layers "$NGL" --ctx-size "$CTX" --parallel "$PARALLEL" \
+      --split-mode "$1" --tensor-split "$TS" --flash-attn on \
+      --cache-type-k "$KV" --cache-type-v "$KV" \
+      --batch-size 1024 --ubatch-size 512 --jinja --metrics ${EXTRA:-} >/dev/null
+  echo "launched $NAME model=$MODEL_REL alias=$ALIAS port=$PORT ctx=$CTX parallel=$PARALLEL kv=$KV split=$1"
+  t0=$(date +%s)
+  until curl -s -m 3 "http://localhost:$PORT/health" 2>/dev/null | grep -q '"ok"'; do
+    docker ps --format '{{.Names}}' | grep -qx "$NAME" || { docker logs "$NAME" 2>&1 | tail -20; echo "$NAME exited during load" >&2; return 2; }
+    [ $(( $(date +%s) - t0 )) -gt 1800 ] && { echo "not ready after 30 min" >&2; exit 1; }
+    sleep 5
+  done
+}
+# This llama.cpp build cannot load some models with row split ("does not support split buffers",
+# 2026-10-23); fall back to layer split and say so, so the cost row records the mode actually used.
+if ! boot "$SPLIT"; then
+  if [ "$SPLIT" != layer ] && docker logs "$NAME" 2>&1 | grep -q 'does not support split buffers'; then
+    echo "SPLIT FALLBACK: $SPLIT unsupported for this model in this build; booting with layer"; SPLIT=layer
+    boot layer || exit 1
+  else exit 1; fi
+fi
+echo "split_used=$SPLIT"
 echo "READY after $(( $(date +%s) - t0 ))s (load time for the Q-04 swap-cost column)"
 nvidia-smi --query-gpu=index,memory.used --format=csv,noheader
