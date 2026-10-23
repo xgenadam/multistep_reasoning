@@ -1,0 +1,14 @@
+id: r24
+# Quarter-over-quarter changes the three required insights cite:
+#   revenue          (5.40 - 4.80) / 4.80 = 0.60 / 4.80 = +12.5 %
+#   churned          (208 - 160) / 160    = 48 / 160    = +30.0 %
+#   support tickets  (2,720 - 3,200) / 3,200 = -480 / 3,200 = -15.0 %
+# (others, not checked: new customers -12.0 %, AOV +14.0 %, marketing +5.0 %)
+items:
+  - {id: words, check: word_count, min: 360, max: 550}   # "about 400-500": ±10 %
+  - {id: sec-insights, check: heading, pattern: '(?i)insight'}
+  - {id: three-insights, check: numbered_items, section: '(?i)insight', min: 3, max: 3}
+  - {id: revenue-change, check: contains, pattern: '\b12\.5\s?%'}
+  - {id: churn-change, check: contains, pattern: '\b30(?:\.0)?\s?%'}
+  - {id: tickets-change, check: contains, pattern: '\b15(?:\.0)?\s?%'}
+  - {id: sec-recommendation, check: heading, pattern: '(?i)recommend|next step|q4 action'}

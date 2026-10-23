@@ -1,0 +1,9 @@
+id: r22
+items:
+  - {id: words, check: word_count, min: 630, max: 990}   # "700-900": ±10 %
+  - {id: sec-comparison, check: heading, pattern: '(?i)compar|criteri'}
+  - {id: six-criteria, check: table_rows, section: '(?i)compar|criteri', min: 6, max: 6}
+  # anchored so the "What would change this recommendation" heading doesn't satisfy it
+  - {id: sec-recommendation, check: heading, pattern: '(?i)^[\W\d]*(?:the |our |final )?recommend'}
+  - {id: sec-reversal, check: heading, pattern: '(?i)chang|revers|revisit|reconsider|flip|overturn'}
+  - {id: two-conditions, check: numbered_items, section: '(?i)chang|revers|revisit|reconsider|flip|overturn', min: 2, max: 2}

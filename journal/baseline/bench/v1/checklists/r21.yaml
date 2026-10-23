@@ -1,0 +1,13 @@
+id: r21
+# overlap root: shared steps are repeated on purpose, so no max_section_overlap item
+items:
+  - {id: words, check: word_count, min: 720, max: 1100}   # "about 800-1,000": ±10 %
+  - {id: six-templates, check: heading, pattern: '(?i)log ?in|sign.?in|password|charg|twice|cancel|refund|two.?factor|2fa|authenticat|phone|export|pdf|e-?mail|owner', min: 6}
+  - {id: subjects, check: contains, pattern: '(?im)^[^\w\n]*subject(?: line)?[^\w\n]*:', min: 6, max: 6}
+  - {id: ph-customer, check: contains, pattern: '\{\{\s*customer_name\s*\}\}', min: 6}
+  - {id: ph-ticket, check: contains, pattern: '\{\{\s*ticket_id\s*\}\}', min: 6}
+  - {id: ph-agent, check: contains, pattern: '\{\{\s*agent_name\s*\}\}', min: 6}
+  # refunds in situations 2 and 3
+  - {id: refund-timeline, check: contains, pattern: '(?i)5\s*(?:-|–|—|to)\s*7 business days', min: 2}
+  # identity check repeated in situations 2, 3 (refunds), 4 and 6 (account changes)
+  - {id: identity-check, check: contains, pattern: '(?i)last (?:four|4) digits', min: 4}

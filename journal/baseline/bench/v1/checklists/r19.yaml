@@ -1,0 +1,12 @@
+id: r19
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: sec-objectives, check: heading, pattern: '(?i)objective'}
+  - {id: objectives-three, check: bullet_items, section: '(?i)objective', min: 3, max: 3}
+  - {id: sec-timeline, check: heading, pattern: '(?i)timeline|timing|schedule|sequence'}
+  # six activities (warm-up, four planned, exit ticket) + the Total row = 7 body rows
+  - {id: timeline-rows, check: table_rows, section: '(?i)timeline|timing|schedule|sequence', min: 7, max: 7}
+  # the Total row's minutes: 5 (warm-up) + 32 (four activities) + 8 (exit ticket) = 45
+  - {id: total-45, check: number, section: '(?i)timeline|timing|schedule|sequence', pattern: '(?im)^\|[^\w\n]*total[^\d\n]*?(\d+)', value: 45}
+  - {id: exit-five, check: numbered_items, section: '(?i)exit', min: 5, max: 5}
+  - {id: sec-differentiation, check: heading, pattern: '(?i)differentiat|support and stretch'}

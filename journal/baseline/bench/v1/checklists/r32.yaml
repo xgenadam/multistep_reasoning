@@ -1,0 +1,15 @@
+id: r32
+# Tier 1 (Level A on checkout/sign-in): F1 3, F2 2, F3 5, F8 6, F11 4      -> 5 findings, 20 h
+# Tier 2 (other A): F4 1, F7 2, F9 8, F12 2, F13 3;
+#        (AA on checkout/sign-in): F6 3, F14 3                             -> 7 findings, 22 h
+# Tier 3 (rest, AA elsewhere): F5 4, F10 10                                -> 2 findings, 14 h
+# Total 20 + 22 + 14 = 56 h (= sum of all 14 estimates)
+items:
+  - {id: words, check: word_count, min: 630, max: 990}   # "about 700-900": ±10 %
+  - {id: tier1-five, check: contains, section: '(?i)tier\s*(?:1|one)\b', pattern: '(?m)^ {0,3}[-*+]\s+[^\w\n]*F(?:1[0-4]|[1-9])\b', min: 5, max: 5}
+  - {id: tier2-seven, check: contains, section: '(?i)tier\s*(?:2|two)\b', pattern: '(?m)^ {0,3}[-*+]\s+[^\w\n]*F(?:1[0-4]|[1-9])\b', min: 7, max: 7}
+  - {id: tier3-two, check: contains, section: '(?i)tier\s*(?:3|three)\b', pattern: '(?m)^ {0,3}[-*+]\s+[^\w\n]*F(?:1[0-4]|[1-9])\b', min: 2, max: 2}
+  - {id: tier1-effort, check: number, section: '(?i)tier\s*(?:1|one)\b', pattern: '(?i)tier effort[^\d\n]{0,10}(\d+)', value: 20}
+  - {id: tier2-effort, check: number, section: '(?i)tier\s*(?:2|two)\b', pattern: '(?i)tier effort[^\d\n]{0,10}(\d+)', value: 22}
+  - {id: tier3-effort, check: number, section: '(?i)tier\s*(?:3|three)\b', pattern: '(?i)tier effort[^\d\n]{0,10}(\d+)', value: 14}
+  - {id: total-56, check: contains, section: '(?i)total', pattern: '\b56\b'}

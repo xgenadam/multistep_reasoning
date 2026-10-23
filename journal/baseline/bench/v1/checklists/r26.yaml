@@ -1,0 +1,9 @@
+id: r26
+items:
+  - {id: words, check: word_count, min: 810, max: 1210}   # "about 900-1,100": ±10 %
+  - {id: eight-rules, check: heading, pattern: '(?i)^\W*rule\s*\d', min: 8, max: 8}
+  - {id: bad-examples, check: contains, pattern: '(?im)^[^\w\n]*bad\b', min: 8}
+  - {id: good-examples, check: contains, pattern: '(?im)^[^\w\n]*good\b', min: 8}
+  - {id: reviewer-six, check: bullet_items, section: '(?i)reviewer.{0,10}checklist|checklist.{0,10}reviewer', min: 6, max: 6}
+  - {id: author-six, check: bullet_items, section: '(?i)author.{0,10}checklist|checklist.{0,10}author', min: 6, max: 6}
+  - {id: size-limit, check: contains, pattern: '\b400\b'}

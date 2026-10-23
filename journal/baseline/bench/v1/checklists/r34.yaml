@@ -1,0 +1,14 @@
+id: r34
+# the mapping follows from the stated business priorities:
+#   cart -> availability (losing an add is worse than staleness; stock rechecked at checkout)
+#   seats -> consistency (no double booking; "try again" acceptable)
+#   likes -> availability (lag acceptable; button must always respond)
+items:
+  - {id: words, check: word_count, min: 720, max: 1100}   # "800-1,000": ±10 %
+  - {id: sec-tradeoff, check: heading, pattern: '(?i)trade.?off'}
+  - {id: cart-availability, check: contains, section: '(?i)cart', pattern: '(?im)^[^\w\n]*our choice[^\w\n]*availab'}
+  - {id: seats-consistency, check: contains, section: '(?i)seat|booking', pattern: '(?im)^[^\w\n]*our choice[^\w\n]*consisten'}
+  - {id: likes-availability, check: contains, section: '(?i)likes|counter', pattern: '(?im)^[^\w\n]*our choice[^\w\n]*availab'}
+  - {id: sec-glossary, check: heading, pattern: '(?i)glossary'}
+  - {id: glossary-five, check: bullet_items, section: '(?i)glossary', min: 5, max: 5}
+  - {id: no-code, check: not_contains, pattern: '```'}

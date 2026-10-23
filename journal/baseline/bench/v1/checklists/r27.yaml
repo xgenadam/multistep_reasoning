@@ -1,0 +1,11 @@
+id: r27
+items:
+  - {id: words, check: word_count, min: 720, max: 1100}   # "about 800-1,000": ±10 %
+  - {id: workload-three, check: numbered_items, section: '(?i)workload', min: 3, max: 3}
+  - {id: manager-three, check: numbered_items, section: '(?i)manager', min: 3, max: 3}
+  - {id: growth-three, check: numbered_items, section: '(?i)growth', min: 3, max: 3}
+  - {id: tools-three, check: numbered_items, section: '(?i)tools', min: 3, max: 3}
+  # one [Open] question per theme, four themes; a floor, since the Introduction may name the tags
+  - {id: four-open, check: contains, pattern: '(?i)\[\s*open\s*\]', min: 4}
+  - {id: why-lines, check: contains, pattern: '(?im)^[^\w\n]*why[^\w\n]{0,3}:', min: 12}
+  - {id: sec-anonymity, check: heading, pattern: '(?i)anonym|confidential'}

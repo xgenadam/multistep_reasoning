@@ -1,0 +1,12 @@
+id: r23f
+items:
+  - {id: words, check: word_count, min: 810, max: 1320}   # "about 900-1,200": ±10 %
+  - {id: kept-preconditions, check: heading, pattern: '(?i)precondition|prerequisite|before you (?:start|begin)'}
+  - {id: kept-abort, check: heading, pattern: '(?i)abort'}
+  - {id: sec-pitr, check: heading, pattern: '(?i)point.in.time|\bpitr\b'}
+  - {id: pitr-steps, check: numbered_items, section: '(?i)point.in.time|\bpitr\b', min: 3}
+  - {id: restore-command, check: contains, pattern: 'restore_command'}
+  - {id: signal-file, check: contains, pattern: 'recovery\.signal'}
+  - {id: target-time, check: contains, pattern: "recovery_target_time\\s*=\\s*'?2026-03-14[ T]09:41:00"}
+  - {id: sec-rollback, check: heading, pattern: '(?i)roll\s?-?back'}
+  - {id: rollback-three, check: numbered_items, section: '(?i)roll\s?-?back', min: 3}

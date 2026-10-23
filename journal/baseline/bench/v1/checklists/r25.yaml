@@ -1,0 +1,10 @@
+id: r25
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: duties-6-8, check: bullet_items, section: '(?i)what you.ll do|responsib', min: 6, max: 8}
+  - {id: must-six, check: bullet_items, section: '(?i)must', min: 6, max: 6}
+  - {id: nice-four, check: bullet_items, section: '(?i)nice|desirable|bonus points', min: 4, max: 4}
+  - {id: salary-band, check: contains, pattern: '£\s?72,000\s*(?:-|–|—|to)\s*£?\s?88,000'}
+  - {id: inclusive, check: not_contains, pattern: '(?i)rock ?star|ninja|guru|\bhe or she\b|\bhe/she\b|\byoung\b|digital native'}
+  - {id: no-years, check: not_contains, section: '(?i)must', pattern: '(?i)\byears?\b'}
+  - {id: sec-apply, check: heading, pattern: '(?i)apply|application'}

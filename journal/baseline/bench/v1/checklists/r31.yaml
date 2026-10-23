@@ -1,0 +1,12 @@
+id: r31
+# Quarry's proposal: 240,000 x 1.12 = 268,800 a year; three years = 3 x 268,800 = 806,400
+# Basalt BATNA: 3 x 255,000 + 60,000 migration = 765,000 + 60,000 = 825,000
+items:
+  - {id: words, check: word_count, min: 540, max: 880}   # "about 600-800": ±10 %
+  - {id: sec-batna, check: heading, pattern: '(?i)batna|alternative'}
+  - {id: sec-interests, check: heading, pattern: '(?i)interest'}
+  - {id: sec-concessions, check: heading, pattern: '(?i)concession'}
+  - {id: concessions-five, check: table_rows, section: '(?i)concession', min: 5}
+  - {id: sec-opening, check: heading, pattern: '(?i)opening|position'}
+  - {id: quarry-3y, check: contains, pattern: '\b806,400\b'}
+  - {id: basalt-3y, check: contains, pattern: '\b825,000\b'}

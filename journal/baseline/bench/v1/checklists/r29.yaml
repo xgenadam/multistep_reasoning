@@ -1,0 +1,11 @@
+id: r29
+items:
+  - {id: words, check: word_count, min: 540, max: 880}   # "about 600-800": ±10 %
+  - {id: five-sections, check: heading, pattern: '(?i)^[\W\d]*(?:shipped|reliability|people|under the hood|coming up)', min: 5}
+  - {id: sec-numbers, check: heading, pattern: '(?i)by the numbers'}
+  - {id: numbers-four, check: bullet_items, section: '(?i)by the numbers', min: 4, max: 4}
+  # spot checks that easily dropped facts were used (facts 6, 7 and 12)
+  - {id: fact-okafor, check: contains, pattern: 'Okafor'}
+  - {id: fact-crash-free, check: contains, pattern: '99\.6\s?%'}
+  - {id: fact-all-hands, check: contains, pattern: '(?i)first Thursday'}
+  - {id: no-repeat, check: max_section_overlap, max: 0.5}

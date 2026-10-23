@@ -1,0 +1,12 @@
+id: r23
+items:
+  - {id: words, check: word_count, min: 540, max: 880}   # "about 600-800": ±10 %
+  - {id: sec-preconditions, check: heading, pattern: '(?i)precondition|prerequisite|before you (?:start|begin)'}
+  - {id: sec-procedure, check: heading, pattern: '(?i)procedure|restore steps'}
+  - {id: steps-8-12, check: numbered_items, section: '(?i)procedure|restore steps', min: 8, max: 12}
+  # one Verify: line per step, so at least 8
+  - {id: verify-lines, check: contains, section: '(?i)procedure|restore steps', pattern: '(?im)^[^\w\n]*verify\b', min: 8}
+  - {id: sec-abort, check: heading, pattern: '(?i)abort'}
+  - {id: abort-three, check: bullet_items, section: '(?i)abort', min: 3}
+  # the unit is stopped and started again
+  - {id: unit-name, check: contains, pattern: 'postgresql@16-main', min: 2}

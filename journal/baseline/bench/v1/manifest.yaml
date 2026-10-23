@@ -610,99 +610,99 @@ prompts:
     target_words: 450
   - id: r19
     domain: report
-    status: draft
+    status: written
     title: Fractions lesson plan
     brief: "A 45-minute lesson: objectives, timed activities that sum to exactly 45 minutes, a five-question exit ticket with answers."
     target_words: 600
   - id: r20
     domain: report
-    status: draft
+    status: written
     title: Budget proposal
     brief: "Given line items: a table with subtotals per category and a grand total (all checked), justification per category."
     target_words: 600
   - id: r21
     domain: report
-    status: draft
+    status: written
     overlap: true
     title: Support reply templates
     brief: "Six templated replies for six given situations, each with a subject line and placeholders; several situations share steps (deliberate overlap)."
     target_words: 900
   - id: r22
     domain: report
-    status: draft
+    status: written
     title: SQL vs document store
     brief: "700-900 words for a given use case: a criteria table, a recommendation, two conditions that would reverse it."
     target_words: 800
   - id: r23
     domain: report
-    status: draft
+    status: written
     title: Backup restore runbook
     brief: "Restoring a PostgreSQL base backup: numbered steps, each with a command and a verification check; preconditions and abort criteria."
     target_words: 700
     subsets: [g3]
   - id: r24
     domain: report
-    status: draft
+    status: written
     title: Quarterly results summary
     brief: "Given quarterly figures: an executive summary with three insights, each citing a computed change (percentages checked)."
     target_words: 450
   - id: r25
     domain: report
-    status: draft
+    status: written
     title: Job description
     brief: "Senior data engineer: responsibilities, 6 must-haves and 4 nice-to-haves, a given salary band, inclusive language."
     target_words: 600
   - id: r26
     domain: report
-    status: draft
+    status: written
     title: Code review guidelines
     brief: "Eight rules, each with a rationale and a good/bad example, plus reviewer and author checklists."
     target_words: 1000
   - id: r27
     domain: report
-    status: draft
+    status: written
     title: Employee survey design
     brief: "Twelve questions across four given themes, mixed types (Likert, choice, open), the reason for each, an anonymity note."
     target_words: 900
   - id: r28
     domain: report
-    status: draft
+    status: written
     title: Dijkstra explainer with worked example
     brief: "For students, on a given 6-node weighted graph: the algorithm, a step table, and the final distances (checked against the true ones)."
     target_words: 900
   - id: r29
     domain: report
-    status: draft
+    status: written
     title: Engineering newsletter
     brief: "From twelve given bullet facts: five sections, every fact used once, a 'by the numbers' box."
     target_words: 700
   - id: r30
     domain: report
-    status: draft
+    status: written
     title: SWOT analysis
     brief: "A fictional bakery from given facts: a 2x2 table with 3-4 points per quadrant and three strategies, each linking a strength or opportunity to a weakness or threat."
     target_words: 600
   - id: r31
     domain: report
-    status: draft
+    status: written
     title: Negotiation brief
     brief: "Given a contract renewal scenario: BATNA, interests of both sides, a concessions table with values, an opening position."
     target_words: 700
   - id: r32
     domain: report
-    status: draft
+    status: written
     title: Accessibility audit summary
     brief: "Given 14 findings with WCAG references: prioritised into three tiers by a stated rule, an effort estimate per tier."
     target_words: 800
   - id: r33
     domain: report
-    status: draft
+    status: written
     title: Data dictionary
     brief: "A given 12-column table schema: one row per column with type, meaning, constraints and an example value; no invented columns."
     target_words: 700
   - id: r34
     domain: report
-    status: draft
+    status: written
     title: Explaining CAP to a product team
     brief: "800-1,000 words: the trade-off, three given product scenarios each mapped to a choice, a glossary of five terms."
     target_words: 900
@@ -918,14 +918,14 @@ prompts:
     target_words: 900
   - id: r20f
     domain: report
-    status: draft
+    status: written
     follows: r20
     title: Budget cut by 15 %
     brief: "Cut the total by 15 % under two given constraints; every subtotal and the total stay correct."
     target_words: 700
   - id: r23f
     domain: report
-    status: draft
+    status: written
     follows: r23
     title: Runbook for point-in-time recovery
     brief: "Extend to PITR with WAL replay to a given timestamp, and add a rollback section."

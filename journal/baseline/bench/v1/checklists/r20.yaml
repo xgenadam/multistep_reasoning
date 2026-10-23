@@ -1,0 +1,20 @@
+id: r20
+# Line amounts:
+#   staging 2,150 x 12 = 25,800; CI 12 x 420 = 5,040; code review 12 x 280 = 3,360;
+#   conferences 3 x 2,900 = 8,700; courses 12 x 360 = 4,320; laptops 4 x 2,450 = 9,800
+# Subtotals:
+#   cloud     25,800 + 18,600 + 7,200 = 51,600
+#   software   5,040 + 14,400 + 3,360 = 22,800
+#   training   8,700 +  4,320 + 3,500 = 16,520
+#   hardware   9,800 +  3,280         = 13,080
+# Grand total 51,600 + 22,800 + 16,520 + 13,080 = 104,000
+# Table: 11 line items + 4 subtotals + 1 grand total = 16 body rows
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: table-rows, check: table_rows, section: '(?i)table|breakdown', min: 16, max: 16}
+  - {id: sub-cloud, check: contains, pattern: '\b51,600\b'}
+  - {id: sub-software, check: contains, pattern: '\b22,800\b'}
+  - {id: sub-training, check: contains, pattern: '\b16,520\b'}
+  - {id: sub-hardware, check: contains, pattern: '\b13,080\b'}
+  - {id: grand-total, check: contains, pattern: '\b104,000\b'}
+  - {id: sec-justification, check: heading, pattern: '(?i)justif|rationale'}

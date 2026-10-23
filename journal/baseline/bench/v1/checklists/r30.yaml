@@ -1,0 +1,11 @@
+id: r30
+items:
+  - {id: words, check: word_count, min: 450, max: 770}   # "about 500-700": ±10 %
+  - {id: matrix-2x2, check: table_rows, section: '(?i)matrix|grid|quadrant', min: 2, max: 2}
+  - {id: strengths-3-4, check: contains, section: '(?i)matrix|grid|quadrant', pattern: '\bS[1-4]\b', min: 3, max: 4}
+  - {id: weaknesses-3-4, check: contains, section: '(?i)matrix|grid|quadrant', pattern: '\bW[1-4]\b', min: 3, max: 4}
+  - {id: opportunities-3-4, check: contains, section: '(?i)matrix|grid|quadrant', pattern: '\bO[1-4]\b', min: 3, max: 4}
+  - {id: threats-3-4, check: contains, section: '(?i)matrix|grid|quadrant', pattern: '\bT[1-4]\b', min: 3, max: 4}
+  - {id: three-strategies, check: numbered_items, section: '(?i)strateg', min: 3, max: 3}
+  # a bracket holding both a strength/opportunity label and a weakness/threat label, e.g. (S2 + T1)
+  - {id: strategy-links, check: contains, section: '(?i)strateg', pattern: '\((?=[^)\n]*\b[SO][1-4]\b)(?=[^)\n]*\b[WT][1-4]\b)[^)\n]*\)', min: 3}

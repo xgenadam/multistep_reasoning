@@ -1,0 +1,11 @@
+id: r33
+items:
+  - {id: words, check: word_count, min: 540, max: 880}   # "about 600-800": ±10 %
+  - {id: sec-columns, check: heading, pattern: '(?i)^[\W\d]*columns?\b'}
+  - {id: twelve-rows, check: table_rows, section: '(?i)^[\W\d]*columns?\b', min: 12, max: 12}
+  # plausible columns a writer might invent for a subscriptions table
+  - {id: no-invented, check: not_contains, pattern: '\b(?:updated_at|deleted_at|customer_id|user_id|started_at|ended_at|discount_cents)\b'}
+  - {id: seats-range, check: contains, section: '(?i)^[\W\d]*columns?\b', pattern: '\b500\b'}
+  - {id: status-values, check: contains, section: '(?i)^[\W\d]*columns?\b', pattern: 'past_due'}
+  - {id: sec-keys, check: heading, pattern: '(?i)key|relationship'}
+  - {id: three-questions, check: numbered_items, section: '(?i)question', min: 3, max: 3}
