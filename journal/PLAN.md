@@ -298,6 +298,14 @@ Pass criteria:
   bias, repeatability, tie rate and cost per call in one table. The fast and
   slow judges are chosen by the rule recorded before the run, and the choice
   is a DECISIONS entry with its cost per pair.
+- **Q-11** (added 2026-10-23 for Q-06 at the user's request): the user
+  labels pairs in a local app that shows the task and both candidates side
+  by side, in a per-pair shuffled and recorded display order, with no
+  source, run, arm or model verdict visible. An optional assistant answers
+  factual questions and never says which side is better. Each label (a, b
+  or tie, with a note, the time spent and the assistant transcript) is
+  written to a tracked labels file that `quality.py` reads as `expected`.
+  R1–R5 are labelled through it.
 
 The S-012 proposal (P1–P7, Q-2′, Q-6–Q-9, a draft decision) was ruled on by
 Q-01 stage 1 on 2026-10-19, accepted with six modifications, and folded in
@@ -660,4 +668,3 @@ Model and effort rules:
 | P-04 retire legacy chain | Sonnet 5.5 / low | — | |
 | JSON schema dedup (N21) | Opus 5.5 / medium → re-baseline Sonnet 5.5 / low | — | after A-05 (D-016). Mechanical, not a redesign. Re-baseline at `--jobs 1`, and check quality (P0-1/2/3) does not regress. |
 | Q-05 ablations (P4): one `OrchestratorConfig` switch per arm on the `g3` subset, quality delta beside marginal cost (D-007 form) | Sonnet 5.5 / medium | — | after the Q-E1 verdict; criterion Q-9's second sentence; needs the config-override flag from Q-02 stage 0 |
-| Q labelling app (the user's request, 2026-10-19): pairs side by side, a score entered in the UI, next pair; optional assistant for clarifying questions | Opus 5.5 / medium, or the user's own stack | short | gates Q-1's real-pair half and Q-04's label-agreement column; needs a Q criterion before instantiation. The assistant never shows a model verdict before the human's label is saved. |

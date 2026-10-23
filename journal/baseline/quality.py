@@ -65,6 +65,7 @@ DEFAULT_RUBRIC = Path(__file__).parent / 'rubrics' / 'pairwise_v1.md'
 DEFAULT_OUT = Path(__file__).parent / 'verdicts'
 # 2048 cut 19 of 351 flash-next critiques on the standard slice (Q-04, 2026-10-23).
 VERDICT_MAX_TOKENS = 4096
+LABELS_NAME = 'labels.yaml'
 ORDERS = ('ab', 'ba')
 WINNERS = ('A', 'B', 'tie')
 # Q-1 and Q-5 bars (PLAN § Phase Q; design § 4).
@@ -103,13 +104,30 @@ def rubric_id(text: str) -> str:
     return match.group(1)
 
 
+def load_labels(path: Path) -> dict[str, str]:
+    """The user's labels (`labels.yaml` beside the manifest, written by
+    labelling_app/server.py): pair_id -> a, b or tie. Empty if absent."""
+    labels_path = path.parent / LABELS_NAME
+    if not labels_path.exists():
+        return {}
+    data = yaml.safe_load(labels_path.read_text()) or {}
+    return {pid: entry['label'] for pid, entry in (data.get('labels') or {}).items()}
+
+
 def load_pairs(path: Path) -> list[dict]:
     """The manifest's pairs with candidate text loaded (paths are relative
-    to the manifest)."""
+    to the manifest). The user's labels fill an empty `expected`."""
     data = yaml.safe_load(path.read_text())
+    labels = load_labels(path)
     pairs = []
     for raw in data['pairs']:
         pair = dict(raw)
+        label = labels.get(pair['pair_id'])
+        if label is not None:
+            if pair.get('expected') not in (None, label):
+                raise ValueError(f'{pair["pair_id"]}: label {label!r} contradicts the '
+                                 f'manifest\'s expected {pair["expected"]!r}')
+            pair['expected'] = label
         for side in ('a', 'b'):
             pair[f'{side}_text'] = (path.parent / pair[side]).read_text()
         if pair.get('expected') not in (None, 'a', 'b', 'tie'):
@@ -542,9 +560,15 @@ def main() -> int:
     j.add_argument('--out', default=str(DEFAULT_OUT))
     r = sub.add_parser('report', help='print the summary of a verdict file')
     r.add_argument('verdicts')
+    r.add_argument('--pairs', default=None,
+                   help='re-score against this manifest and its current labels '
+                        '(the verdict file is not changed)')
     args = ap.parse_args()
     if args.cmd == 'report':
-        print_report(json.loads(Path(args.verdicts).read_text()))
+        data = json.loads(Path(args.verdicts).read_text())
+        if args.pairs:
+            data['summary'] = summarise(load_pairs(Path(args.pairs)), data['calls'])
+        print_report(data)
         return 0
     return run_judge(args)
 

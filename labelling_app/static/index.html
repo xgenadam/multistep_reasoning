@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pair Labelling</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6b66;
+    --line: #dcdcd6; --accent: #2f5fd0; --accent-ink: #ffffff; --done: #2e7d4f;
+    --code: #f0f0ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615; --panel: #1f1f1d; --ink: #e8e8e3; --muted: #9a9a93;
+      --line: #34342f; --accent: #7aa2ff; --accent-ink: #10131a; --done: #6cc08b;
+      --code: #262623;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+           padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { font-size: 16px; margin: 0 12px 0 0; }
+  .nav button { margin-right: 4px; }
+  .nav .done::after { content: " ✓"; color: var(--done); }
+  .nav .current { outline: 2px solid var(--accent); }
+  main { padding: 12px 16px 40px; max-width: 1600px; margin: 0 auto; }
+  details.task { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+                 padding: 8px 12px; margin-bottom: 12px; }
+  details.task summary { cursor: pointer; font-weight: 600; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+  .cand { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+          display: flex; flex-direction: column; min-width: 0; }
+  .cand h2 { font-size: 14px; margin: 0; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .cand pre, .task pre { margin: 0; padding: 12px; white-space: pre-wrap; word-break: break-word;
+              font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+              background: var(--code); }
+  .cand pre { max-height: 62vh; overflow: auto; flex: 1; }
+  .decide { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; margin: 14px 0; }
+  .decide textarea { flex: 1 1 320px; min-height: 40px; font: inherit; padding: 6px 8px;
+                     background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
+  button { font: inherit; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);
+           background: var(--panel); color: var(--ink); cursor: pointer; }
+  button.pick { font-weight: 600; }
+  button.pick.chosen, button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .status { color: var(--muted); font-size: 13px; }
+  .assist { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+  .assist h2 { font-size: 14px; margin: 0 0 6px; }
+  .turn { margin: 8px 0; }
+  .turn .q { font-weight: 600; }
+  .turn .a { white-space: pre-wrap; }
+  .askrow { display: flex; gap: 8px; margin-top: 8px; }
+  .askrow input { flex: 1; font: inherit; padding: 6px 8px; background: var(--panel); color: var(--ink);
+                  border: 1px solid var(--line); border-radius: 6px; }
+  kbd { font-size: 12px; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pair labelling</h1>
+  <div class="nav" id="nav"></div>
+  <span class="status" id="progress"></span>
+</header>
+<main>
+  <p class="status" id="intro">Read the task, then both responses. Pick the better one, or tie. Keys: <kbd>1</kbd> Left, <kbd>2</kbd> Tie, <kbd>3</kbd> Right, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> save. The sides are shuffled per pair.</p>
+  <details class="task" id="taskbox" open><summary>Task</summary><pre id="task"></pre></details>
+  <div class="cols">
+    <section class="cand"><h2>Left</h2><pre id="left"></pre></section>
+    <section class="cand"><h2>Right</h2><pre id="right"></pre></section>
+  </div>
+  <div class="decide">
+    <button class="pick" data-choice="left">Left is better</button>
+    <button class="pick" data-choice="tie">Tie</button>
+    <button class="pick" data-choice="right">Right is better</button>
+    <textarea id="note" placeholder="Note (optional): why"></textarea>
+    <button class="primary" id="save">Save &amp; next</button>
+    <span class="status" id="saved"></span>
+  </div>
+  <section class="assist" id="assist">
+    <h2>Assistant</h2>
+    <p class="status" id="assist-state"></p>
+    <div id="transcript"></div>
+    <div class="askrow">
+      <input id="question" placeholder="Ask a factual question, e.g. does Left exit non-zero on a missing path?">
+      <button id="ask">Ask</button>
+    </div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let state = { pairs: [], current: null, choice: null, openedAt: 0, assistant: false };
+
+async function api(path, body) {
+  const opts = body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {};
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+
+function renderNav() {
+  const nav = $('nav'); nav.textContent = '';
+  for (const p of state.pairs) {
+    const b = document.createElement('button');
+    b.textContent = p.pair_id;
+    if (p.done) b.classList.add('done');
+    if (p.pair_id === state.current) b.classList.add('current');
+    b.onclick = () => openPair(p.pair_id);
+    nav.appendChild(b);
+  }
+  const done = state.pairs.filter((p) => p.done).length;
+  $('progress').textContent = `${done} / ${state.pairs.length} labelled`;
+}
+
+function setChoice(choice) {
+  state.choice = choice;
+  document.querySelectorAll('.pick').forEach((b) => b.classList.toggle('chosen', b.dataset.choice === choice));
+}
+
+function renderTranscript(turns) {
+  const box = $('transcript'); box.textContent = '';
+  for (const t of turns) {
+    const d = document.createElement('div'); d.className = 'turn';
+    const q = document.createElement('div'); q.className = 'q'; q.textContent = 'You: ' + t.q;
+    const a = document.createElement('div'); a.className = 'a'; a.textContent = t.a;
+    d.append(q, a); box.appendChild(d);
+  }
+}
+
+async function openPair(id) {
+  const v = await api('/api/pair/' + encodeURIComponent(id));
+  state.current = id; state.openedAt = Date.now();
+  $('task').textContent = v.task;
+  $('left').textContent = v.left;
+  $('right').textContent = v.right;
+  $('left').scrollTop = 0; $('right').scrollTop = 0;
+  $('note').value = v.saved ? v.saved.note : '';
+  setChoice(v.saved ? v.saved.choice : null);
+  $('saved').textContent = v.saved ? 'Saved earlier; saving again replaces it (the old label is kept in history).' : '';
+  renderTranscript(v.transcript);
+  renderNav();
+  window.scrollTo(0, 0);
+}
+
+async function save() {
+  if (!state.current) return;
+  if (!state.choice) { $('saved').textContent = 'Pick Left, Tie or Right first.'; return; }
+  const seconds = (Date.now() - state.openedAt) / 1000;
+  try {
+    await api('/api/label', { pair_id: state.current, choice: state.choice, note: $('note').value, seconds });
+  } catch (e) { $('saved').textContent = 'Not saved: ' + e.message; return; }
+  const idx = state.pairs.findIndex((p) => p.pair_id === state.current);
+  state.pairs[idx].done = true;
+  const next = state.pairs.find((p, i) => i > idx && !p.done) || state.pairs.find((p) => !p.done);
+  if (next) openPair(next.pair_id);
+  else { renderNav(); $('saved').textContent = 'All pairs labelled. You can close this tab.'; }
+}
+
+async function ask() {
+  const q = $('question').value.trim();
+  if (!q || !state.current) return;
+  $('ask').disabled = true; $('assist-state').textContent = 'Thinking…';
+  try {
+    await api('/api/ask', { pair_id: state.current, question: q });
+    $('question').value = '';
+    const v = await api('/api/pair/' + encodeURIComponent(state.current));
+    renderTranscript(v.transcript);
+    $('assist-state').textContent = '';
+  } catch (e) { $('assist-state').textContent = 'Assistant error: ' + e.message; }
+  $('ask').disabled = false;
+}
+
+document.querySelectorAll('.pick').forEach((b) => b.onclick = () => setChoice(b.dataset.choice));
+$('save').onclick = save;
+$('ask').onclick = ask;
+$('question').addEventListener('keydown', (e) => { if (e.key === 'Enter') ask(); });
+document.addEventListener('keydown', (e) => {
+  const typing = ['TEXTAREA', 'INPUT'].includes(document.activeElement.tagName);
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { save(); return; }
+  if (typing) return;
+  if (e.key === '1') setChoice('left');
+  if (e.key === '2') setChoice('tie');
+  if (e.key === '3') setChoice('right');
+});
+
+(async () => {
+  const idx = await api('/api/pairs');
+  state.pairs = idx.pairs; state.assistant = idx.assistant;
+  $('assist-state').textContent = idx.assistant
+    ? 'Answers factual questions about this pair. It will not tell you which side is better. Questions are saved with your label.'
+    : 'Off: start the server with --assist-base-url and --assist-model to enable it.';
+  $('question').disabled = $('ask').disabled = !idx.assistant;
+  const first = state.pairs.find((p) => !p.done) || state.pairs[0];
+  if (first) openPair(first.pair_id); else $('intro').textContent = 'Nothing to label in this manifest.';
+})();
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@ updated: 2026-10-23 (D-021: flash-next is the judge of record, Devstral-2 concur
 
 ## Now
 - **Phase:** A; A-01 is done (D-018, approved 2026-10-19). Phase 0 close-out: 0-14 (P0-6), 0-15 (P0-10), 0-16 (P0-7, D-016), 0-06 (P0-4) and 0-09 (D-017) are done; 0-11 is deferred by the user (2026-10-19), not dropped.
-- **Next move:** the R1–R5 labelling app. The user is checking host access to `labelling_app/` (uncommitted placeholder); it needs a Q criterion and a ticket before work starts. Q-02 stage 0 (Opus 5.5 / high, no server; three generators, the 27B last) can run alongside. Judges: flash-next of record, Devstral-2 concurring (D-021), judge calls with prefix caching off. Q-01 and Q-04's final pick wait on the labels. Open AGENTS.md, this file, S-021 and the ticket.
+- **Next move:** the user labels R1–R5 in the Q-06 app on the host (`python3 labelling_app/server.py`, `labelling_app/README.md`; assistant on Qwen3.8-27B via `:5000`, never a judge candidate). Then commit `bench/validation/labels.yaml`, re-score Q-1's real half with `quality.py report … --pairs`, close Q-01 and Q-06, check D-021's condition, and write Q-04's DECISIONS entry. Q-02 stage 0 (Opus 5.5 / high, no server; the 27B last) can run alongside. Open AGENTS.md, this file, S-021 and the ticket.
 
 ## Resources
 - **Generator:** `:8091` serves Qwen flash (`qwen3.8-flash-next`) on the user's customised vLLM at `http://host.containers.internal:8091/v1`, on all four cards plus 40–50 GiB RAM (≈ 125 tok/s on code); it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). `:5000` is text-generation-webui's API (loader llama.cpp, Qwen3.8-27B GGUF on disk) with no model loaded on 2026-10-19. Export `LLM_BASE_URL` (D-008).
@@ -15,13 +15,14 @@ updated: 2026-10-23 (D-021: flash-next is the judge of record, Devstral-2 concur
 - **Server owner:** none (released 2026-10-23 by Q-04; GPUs idle, the GPU watchdog still runs).
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
-1. Q-01 — blocked: Q-1's real-pair half waits on the labelling app (stage 2 done, S-019)
-2. Q-04 — slow tier scored (S-020); final pick waits on the R1–R5 labels and the user's judge-of-record call; fast tier deferred to Q-03 — Sonnet 5.5/medium — behavioural — Q-01
-3. Q-02 stage 0 — bench v1, arm drivers (three generators, D-020), config override, test runner, commit + wall in drivers, generator launchers; then baselines for Qwen3.8-27B and Qwen3.6-35B-A3B (timing) — Opus 5.5/high — none — Q-01, Q-04
-4. Q-02 stage 1 — the campaign (`--jobs 3`, pinned worktree) — Sonnet 5.5/low — behavioural — stage 0; an A-02 session (Opus 5.5/medium, none) may run meanwhile
-5. Q-02 judging window + stage 2 — slow-tier judge batch, then analysis — Opus 5.5/high — behavioural — stage 1
-6. Q-03 — G3 gate in `compare.py` — Sonnet 5.5/medium — none — Q-01, Q-02; then the re-plan point (Fable 5.1/high if the harness lost)
-7. A-02 (if not already overlapped) → A-03 (Opus 5.5/high) → A-04 (Sonnet 5.5/medium) → A-05 (Sonnet 5.5/medium, timing; includes the `g3` G3 line) → N21 JSON schema dedup (Opus 5.5/medium → re-baseline, timing, D-016)
+1. Q-06 — labelling app built (Q-11); waits on the user's R1–R5 labels — Opus 5.5/medium — none — none
+2. Q-01 — blocked: Q-1's real-pair half waits on the R1–R5 labels (stage 2 done, S-019)
+3. Q-04 — slow tier scored (S-020); final pick waits on the R1–R5 labels and the user's judge-of-record call; fast tier deferred to Q-03 — Sonnet 5.5/medium — behavioural — Q-01
+4. Q-02 stage 0 — bench v1, arm drivers (three generators, D-020), config override, test runner, commit + wall in drivers, generator launchers; then baselines for Qwen3.8-27B and Qwen3.6-35B-A3B (timing) — Opus 5.5/high — none — Q-01, Q-04
+5. Q-02 stage 1 — the campaign (`--jobs 3`, pinned worktree) — Sonnet 5.5/low — behavioural — stage 0; an A-02 session (Opus 5.5/medium, none) may run meanwhile
+6. Q-02 judging window + stage 2 — slow-tier judge batch, then analysis — Opus 5.5/high — behavioural — stage 1
+7. Q-03 — G3 gate in `compare.py` — Sonnet 5.5/medium — none — Q-01, Q-02; then the re-plan point (Fable 5.1/high if the harness lost)
+8. A-02 (if not already overlapped) → A-03 (Opus 5.5/high) → A-04 (Sonnet 5.5/medium) → A-05 (Sonnet 5.5/medium, timing; includes the `g3` G3 line) → N21 JSON schema dedup (Opus 5.5/medium → re-baseline, timing, D-016)
 - Any time, gates nothing in A: A-06 — retrieval escalation + conflict judgement, design only — Fable 5.1/high — none — A-01.
 - Deferred by the user (2026-10-19), come back to: 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI).
 - Slot between the above, on a free server: 0-12, 0-13 (none); 0-10a (behavioural, unblocked by 0-16); Q-02 campaign (after Q-01, 0-14, A-04) → Q-03 → 0-10b.
@@ -29,7 +30,7 @@ updated: 2026-10-23 (D-021: flash-next is the judge of record, Devstral-2 concur
 ## Phase status
 - **O:** complete (O-01…O-06 done).
 - **0:** 0-14 done (P0-6), 0-15 done (P0-10), 0-16 done (P0-7, D-016), 0-06 done (P0-4), 0-09 done (D-017). The 0-09 run's s1 failed P0-1 on a composer-chosen prose section (0-09 Notes; not fence-related). Re-scoring shows two tracked s3 follow-ups fail P0-3 as revised by D-014 (part identity; 0-14 Notes).
-- **Q:** Q-01 stage 2 done, ticket blocked on R1–R5 labels (Q-1 objective half and Q-5 pass on the `:8091` self-judge); Q-04 slow tier scored 2026-10-23, pick provisional (Q-10); Q-02 re-staged (Q-2 revised, Q-6…Q-9); Q-03 open; Q-05 ablations and the labelling app on PLAN's task board.
+- **Q:** Q-01 stage 2 done, ticket blocked on R1–R5 labels (Q-1 objective half and Q-5 pass on the `:8091` self-judge); Q-04 slow tier scored 2026-10-23, pick provisional (Q-10); Q-02 re-staged (Q-2 revised, Q-6…Q-9); Q-03 open; Q-05 ablations on PLAN's task board; Q-06 labelling app built 2026-10-23 (Q-11).
 - **A:** A-01 done (A-9, D-018); A-02…A-06 open; A-02 starts after Q-03 or overlaps Q-02's campaign (D-019).
 - **V, R, B, T, P, C, H:** not instantiated (task board at the end of PLAN.md).
 
