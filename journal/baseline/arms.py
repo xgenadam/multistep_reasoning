@@ -12,7 +12,9 @@ pipeline does:
   (a)  `a`   one call, thinking off
   (a′) `a1`  one call, thinking on
   (a″) `a2`  self-refine: draft, then N rounds of critique -> revision,
-             thinking off; N per domain (--refine-rounds), tuned so the
+             thinking off; every round's draft and critique is saved in
+             the result's `rounds` (logging only, D-023); N per domain
+             (--refine-rounds), tuned so the
              median completion tokens per prompt are within ±25 % of the
              harness's (Q-7; `match` reports it)
   (b)  `b`   the harness (TaskOrchestrator, the harness's default config
@@ -289,6 +291,9 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
                         counters=counters), counters
     draft = complete(client, model, messages, thinking=False, phase='Self-refine draft',
                      counters=counters)
+    # Every round's draft and critique, for the post-hoc confidence study
+    # (D-023). Logging only: nothing below reads it back.
+    counters['round_log'] = [{'round': 0, 'draft': draft}]
     task = task_block(history, prompt)
     for r in range(rounds):
         critique = complete(
@@ -301,6 +306,7 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
                 task=task, response=draft, critique=critique)}],
             thinking=False, phase=f'Self-refine revision round {r + 1}', counters=counters)
         counters['rounds'] += 1
+        counters['round_log'].append({'round': r + 1, 'critique': critique, 'draft': draft})
     return draft, counters
 
 
@@ -343,6 +349,8 @@ def run_chain_single(client, model, measured, arm, chain, prompts, run_index,
             'wall_seconds': round(wall, 1), 'llm': harness.llm_stats(calls),
             'calls': [asdict(c) for c in calls],
             'refine_rounds': counters.get('rounds'),
+            # a2 only: [{round 0: draft}, {round k: critique, draft}, ...] (D-023)
+            'rounds': counters.get('round_log'),
             'continuations': counters.get('continuations'),
             'capped': counters.get('capped'),
             'output': {'text': text, 'snapshot': None, 'chars': len(text)},

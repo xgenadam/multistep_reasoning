@@ -279,3 +279,32 @@ def test_commit_is_read_at_the_start_and_resume_needs_the_same_commit(tmp_path, 
     with pytest.raises(SystemExit, match='pinned at that commit'):
         arms.main(['run', '--bench', str(bench), '--generator', 'flash-next',
                    '--base-url', 'http://arms.test/v1', '--arm', 'a', '--resume', str(path)])
+
+
+def test_a2_logs_every_round_without_changing_what_it_sends(tmp_path, monkeypatch, arms):
+    """D-023: the `rounds` log is logging only. The requests are the ones
+    the pre-registered arm makes, and the output is the last round's draft."""
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    server = ArmsServer()
+    _wire(monkeypatch, arms, server)
+    assert _run(arms, bench, out, '--arm', 'a2', '--prompt', 'r01', '--refine-rounds', '2') == 0
+    _, data = _load(out)
+    [row] = data['results']
+    log = row['rounds']
+    assert [r['round'] for r in log] == [0, 1, 2]
+    assert log[0] == {'round': 0, 'draft': 'ANSWER[Write a shor] (rest)'}
+    assert all(r['critique'] == 'Problem: too short.' and r['draft'] == 'REVISED' for r in log[1:])
+    assert row['output']['text'] == log[-1]['draft']
+    # Each revision request carries the previous round's draft, as before.
+    revisions = [b['messages'][-1]['content'] for b in server.requests
+                 if b['messages'][-1]['content'].startswith('## Task')]
+    assert 'ANSWER[Write a shor] (rest)' in revisions[0] and 'REVISED' in revisions[1]
+    assert len(server.requests) == 2 + 2 * 2  # draft + its continuation, then 2 x (critique, revision)
+
+
+def test_single_and_harness_arms_carry_no_rounds_log(tmp_path, monkeypatch, arms):
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    _wire(monkeypatch, arms, ArmsServer())
+    _run(arms, bench, out, '--arm', 'a', '--arm', 'b', '--prompt', 'r01')
+    _, data = _load(out)
+    assert all(r.get('rounds') is None for r in data['results'])

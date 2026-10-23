@@ -307,6 +307,27 @@ Pass criteria:
   or tie, with a note, the time spent and the assistant transcript) is
   written to a tracked labels file that `quality.py` reads as `expected`.
   R1–R5 are labelled through it.
+- **Q-12** (added 2026-10-23 at the user's request; Q-07, D-023): a post-hoc
+  confidence pass over the (a″) rounds saved by the Q-E1 campaign. Each call
+  sees only the task and one round's draft, never another round's
+  confidence or prediction, and returns two numbers: the draft's quality
+  (0–1) and the probability that another round improves it. Raw signals sit
+  beside them:
+  - the critique's length and issue count;
+  - the edit distance between rounds;
+  - token logprobs where the server returns them;
+  - for code, whether the draft parses and imports.
+
+  Ground truth is the hidden tests on every round's draft for code, and a
+  sampled pairwise judge comparison of round k against k+1 for reports.
+  The study reports, per generator × domain × short/long stratum:
+  - Brier score and ECE of stated quality against the truth;
+  - the AUROC of predicted improvement for real gains.
+
+  A confidence-based stopping rule replaces fixed N in live runs only after
+  it is validated on prompts it was not tuned on, against thresholds fixed in
+  the ticket before that validation. Tool use (MCP servers) is its own
+  condition and is re-calibrated before any rule is trusted there.
 
 The S-012 proposal (P1–P7, Q-2′, Q-6–Q-9, a draft decision) was ruled on by
 Q-01 stage 1 on 2026-10-19, accepted with six modifications, and folded in
@@ -669,3 +690,4 @@ Model and effort rules:
 | P-04 retire legacy chain | Sonnet 5.5 / low | — | |
 | JSON schema dedup (N21) | Opus 5.5 / medium → re-baseline Sonnet 5.5 / low | — | after A-05 (D-016). Mechanical, not a redesign. Re-baseline at `--jobs 1`, and check quality (P0-1/2/3) does not regress. |
 | Q-05 ablations (P4): one `OrchestratorConfig` switch per arm on the `g3` subset, quality delta beside marginal cost (D-007 form) | Sonnet 5.5 / medium | — | after the Q-E1 verdict; criterion Q-9's second sentence; needs the config-override flag from Q-02 stage 0 |
+| Q-07 self-refine confidence study (Q-12, D-023): plan the post-hoc confidence pass over the campaign's saved (a″) rounds, then run it and analyse calibration and stopping | Opus 5.5 / high (plan) → Sonnet 5.5 / low (runs) → Opus 5.5 / high (analysis) | short | after Q-02 stage 1, which saves the rounds; a measurement beside Q-E1 that never changes an arm; tool use is its own re-calibrated condition; input to A-06's confidence-driven search depth |

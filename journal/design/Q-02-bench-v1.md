@@ -93,6 +93,10 @@ The exemplar checklists were calibrated on 0-16's real outputs:
 > default sampling, with the same prompt text and `max_tokens` 8,192
 > (`arms.py`, prompts version `arms-v1`).
 >
+> (a″) also saves every round's draft and critique in the run file
+> (`rounds`). This is logging only: prompts, N and outputs are unchanged
+> (the user, 2026-10-23, D-023).
+>
 > **Per-prompt outcome.**
 > - *Code:* the arm with the higher hidden-test pass-rate wins. When the
 >   pass-rates are equal, the judge's both-orders outcome decides (decisive

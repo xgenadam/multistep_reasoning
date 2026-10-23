@@ -51,7 +51,7 @@ gpu_mem() { nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits; }
 
 if [ "${1:-}" = stop ]; then
   case "${2:-}" in
-    "") targets="$(docker ps -a --format '{{.Names}}' | grep -E '^gen_' | tr '\n' ' ') $FN_NAME" ;;
+    "") targets="$(docker ps -a --format '{{.Names}}' | { grep -E '^gen_' || true; } | tr '\n' ' ') $FN_NAME" ;;
     flash-next) targets="$FN_NAME" ;;
     *) targets="gen_$2" ;;
   esac
