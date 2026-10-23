@@ -296,7 +296,7 @@ prompts:
     files: [games/__init__.py, games/tictactoe.py, games/connect4.py, games/search.py]
   - id: c45
     domain: code
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Meeting scheduler
@@ -304,14 +304,14 @@ prompts:
     files: [cal/__init__.py, cal/events.py, cal/recurrence.py, cal/slots.py]
   - id: c46
     domain: code
-    status: draft
+    status: written
     long: true
     title: Regex engine
     brief: "`rx/` parser to an AST and a Thompson NFA for literals, `.`, `* + ?`, `|`, groups and `[a-z]` classes; `match` and `search`."
     files: [rx/__init__.py, rx/parse.py, rx/nfa.py]
   - id: c47
     domain: code
-    status: draft
+    status: written
     long: true
     title: JSON parser and serializer
     brief: "`js/` a from-scratch parser with line:column errors, number edge cases and surrogate pairs, plus a serializer with indent and sort_keys; round-trips."
@@ -319,7 +319,7 @@ prompts:
     subsets: [g3]
   - id: c48
     domain: code
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Sales report CLI
@@ -327,21 +327,21 @@ prompts:
     files: [sales/__init__.py, sales/ingest.py, sales/aggregate.py, sales/writers.py, sales/cli.py]
   - id: c49
     domain: code
-    status: draft
+    status: written
     long: true
     title: Dependency resolver
     brief: "`resolve/` package index, version ranges (reusing a small semver module), backtracking resolution preferring the newest versions, a conflict explanation."
     files: [resolve/__init__.py, resolve/versions.py, resolve/index.py, resolve/solver.py]
   - id: c50
     domain: code
-    status: draft
+    status: written
     long: true
     title: Text adventure engine
     brief: "`adventure/` world loaded from a dict, a command parser (go/take/drop/look/inventory), game state, save/load to JSON."
     files: [adventure/__init__.py, adventure/world.py, adventure/parser.py, adventure/game.py]
   - id: c51
     domain: code
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Log aggregator
@@ -349,35 +349,35 @@ prompts:
     files: [logagg/__init__.py, logagg/parsers.py, logagg/stats.py, logagg/cli.py]
   - id: c52
     domain: code
-    status: draft
+    status: written
     long: true
     title: In-memory filesystem shell
     brief: "`vfs/` paths (`.`, `..`, absolute/relative), mkdir -p, ls, cd, rm -r, mv, find by glob, and a tiny shell that runs a script of those commands."
     files: [vfs/__init__.py, vfs/paths.py, vfs/fs.py, vfs/shell.py]
   - id: c53
     domain: code
-    status: draft
+    status: written
     long: true
     title: Job queue with retries
     brief: "`jobs/` a queue, simulated workers on an injected clock, retry with exponential backoff and jitter from a seeded RNG, dead-letter after N attempts."
     files: [jobs/__init__.py, jobs/queue.py, jobs/worker.py, jobs/retry.py]
   - id: c54
     domain: code
-    status: draft
+    status: written
     long: true
     title: Stack language interpreter
     brief: "`stack/` tokenizer and interpreter: numbers, arithmetic, dup/drop/swap/over, comparisons, `if … else … then`, `begin … until` loops; stack underflow errors."
     files: [stack/__init__.py, stack/lexer.py, stack/interp.py]
   - id: c55
     domain: code
-    status: draft
+    status: written
     long: true
     title: Content-addressed object store
     brief: "`objstore/` git-like blobs, trees and commits hashed with sha1 over a stated serialisation, log walking, and a tree diff (added/removed/modified)."
     files: [objstore/__init__.py, objstore/objects.py, objstore/store.py, objstore/diff.py]
   - id: c56
     domain: code
-    status: draft
+    status: written
     long: true
     title: Expense splitter
     brief: "`split/` groups, expenses with equal/exact/percentage shares, balances, and a settlement plan from the greedy largest-creditor rule stated in the prompt."
@@ -471,7 +471,7 @@ prompts:
     files: [sheet/__init__.py, sheet/formula.py, sheet/graph.py, sheet/sheet.py]
   - id: c47f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c47
     title: JSON strict modes
@@ -479,7 +479,7 @@ prompts:
     files: [js/__init__.py, js/scanner.py, js/parser.py, js/dump.py]
   - id: c50f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c50
     title: Locked doors and scoring
@@ -487,11 +487,11 @@ prompts:
     files: [adventure/__init__.py, adventure/world.py, adventure/parser.py, adventure/game.py]
   - id: c54f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c54
     title: User-defined words
-    brief: "Add `: name … ;` definitions with recursion, a call-depth limit, and a `repl` CLI entry point."
+    brief: "Add `: name … ;` definitions with recursion, a call-depth limit, and a REPL (`repl()`/`main()` in `stack/interp.py`, run as `python -m stack.interp`)."
     files: [stack/__init__.py, stack/lexer.py, stack/interp.py]
 
 # ---------------------------------------------------------------------------
