@@ -10,31 +10,31 @@ prompts:
 # ---------------------------------------------------------------------------
   - id: c01
     domain: code
-    status: draft
+    status: written
     title: wordcount CLI
     brief: "`wordcount.py FILE...` prints lines/words/chars per file and a total row as an aligned table; exit 1 on a missing path (s1's task with an exact output format)."
     files: [wordcount.py]
   - id: c02
     domain: code
-    status: draft
+    status: written
     title: csv2json CLI
-    brief: "`csv2json.py PATH [--indent N]`: header row as keys, JSON array to stdout; exit 2 on a missing or empty file; quoted fields with commas and newlines."
+    brief: "`csv2json.py PATH [--indent N]`: header row as keys, JSON array to stdout; exit 2 on a missing or empty file; quoted fields with commas and newlines; a record with more fields than the header exits 1 with a stated message."
     files: [csv2json.py]
   - id: c03
     domain: code
-    status: draft
+    status: written
     title: logscan CLI
-    brief: "`logscan.py PATH LEVEL [--limit N]`: matching lines in file order, `count=N` on stderr; levels INFO < WARN < ERROR with `--at-least`; exit 1 on a missing file."
+    brief: "`logscan.py PATH LEVEL [--limit N] [--at-least]`: case-insensitive LEVEL, matching lines in file order, `count=N` on stderr; levels INFO < WARN < ERROR with `--at-least`; exit 1 on a missing file."
     files: [logscan.py]
   - id: c04
     domain: code
-    status: draft
+    status: written
     title: Roman numerals
     brief: "`roman.py`: `to_roman(n)` for 1..3999 and `from_roman(s)` that rejects non-canonical forms (IIII, VX, IC) with ValueError."
     files: [roman.py]
   - id: c05
     domain: code
-    status: draft
+    status: written
     title: Interval operations
     brief: "`intervals.py`: merge, insert, remove and intersect lists of half-open integer intervals; inputs unsorted, outputs sorted and coalesced."
     files: [intervals.py]
@@ -47,62 +47,62 @@ prompts:
     subsets: [g3]
   - id: c07
     domain: code
-    status: draft
+    status: written
     title: INI parser
     brief: "`ini.py`: parse sections, `key = value`, `;`/`#` comments, line continuations; typed getters `getint/getbool/getlist` with defaults; duplicate keys raise with a line number."
     files: [ini.py]
   - id: c08
     domain: code
-    status: draft
+    status: written
     title: Semantic versions
     brief: "`semver.py`: parse SemVer 2.0 including pre-release and build metadata, total ordering per the spec, `bump(kind)`, and `satisfies(version, '^1.2.0' | '~1.2' | '>=1.0 <2.0')`."
     files: [semver.py]
   - id: c09
     domain: code
-    status: draft
+    status: written
     title: Arithmetic evaluator
     brief: "`calc.py` `evaluate(expr)`: + - * / and parentheses, unary minus, Fraction results, `CalcError` with the 0-based position for syntax errors and division by zero."
     files: [calc.py]
   - id: c10
     domain: code
-    status: draft
+    status: written
     title: Run-length encoding
     brief: "`rle.py` `encode/decode` for arbitrary strings, digits included (escape scheme specified in the prompt); decode rejects malformed input."
     files: [rle.py]
   - id: c11
     domain: code
-    status: draft
+    status: written
     title: Text justification
     brief: "`justify.py` `justify(text, width)`: full justification with extra spaces assigned left first, last line left-aligned, over-long words on their own line."
     files: [justify.py]
   - id: c12
     domain: code
-    status: draft
+    status: written
     title: Business days
     brief: "`bizdays.py`: business days between two dates (exclusive/inclusive flags), add N business days, holidays as a set of dates; weekends configurable."
     files: [bizdays.py]
   - id: c13
     domain: code
-    status: draft
+    status: written
     title: Token bucket rate limiter
     brief: "`ratelimit.py` `TokenBucket(rate, capacity, clock)`: `try_acquire(n)`, `wait_time(n)`, refill on the injected clock, n > capacity raises."
     files: [ratelimit.py]
     subsets: [g3]
   - id: c14
     domain: code
-    status: draft
+    status: written
     title: Markdown table formatter
     brief: "`mdtable.py` `format_table(rows, headers, align)`: padded GitHub table, left/right/center alignment rows, pipes escaped, display width of wide characters ignored (stated)."
     files: [mdtable.py]
   - id: c15
     domain: code
-    status: draft
+    status: written
     title: Line diff
     brief: "`linediff.py` `diff(a, b)`: an LCS-based list of ' ', '-', '+' lines, the minimal edit script with a deterministic tie-break rule given in the prompt."
     files: [linediff.py]
   - id: c16
     domain: code
-    status: draft
+    status: written
     title: Topological sort
     brief: "`toposort.py` `toposort(graph)`: a dependency order with lexicographic tie-break; `CycleError` carrying one cycle as a list."
     files: [toposort.py]
@@ -388,7 +388,7 @@ prompts:
 # ---------------------------------------------------------------------------
   - id: c01f
     domain: code
-    status: draft
+    status: written
     follows: c01
     title: wordcount --json and stdin
     brief: "Add `--json` output and `-` for stdin; the table output is unchanged."
@@ -403,14 +403,14 @@ prompts:
     subsets: [g3]
   - id: c09f
     domain: code
-    status: draft
+    status: written
     follows: c09
     title: Evaluator with variables and functions
     brief: "Add `**` (right-associative), variables from a mapping, and min/max/abs functions; errors keep their positions."
     files: [calc.py]
   - id: c16f
     domain: code
-    status: draft
+    status: written
     follows: c16
     title: Toposort levels
     brief: "Add `levels(graph)`, the parallelisable layers, and `subgraph_order(graph, targets)` for only what the targets need."
