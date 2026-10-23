@@ -12,7 +12,7 @@ services:
     working_dir: /repo
     volumes:
       - ..:/repo
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${LAB_UID:-1000}:${LAB_GID:-1000}"
     environment:
       ASSIST_BASE_URL: ${ASSIST_BASE_URL:-}
       ASSIST_MODEL: ${ASSIST_MODEL:-}

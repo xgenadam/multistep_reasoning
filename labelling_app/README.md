@@ -29,9 +29,9 @@ while vLLM needs the exact one.
 
 ```bash
 cd /mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/labelling_app
-UID=$(id -u) GID=$(id -g) docker compose up    # labels.yaml stays owned by you
+LAB_UID=$(id -u) LAB_GID=$(id -g) docker compose up    # labels.yaml stays owned by you
 # with the assistant:
-UID=$(id -u) GID=$(id -g) ASSIST_BASE_URL=http://host.docker.internal:5000/v1 \
+LAB_UID=$(id -u) LAB_GID=$(id -g) ASSIST_BASE_URL=http://host.docker.internal:5000/v1 \
   ASSIST_MODEL=Qwen3.8-27B-UD-Q6_K.gguf docker compose up
 ```
 
