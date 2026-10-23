@@ -620,8 +620,10 @@ def run_arms(args) -> int:
 
 def match_report(files: list[Path], tolerance: float = 0.25) -> dict:
     """Per generator × domain: the harness's median completion tokens per
-    prompt against a2's (and a's, a1's), the ±25 % check, and the N that the
-    pilot's per-call medians predict: draft + N × (critique + revision)."""
+    prompt against a2's at each N tried (`a2@N`; and a's, a1's), the ±25 %
+    check, and the N that the N = 1 pilot's per-call medians predict:
+    draft + N × (critique + revision). Rounds grow longer with N on long
+    documents, so the prediction is a lower bound; verify it."""
     rows: dict[tuple[str, str], dict[str, list]] = {}
     call_medians: dict[tuple[str, str], dict[str, list[int]]] = {}
     for path in files:
@@ -631,8 +633,10 @@ def match_report(files: list[Path], tolerance: float = 0.25) -> dict:
             if r['error'] is not None:
                 continue
             key = (gen, r['domain'])
-            rows.setdefault(key, {}).setdefault(r['arm'], []).append(r['llm']['completion_tokens'])
-            if r['arm'] == 'a2':
+            # a2 runs at different N are different arms for matching: a2@N.
+            arm = f'a2@{r.get("refine_rounds")}' if r['arm'] == 'a2' else r['arm']
+            rows.setdefault(key, {}).setdefault(arm, []).append(r['llm']['completion_tokens'])
+            if r['arm'] == 'a2' and r.get('refine_rounds') == 1:
                 per = call_medians.setdefault(key, {'draft': [], 'round': []})
                 draft = sum(c['completion_tokens'] or 0 for c in r['calls']
                             if c['kind'] == 'refine_draft')

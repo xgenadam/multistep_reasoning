@@ -248,8 +248,8 @@ def test_match_report_predicts_rounds(tmp_path, arms):
     path = tmp_path / 'r.json'
     path.write_text(json.dumps(data))
     report = arms.match_report([path])['g/code']
-    assert report['completion_p50'] == {'b': 6500, 'a2': 2500}
-    assert report['within_25pct'] == {'a2': False}
+    assert report['completion_p50'] == {'b': 6500, 'a2@1': 2500}
+    assert report['within_25pct'] == {'a2@1': False}
     assert report['predicted_rounds'] == 4  # (6500 - 1000) / (300 + 1200) = 3.7
 
 
