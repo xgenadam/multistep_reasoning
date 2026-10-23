@@ -1,0 +1,9 @@
+{
+  "key": 2247,
+  "instruction_id_list": [
+    "change_case:english_capital"
+  ],
+  "kwargs": [
+    {}
+  ]
+}

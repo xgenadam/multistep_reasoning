@@ -1,0 +1,13 @@
+{
+  "key": 334,
+  "instruction_id_list": [
+    "startend:quotation",
+    "detectable_format:number_bullet_lists"
+  ],
+  "kwargs": [
+    {},
+    {
+      "num_bullets": 2
+    }
+  ]
+}

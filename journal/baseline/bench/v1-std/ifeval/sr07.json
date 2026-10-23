@@ -1,0 +1,13 @@
+{
+  "key": 3091,
+  "instruction_id_list": [
+    "keywords:frequency"
+  ],
+  "kwargs": [
+    {
+      "relation": "at least",
+      "keyword": "elephant",
+      "frequency": 3
+    }
+  ]
+}
