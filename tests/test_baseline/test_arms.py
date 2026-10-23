@@ -264,3 +264,18 @@ def test_drafts_are_skipped_and_a_frozen_bench_refuses_them(tmp_path, arms):
     (bench / 'manifest.yaml').write_text(yaml.safe_dump(manifest))
     with pytest.raises(ValueError, match='frozen bench has draft'):
         arms.load_bench(bench)
+
+
+def test_commit_is_read_at_the_start_and_resume_needs_the_same_commit(tmp_path, monkeypatch,
+                                                                       arms):
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    _wire(monkeypatch, arms, ArmsServer())
+    heads = iter(['a' * 40] + ['b' * 40] * 10)
+    monkeypatch.setattr(arms.harness, 'git_commit',
+                        lambda: {'commit': next(heads), 'dirty': False})
+    _run(arms, bench, out, '--arm', 'a', '--prompt', 'c01')
+    path, data = _load(out)
+    assert data['commit'] == 'a' * 40 and data['commit_at_end'] == 'b' * 40
+    with pytest.raises(SystemExit, match='pinned at that commit'):
+        arms.main(['run', '--bench', str(bench), '--generator', 'flash-next',
+                   '--base-url', 'http://arms.test/v1', '--arm', 'a', '--resume', str(path)])

@@ -352,7 +352,8 @@ class MeasuredCompletions:
 
 
 def git_commit() -> dict:
-    """The commit a run used, and whether tracked files differed from it."""
+    """The commit a run used, and whether tracked files differed from it.
+    Read it when the run starts: HEAD can move while a run is going."""
     def git(*args: str) -> str:
         return subprocess.run(['git', *args], cwd=REPO_ROOT, capture_output=True,
                               text=True, check=False).stdout.strip()
@@ -762,6 +763,7 @@ def main() -> int:
     errors: list[str] = []
 
     options = cfg.options
+    provenance = git_commit()
     started = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 
     def make_orchestrator(llm_client):
@@ -797,7 +799,10 @@ def main() -> int:
         'label': label,
         'runs_per_scenario': args.runs,
         'jobs': args.jobs,
-        **git_commit(),
+        **provenance,
+        # HEAD when the file was written, if it moved during the run.
+        'commit_at_end': (lambda end: end if end != provenance['commit'] else None)(
+            git_commit()['commit']),
         # The components and options every turn ran with (the endpoint is
         # `backend`), and the --set overrides that produced them.
         'config': cfg.model_dump(mode='json', exclude={'llm'}),

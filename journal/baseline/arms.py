@@ -506,6 +506,10 @@ def run_arms(args) -> int:
                            ('overrides', args.set), ('refine_rounds', rounds)):
             if old.get(field) != now:
                 raise SystemExit(f'--resume: {field} differs ({old.get(field)!r} vs {now!r})')
+        head = harness.git_commit()['commit']
+        if old.get('commit') != head:
+            raise SystemExit(f'--resume: the file ran at commit {old.get("commit")}, HEAD is {head}; '
+                             'resume from a worktree pinned at that commit')
         results = [r for r in old['results'] if r['error'] is None]
         label, started = old['label'], old['started_at']
     else:
@@ -548,9 +552,15 @@ def run_arms(args) -> int:
     }
     arm_elapsed: dict[str, float] = {}
     errors: list[str] = []
+    # The commit is read once, at the start; a resumed file keeps its own,
+    # which --resume has checked is HEAD.
+    provenance = {k: old[k] for k in ('commit', 'dirty')} if args.resume else harness.git_commit()
 
     def write() -> None:
-        payload = {**header, **harness.git_commit(), 'label': label, 'started_at': started,
+        head = harness.git_commit()['commit']
+        payload = {**header, **provenance,
+                   'commit_at_end': head if head != provenance['commit'] else None,
+                   'label': label, 'started_at': started,
                    'updated_at': datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'),
                    'results': sorted(results, key=lambda r: (r['arm'], r['prompt_id'], r['run'])),
                    'summary': summarise(results),
