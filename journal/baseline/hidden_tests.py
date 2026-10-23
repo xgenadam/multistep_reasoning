@@ -193,6 +193,24 @@ def _claim(files: dict, notes: dict, path: str, body: str, block: int,
     notes['files'][path] = {'rule': rule, 'block': block, 'raw': raw}
 
 
+def _unwrap_markdown(text: str) -> tuple[str, bool]:
+    """Strip one fence around the whole answer when it is a markdown wrapper
+    (```markdown or ```md first, a bare closing fence last). Models do this,
+    and the wrapper would otherwise swallow or split the inner code blocks."""
+    lines = text.splitlines()
+    first = next((i for i, ln in enumerate(lines) if ln.strip()), None)
+    last = next((i for i in range(len(lines) - 1, -1, -1) if lines[i].strip()), None)
+    if first is None or last is None or last <= first:
+        return text, False
+    m = _FENCE.match(lines[first])
+    if m is None or m.group(2).strip().lower() not in ('markdown', 'md'):
+        return text, False
+    close = lines[last].strip()
+    if not (set(close) == {m.group(1)[0]} and len(close) >= 3):
+        return text, False
+    return '\n'.join(lines[first + 1:last]), True
+
+
 def _blocks(text: str) -> tuple[list[dict], bool]:
     """CommonMark-style fenced blocks: info, body, the label line before, line numbers."""
     lines = text.splitlines()
@@ -305,7 +323,8 @@ def extract_files(text: str,
     expected = list(expected_paths or [])
     files: dict[str, str] = {}
     notes = _new_notes('text')
-    blocks, notes['unclosed_fence'] = _blocks(text or '')
+    text, notes['unwrapped_markdown'] = _unwrap_markdown(text or '')
+    blocks, notes['unclosed_fence'] = _blocks(text)
     notes['blocks'] = len(blocks)
     unlabelled: list[tuple[int, dict, str]] = []
     for idx, b in enumerate(blocks):
@@ -346,6 +365,17 @@ def extract_files(text: str,
         mapped = py_blocks[0][0]
         _claim(files, notes, open_py[0], py_blocks[0][1]['body'], mapped,
                'lone_python_block', '')
+    elif len(open_py) == 1 and len(py_blocks) > 1:
+        # Code plus usage examples: the block with the most def/class lines
+        # (then the longest, then the last) is taken as the file. It is a
+        # guess, so the rule name says so and stage 2 can count it.
+        def weight(item):
+            idx, b = item
+            lines = b['body'].splitlines()
+            defs = sum(ln.lstrip().startswith(('def ', 'class ', 'async def ')) for ln in lines)
+            return defs, len(lines), idx
+        mapped, block = max(py_blocks, key=weight)
+        _claim(files, notes, open_py[0], block['body'], mapped, 'largest_python_block_guess', '')
     for idx, b, lang in unlabelled:
         if idx == mapped:
             continue
@@ -634,8 +664,8 @@ def cmd_check_bench(args) -> int:
     entries = [e for e in manifest.values() if e.get('domain') == 'code'
                and (not args.prompt or str(e['id']) in args.prompt)]
     # A draft entry (bench README) has only a brief; it is checked once written.
-    drafts = [e for e in entries if e.get('status') == 'draft']
-    entries = [e for e in entries if e.get('status') != 'draft']
+    drafts = [] if args.include_drafts else [e for e in entries if e.get('status') == 'draft']
+    entries = [e for e in entries if e not in drafts]
     if drafts:
         print(f'{len(drafts)} draft code prompt(s) skipped')
     if not entries:
@@ -750,6 +780,8 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument('run_file')
     c = sub.add_parser('check-bench', help='validate the hidden tests of a bench')
     c.add_argument('--prompt', action='append', default=None, help='prompt id (repeatable)')
+    c.add_argument('--include-drafts', action='store_true',
+                   help='also check entries still marked draft (while writing them)')
     for p in (s, c):
         p.add_argument('--bench', default=str(DEFAULT_BENCH))
         p.add_argument('--jobs', type=int, default=3)

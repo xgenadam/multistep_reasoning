@@ -122,12 +122,14 @@ def test_unlabelled_shell_and_output_blocks_are_recorded(hidden_tests):
     assert [u['lang'] for u in notes['unlabelled']] == ['bash', '']
 
 
-def test_several_unlabelled_python_blocks_are_ambiguous(hidden_tests):
+def test_several_unlabelled_python_blocks_guess_the_definitions(hidden_tests):
+    # Was "ambiguous, nothing extracted" (S-022 changed it: a correct answer
+    # with a usage example scored 0/N). The guess is named in the notes.
     text = '```python\n' + BODY + '\n```\n\n```python\nprint(count("a"))\n```\n'
     files, notes = hidden_tests.extract_files(text, ['wordcount.py'])
-    assert files == {}
-    assert notes['missing'] == ['wordcount.py']
-    assert all(u['reason'] == 'several unlabelled python blocks' for u in notes['unlabelled'])
+    assert files == {'wordcount.py': BODY}
+    assert notes['files']['wordcount.py']['rule'] == 'largest_python_block_guess'
+    assert [u['reason'] for u in notes['unlabelled']] == ['several unlabelled python blocks']
 
 
 def test_later_block_wins_and_is_recorded(hidden_tests):
@@ -344,3 +346,22 @@ def test_score_run_file(hidden_tests, bench, tmp_path, capsys):
     assert rows['single', 1]['tests']['collection_error'] is True
     assert rows['single', 1]['pass_rate'] == 0.0 and rows['single', 1]['n_tests'] == 3
     assert rows['harness', 1]['run_error'] == 'timeout'
+
+
+def test_markdown_wrapper_is_unwrapped(hidden_tests):
+    text = ('```markdown\nHere is the module.\n\nlru.py\n```python\nclass LRUCache:\n    pass\n```\n\n'
+            'Run it with `python lru.py`.\n```\n')
+    files, notes = hidden_tests.extract_files(text, ['lru.py'])
+    assert files == {'lru.py': 'class LRUCache:\n    pass'}
+    assert notes['unwrapped_markdown'] is True
+    plain, notes = hidden_tests.extract_files('lru.py\n```python\nx = 1\n```\n', ['lru.py'])
+    assert plain == {'lru.py': 'x = 1'} and notes['unwrapped_markdown'] is False
+
+
+def test_several_unlabelled_python_blocks_take_the_definitions(hidden_tests):
+    text = ('```python\nclass LRUCache:\n    def get(self):\n        pass\n```\n\nUsage:\n\n'
+            '```python\ncache = LRUCache(2)\ncache.put(1, 1)\nprint(cache.get(1))\n```\n')
+    files, notes = hidden_tests.extract_files(text, ['lru.py'])
+    assert files['lru.py'].startswith('class LRUCache')
+    assert notes['files']['lru.py']['rule'] == 'largest_python_block_guess'
+    assert any(u.get('reason') == 'several unlabelled python blocks' for u in notes['unlabelled'])

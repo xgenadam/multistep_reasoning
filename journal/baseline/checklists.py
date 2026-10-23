@@ -256,6 +256,9 @@ def main(argv: list[str] | None = None) -> int:
     sc.add_argument('--bench', required=True)
     cb = sub.add_parser('check-bench', help='validate every written report checklist')
     cb.add_argument('--bench', required=True)
+    cb.add_argument('--prompt', action='append', default=None, help='prompt id (repeatable)')
+    cb.add_argument('--include-drafts', action='store_true',
+                    help='also check entries still marked draft (while writing them)')
     args = ap.parse_args(argv)
     bench = Path(args.bench)
     if args.cmd == 'score':
@@ -270,7 +273,9 @@ def main(argv: list[str] | None = None) -> int:
     manifest = yaml.safe_load((bench / 'manifest.yaml').read_text())
     failed = checked = 0
     for p in manifest['prompts']:
-        if p['domain'] != 'report' or p.get('status') == 'draft':
+        if p['domain'] != 'report' or (p.get('status') == 'draft' and not args.include_drafts):
+            continue
+        if args.prompt and p['id'] not in args.prompt:
             continue
         checked += 1
         path = bench / 'checklists' / f'{p["id"]}.yaml'
