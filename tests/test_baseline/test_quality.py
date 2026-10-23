@@ -186,3 +186,16 @@ def test_validation_manifest_loads(quality):
     kinds = [p['kind'] for p in pairs]
     assert (kinds.count('real'), kinds.count('damaged'), kinds.count('padded')) == (5, 5, 2)
     assert all(p['a_text'] != p['b_text'] for p in pairs)
+
+
+def test_server_timings_and_throughput(quality):
+    resp = NS(model_extra={'timings': {'prompt_n': 3000, 'prompt_ms': 1500.0, 'prompt_per_second': 2000.0,
+                                       'predicted_n': 200, 'predicted_ms': 4000.0, 'predicted_per_second': 50.0}})
+    t = quality.server_timings(resp)
+    assert t['prompt_per_second'] == 2000.0 and t['predicted_per_second'] == 50.0
+    assert quality.server_timings(NS(model_extra={})) is None
+    assert quality.server_timings(NS()) is None
+    calls = [{'seconds': 4.0, 'completion_tokens': 200, 'attempts': [{'server_timings': t}]},
+             {'seconds': 6.0, 'completion_tokens': 300, 'attempts': [{'server_timings': None}]}]
+    out = quality.throughput(calls)
+    assert out == {'completion_tok_per_s_wall': 50.0, 'prefill_tok_per_s_p50': 2000.0, 'decode_tok_per_s_p50': 50.0}

@@ -202,6 +202,8 @@ class Judge:
         verdict = parse_verdict(content)
         return {
             'seconds': round(seconds, 3),
+            # llama-server's own prefill/decode split; vLLM sends none (None).
+            'server_timings': server_timings(resp),
             'finish_reason': choice.finish_reason,
             'prompt_tokens': getattr(usage, 'prompt_tokens', None),
             'completion_tokens': getattr(usage, 'completion_tokens', None),
@@ -237,6 +239,18 @@ class Judge:
             'prompt_tokens': _sum(a['prompt_tokens'] for a in attempts),
             'completion_tokens': _sum(a['completion_tokens'] for a in attempts),
         }
+
+
+def server_timings(resp) -> dict | None:
+    """Prefill and decode rates from llama-server's non-standard `timings`
+    block (prompt_n, prompt_ms, prompt_per_second, predicted_n, predicted_ms,
+    predicted_per_second); None for servers that do not send it."""
+    t = (getattr(resp, 'model_extra', None) or {}).get('timings')
+    if not isinstance(t, dict):
+        return None
+    keys = ('prompt_n', 'prompt_ms', 'prompt_per_second',
+            'predicted_n', 'predicted_ms', 'predicted_per_second')
+    return {k: (round(t[k], 2) if isinstance(t.get(k), float) else t.get(k)) for k in keys}
 
 
 def _sum(values) -> int | None:
@@ -383,7 +397,22 @@ def cost(calls: list[dict]) -> dict:
         'seconds_sum': round(sum(secs), 1),
         'seconds_p50': round(secs[len(secs) // 2], 2) if secs else None,
         'seconds_max': round(secs[-1], 2) if secs else None,
+        **throughput(calls),
     }
+
+
+def throughput(calls: list[dict]) -> dict:
+    """Wall-based output rate for every server, plus the server's own
+    prefill and decode medians where it reports them (llama-server)."""
+    secs = sum(c['seconds'] for c in calls)
+    ctok = _sum(c['completion_tokens'] for c in calls)
+    out = {'completion_tok_per_s_wall': round(ctok / secs, 1) if ctok and secs else None}
+    timed = [a['server_timings'] for c in calls for a in c['attempts'] if a.get('server_timings')]
+    for key, name in (('prompt_per_second', 'prefill_tok_per_s_p50'),
+                      ('predicted_per_second', 'decode_tok_per_s_p50')):
+        vals = sorted(t[key] for t in timed if isinstance(t.get(key), (int, float)))
+        out[name] = round(vals[len(vals) // 2], 1) if vals else None
+    return out
 
 
 def run_judge(args) -> int:
