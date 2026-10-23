@@ -208,14 +208,14 @@ prompts:
 # ---------------------------------------------------------------------------
   - id: c33
     domain: code
-    status: draft
+    status: written
     long: true
     title: Todo CLI package
     brief: "`todo/` store (JSON file), model and CLI: add/list/done/remove/edit, filters by tag and status, stable ids, exit codes."
     files: [todo/__init__.py, todo/model.py, todo/store.py, todo/cli.py]
   - id: c34
     domain: code
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Inventory system
@@ -223,14 +223,14 @@ prompts:
     files: [inventory/__init__.py, inventory/models.py, inventory/movements.py, inventory/valuation.py, inventory/reports.py]
   - id: c35
     domain: code
-    status: draft
+    status: written
     long: true
     title: Template engine
     brief: "`tmpl/` lexer, parser and renderer for `{{ var|filter }}`, `{% for %}`, `{% if/elif/else %}`; errors with line numbers."
     files: [tmpl/__init__.py, tmpl/lexer.py, tmpl/parser.py, tmpl/render.py]
   - id: c36
     domain: code
-    status: draft
+    status: written
     long: true
     title: Query engine over records
     brief: "`minisql/` tokenizer, parser and executor for SELECT cols FROM t WHERE (and/or/not, comparisons) ORDER BY LIMIT over lists of dicts."
@@ -238,21 +238,21 @@ prompts:
     subsets: [g3]
   - id: c37
     domain: code
-    status: draft
+    status: written
     long: true
     title: Markdown to HTML
     brief: "`md2html/` block parser (headings, paragraphs, lists, code fences, blockquotes) and inline parser (emphasis, code, links, escapes) with exact HTML output rules."
     files: [md2html/__init__.py, md2html/blocks.py, md2html/inline.py, md2html/render.py]
   - id: c38
     domain: code
-    status: draft
+    status: written
     long: true
     title: State machine library
     brief: "`fsm/` declarative machine (states, transitions, guards, on_enter/on_exit hooks) plus `vending.py` built on it; illegal transitions raise."
     files: [fsm/__init__.py, fsm/machine.py, vending.py]
   - id: c39
     domain: code
-    status: draft
+    status: written
     long: true
     overlap: true
     title: Double-entry accounting
@@ -260,14 +260,14 @@ prompts:
     files: [books/__init__.py, books/accounts.py, books/journal.py, books/statements.py]
   - id: c40
     domain: code
-    status: draft
+    status: written
     long: true
     title: Library loans
     brief: "`library/` books, members, loans, due dates, holds queue and fines on an injected clock; the policy table is in the prompt."
     files: [library/__init__.py, library/catalog.py, library/loans.py, library/fines.py]
   - id: c41
     domain: code
-    status: draft
+    status: written
     long: true
     overlap: true
     title: HTTP request parser and router
@@ -275,21 +275,21 @@ prompts:
     files: [web/__init__.py, web/request.py, web/router.py, web/middleware.py]
   - id: c42
     domain: code
-    status: draft
+    status: written
     long: true
     title: Key-value store with WAL
     brief: "`kv/` an append-only log with checksums, snapshot compaction, crash recovery that ignores a torn last record, get/put/delete/scan."
     files: [kv/__init__.py, kv/log.py, kv/store.py, kv/compact.py]
   - id: c43
     domain: code
-    status: draft
+    status: written
     long: true
     title: Spreadsheet engine
     brief: "`sheet/` cells holding numbers, text or `=formulas` (+ - * /, cell refs), dependency graph, incremental recalculation, `#CYCLE!` on cycles."
     files: [sheet/__init__.py, sheet/formula.py, sheet/graph.py, sheet/sheet.py]
   - id: c44
     domain: code
-    status: draft
+    status: written
     long: true
     title: Board games with minimax
     brief: "`games/` tic-tac-toe and connect-four rules (moves, wins, draws) plus a shared minimax with alpha-beta; perfect play at tic-tac-toe is tested."
@@ -431,7 +431,7 @@ prompts:
     files: [sudoku.py]
   - id: c33f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c33
     title: Todo priorities and due dates
@@ -439,7 +439,7 @@ prompts:
     files: [todo/__init__.py, todo/model.py, todo/store.py, todo/cli.py]
   - id: c35f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c35
     title: Template inheritance
@@ -447,7 +447,7 @@ prompts:
     files: [tmpl/__init__.py, tmpl/lexer.py, tmpl/parser.py, tmpl/render.py]
   - id: c36f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c36
     title: GROUP BY and JOIN
@@ -455,7 +455,7 @@ prompts:
     files: [minisql/__init__.py, minisql/tokens.py, minisql/parser.py, minisql/execute.py]
   - id: c37f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c37
     title: Markdown tables and nested lists
@@ -463,7 +463,7 @@ prompts:
     files: [md2html/__init__.py, md2html/blocks.py, md2html/inline.py, md2html/render.py]
   - id: c43f
     domain: code
-    status: draft
+    status: written
     long: true
     follows: c43
     title: Spreadsheet ranges and errors
