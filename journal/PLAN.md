@@ -231,7 +231,9 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     explicit model name (D-008). Design: `journal/design/Q-01-judge.md`.
 - **Q-02, experiment Q-E1 (harness vs compute-matched single-model arms;
   D-019):**
-  - Arms, same prompt, model and per-call `max_tokens`: (a) single call,
+  - Generators (D-020): flash-next, Qwen3.8-27B and Qwen3.6-35B-A3B, each
+    running every arm; comparisons stay within a generator.
+  - Arms, same prompt, model and per-call `max_tokens`, per generator: (a) single call,
     thinking off; (a′) single call, thinking on; (a″) self-refine (draft →
     critique → revise, N rounds) matched to the harness's median completion
     tokens ±25 %; (b) harness; (c) harness + consolidation, on the overlap
@@ -271,7 +273,7 @@ Pass criteria:
   section; off-by-one in code) ≥ 4/5, in both orders.
 - **Q-2** (revised by D-019; was "Q-E1 is recorded with tokens and wall
   time per arm"): Q-E1 is recorded with tokens, wall time and length per
-  arm and per prompt; n comes from Q-6; at least ⅓ of prompts are long and
+  arm, per prompt and per generator (D-020); n comes from Q-6; at least ⅓ of prompts are long and
   at least 20 % are follow-ups.
 - **Q-3:** G3 is exercised on the Q-E1 set.
 - **Q-4:** a judge budget is recorded ("10-pair set ≤ N tokens / ≤ M min"),
@@ -283,7 +285,8 @@ Pass criteria:
   gain claim needs the Wilson 95 % lower bound above 0.5 on decisive pairs
   and a point estimate at or above the effect.
 - **Q-7 Compute-matched baseline:** at least one single-model arm is within
-  ±25 % of the harness's median completion tokens per prompt.
+  ±25 % of the harness's median completion tokens per prompt, per
+  generator (D-020).
 - **Q-8 Objective scoring:** every code prompt has hidden tests, and no
   judge verdict replaces a test result. Domains are never pooled.
 - **Q-9 Standing benchmark:** one command reproduces a Q-E1 run from the

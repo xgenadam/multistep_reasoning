@@ -5,9 +5,10 @@
 - **Sources:** the user's request of 2026-10-23 ("we need to know how [the
   harness] performs with big and small models"); PLAN § Phase Q; D-016,
   D-019; Q-02 Scope; Q-04 Notes and verdict files to date.
-- **Status:** a proposal awaiting the user's approval. Nothing here is in
-  force. The draft decision in § 7 stays unnumbered until approval, as
-  Q-01 stage 1's did.
+- **Status:** approved by the user on 2026-10-23 with one change: all three
+  generators (§ 2), not one. Both downloads approved; flash-next as the
+  second-opinion judge approved. D-020 records it; the § 9 fold list is
+  applied. The text below is the proposal as approved, unchanged.
 
 ## 0. Summary
 

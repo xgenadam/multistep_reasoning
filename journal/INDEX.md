@@ -17,7 +17,7 @@ updated: 2026-10-22 (Q-04 started: the agent serves judges itself from `~/models
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. Q-01 — blocked: Q-1's real-pair half waits on the labelling app (stage 2 done, S-019)
 2. Q-04 — judge benchmark, slow tier first — Sonnet 5.5/medium — behavioural (the user swaps models) — Q-01
-3. Q-02 stage 0 — bench v1, arm drivers, config override, test runner, commit + wall in drivers — Opus 5.5/high — none — Q-01, Q-04
+3. Q-02 stage 0 — bench v1, arm drivers (three generators, D-020), config override, test runner, commit + wall in drivers, generator launchers; then baselines for Qwen3.8-27B and Qwen3.6-35B-A3B (timing) — Opus 5.5/high — none — Q-01, Q-04
 4. Q-02 stage 1 — the campaign (`--jobs 3`, pinned worktree) — Sonnet 5.5/low — behavioural — stage 0; an A-02 session (Opus 5.5/medium, none) may run meanwhile
 5. Q-02 judging window + stage 2 — slow-tier judge batch, then analysis — Opus 5.5/high — behavioural — stage 1
 6. Q-03 — G3 gate in `compare.py` — Sonnet 5.5/medium — none — Q-01, Q-02; then the re-plan point (Fable 5.1/high if the harness lost)
