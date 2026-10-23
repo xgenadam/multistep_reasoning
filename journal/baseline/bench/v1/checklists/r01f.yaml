@@ -1,0 +1,9 @@
+id: r01f
+items:
+  - {id: kept-cost, check: heading, pattern: '(?i)cost|hosting'}
+  - {id: kept-search, check: heading, pattern: '(?i)search'}
+  - {id: kept-review, check: heading, pattern: '(?i)review'}
+  - {id: kept-drawback, check: heading, pattern: '(?i)drawback|downside|limitation|trade-?off|caveat'}
+  - {id: sec-migration, check: heading, pattern: '(?i)migrat'}
+  - {id: three-steps, check: numbered_items, section: '(?i)migrat', min: 3, max: 3}
+  - {id: no-repeat, check: max_section_overlap, max: 0.5}

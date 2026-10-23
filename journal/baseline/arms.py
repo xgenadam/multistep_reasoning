@@ -137,11 +137,16 @@ def load_bench(bench_dir: Path) -> dict:
     manifest_path = bench_dir / 'manifest.yaml'
     manifest = yaml.safe_load(manifest_path.read_text())
     prompts: dict[str, dict] = {}
+    drafts = []
     for raw in manifest['prompts']:
         entry = dict(raw)
         pid = entry['id']
-        if pid in prompts:
+        if pid in prompts or pid in drafts:
             raise ValueError(f'duplicate prompt id {pid}')
+        if entry.get('status') == 'draft':
+            # Brief only (bench README); a frozen bench has none.
+            drafts.append(pid)
+            continue
         if entry.get('domain') not in DOMAINS:
             raise ValueError(f'{pid}: domain must be one of {DOMAINS}')
         entry['text'] = (bench_dir / 'prompts' / f'{pid}.md').read_text().strip()
@@ -163,7 +168,10 @@ def load_bench(bench_dir: Path) -> dict:
             children[parent] = pid
     for pid in prompts:
         chain_of(prompts, pid)  # raises on a cycle
+    if manifest.get('frozen') and drafts:
+        raise ValueError(f'a frozen bench has draft prompts: {", ".join(drafts)}')
     return {'version': manifest.get('version'), 'frozen': bool(manifest.get('frozen')),
+            'drafts': drafts,
             'path': manifest_path, 'sha256': sha256(manifest_path.read_text()),
             'prompts': prompts}
 

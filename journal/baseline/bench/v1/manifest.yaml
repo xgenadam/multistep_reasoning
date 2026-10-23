@@ -1,0 +1,980 @@
+# Bench v1 manifest (Q-02, Q-9). Fields and rules: README.md beside this file.
+# Defaults when a field is absent: long false, follows null, overlap false, subsets [].
+# DRAFT for the user's review (2026-10-23): only `status: written` entries have prompt files.
+version: v1
+frozen: false
+prompts:
+
+# ---------------------------------------------------------------------------
+# Code, short roots (32): one file, a spelled-out interface
+# ---------------------------------------------------------------------------
+  - id: c01
+    domain: code
+    status: draft
+    title: wordcount CLI
+    brief: "`wordcount.py FILE...` prints lines/words/chars per file and a total row as an aligned table; exit 1 on a missing path (s1's task with an exact output format)."
+    files: [wordcount.py]
+  - id: c02
+    domain: code
+    status: draft
+    title: csv2json CLI
+    brief: "`csv2json.py PATH [--indent N]`: header row as keys, JSON array to stdout; exit 2 on a missing or empty file; quoted fields with commas and newlines."
+    files: [csv2json.py]
+  - id: c03
+    domain: code
+    status: draft
+    title: logscan CLI
+    brief: "`logscan.py PATH LEVEL [--limit N]`: matching lines in file order, `count=N` on stderr; levels INFO < WARN < ERROR with `--at-least`; exit 1 on a missing file."
+    files: [logscan.py]
+  - id: c04
+    domain: code
+    status: draft
+    title: Roman numerals
+    brief: "`roman.py`: `to_roman(n)` for 1..3999 and `from_roman(s)` that rejects non-canonical forms (IIII, VX, IC) with ValueError."
+    files: [roman.py]
+  - id: c05
+    domain: code
+    status: draft
+    title: Interval operations
+    brief: "`intervals.py`: merge, insert, remove and intersect lists of half-open integer intervals; inputs unsorted, outputs sorted and coalesced."
+    files: [intervals.py]
+  - id: c06
+    domain: code
+    status: written
+    title: LRU cache
+    brief: "`lru.py` class `LRUCache(capacity)`: get/put (put returns the evicted key), `__contains__` without touching recency, keys() oldest first, resize() returning evictions."
+    files: [lru.py]
+    subsets: [g3]
+  - id: c07
+    domain: code
+    status: draft
+    title: INI parser
+    brief: "`ini.py`: parse sections, `key = value`, `;`/`#` comments, line continuations; typed getters `getint/getbool/getlist` with defaults; duplicate keys raise with a line number."
+    files: [ini.py]
+  - id: c08
+    domain: code
+    status: draft
+    title: Semantic versions
+    brief: "`semver.py`: parse SemVer 2.0 including pre-release and build metadata, total ordering per the spec, `bump(kind)`, and `satisfies(version, '^1.2.0' | '~1.2' | '>=1.0 <2.0')`."
+    files: [semver.py]
+  - id: c09
+    domain: code
+    status: draft
+    title: Arithmetic evaluator
+    brief: "`calc.py` `evaluate(expr)`: + - * / and parentheses, unary minus, Fraction results, `CalcError` with the 0-based position for syntax errors and division by zero."
+    files: [calc.py]
+  - id: c10
+    domain: code
+    status: draft
+    title: Run-length encoding
+    brief: "`rle.py` `encode/decode` for arbitrary strings, digits included (escape scheme specified in the prompt); decode rejects malformed input."
+    files: [rle.py]
+  - id: c11
+    domain: code
+    status: draft
+    title: Text justification
+    brief: "`justify.py` `justify(text, width)`: full justification with extra spaces assigned left first, last line left-aligned, over-long words on their own line."
+    files: [justify.py]
+  - id: c12
+    domain: code
+    status: draft
+    title: Business days
+    brief: "`bizdays.py`: business days between two dates (exclusive/inclusive flags), add N business days, holidays as a set of dates; weekends configurable."
+    files: [bizdays.py]
+  - id: c13
+    domain: code
+    status: draft
+    title: Token bucket rate limiter
+    brief: "`ratelimit.py` `TokenBucket(rate, capacity, clock)`: `try_acquire(n)`, `wait_time(n)`, refill on the injected clock, n > capacity raises."
+    files: [ratelimit.py]
+    subsets: [g3]
+  - id: c14
+    domain: code
+    status: draft
+    title: Markdown table formatter
+    brief: "`mdtable.py` `format_table(rows, headers, align)`: padded GitHub table, left/right/center alignment rows, pipes escaped, display width of wide characters ignored (stated)."
+    files: [mdtable.py]
+  - id: c15
+    domain: code
+    status: draft
+    title: Line diff
+    brief: "`linediff.py` `diff(a, b)`: an LCS-based list of ' ', '-', '+' lines, the minimal edit script with a deterministic tie-break rule given in the prompt."
+    files: [linediff.py]
+  - id: c16
+    domain: code
+    status: draft
+    title: Topological sort
+    brief: "`toposort.py` `toposort(graph)`: a dependency order with lexicographic tie-break; `CycleError` carrying one cycle as a list."
+    files: [toposort.py]
+  - id: c17
+    domain: code
+    status: draft
+    title: Transaction ledger
+    brief: "`ledger.py`: parse a transactions CSV (date, account, amount as Decimal), running balances per account, overdraft rule raising with the offending row."
+    files: [ledger.py]
+  - id: c18
+    domain: code
+    status: draft
+    title: Slugify
+    brief: "`slug.py` `slugify(text, max_len, existing)`: NFKD transliteration, separators collapsed, cut at a word boundary, `-2`/`-3` suffixes for uniqueness."
+    files: [slug.py]
+  - id: c19
+    domain: code
+    status: draft
+    title: Cron next run
+    brief: "`cron.py` `next_run(expr, after)`: five-field cron with `*`, lists, ranges and steps; day-of-month/day-of-week OR rule as in Vixie cron."
+    files: [cron.py]
+  - id: c20
+    domain: code
+    status: draft
+    title: JSON path getter
+    brief: "`jpath.py` `get(obj, 'a.b[2].c', default)`: dotted keys, indices including negatives, quoted keys with dots; `PathError` vs default semantics stated."
+    files: [jpath.py]
+  - id: c21
+    domain: code
+    status: draft
+    title: Exact matrix algebra
+    brief: "`matrix.py`: determinant, inverse and solve on lists of Fractions; `SingularMatrix` raised; shape errors raised."
+    files: [matrix.py]
+  - id: c22
+    domain: code
+    status: draft
+    title: Priority scheduler
+    brief: "`pq.py` `TaskQueue`: push(task, priority), pop lowest first and FIFO among equals, reprioritize and remove in O(log n) (lazy deletion allowed)."
+    files: [pq.py]
+  - id: c23
+    domain: code
+    status: draft
+    title: Trie autocomplete
+    brief: "`trie.py` `Autocomplete`: add(word, weight), complete(prefix, k) by weight then alphabetically, delete, case-insensitive matching that keeps the original case."
+    files: [trie.py]
+  - id: c24
+    domain: code
+    status: draft
+    title: Unit converter
+    brief: "`units.py` `convert(value, from_unit, to_unit)`: length, mass, time and composite units (m/s, km/h); dimension mismatch raises."
+    files: [units.py]
+  - id: c25
+    domain: code
+    status: draft
+    title: Sudoku
+    brief: "`sudoku.py`: parse an 81-character grid, `is_valid`, `solve` (None if unsolvable), and `count_solutions(limit=2)`."
+    files: [sudoku.py]
+  - id: c26
+    domain: code
+    status: draft
+    title: Word frequency CLI
+    brief: "`wordfreq.py PATH [--top N] [--stopwords FILE]`: case-folded words, ties broken alphabetically, output `count<TAB>word`."
+    files: [wordfreq.py]
+  - id: c27
+    domain: code
+    status: draft
+    title: Binary search variants
+    brief: "`search.py`: first/last occurrence, insertion point, search in a rotated sorted array, and the integer square root by bisection."
+    files: [search.py]
+  - id: c28
+    domain: code
+    status: draft
+    title: Event emitter
+    brief: "`events.py` `Emitter`: on/off/once/emit, listener order, once removal before the call, listener exceptions collected into an `EmitError` after all listeners run."
+    files: [events.py]
+  - id: c29
+    domain: code
+    status: draft
+    title: CSV dedup CLI
+    brief: "`csvdedup.py PATH --key COL[,COL] [--keep first|last]`: preserves the header and the row order of kept rows; a missing key column gives exit 2."
+    files: [csvdedup.py]
+  - id: c30
+    domain: code
+    status: draft
+    title: Money allocation
+    brief: "`money.py`: Decimal amounts, banker's rounding to cents, `allocate(amount, ratios)` whose parts always sum exactly (largest-remainder rule)."
+    files: [money.py]
+  - id: c31
+    domain: code
+    status: draft
+    title: Shortest paths
+    brief: "`paths.py` `dijkstra(graph, src)`: distances and predecessors, `path(src, dst)` reconstruction, unreachable as None, negative weights raise."
+    files: [paths.py]
+  - id: c32
+    domain: code
+    status: draft
+    title: Expression-free template strings
+    brief: "`fmt.py` `render(template, values)`: `{name}` and `{name:default}` placeholders, `{{` escapes, a missing key raises with its name."
+    files: [fmt.py]
+
+# ---------------------------------------------------------------------------
+# Code, long roots (24): packages of 3+ files (long = more than one file)
+# ---------------------------------------------------------------------------
+  - id: c33
+    domain: code
+    status: draft
+    long: true
+    title: Todo CLI package
+    brief: "`todo/` store (JSON file), model and CLI: add/list/done/remove/edit, filters by tag and status, stable ids, exit codes."
+    files: [todo/__init__.py, todo/model.py, todo/store.py, todo/cli.py]
+  - id: c34
+    domain: code
+    status: draft
+    long: true
+    overlap: true
+    title: Inventory system
+    brief: "`inventory/` models, stock movements, valuation (FIFO and average cost) and two reports that share the same aggregation (deliberate overlap)."
+    files: [inventory/__init__.py, inventory/models.py, inventory/movements.py, inventory/valuation.py, inventory/reports.py]
+  - id: c35
+    domain: code
+    status: draft
+    long: true
+    title: Template engine
+    brief: "`tmpl/` lexer, parser and renderer for `{{ var|filter }}`, `{% for %}`, `{% if/elif/else %}`; errors with line numbers."
+    files: [tmpl/__init__.py, tmpl/lexer.py, tmpl/parser.py, tmpl/render.py]
+  - id: c36
+    domain: code
+    status: draft
+    long: true
+    title: Query engine over records
+    brief: "`minisql/` tokenizer, parser and executor for SELECT cols FROM t WHERE (and/or/not, comparisons) ORDER BY LIMIT over lists of dicts."
+    files: [minisql/__init__.py, minisql/tokens.py, minisql/parser.py, minisql/execute.py]
+    subsets: [g3]
+  - id: c37
+    domain: code
+    status: draft
+    long: true
+    title: Markdown to HTML
+    brief: "`md2html/` block parser (headings, paragraphs, lists, code fences, blockquotes) and inline parser (emphasis, code, links, escapes) with exact HTML output rules."
+    files: [md2html/__init__.py, md2html/blocks.py, md2html/inline.py, md2html/render.py]
+  - id: c38
+    domain: code
+    status: draft
+    long: true
+    title: State machine library
+    brief: "`fsm/` declarative machine (states, transitions, guards, on_enter/on_exit hooks) plus `vending.py` built on it; illegal transitions raise."
+    files: [fsm/__init__.py, fsm/machine.py, vending.py]
+  - id: c39
+    domain: code
+    status: draft
+    long: true
+    overlap: true
+    title: Double-entry accounting
+    brief: "`books/` accounts, journal entries that must balance, ledger, trial balance and income statement (the statements share account-tree code)."
+    files: [books/__init__.py, books/accounts.py, books/journal.py, books/statements.py]
+  - id: c40
+    domain: code
+    status: draft
+    long: true
+    title: Library loans
+    brief: "`library/` books, members, loans, due dates, holds queue and fines on an injected clock; the policy table is in the prompt."
+    files: [library/__init__.py, library/catalog.py, library/loans.py, library/fines.py]
+  - id: c41
+    domain: code
+    status: draft
+    long: true
+    overlap: true
+    title: HTTP request parser and router
+    brief: "`web/` raw HTTP/1.1 request parsing (headers, chunked body), a router with path params and 404/405, middleware chain; no sockets."
+    files: [web/__init__.py, web/request.py, web/router.py, web/middleware.py]
+  - id: c42
+    domain: code
+    status: draft
+    long: true
+    title: Key-value store with WAL
+    brief: "`kv/` an append-only log with checksums, snapshot compaction, crash recovery that ignores a torn last record, get/put/delete/scan."
+    files: [kv/__init__.py, kv/log.py, kv/store.py, kv/compact.py]
+  - id: c43
+    domain: code
+    status: draft
+    long: true
+    title: Spreadsheet engine
+    brief: "`sheet/` cells holding numbers, text or `=formulas` (+ - * /, cell refs), dependency graph, incremental recalculation, `#CYCLE!` on cycles."
+    files: [sheet/__init__.py, sheet/formula.py, sheet/graph.py, sheet/sheet.py]
+  - id: c44
+    domain: code
+    status: draft
+    long: true
+    title: Board games with minimax
+    brief: "`games/` tic-tac-toe and connect-four rules (moves, wins, draws) plus a shared minimax with alpha-beta; perfect play at tic-tac-toe is tested."
+    files: [games/__init__.py, games/tictactoe.py, games/connect4.py, games/search.py]
+  - id: c45
+    domain: code
+    status: draft
+    long: true
+    overlap: true
+    title: Meeting scheduler
+    brief: "`cal/` events, weekly recurrence with exceptions, conflict detection and common free slots across people (the last two share interval code)."
+    files: [cal/__init__.py, cal/events.py, cal/recurrence.py, cal/slots.py]
+  - id: c46
+    domain: code
+    status: draft
+    long: true
+    title: Regex engine
+    brief: "`rx/` parser to an AST and a Thompson NFA for literals, `.`, `* + ?`, `|`, groups and `[a-z]` classes; `match` and `search`."
+    files: [rx/__init__.py, rx/parse.py, rx/nfa.py]
+  - id: c47
+    domain: code
+    status: draft
+    long: true
+    title: JSON parser and serializer
+    brief: "`js/` a from-scratch parser with line:column errors, number edge cases and surrogate pairs, plus a serializer with indent and sort_keys; round-trips."
+    files: [js/__init__.py, js/scanner.py, js/parser.py, js/dump.py]
+    subsets: [g3]
+  - id: c48
+    domain: code
+    status: draft
+    long: true
+    overlap: true
+    title: Sales report CLI
+    brief: "`sales/` CSV ingestion with validation, aggregates by month/region/product, output as CSV and as markdown (two writers over one aggregate)."
+    files: [sales/__init__.py, sales/ingest.py, sales/aggregate.py, sales/writers.py, sales/cli.py]
+  - id: c49
+    domain: code
+    status: draft
+    long: true
+    title: Dependency resolver
+    brief: "`resolve/` package index, version ranges (reusing a small semver module), backtracking resolution preferring the newest versions, a conflict explanation."
+    files: [resolve/__init__.py, resolve/versions.py, resolve/index.py, resolve/solver.py]
+  - id: c50
+    domain: code
+    status: draft
+    long: true
+    title: Text adventure engine
+    brief: "`adventure/` world loaded from a dict, a command parser (go/take/drop/look/inventory), game state, save/load to JSON."
+    files: [adventure/__init__.py, adventure/world.py, adventure/parser.py, adventure/game.py]
+  - id: c51
+    domain: code
+    status: draft
+    long: true
+    overlap: true
+    title: Log aggregator
+    brief: "`logagg/` parsers for Apache common log and JSON lines (shared field normalisation), stats (status counts, p50/p95 latency), CLI."
+    files: [logagg/__init__.py, logagg/parsers.py, logagg/stats.py, logagg/cli.py]
+  - id: c52
+    domain: code
+    status: draft
+    long: true
+    title: In-memory filesystem shell
+    brief: "`vfs/` paths (`.`, `..`, absolute/relative), mkdir -p, ls, cd, rm -r, mv, find by glob, and a tiny shell that runs a script of those commands."
+    files: [vfs/__init__.py, vfs/paths.py, vfs/fs.py, vfs/shell.py]
+  - id: c53
+    domain: code
+    status: draft
+    long: true
+    title: Job queue with retries
+    brief: "`jobs/` a queue, simulated workers on an injected clock, retry with exponential backoff and jitter from a seeded RNG, dead-letter after N attempts."
+    files: [jobs/__init__.py, jobs/queue.py, jobs/worker.py, jobs/retry.py]
+  - id: c54
+    domain: code
+    status: draft
+    long: true
+    title: Stack language interpreter
+    brief: "`stack/` tokenizer and interpreter: numbers, arithmetic, dup/drop/swap/over, comparisons, `if … else … then`, `begin … until` loops; stack underflow errors."
+    files: [stack/__init__.py, stack/lexer.py, stack/interp.py]
+  - id: c55
+    domain: code
+    status: draft
+    long: true
+    title: Content-addressed object store
+    brief: "`objstore/` git-like blobs, trees and commits hashed with sha1 over a stated serialisation, log walking, and a tree diff (added/removed/modified)."
+    files: [objstore/__init__.py, objstore/objects.py, objstore/store.py, objstore/diff.py]
+  - id: c56
+    domain: code
+    status: draft
+    long: true
+    title: Expense splitter
+    brief: "`split/` groups, expenses with equal/exact/percentage shares, balances, and a settlement plan from the greedy largest-creditor rule stated in the prompt."
+    files: [split/__init__.py, split/model.py, split/balances.py, split/settle.py]
+
+# ---------------------------------------------------------------------------
+# Code, follow-ups (14): each extends its root; tests cover old and new behaviour
+# ---------------------------------------------------------------------------
+  - id: c01f
+    domain: code
+    status: draft
+    follows: c01
+    title: wordcount --json and stdin
+    brief: "Add `--json` output and `-` for stdin; the table output is unchanged."
+    files: [wordcount.py]
+  - id: c06f
+    domain: code
+    status: written
+    follows: c06
+    title: LRU with TTL and stats
+    brief: "Add ttl= and an injected clock: entries expire ttl seconds after their last put, expired entries are purged before capacity eviction, stats() counts hits/misses/evictions/expirations."
+    files: [lru.py]
+    subsets: [g3]
+  - id: c09f
+    domain: code
+    status: draft
+    follows: c09
+    title: Evaluator with variables and functions
+    brief: "Add `**` (right-associative), variables from a mapping, and min/max/abs functions; errors keep their positions."
+    files: [calc.py]
+  - id: c16f
+    domain: code
+    status: draft
+    follows: c16
+    title: Toposort levels
+    brief: "Add `levels(graph)`, the parallelisable layers, and `subgraph_order(graph, targets)` for only what the targets need."
+    files: [toposort.py]
+  - id: c20f
+    domain: code
+    status: draft
+    follows: c20
+    title: JSON path set, delete, wildcards
+    brief: "Add `set` (creating intermediate containers per a stated rule), `delete`, and `[*]` wildcards in `get`, returning a list."
+    files: [jpath.py]
+  - id: c25f
+    domain: code
+    status: draft
+    follows: c25
+    title: Sudoku hints
+    brief: "Add `hint(grid)`, the next naked or hidden single with its reason, and `difficulty(grid)`, the number of singles-only steps or None if guessing is needed."
+    files: [sudoku.py]
+  - id: c33f
+    domain: code
+    status: draft
+    long: true
+    follows: c33
+    title: Todo priorities and due dates
+    brief: "Add priorities, due dates on an injected 'today', an `--overdue` filter and sort keys; old JSON files load with defaults."
+    files: [todo/__init__.py, todo/model.py, todo/store.py, todo/cli.py]
+  - id: c35f
+    domain: code
+    status: draft
+    long: true
+    follows: c35
+    title: Template inheritance
+    brief: "Add `{% extends %}`/`{% block %}` with a loader, and autoescape with a `safe` filter."
+    files: [tmpl/__init__.py, tmpl/lexer.py, tmpl/parser.py, tmpl/render.py]
+  - id: c36f
+    domain: code
+    status: draft
+    long: true
+    follows: c36
+    title: GROUP BY and JOIN
+    brief: "Add GROUP BY with COUNT/SUM/AVG/MIN/MAX and an equi-JOIN between two named tables."
+    files: [minisql/__init__.py, minisql/tokens.py, minisql/parser.py, minisql/execute.py]
+  - id: c37f
+    domain: code
+    status: draft
+    long: true
+    follows: c37
+    title: Markdown tables and nested lists
+    brief: "Add GFM tables with alignment and nested lists by indentation."
+    files: [md2html/__init__.py, md2html/blocks.py, md2html/inline.py, md2html/render.py]
+  - id: c43f
+    domain: code
+    status: draft
+    long: true
+    follows: c43
+    title: Spreadsheet ranges and errors
+    brief: "Add SUM/AVG/MIN/MAX over A1:B3 ranges and error values (#DIV/0!, #REF!, #VALUE!) that propagate."
+    files: [sheet/__init__.py, sheet/formula.py, sheet/graph.py, sheet/sheet.py]
+  - id: c47f
+    domain: code
+    status: draft
+    long: true
+    follows: c47
+    title: JSON strict modes
+    brief: "Add duplicate-key policy (error/first/last), a max-depth limit, and NaN/Infinity allowed only when asked."
+    files: [js/__init__.py, js/scanner.py, js/parser.py, js/dump.py]
+  - id: c50f
+    domain: code
+    status: draft
+    long: true
+    follows: c50
+    title: Locked doors and scoring
+    brief: "Add locked exits that need a named key, `use KEY`, and a score for first visits and treasures; saves from before still load."
+    files: [adventure/__init__.py, adventure/world.py, adventure/parser.py, adventure/game.py]
+  - id: c54f
+    domain: code
+    status: draft
+    long: true
+    follows: c54
+    title: User-defined words
+    brief: "Add `: name … ;` definitions with recursion, a call-depth limit, and a `repl` CLI entry point."
+    files: [stack/__init__.py, stack/lexer.py, stack/interp.py]
+
+# ---------------------------------------------------------------------------
+# Report, short roots (34): one document, ≤ 1,500 words
+# ---------------------------------------------------------------------------
+  - id: r01
+    domain: report
+    status: written
+    title: File-based ticketing memo
+    brief: "s2's internal report (300-500 words, four given topics, one honest drawback)."
+    target_words: 400
+    subsets: [g3]
+  - id: r02
+    domain: report
+    status: draft
+    title: Incident postmortem
+    brief: "From a given timeline of an outage: summary, timeline table with every given timestamp, root cause, five numbered action items; blameless tone."
+    target_words: 700
+  - id: r03
+    domain: report
+    status: draft
+    title: Vendor comparison memo
+    brief: "Three given hosting options with given prices and limits: a comparison table, total cost for a stated workload (must compute correctly), a recommendation."
+    target_words: 600
+  - id: r04
+    domain: report
+    status: draft
+    title: Engineer onboarding checklist
+    brief: "Exactly 15 items in three named phases (week 1, month 1, quarter 1), each with an owner role."
+    target_words: 500
+  - id: r05
+    domain: report
+    status: draft
+    title: Public-key cryptography explainer
+    brief: "600-800 words for non-technical managers, one analogy, no equations, sections on signing and on key loss."
+    target_words: 700
+  - id: r06
+    domain: report
+    status: draft
+    title: Meeting summary from a transcript
+    brief: "A given ~700-word transcript: decisions, action items with the owners named in it, open questions; nothing that is not in the transcript."
+    target_words: 400
+    subsets: [g3]
+  - id: r07
+    domain: report
+    status: draft
+    title: Project status update
+    brief: "Given metrics and milestones: RAG status with reasons, a risks table, next two weeks; under 450 words."
+    target_words: 400
+  - id: r08
+    domain: report
+    status: draft
+    title: Project abstract
+    brief: "A 230-250-word abstract for a given research idea, plus exactly five keywords."
+    target_words: 250
+  - id: r09
+    domain: report
+    status: draft
+    overlap: true
+    title: Remote-work policy FAQ
+    brief: "Ten Q&As from a given policy text; a one-paragraph summary of the same policy first (deliberate overlap); every answer traceable to a clause."
+    target_words: 900
+  - id: r10
+    domain: report
+    status: draft
+    title: Migration risk register
+    brief: "Eight risks for a given database migration: table with likelihood, impact, score = L x I, owner, mitigation; sorted by score."
+    target_words: 700
+  - id: r11
+    domain: report
+    status: draft
+    title: Linear algebra study plan
+    brief: "s4's task: a seven-row day-by-day table and a ten-item prerequisite checklist."
+    target_words: 600
+  - id: r12
+    domain: report
+    status: draft
+    title: Event catering plan
+    brief: "Two given recipes scaled from 4 to 18 servings: scaled ingredient tables (checked numbers), a merged shopping list, a prep timeline."
+    target_words: 600
+  - id: r13
+    domain: report
+    status: draft
+    title: Cover letter
+    brief: "Given a job ad and a CV summary: at most 380 words, three paragraphs, each of the ad's three must-haves addressed with a CV fact."
+    target_words: 350
+  - id: r14
+    domain: report
+    status: draft
+    title: Article summary
+    brief: "A given ~1,200-word article: a 180-220-word summary and exactly three key claims, each with a supporting quote from the text."
+    target_words: 300
+  - id: r15
+    domain: report
+    status: draft
+    title: Architecture decision record
+    brief: "Choosing a message queue for a given context: Context, three Options with pros/cons, Decision, Consequences; under 800 words."
+    target_words: 700
+  - id: r16
+    domain: report
+    status: draft
+    title: CLI user guide page
+    brief: "From a given `--help` text: install, five worked examples using only real flags, troubleshooting; no invented flags."
+    target_words: 700
+  - id: r17
+    domain: report
+    status: draft
+    title: Laptop acceptable-use policy
+    brief: "Clauses numbered 1-12 under three given headings, plain language, an enforcement clause."
+    target_words: 800
+  - id: r18
+    domain: report
+    status: draft
+    title: Press release
+    brief: "Given launch facts: headline, dateline, two quotes from the named people, boilerplate; every given number exactly once."
+    target_words: 450
+  - id: r19
+    domain: report
+    status: draft
+    title: Fractions lesson plan
+    brief: "A 45-minute lesson: objectives, timed activities that sum to exactly 45 minutes, a five-question exit ticket with answers."
+    target_words: 600
+  - id: r20
+    domain: report
+    status: draft
+    title: Budget proposal
+    brief: "Given line items: a table with subtotals per category and a grand total (all checked), justification per category."
+    target_words: 600
+  - id: r21
+    domain: report
+    status: draft
+    overlap: true
+    title: Support reply templates
+    brief: "Six templated replies for six given situations, each with a subject line and placeholders; several situations share steps (deliberate overlap)."
+    target_words: 900
+  - id: r22
+    domain: report
+    status: draft
+    title: SQL vs document store
+    brief: "700-900 words for a given use case: a criteria table, a recommendation, two conditions that would reverse it."
+    target_words: 800
+  - id: r23
+    domain: report
+    status: draft
+    title: Backup restore runbook
+    brief: "Restoring a PostgreSQL base backup: numbered steps, each with a command and a verification check; preconditions and abort criteria."
+    target_words: 700
+    subsets: [g3]
+  - id: r24
+    domain: report
+    status: draft
+    title: Quarterly results summary
+    brief: "Given quarterly figures: an executive summary with three insights, each citing a computed change (percentages checked)."
+    target_words: 450
+  - id: r25
+    domain: report
+    status: draft
+    title: Job description
+    brief: "Senior data engineer: responsibilities, 6 must-haves and 4 nice-to-haves, a given salary band, inclusive language."
+    target_words: 600
+  - id: r26
+    domain: report
+    status: draft
+    title: Code review guidelines
+    brief: "Eight rules, each with a rationale and a good/bad example, plus reviewer and author checklists."
+    target_words: 1000
+  - id: r27
+    domain: report
+    status: draft
+    title: Employee survey design
+    brief: "Twelve questions across four given themes, mixed types (Likert, choice, open), the reason for each, an anonymity note."
+    target_words: 900
+  - id: r28
+    domain: report
+    status: draft
+    title: Dijkstra explainer with worked example
+    brief: "For students, on a given 6-node weighted graph: the algorithm, a step table, and the final distances (checked against the true ones)."
+    target_words: 900
+  - id: r29
+    domain: report
+    status: draft
+    title: Engineering newsletter
+    brief: "From twelve given bullet facts: five sections, every fact used once, a 'by the numbers' box."
+    target_words: 700
+  - id: r30
+    domain: report
+    status: draft
+    title: SWOT analysis
+    brief: "A fictional bakery from given facts: a 2x2 table with 3-4 points per quadrant and three strategies, each linking a strength or opportunity to a weakness or threat."
+    target_words: 600
+  - id: r31
+    domain: report
+    status: draft
+    title: Negotiation brief
+    brief: "Given a contract renewal scenario: BATNA, interests of both sides, a concessions table with values, an opening position."
+    target_words: 700
+  - id: r32
+    domain: report
+    status: draft
+    title: Accessibility audit summary
+    brief: "Given 14 findings with WCAG references: prioritised into three tiers by a stated rule, an effort estimate per tier."
+    target_words: 800
+  - id: r33
+    domain: report
+    status: draft
+    title: Data dictionary
+    brief: "A given 12-column table schema: one row per column with type, meaning, constraints and an example value; no invented columns."
+    target_words: 700
+  - id: r34
+    domain: report
+    status: draft
+    title: Explaining CAP to a product team
+    brief: "800-1,000 words: the trade-off, three given product scenarios each mapped to a choice, a glossary of five terms."
+    target_words: 900
+
+# ---------------------------------------------------------------------------
+# Report, long roots (22): 6,000-8,000 words, beyond one call's max_tokens
+# ---------------------------------------------------------------------------
+  - id: r35
+    domain: report
+    status: draft
+    long: true
+    title: Startup employee handbook
+    brief: "Ten given chapter titles for a 30-person company, ~7,000 words; leave numbers given in the prompt must appear exactly."
+    target_words: 7000
+  - id: r36
+    domain: report
+    status: draft
+    long: true
+    title: Ride-dispatch design document
+    brief: "Twelve given sections (requirements to rollout) for a dispatch service with given load figures, ~7,000 words; capacity math checked."
+    target_words: 7000
+    subsets: [g3]
+  - id: r37
+    domain: report
+    status: draft
+    long: true
+    overlap: true
+    title: Security policy suite
+    brief: "Six policies, each with purpose/scope/policy/enforcement, ~6,500 words; the shared definitions overlap on purpose."
+    target_words: 6500
+  - id: r38
+    domain: report
+    status: draft
+    long: true
+    title: Intro databases course
+    brief: "A syllabus plus twelve weekly lecture outlines with readings and one exercise each, ~7,000 words."
+    target_words: 7000
+  - id: r39
+    domain: report
+    status: draft
+    long: true
+    title: Coffee roaster business plan
+    brief: "Market, operations, marketing and financials from given numbers (three-year tables that must sum), ~7,000 words."
+    target_words: 7000
+  - id: r40
+    domain: report
+    status: draft
+    long: true
+    title: Monolith-to-services migration guide
+    brief: "For a given e-commerce monolith: strangler-fig phases, data migration, testing, cut-over, eight given services, ~7,500 words."
+    target_words: 7500
+  - id: r41
+    domain: report
+    status: draft
+    long: true
+    title: Home network troubleshooting guide
+    brief: "Fifteen problems, each with symptoms, diagnosis steps and fixes, plus a decision flow, ~6,500 words."
+    target_words: 6500
+  - id: r42
+    domain: report
+    status: draft
+    long: true
+    overlap: true
+    title: RFP response
+    brief: "Twenty given requirements, each answered under its id with compliance status; requirements overlap on purpose, ~7,000 words."
+    target_words: 7000
+  - id: r43
+    domain: report
+    status: draft
+    long: true
+    title: Programming languages by decade
+    brief: "1950s-2010s in seven sections with the given language list per decade, influences and a timeline table, ~6,500 words."
+    target_words: 6500
+  - id: r44
+    domain: report
+    status: draft
+    long: true
+    title: Non-profit annual report
+    brief: "Given programme data and finances: narrative, impact tables (figures checked), financial summary, ~6,000 words."
+    target_words: 6000
+  - id: r45
+    domain: report
+    status: draft
+    long: true
+    title: Smart thermostat manual
+    brief: "Twelve given features, each with how-to steps, settings tables and troubleshooting, ~7,000 words."
+    target_words: 7000
+  - id: r46
+    domain: report
+    status: draft
+    long: true
+    title: Remote-work productivity research proposal
+    brief: "Background, hypotheses, design, measures, analysis plan with a power calculation from given parameters (checked), ethics, timeline, budget, ~7,000 words."
+    target_words: 7000
+  - id: r47
+    domain: report
+    status: draft
+    long: true
+    overlap: true
+    title: Incident response playbooks
+    brief: "Eight given scenarios, each with detection, containment, eradication, recovery and comms; shared steps overlap on purpose, ~7,500 words."
+    target_words: 7500
+  - id: r48
+    domain: report
+    status: draft
+    long: true
+    title: REST API reference
+    brief: "Twelve given endpoints: description, parameter table, example request and response, error codes; nothing invented, ~7,000 words."
+    target_words: 7000
+  - id: r49
+    domain: report
+    status: draft
+    long: true
+    title: Puzzle game design document
+    brief: "Pillars, core loop, twelve level designs with a difficulty curve, progression and UI, ~6,500 words."
+    target_words: 6500
+  - id: r50
+    domain: report
+    status: draft
+    long: true
+    title: Compliance gap analysis
+    brief: "Fifteen given controls against a given current-state description: status, gap, remediation and effort per control, ~6,500 words."
+    target_words: 6500
+  - id: r51
+    domain: report
+    status: draft
+    long: true
+    overlap: true
+    title: Support training curriculum
+    brief: "Ten modules, each with objectives, content, an exercise and a five-question quiz with answers; modules overlap on purpose, ~7,500 words."
+    target_words: 7500
+  - id: r52
+    domain: report
+    status: draft
+    long: true
+    title: Note-taking app PRD
+    brief: "Fifteen user stories with acceptance criteria, non-functional requirements, metrics and an MVP cut, ~6,500 words."
+    target_words: 6500
+  - id: r53
+    domain: report
+    status: draft
+    long: true
+    title: Personal finance primer
+    brief: "Ten chapters (budgeting to retirement), worked examples with given figures (checked), no product recommendations, ~7,000 words."
+    target_words: 7000
+  - id: r54
+    domain: report
+    status: draft
+    long: true
+    title: Concurrency in Python chapter
+    brief: "Threads, processes, asyncio and the GIL, with eight code examples and a decision table, ~7,000 words."
+    target_words: 7000
+  - id: r55
+    domain: report
+    status: draft
+    long: true
+    title: Disaster recovery plan
+    brief: "For a given 14-system inventory with RTO/RPO targets: tiers, procedures per tier, test schedule, contacts, ~6,500 words."
+    target_words: 6500
+  - id: r56
+    domain: report
+    status: draft
+    long: true
+    title: Technical writing style guide
+    brief: "Twenty rules, each with a rationale and a bad/good example pair, plus a glossary, ~6,500 words."
+    target_words: 6500
+
+# ---------------------------------------------------------------------------
+# Report, follow-ups (14): edit the parent document; reply with the whole document
+# ---------------------------------------------------------------------------
+  - id: r01f
+    domain: report
+    status: written
+    follows: r01
+    title: Ticketing memo + migration plan
+    brief: "s3's follow-up: add a migration section with a three-step plan, keep the existing sections accurate, do not repeat them."
+    target_words: 650
+    subsets: [g3]
+  - id: r02f
+    domain: report
+    status: draft
+    follows: r02
+    title: Postmortem lessons and owners
+    brief: "Add lessons learned, reorder the action items by a given priority, and add the owners given in the prompt."
+    target_words: 900
+  - id: r03f
+    domain: report
+    status: draft
+    follows: r03
+    title: Vendor memo with a fourth option
+    brief: "A fourth option with given specs: update the table, the cost calculation and, if warranted, the recommendation."
+    target_words: 750
+  - id: r06f
+    domain: report
+    status: draft
+    follows: r06
+    title: Running summary of two meetings
+    brief: "A second given transcript: merge into one running summary, mark items closed or reassigned, and drop nothing still open."
+    target_words: 600
+  - id: r10f
+    domain: report
+    status: draft
+    follows: r10
+    title: Risk register update
+    brief: "Four new given risks and two re-scored ones: the table stays sorted by score and the scores stay correct."
+    target_words: 950
+  - id: r15f
+    domain: report
+    status: draft
+    follows: r15
+    title: ADR superseded
+    brief: "A new constraint reverses the decision: write the superseding decision, keep the original as history, update the consequences."
+    target_words: 900
+  - id: r20f
+    domain: report
+    status: draft
+    follows: r20
+    title: Budget cut by 15 %
+    brief: "Cut the total by 15 % under two given constraints; every subtotal and the total stay correct."
+    target_words: 700
+  - id: r23f
+    domain: report
+    status: draft
+    follows: r23
+    title: Runbook for point-in-time recovery
+    brief: "Extend to PITR with WAL replay to a given timestamp, and add a rollback section."
+    target_words: 1000
+  - id: r35f
+    domain: report
+    status: draft
+    long: true
+    follows: r35
+    title: Handbook with remote work
+    brief: "Add a remote-work chapter and apply three given policy changes to the leave chapter; everything else unchanged."
+    target_words: 7800
+  - id: r36f
+    domain: report
+    status: draft
+    long: true
+    follows: r36
+    title: Design document goes multi-region
+    brief: "Add multi-region support and update every affected section, with a change log at the end."
+    target_words: 8000
+  - id: r40f
+    domain: report
+    status: draft
+    long: true
+    follows: r40
+    title: Migration guide case study and glossary
+    brief: "Add a case-study chapter and a 25-term glossary; terms used in the guide must be defined."
+    target_words: 8500
+  - id: r45f
+    domain: report
+    status: draft
+    long: true
+    follows: r45
+    title: Thermostat manual for firmware 2.0
+    brief: "Three new and two changed features (given): update the affected chapters and the troubleshooting section."
+    target_words: 7800
+  - id: r48f
+    domain: report
+    status: draft
+    long: true
+    follows: r48
+    title: API reference v2
+    brief: "Three endpoints added, two deprecated, auth changed (given): update the reference and add a migration notes section."
+    target_words: 8000
+  - id: r52f
+    domain: report
+    status: draft
+    long: true
+    follows: r52
+    title: PRD with collaboration
+    brief: "Add five given collaboration user stories with acceptance criteria, and update the non-functional requirements and the MVP cut."
+    target_words: 7500

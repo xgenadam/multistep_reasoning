@@ -1,0 +1,10 @@
+id: r01
+items:
+  - {id: words, check: word_count, min: 270, max: 550}   # "about 300-500": ±10 %
+  - {id: sec-cost, check: heading, pattern: '(?i)cost|hosting'}
+  - {id: sec-search, check: heading, pattern: '(?i)search'}
+  - {id: sec-review, check: heading, pattern: '(?i)review'}
+  - {id: sec-drawback, check: heading, pattern: '(?i)drawback|downside|limitation|trade-?off|caveat'}
+  - {id: git, check: contains, pattern: '(?i)\bgit\b'}
+  - {id: markdown, check: contains, pattern: '(?i)markdown'}
+  - {id: no-repeat, check: max_section_overlap, max: 0.5}

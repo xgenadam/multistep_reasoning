@@ -633,6 +633,11 @@ def cmd_check_bench(args) -> int:
     manifest = load_manifest(bench)
     entries = [e for e in manifest.values() if e.get('domain') == 'code'
                and (not args.prompt or str(e['id']) in args.prompt)]
+    # A draft entry (bench README) has only a brief; it is checked once written.
+    drafts = [e for e in entries if e.get('status') == 'draft']
+    entries = [e for e in entries if e.get('status') != 'draft']
+    if drafts:
+        print(f'{len(drafts)} draft code prompt(s) skipped')
     if not entries:
         print('no code prompts to check')
         return 1

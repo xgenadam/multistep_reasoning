@@ -251,3 +251,16 @@ def test_match_report_predicts_rounds(tmp_path, arms):
     assert report['completion_p50'] == {'b': 6500, 'a2': 2500}
     assert report['within_25pct'] == {'a2': False}
     assert report['predicted_rounds'] == 4  # (6500 - 1000) / (300 + 1200) = 3.7
+
+
+def test_drafts_are_skipped_and_a_frozen_bench_refuses_them(tmp_path, arms):
+    bench = _bench(tmp_path)
+    manifest = yaml.safe_load((bench / 'manifest.yaml').read_text())
+    manifest['prompts'].append({'id': 'c02', 'domain': 'code', 'status': 'draft'})
+    (bench / 'manifest.yaml').write_text(yaml.safe_dump(manifest))
+    loaded = arms.load_bench(bench)
+    assert 'c02' not in loaded['prompts'] and loaded['drafts'] == ['c02']
+    manifest['frozen'] = True
+    (bench / 'manifest.yaml').write_text(yaml.safe_dump(manifest))
+    with pytest.raises(ValueError, match='frozen bench has draft'):
+        arms.load_bench(bench)
