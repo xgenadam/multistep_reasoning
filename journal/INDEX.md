@@ -12,7 +12,7 @@ updated: 2026-10-23 (Q-02 stage 0: drivers, override, test runner, checklists, l
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
 - **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design, the A-01 approval, the Q-01 stage 1 commits (S-018) and Q-01 stage 2 (S-019), Q-04, D-020, S-020, D-021, Q-06, S-021 and S-022 (Q-02 stage 0); the user pushes from the host.
-- **Server owner:** none. **GPU halt flag set** by the watchdog at 13:50Z: GPU1 reached ≥ 88 °C with the 27B on cards 0–1 side by side with the 35B-A3B. GPU work is held for the user's choice of layout or power limit (Q-02 Notes 13:50Z); the flag stays until then. The watchdog is pid 207355.
+- **Server owner:** Q-02 stage 0 (S-022), from 2026-10-23 ~14:10Z: the 27B, then the 35B-A3B, each alone on all four cards, for their baselines and (a″) pilots. Every card is capped at 280 W by the user (was 350 W; not persistent across a host reboot). The halt flag was cleared after the 13:50Z trip. The watchdog is pid 207355.
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. Q-02 stage 0, rest — blocked on the user's review of bench v1 and the pre-registration; then the 136 remaining prompts, freeze, baselines for Qwen3.8-27B and Qwen3.6-35B-A3B (timing) and the (a″) pilot — Opus 5.5/high — timing for the baselines — Q-01, Q-04 (formally; stage 2 needs the labels)
