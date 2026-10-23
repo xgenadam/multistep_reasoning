@@ -1,0 +1,4642 @@
+{
+  "judge_backend": "http://localhost:8092/v1",
+  "judge_model": "qwen3-235b-a22b-q2kxl",
+  "served_models": [
+    "qwen3-235b-a22b-q2kxl"
+  ],
+  "rubric": "pairwise_v1",
+  "rubric_path": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/journal/baseline/rubrics/pairwise_v1.md",
+  "rubric_sha256": "26dbe6f906c682d09a37fefb51431eee921e4c97ec3b3fa8f4112041cfeed464",
+  "pairs_path": "journal/baseline/bench/validation/pairs.yaml",
+  "pairs_sha256": "4b136aea07b7d11dccf379604e631b0b39855ba65da484782ed13cd629129669",
+  "settings": {
+    "temperature": 0,
+    "seed": 0,
+    "max_tokens": 2048,
+    "thinking": "off"
+  },
+  "commit": "c72bcff8099a68809d73f4956597d7aaac139125",
+  "dirty": false,
+  "label": "q04-qwen3-235b-a22b-q2kxl",
+  "started_at": "20261023T005530Z",
+  "updated_at": "20261023T010059Z",
+  "jobs": 1,
+  "caveat": null,
+  "calls": [
+    {
+      "pair_id": "L1",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A is more concise and avoids redundant restatements, particularly in the 'Further Considerations' section of Response B which repeats earlier points. Both responses cover all requested items correctly, but A maintains better structure and brevity."
+      },
+      "attempts": [
+        {
+          "seconds": 6.374,
+          "server_timings": {
+            "prompt_n": 1541,
+            "prompt_ms": 1849.49,
+            "prompt_per_second": 833.2,
+            "predicted_n": 176,
+            "predicted_ms": 4042.11,
+            "predicted_per_second": 43.29
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3061,
+          "completion_tokens": 176,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A is more concise and avoids redundant restatements, particularly in the 'Further Considerations' section of Response B which repeats earlier points. Both responses cover all requested items correctly, but A maintains better structure and brevity."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.374,
+      "prompt_tokens": 3061,
+      "completion_tokens": 176
+    },
+    {
+      "pair_id": "L1",
+      "order": "ba",
+      "repeat": 0,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A includes an additional section ('Further Considerations') that summarizes the covered topics clearly and concisely, improving structure and readability. It also avoids repetition, making it more concise while delivering the same content effectively."
+      },
+      "attempts": [
+        {
+          "seconds": 5.921,
+          "server_timings": {
+            "prompt_n": 1541,
+            "prompt_ms": 1808.68,
+            "prompt_per_second": 852.0,
+            "predicted_n": 167,
+            "predicted_ms": 3849.77,
+            "predicted_per_second": 43.12
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3061,
+          "completion_tokens": 167,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A includes an additional section ('Further Considerations') that summarizes the covered topics clearly and concisely, improving structure and readability. It also avoids repetition, making it more concise while delivering the same content effectively."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.921,
+      "prompt_tokens": 3061,
+      "completion_tokens": 167
+    },
+    {
+      "pair_id": "L2",
+      "order": "ab",
+      "repeat": 0,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "logscan CLI tool",
+          "log file path argument",
+          "level argument (INFO, WARN, ERROR)",
+          "prints matching log lines",
+          "newest last",
+          "count on stderr",
+          "--limit N flag",
+          "exit non-zero if file does not exist",
+          "Python code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "Sorting logic prints oldest first instead of newest last"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "Sorting logic prints oldest first instead of newest last"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "A"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses have the same code with identical issues. Both incorrectly sort logs to show oldest first instead of newest last, failing the primary task requirement."
+      },
+      "attempts": [
+        {
+          "seconds": 8.107,
+          "server_timings": {
+            "prompt_n": 2744,
+            "prompt_ms": 2937.76,
+            "prompt_per_second": 934.05,
+            "predicted_n": 208,
+            "predicted_ms": 4843.1,
+            "predicted_per_second": 42.74
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3601,
+          "completion_tokens": 208,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "logscan CLI tool",
+              "log file path argument",
+              "level argument (INFO, WARN, ERROR)",
+              "prints matching log lines",
+              "newest last",
+              "count on stderr",
+              "--limit N flag",
+              "exit non-zero if file does not exist",
+              "Python code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "Sorting logic prints oldest first instead of newest last"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "Sorting logic prints oldest first instead of newest last"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "A"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses have the same code with identical issues. Both incorrectly sort logs to show oldest first instead of newest last, failing the primary task requirement."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.107,
+      "prompt_tokens": 3601,
+      "completion_tokens": 208
+    },
+    {
+      "pair_id": "L2",
+      "order": "ba",
+      "repeat": 0,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "logscan CLI tool",
+          "log file path argument",
+          "level argument (INFO, WARN, ERROR)",
+          "prints matching log lines",
+          "newest last",
+          "count on stderr",
+          "--limit N flag",
+          "exit non-zero if file does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses implement identical code with the same logic flaw: they sort by timestamp oldest-first but do not reverse to display newest lines last as required."
+      },
+      "attempts": [
+        {
+          "seconds": 7.169,
+          "server_timings": {
+            "prompt_n": 1477,
+            "prompt_ms": 1880.42,
+            "prompt_per_second": 785.46,
+            "predicted_n": 226,
+            "predicted_ms": 5262.45,
+            "predicted_per_second": 42.76
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3601,
+          "completion_tokens": 226,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "logscan CLI tool",
+              "log file path argument",
+              "level argument (INFO, WARN, ERROR)",
+              "prints matching log lines",
+              "newest last",
+              "count on stderr",
+              "--limit N flag",
+              "exit non-zero if file does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses implement identical code with the same logic flaw: they sort by timestamp oldest-first but do not reverse to display newest lines last as required."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.169,
+      "prompt_tokens": 3601,
+      "completion_tokens": 226
+    },
+    {
+      "pair_id": "R1",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Accepts one or more file paths",
+          "Prints line count, word count, and character count for each file",
+          "Outputs results in a simple table",
+          "Exits non-zero if a path does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A is more concise and correctly handles edge cases like empty files. It also properly calculates line counts using splitlines() which is more accurate than the newline count approach in B. A provides a single, cohesive implementation while B is fragmented across multiple code blocks."
+      },
+      "attempts": [
+        {
+          "seconds": 9.838,
+          "server_timings": {
+            "prompt_n": 4067,
+            "prompt_ms": 4660.5,
+            "prompt_per_second": 872.65,
+            "predicted_n": 213,
+            "predicted_ms": 5138.61,
+            "predicted_per_second": 41.26
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4067,
+          "completion_tokens": 213,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Accepts one or more file paths",
+              "Prints line count, word count, and character count for each file",
+              "Outputs results in a simple table",
+              "Exits non-zero if a path does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A is more concise and correctly handles edge cases like empty files. It also properly calculates line counts using splitlines() which is more accurate than the newline count approach in B. A provides a single, cohesive implementation while B is fragmented across multiple code blocks."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 9.838,
+      "prompt_tokens": 4067,
+      "completion_tokens": 213
+    },
+    {
+      "pair_id": "R1",
+      "order": "ba",
+      "repeat": 0,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Given one or more file paths",
+          "Prints line count, word count, and character count in a simple table",
+          "Exit non-zero if a path does not exist",
+          "Provide the code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "In 'count_metrics', line count uses 'content.count(\"\\n\")' which doesn't match standard 'wc -l' behavior for files without trailing newline",
+            "The 'validate_files' function in the final code returns None instead of valid_paths",
+            "The 'print_table' function in the final code expects a list of dictionaries but is passed tuples",
+            "The code has redundant sections (multiple 'main' functions)"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "The line count uses 'len(content.splitlines())' which may not match 'wc -l' behavior depending on trailing newlines",
+            "The code doesn't explicitly handle empty input files correctly",
+            "The error handling exits with non-zero even if only some files fail"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "A implements all required functionality correctly with proper error handling and table formatting, despite some implementation nuances. B has structural issues with error handling and may exit non-zero incorrectly."
+      },
+      "attempts": [
+        {
+          "seconds": 11.702,
+          "server_timings": {
+            "prompt_n": 3150,
+            "prompt_ms": 3230.09,
+            "prompt_per_second": 975.2,
+            "predicted_n": 334,
+            "predicted_ms": 8144.15,
+            "predicted_per_second": 40.89
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4067,
+          "completion_tokens": 334,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Given one or more file paths",
+              "Prints line count, word count, and character count in a simple table",
+              "Exit non-zero if a path does not exist",
+              "Provide the code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "In 'count_metrics', line count uses 'content.count(\"\\n\")' which doesn't match standard 'wc -l' behavior for files without trailing newline",
+                "The 'validate_files' function in the final code returns None instead of valid_paths",
+                "The 'print_table' function in the final code expects a list of dictionaries but is passed tuples",
+                "The code has redundant sections (multiple 'main' functions)"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "The line count uses 'len(content.splitlines())' which may not match 'wc -l' behavior depending on trailing newlines",
+                "The code doesn't explicitly handle empty input files correctly",
+                "The error handling exits with non-zero even if only some files fail"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "A implements all required functionality correctly with proper error handling and table formatting, despite some implementation nuances. B has structural issues with error handling and may exit non-zero incorrectly."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 11.702,
+      "prompt_tokens": 4067,
+      "completion_tokens": 334
+    },
+    {
+      "pair_id": "R2",
+      "order": "ab",
+      "repeat": 0,
+      "side": "b",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool named csv2json",
+          "reads CSV file path from args",
+          "prints JSON array of objects",
+          "header row used as keys",
+          "--indent flag for pretty-printing",
+          "exit non-zero if file missing",
+          "exit non-zero if file empty",
+          "Python code provided"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "Error handling for empty file is incorrect (checks file size, not content)",
+            "Code has a syntax error (double ```python tag at start)",
+            "Shebang line is duplicated in final code block"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "Uses 'file_path' parameter name while 'path' to file is expected",
+            "Empty file check is based on records being empty which may be too strict (header-only files would trigger empty error)"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "tie",
+          "structure": "B",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B has better structure with proper function separation, more accurate empty file handling based on actual content rather than size, and avoids syntax errors present in Response A. Both handle the main requirements but B's implementation is more robust and well-organized."
+      },
+      "attempts": [
+        {
+          "seconds": 8.961,
+          "server_timings": {
+            "prompt_n": 1805,
+            "prompt_ms": 1970.55,
+            "prompt_per_second": 915.99,
+            "predicted_n": 295,
+            "predicted_ms": 6658.34,
+            "predicted_per_second": 44.16
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2662,
+          "completion_tokens": 295,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool named csv2json",
+              "reads CSV file path from args",
+              "prints JSON array of objects",
+              "header row used as keys",
+              "--indent flag for pretty-printing",
+              "exit non-zero if file missing",
+              "exit non-zero if file empty",
+              "Python code provided"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "Error handling for empty file is incorrect (checks file size, not content)",
+                "Code has a syntax error (double ```python tag at start)",
+                "Shebang line is duplicated in final code block"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "Uses 'file_path' parameter name while 'path' to file is expected",
+                "Empty file check is based on records being empty which may be too strict (header-only files would trigger empty error)"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "tie",
+              "structure": "B",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B has better structure with proper function separation, more accurate empty file handling based on actual content rather than size, and avoids syntax errors present in Response A. Both handle the main requirements but B's implementation is more robust and well-organized."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.961,
+      "prompt_tokens": 2662,
+      "completion_tokens": 295
+    },
+    {
+      "pair_id": "R2",
+      "order": "ba",
+      "repeat": 0,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool named csv2json",
+          "reads CSV file path",
+          "prints JSON array of objects",
+          "header row as keys",
+          "--indent flag for pretty-printing",
+          "exit non-zero if file missing or empty",
+          "code provided"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "Error handling for empty file may incorrectly trigger on header-only files (DictReader returns empty list)"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "--indent flag implementation doesn't match specification: uses nargs='?' with const=2 instead of implementing the exact flag behavior requested (either present or not, not forcing value)"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "B",
+          "structure": "B",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B provides a more concise, single-file implementation that correctly handles file existence and empty checks. It correctly implements the --indent flag as a presence flag rather than requiring a value, matching typical CLI behavior. Response A's implementation has a more complex structure with unnecessary separation into modules and has a potential error in empty file detection."
+      },
+      "attempts": [
+        {
+          "seconds": 8.206,
+          "server_timings": {
+            "prompt_n": 1737,
+            "prompt_ms": 1960.27,
+            "prompt_per_second": 886.1,
+            "predicted_n": 268,
+            "predicted_ms": 6019.7,
+            "predicted_per_second": 44.35
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2662,
+          "completion_tokens": 268,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool named csv2json",
+              "reads CSV file path",
+              "prints JSON array of objects",
+              "header row as keys",
+              "--indent flag for pretty-printing",
+              "exit non-zero if file missing or empty",
+              "code provided"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "Error handling for empty file may incorrectly trigger on header-only files (DictReader returns empty list)"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "--indent flag implementation doesn't match specification: uses nargs='?' with const=2 instead of implementing the exact flag behavior requested (either present or not, not forcing value)"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "B",
+              "structure": "B",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B provides a more concise, single-file implementation that correctly handles file existence and empty checks. It correctly implements the --indent flag as a presence flag rather than requiring a value, matching typical CLI behavior. Response A's implementation has a more complex structure with unnecessary separation into modules and has a potential error in empty file detection."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.206,
+      "prompt_tokens": 2662,
+      "completion_tokens": 268
+    },
+    {
+      "pair_id": "R3",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "Conclusion"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A covers all requested items with proper structure, including a conclusion section, while B omits the conclusion despite being a short report. Both are correct and adhere to constraints, but A wins on structure while B is more concise."
+      },
+      "attempts": [
+        {
+          "seconds": 6.008,
+          "server_timings": {
+            "prompt_n": 1697,
+            "prompt_ms": 1841.27,
+            "prompt_per_second": 921.65,
+            "predicted_n": 177,
+            "predicted_ms": 3934.24,
+            "predicted_per_second": 44.74
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2547,
+          "completion_tokens": 177,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "Conclusion"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A covers all requested items with proper structure, including a conclusion section, while B omits the conclusion despite being a short report. Both are correct and adhere to constraints, but A wins on structure while B is more concise."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.008,
+      "prompt_tokens": 2547,
+      "completion_tokens": 177
+    },
+    {
+      "pair_id": "R3",
+      "order": "ba",
+      "repeat": 0,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "Drawback and Conclusion"
+          ],
+          "wrong": [
+            "Drawback and Conclusion section is missing"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B is missing the 'Drawback and Conclusion' section, failing to fully address the task requirement of including one honest drawback and a conclusion. Response A completes all requested items correctly."
+      },
+      "attempts": [
+        {
+          "seconds": 5.994,
+          "server_timings": {
+            "prompt_n": 1620,
+            "prompt_ms": 1802.21,
+            "prompt_per_second": 898.9,
+            "predicted_n": 179,
+            "predicted_ms": 3979.11,
+            "predicted_per_second": 44.73
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2547,
+          "completion_tokens": 179,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "Drawback and Conclusion"
+              ],
+              "wrong": [
+                "Drawback and Conclusion section is missing"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B is missing the 'Drawback and Conclusion' section, failing to fully address the task requirement of including one honest drawback and a conclusion. Response A completes all requested items correctly."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.994,
+      "prompt_tokens": 2547,
+      "completion_tokens": 179
+    },
+    {
+      "pair_id": "R4",
+      "order": "ab",
+      "repeat": 0,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "definition of file-based ticketing system",
+          "main benefits",
+          "main drawbacks",
+          "migration section on moving tickets from external tracker",
+          "concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses fully complete the task and are correct. Response A has better structure with consistent formatting across sections, while Response B is more concise and avoids repetition."
+      },
+      "attempts": [
+        {
+          "seconds": 8.281,
+          "server_timings": {
+            "prompt_n": 3544,
+            "prompt_ms": 3606.59,
+            "prompt_per_second": 982.65,
+            "predicted_n": 181,
+            "predicted_ms": 4449.24,
+            "predicted_per_second": 40.46
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4392,
+          "completion_tokens": 181,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "definition of file-based ticketing system",
+              "main benefits",
+              "main drawbacks",
+              "migration section on moving tickets from external tracker",
+              "concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses fully complete the task and are correct. Response A has better structure with consistent formatting across sections, while Response B is more concise and avoids repetition."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.281,
+      "prompt_tokens": 4392,
+      "completion_tokens": 181
+    },
+    {
+      "pair_id": "R4",
+      "order": "ba",
+      "repeat": 0,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "definition of file-based ticketing system",
+          "main benefits",
+          "main drawbacks",
+          "migration section with concrete plan",
+          "three steps in migration plan",
+          "no repetition of existing sections"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses fully complete the task and are correct. Response A has superior structure with detailed sections, tables, and code examples, while Response B is more concise and avoids redundancy."
+      },
+      "attempts": [
+        {
+          "seconds": 8.474,
+          "server_timings": {
+            "prompt_n": 3417,
+            "prompt_ms": 3504.87,
+            "prompt_per_second": 974.93,
+            "predicted_n": 188,
+            "predicted_ms": 4600.21,
+            "predicted_per_second": 40.65
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4392,
+          "completion_tokens": 188,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "definition of file-based ticketing system",
+              "main benefits",
+              "main drawbacks",
+              "migration section with concrete plan",
+              "three steps in migration plan",
+              "no repetition of existing sections"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses fully complete the task and are correct. Response A has superior structure with detailed sections, tables, and code examples, while Response B is more concise and avoids redundancy."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.474,
+      "prompt_tokens": 4392,
+      "completion_tokens": 188
+    },
+    {
+      "pair_id": "R5",
+      "order": "ab",
+      "repeat": 0,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "7-day schedule table",
+          "10-concept checklist",
+          "day-by-day schedule",
+          "checklist of concepts solid before numerical linear algebra"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses fully address the requested items with correct content. Response A has a more structured and detailed format, while Response B is more concise and focused."
+      },
+      "attempts": [
+        {
+          "seconds": 7.402,
+          "server_timings": {
+            "prompt_n": 2961,
+            "prompt_ms": 2913.76,
+            "prompt_per_second": 1016.21,
+            "predicted_n": 173,
+            "predicted_ms": 4125.37,
+            "predicted_per_second": 41.69
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3809,
+          "completion_tokens": 173,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day schedule table",
+              "10-concept checklist",
+              "day-by-day schedule",
+              "checklist of concepts solid before numerical linear algebra"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses fully address the requested items with correct content. Response A has a more structured and detailed format, while Response B is more concise and focused."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.402,
+      "prompt_tokens": 3809,
+      "completion_tokens": 173
+    },
+    {
+      "pair_id": "R5",
+      "order": "ba",
+      "repeat": 0,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "7-day study schedule table",
+          "short checklist of 10 concepts"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "10-concept prerequisite checklist includes eigenvalues and eigenvectors, which were not mentioned in the task requirements",
+            "10-concept prerequisite checklist includes matrix norms, which were not mentioned in the task requirements"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "A",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A perfectly fulfills the task requirements with a clear 7-day schedule table and a concise 10-concept checklist that exactly matches the requested topics. Response B includes extra concepts (eigenvalues, eigenvectors, matrix norms) not requested in the task and repeats the study schedule table twice, violating the conciseness constraint."
+      },
+      "attempts": [
+        {
+          "seconds": 9.036,
+          "server_timings": {
+            "prompt_n": 2888,
+            "prompt_ms": 2870.31,
+            "prompt_per_second": 1006.16,
+            "predicted_n": 244,
+            "predicted_ms": 5849.06,
+            "predicted_per_second": 41.55
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3809,
+          "completion_tokens": 244,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day study schedule table",
+              "short checklist of 10 concepts"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "10-concept prerequisite checklist includes eigenvalues and eigenvectors, which were not mentioned in the task requirements",
+                "10-concept prerequisite checklist includes matrix norms, which were not mentioned in the task requirements"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "A",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A perfectly fulfills the task requirements with a clear 7-day schedule table and a concise 10-concept checklist that exactly matches the requested topics. Response B includes extra concepts (eigenvalues, eigenvectors, matrix norms) not requested in the task and repeats the study schedule table twice, violating the conciseness constraint."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 9.036,
+      "prompt_tokens": 3809,
+      "completion_tokens": 244
+    },
+    {
+      "pair_id": "W1",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "one honest drawback"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B is missing the 'one honest drawback' section, which is a required item in the task. This missing section leads to A being the winner in task completion, which is the heaviest dimension."
+      },
+      "attempts": [
+        {
+          "seconds": 5.341,
+          "server_timings": {
+            "prompt_n": 717,
+            "prompt_ms": 1086.91,
+            "prompt_per_second": 659.67,
+            "predicted_n": 174,
+            "predicted_ms": 3884.44,
+            "predicted_per_second": 44.54
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2576,
+          "completion_tokens": 174,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "one honest drawback"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B is missing the 'one honest drawback' section, which is a required item in the task. This missing section leads to A being the winner in task completion, which is the heaviest dimension."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.341,
+      "prompt_tokens": 2576,
+      "completion_tokens": 174
+    },
+    {
+      "pair_id": "W1",
+      "order": "ba",
+      "repeat": 0,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [
+            "one honest drawback"
+          ],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "B",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "B",
+          "concision": "tie"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B includes all requested sections, including the honest drawback which Response A misses. Both are correct and well-structured, but B completes the task fully."
+      },
+      "attempts": [
+        {
+          "seconds": 4.901,
+          "server_timings": {
+            "prompt_n": 1056,
+            "prompt_ms": 1211.88,
+            "prompt_per_second": 871.37,
+            "predicted_n": 164,
+            "predicted_ms": 3662.72,
+            "predicted_per_second": 44.5
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2576,
+          "completion_tokens": 164,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [
+                "one honest drawback"
+              ],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "B",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "B",
+              "concision": "tie"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B includes all requested sections, including the honest drawback which Response A misses. Both are correct and well-structured, but B completes the task fully."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 4.901,
+      "prompt_tokens": 2576,
+      "completion_tokens": 164
+    },
+    {
+      "pair_id": "W2",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Accepts one or more file paths",
+          "Prints line count, word count, character count in a table",
+          "Exit non-zero if a path does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "Line count calculation is incorrect: uses len(content.splitlines()) - 1 which undercounts lines by 1"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B has an incorrect line count calculation that subtracts 1 from the actual line count, failing the correctness dimension"
+      },
+      "attempts": [
+        {
+          "seconds": 5.577,
+          "server_timings": {
+            "prompt_n": 668,
+            "prompt_ms": 1036.71,
+            "prompt_per_second": 644.34,
+            "predicted_n": 194,
+            "predicted_ms": 4226.78,
+            "predicted_per_second": 45.66
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2241,
+          "completion_tokens": 194,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Accepts one or more file paths",
+              "Prints line count, word count, character count in a table",
+              "Exit non-zero if a path does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "Line count calculation is incorrect: uses len(content.splitlines()) - 1 which undercounts lines by 1"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B has an incorrect line count calculation that subtracts 1 from the actual line count, failing the correctness dimension"
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.577,
+      "prompt_tokens": 2241,
+      "completion_tokens": 194
+    },
+    {
+      "pair_id": "W2",
+      "order": "ba",
+      "repeat": 0,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Accepts one or more file paths",
+          "Prints line count, word count, and character count in a table",
+          "Exit non-zero if a path does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "lines = len(content.splitlines()) - 1: This incorrectly subtracts 1, leading to wrong line count"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B correctly calculates line count, while A incorrectly subtracts 1 from the splitlines() result, leading to wrong line counts."
+      },
+      "attempts": [
+        {
+          "seconds": 5.928,
+          "server_timings": {
+            "prompt_n": 1108,
+            "prompt_ms": 1412.29,
+            "prompt_per_second": 784.54,
+            "predicted_n": 199,
+            "predicted_ms": 4324.44,
+            "predicted_per_second": 45.79
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2241,
+          "completion_tokens": 199,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Accepts one or more file paths",
+              "Prints line count, word count, and character count in a table",
+              "Exit non-zero if a path does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "lines = len(content.splitlines()) - 1: This incorrectly subtracts 1, leading to wrong line count"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B correctly calculates line count, while A incorrectly subtracts 1 from the splitlines() result, leading to wrong line counts."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.928,
+      "prompt_tokens": 2241,
+      "completion_tokens": 199
+    },
+    {
+      "pair_id": "W3",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool 'csv2json'",
+          "reads CSV file path",
+          "prints JSON array of objects",
+          "header row as keys",
+          "--indent flag for pretty-printing",
+          "exit non-zero if file missing or empty",
+          "code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "indent parameter not used in json.dumps"
+          ],
+          "wrong": [
+            "JSON output does not use the indent parameter, making --indent flag non-functional"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A correctly implements the --indent flag functionality by using the indent parameter in json.dumps, while Response B ignores the indent value making the flag non-functional."
+      },
+      "attempts": [
+        {
+          "seconds": 5.665,
+          "server_timings": {
+            "prompt_n": 653,
+            "prompt_ms": 1015.52,
+            "prompt_per_second": 643.02,
+            "predicted_n": 201,
+            "predicted_ms": 4379.49,
+            "predicted_per_second": 45.67
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2235,
+          "completion_tokens": 201,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool 'csv2json'",
+              "reads CSV file path",
+              "prints JSON array of objects",
+              "header row as keys",
+              "--indent flag for pretty-printing",
+              "exit non-zero if file missing or empty",
+              "code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "indent parameter not used in json.dumps"
+              ],
+              "wrong": [
+                "JSON output does not use the indent parameter, making --indent flag non-functional"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A correctly implements the --indent flag functionality by using the indent parameter in json.dumps, while Response B ignores the indent value making the flag non-functional."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.665,
+      "prompt_tokens": 2235,
+      "completion_tokens": 201
+    },
+    {
+      "pair_id": "W3",
+      "order": "ba",
+      "repeat": 0,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'csv2json'",
+          "Accepts a path to a CSV file",
+          "Prints rows as JSON array of objects (header = keys)",
+          "Flag '--indent' for pretty-printing",
+          "Exit non-zero if file is missing or empty",
+          "Provide the code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "JSON output does not use the indentation value from the '--indent' flag (uses json.dumps(data) without indent parameter)"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B correctly uses the indentation value from the '--indent' flag in json.dumps, fulfilling the pretty-printing requirement."
+      },
+      "attempts": [
+        {
+          "seconds": 6.456,
+          "server_timings": {
+            "prompt_n": 1057,
+            "prompt_ms": 1187.4,
+            "prompt_per_second": 890.18,
+            "predicted_n": 232,
+            "predicted_ms": 5077.28,
+            "predicted_per_second": 45.5
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2235,
+          "completion_tokens": 232,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'csv2json'",
+              "Accepts a path to a CSV file",
+              "Prints rows as JSON array of objects (header = keys)",
+              "Flag '--indent' for pretty-printing",
+              "Exit non-zero if file is missing or empty",
+              "Provide the code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "JSON output does not use the indentation value from the '--indent' flag (uses json.dumps(data) without indent parameter)"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B correctly uses the indentation value from the '--indent' flag in json.dumps, fulfilling the pretty-printing requirement."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.456,
+      "prompt_tokens": 2235,
+      "completion_tokens": 232
+    },
+    {
+      "pair_id": "W4",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "what a file-based ticketing system is",
+          "its main benefits",
+          "its main drawbacks",
+          "how to migrate an existing set of tickets from an external tracker to the file-based system",
+          "a concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "duplicated 'Why Migrate' section that repeats content from the 'Primary Benefits' section",
+            "repetition of the 'Migrating Existing Tickets' heading"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "A",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A avoids content repetition and maintains the existing sections accurately without duplicating the benefits section under the migration plan. Response B repeats content and violates the 'do not repeat' constraint."
+      },
+      "attempts": [
+        {
+          "seconds": 7.349,
+          "server_timings": {
+            "prompt_n": 1151,
+            "prompt_ms": 1569.7,
+            "prompt_per_second": 733.26,
+            "predicted_n": 236,
+            "predicted_ms": 5451.35,
+            "predicted_per_second": 43.11
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3141,
+          "completion_tokens": 236,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "what a file-based ticketing system is",
+              "its main benefits",
+              "its main drawbacks",
+              "how to migrate an existing set of tickets from an external tracker to the file-based system",
+              "a concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "duplicated 'Why Migrate' section that repeats content from the 'Primary Benefits' section",
+                "repetition of the 'Migrating Existing Tickets' heading"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "A",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A avoids content repetition and maintains the existing sections accurately without duplicating the benefits section under the migration plan. Response B repeats content and violates the 'do not repeat' constraint."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.349,
+      "prompt_tokens": 3141,
+      "completion_tokens": 236
+    },
+    {
+      "pair_id": "W4",
+      "order": "ba",
+      "repeat": 0,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "what a file-based ticketing system is",
+          "main benefits",
+          "main drawbacks",
+          "section on migration",
+          "concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "duplicate section 'Migrating Existing Tickets'",
+            "repeats benefits section under 'Why Migrate'",
+            "violates constraint: repeats existing content instead of keeping it accurate"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "B",
+          "structure": "B",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response A repeats content and adds duplicate sections, violating the constraint to keep existing sections accurate and not repeat them. Response B maintains the original structure while correctly adding the migration section with a three-step plan."
+      },
+      "attempts": [
+        {
+          "seconds": 7.163,
+          "server_timings": {
+            "prompt_n": 1639,
+            "prompt_ms": 1974.91,
+            "prompt_per_second": 829.91,
+            "predicted_n": 212,
+            "predicted_ms": 4916.29,
+            "predicted_per_second": 42.92
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3141,
+          "completion_tokens": 212,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "what a file-based ticketing system is",
+              "main benefits",
+              "main drawbacks",
+              "section on migration",
+              "concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "duplicate section 'Migrating Existing Tickets'",
+                "repeats benefits section under 'Why Migrate'",
+                "violates constraint: repeats existing content instead of keeping it accurate"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "B",
+              "structure": "B",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response A repeats content and adds duplicate sections, violating the constraint to keep existing sections accurate and not repeat them. Response B maintains the original structure while correctly adding the migration section with a three-step plan."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.163,
+      "prompt_tokens": 3141,
+      "completion_tokens": 212
+    },
+    {
+      "pair_id": "W5",
+      "order": "ab",
+      "repeat": 0,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "7-day study schedule table",
+          "10 concepts checklist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "7-day study schedule table for day 7",
+            "10-concept checklist missing one concept (only 9 listed)"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "A",
+          "structure": "tie",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B is missing the day 7 content in the schedule and one concept in the checklist, making it incomplete compared to A which fully delivers both requested items."
+      },
+      "attempts": [
+        {
+          "seconds": 7.265,
+          "server_timings": {
+            "prompt_n": 2143,
+            "prompt_ms": 2366.55,
+            "prompt_per_second": 905.54,
+            "predicted_n": 177,
+            "predicted_ms": 4522.38,
+            "predicted_per_second": 38.92
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 5351,
+          "completion_tokens": 177,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day study schedule table",
+              "10 concepts checklist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "7-day study schedule table for day 7",
+                "10-concept checklist missing one concept (only 9 listed)"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "A",
+              "structure": "tie",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B is missing the day 7 content in the schedule and one concept in the checklist, making it incomplete compared to A which fully delivers both requested items."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.265,
+      "prompt_tokens": 5351,
+      "completion_tokens": 177
+    },
+    {
+      "pair_id": "W5",
+      "order": "ba",
+      "repeat": 0,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "7-day study schedule table",
+          "10 concepts checklist"
+        ],
+        "a": {
+          "missing": [
+            "Day 7 content in both the schedule table and curriculum outline"
+          ],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "B",
+          "correctness": "tie",
+          "constraints": "B",
+          "structure": "tie",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B completes the 7-day schedule by including Day 7 on 'Invertibility and Determinants', which Response A omits entirely in both schedule tables. Both responses provide the 10-concept checklist, but B ensures full task completion."
+      },
+      "attempts": [
+        {
+          "seconds": 8.684,
+          "server_timings": {
+            "prompt_n": 3404,
+            "prompt_ms": 3575.64,
+            "prompt_per_second": 952.0,
+            "predicted_n": 183,
+            "predicted_ms": 4686.47,
+            "predicted_per_second": 38.84
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 5351,
+          "completion_tokens": 183,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day study schedule table",
+              "10 concepts checklist"
+            ],
+            "a": {
+              "missing": [
+                "Day 7 content in both the schedule table and curriculum outline"
+              ],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "B",
+              "correctness": "tie",
+              "constraints": "B",
+              "structure": "tie",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B completes the 7-day schedule by including Day 7 on 'Invertibility and Determinants', which Response A omits entirely in both schedule tables. Both responses provide the 10-concept checklist, but B ensures full task completion."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.684,
+      "prompt_tokens": 5351,
+      "completion_tokens": 183
+    },
+    {
+      "pair_id": "L1",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A is more concise and avoids redundant restatements, particularly in the 'Further Considerations' section of Response B which repeats earlier points. Both responses cover all requested items correctly, but A maintains better structure and brevity."
+      },
+      "attempts": [
+        {
+          "seconds": 6.396,
+          "server_timings": {
+            "prompt_n": 1541,
+            "prompt_ms": 1846.99,
+            "prompt_per_second": 834.33,
+            "predicted_n": 176,
+            "predicted_ms": 4055.13,
+            "predicted_per_second": 43.16
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3061,
+          "completion_tokens": 176,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A is more concise and avoids redundant restatements, particularly in the 'Further Considerations' section of Response B which repeats earlier points. Both responses cover all requested items correctly, but A maintains better structure and brevity."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.396,
+      "prompt_tokens": 3061,
+      "completion_tokens": 176
+    },
+    {
+      "pair_id": "L1",
+      "order": "ba",
+      "repeat": 1,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A includes an additional section ('Further Considerations') that summarizes the covered topics clearly and concisely, improving structure and readability. It also avoids repetition, making it more concise while delivering the same content effectively."
+      },
+      "attempts": [
+        {
+          "seconds": 5.898,
+          "server_timings": {
+            "prompt_n": 1541,
+            "prompt_ms": 1807.96,
+            "prompt_per_second": 852.34,
+            "predicted_n": 167,
+            "predicted_ms": 3832.91,
+            "predicted_per_second": 43.31
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3061,
+          "completion_tokens": 167,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A includes an additional section ('Further Considerations') that summarizes the covered topics clearly and concisely, improving structure and readability. It also avoids repetition, making it more concise while delivering the same content effectively."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.898,
+      "prompt_tokens": 3061,
+      "completion_tokens": 167
+    },
+    {
+      "pair_id": "L2",
+      "order": "ab",
+      "repeat": 1,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "logscan CLI tool",
+          "log file path argument",
+          "level argument (INFO, WARN, ERROR)",
+          "prints matching log lines",
+          "newest last",
+          "count on stderr",
+          "--limit N flag",
+          "exit non-zero if file does not exist",
+          "Python code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "Sorting logic incorrectly keeps oldest lines when limit is applied instead of newest"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "Sorting logic incorrectly keeps oldest lines when limit is applied instead of newest"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "B",
+          "concision": "A"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses have the same core issue with the limit implementation not showing newest lines as required. Response B includes an explanatory section that was not requested, making it less concise, while Response A is more compact but lacks documentation."
+      },
+      "attempts": [
+        {
+          "seconds": 7.616,
+          "server_timings": {
+            "prompt_n": 1477,
+            "prompt_ms": 1858.45,
+            "prompt_per_second": 794.75,
+            "predicted_n": 231,
+            "predicted_ms": 5412.84,
+            "predicted_per_second": 42.49
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3601,
+          "completion_tokens": 231,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "logscan CLI tool",
+              "log file path argument",
+              "level argument (INFO, WARN, ERROR)",
+              "prints matching log lines",
+              "newest last",
+              "count on stderr",
+              "--limit N flag",
+              "exit non-zero if file does not exist",
+              "Python code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "Sorting logic incorrectly keeps oldest lines when limit is applied instead of newest"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "Sorting logic incorrectly keeps oldest lines when limit is applied instead of newest"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "B",
+              "concision": "A"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses have the same core issue with the limit implementation not showing newest lines as required. Response B includes an explanatory section that was not requested, making it less concise, while Response A is more compact but lacks documentation."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.616,
+      "prompt_tokens": 3601,
+      "completion_tokens": 231
+    },
+    {
+      "pair_id": "L2",
+      "order": "ba",
+      "repeat": 1,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "logscan CLI tool",
+          "log file path argument",
+          "level argument (INFO, WARN, ERROR)",
+          "prints matching log lines",
+          "newest last",
+          "count on stderr",
+          "--limit N flag",
+          "exit non-zero if file does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses implement identical code with the same logic flaw: they sort by timestamp oldest-first but do not reverse to display newest lines last as required."
+      },
+      "attempts": [
+        {
+          "seconds": 7.204,
+          "server_timings": {
+            "prompt_n": 1477,
+            "prompt_ms": 1880.28,
+            "prompt_per_second": 785.52,
+            "predicted_n": 226,
+            "predicted_ms": 5296.67,
+            "predicted_per_second": 42.48
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3601,
+          "completion_tokens": 226,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "logscan CLI tool",
+              "log file path argument",
+              "level argument (INFO, WARN, ERROR)",
+              "prints matching log lines",
+              "newest last",
+              "count on stderr",
+              "--limit N flag",
+              "exit non-zero if file does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "The tool sorts lines by timestamp oldest to newest, but does not reverse to show newest last as requested."
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses implement identical code with the same logic flaw: they sort by timestamp oldest-first but do not reverse to display newest lines last as required."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.204,
+      "prompt_tokens": 3601,
+      "completion_tokens": 226
+    },
+    {
+      "pair_id": "R1",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Accepts one or more file paths",
+          "Prints line count, word count, and character count in a table",
+          "Exit non-zero if a path does not exist",
+          "Provide the code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A is more concise, correctly handles edge cases like empty files, and produces a properly formatted table without redundant code. Response B has correct structure but is overly verbose and contains inconsistencies in error handling."
+      },
+      "attempts": [
+        {
+          "seconds": 7.927,
+          "server_timings": {
+            "prompt_n": 2494,
+            "prompt_ms": 2739.54,
+            "prompt_per_second": 910.37,
+            "predicted_n": 201,
+            "predicted_ms": 4837.18,
+            "predicted_per_second": 41.35
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4067,
+          "completion_tokens": 201,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Accepts one or more file paths",
+              "Prints line count, word count, and character count in a table",
+              "Exit non-zero if a path does not exist",
+              "Provide the code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A is more concise, correctly handles edge cases like empty files, and produces a properly formatted table without redundant code. Response B has correct structure but is overly verbose and contains inconsistencies in error handling."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.927,
+      "prompt_tokens": 4067,
+      "completion_tokens": 201
+    },
+    {
+      "pair_id": "R1",
+      "order": "ba",
+      "repeat": 1,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Given one or more file paths",
+          "Prints line count, word count, and character count in a simple table",
+          "Exit non-zero if a path does not exist",
+          "Provide the code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A correctly handles edge cases like empty files and files without a trailing newline, and provides better error handling with detailed messages. It also properly separates concerns with dedicated functions for parsing, validation, counting, and output formatting."
+      },
+      "attempts": [
+        {
+          "seconds": 5.477,
+          "server_timings": {
+            "prompt_n": 1,
+            "prompt_ms": 32.96,
+            "prompt_per_second": 30.34,
+            "predicted_n": 205,
+            "predicted_ms": 5011.3,
+            "predicted_per_second": 40.71
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4067,
+          "completion_tokens": 205,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Given one or more file paths",
+              "Prints line count, word count, and character count in a simple table",
+              "Exit non-zero if a path does not exist",
+              "Provide the code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A correctly handles edge cases like empty files and files without a trailing newline, and provides better error handling with detailed messages. It also properly separates concerns with dedicated functions for parsing, validation, counting, and output formatting."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.477,
+      "prompt_tokens": 4067,
+      "completion_tokens": 205
+    },
+    {
+      "pair_id": "R2",
+      "order": "ab",
+      "repeat": 1,
+      "side": "b",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool",
+          "Python",
+          "csv2json",
+          "path to CSV file",
+          "prints JSON array",
+          "header row = keys",
+          "stdout",
+          "--indent flag",
+          "pretty-printing",
+          "exit non-zero",
+          "file missing",
+          "file empty",
+          "code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "Error handling for empty file may trigger incorrectly if file has only headers but no data rows (as per task's 'empty' definition)"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "A"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "B correctly handles empty files and header-only files distinctly, while A may incorrectly treat a header-only file as empty. Both complete the task, but B's correctness is more precise."
+      },
+      "attempts": [
+        {
+          "seconds": 6.758,
+          "server_timings": {
+            "prompt_n": 1080,
+            "prompt_ms": 1266.91,
+            "prompt_per_second": 852.47,
+            "predicted_n": 227,
+            "predicted_ms": 5113.91,
+            "predicted_per_second": 44.19
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2662,
+          "completion_tokens": 227,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool",
+              "Python",
+              "csv2json",
+              "path to CSV file",
+              "prints JSON array",
+              "header row = keys",
+              "stdout",
+              "--indent flag",
+              "pretty-printing",
+              "exit non-zero",
+              "file missing",
+              "file empty",
+              "code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "Error handling for empty file may trigger incorrectly if file has only headers but no data rows (as per task's 'empty' definition)"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "A"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "B correctly handles empty files and header-only files distinctly, while A may incorrectly treat a header-only file as empty. Both complete the task, but B's correctness is more precise."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.758,
+      "prompt_tokens": 2662,
+      "completion_tokens": 227
+    },
+    {
+      "pair_id": "R2",
+      "order": "ba",
+      "repeat": 1,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool named csv2json",
+          "reads CSV file path",
+          "prints JSON array of objects",
+          "header row as keys",
+          "--indent flag for pretty-printing",
+          "exit non-zero if file missing or empty",
+          "code provided"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "Error handling for empty file may incorrectly trigger on header-only files (DictReader returns empty list)"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "--indent flag implementation doesn't match specification: uses nargs='?' with const=2 instead of implementing the exact flag behavior requested (either present or not, not forcing value)"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "B",
+          "structure": "B",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B provides a more concise, single-file implementation that correctly handles file existence and empty checks. It correctly implements the --indent flag as a presence flag rather than requiring a value, matching typical CLI behavior. Response A's implementation has a more complex structure with unnecessary separation into modules and has a potential error in empty file detection."
+      },
+      "attempts": [
+        {
+          "seconds": 8.243,
+          "server_timings": {
+            "prompt_n": 1737,
+            "prompt_ms": 1968.14,
+            "prompt_per_second": 882.56,
+            "predicted_n": 268,
+            "predicted_ms": 6052.03,
+            "predicted_per_second": 44.12
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2662,
+          "completion_tokens": 268,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool named csv2json",
+              "reads CSV file path",
+              "prints JSON array of objects",
+              "header row as keys",
+              "--indent flag for pretty-printing",
+              "exit non-zero if file missing or empty",
+              "code provided"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "Error handling for empty file may incorrectly trigger on header-only files (DictReader returns empty list)"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "--indent flag implementation doesn't match specification: uses nargs='?' with const=2 instead of implementing the exact flag behavior requested (either present or not, not forcing value)"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "B",
+              "structure": "B",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B provides a more concise, single-file implementation that correctly handles file existence and empty checks. It correctly implements the --indent flag as a presence flag rather than requiring a value, matching typical CLI behavior. Response A's implementation has a more complex structure with unnecessary separation into modules and has a potential error in empty file detection."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.243,
+      "prompt_tokens": 2662,
+      "completion_tokens": 268
+    },
+    {
+      "pair_id": "R3",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "Conclusion"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A covers all requested items with clear section headings and provides a conclusion, while B omits a Conclusion section. A also structures its content more cohesively and concisely."
+      },
+      "attempts": [
+        {
+          "seconds": 5.055,
+          "server_timings": {
+            "prompt_n": 688,
+            "prompt_ms": 1009.99,
+            "prompt_per_second": 681.19,
+            "predicted_n": 168,
+            "predicted_ms": 3735.25,
+            "predicted_per_second": 44.71
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2547,
+          "completion_tokens": 168,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "Conclusion"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A covers all requested items with clear section headings and provides a conclusion, while B omits a Conclusion section. A also structures its content more cohesively and concisely."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.055,
+      "prompt_tokens": 2547,
+      "completion_tokens": 168
+    },
+    {
+      "pair_id": "R3",
+      "order": "ba",
+      "repeat": 1,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "section headings are duplicated and inconsistent"
+          ],
+          "wrong": [
+            "section headings are merged incorrectly (e.g., 'Searchability and Review Culture' as one section)",
+            "formatting issues (e.g., repeated '## Cost and Hosting')"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "A",
+          "structure": "A",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A follows the task's instruction for clear section headings and covers all requested items without structural flaws. Response B has duplicated and merged headings, breaking the requested format."
+      },
+      "attempts": [
+        {
+          "seconds": 4.958,
+          "server_timings": {
+            "prompt_n": 1,
+            "prompt_ms": 30.37,
+            "prompt_per_second": 32.93,
+            "predicted_n": 205,
+            "predicted_ms": 4643.69,
+            "predicted_per_second": 43.93
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2547,
+          "completion_tokens": 205,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "section headings are duplicated and inconsistent"
+              ],
+              "wrong": [
+                "section headings are merged incorrectly (e.g., 'Searchability and Review Culture' as one section)",
+                "formatting issues (e.g., repeated '## Cost and Hosting')"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "A",
+              "structure": "A",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A follows the task's instruction for clear section headings and covers all requested items without structural flaws. Response B has duplicated and merged headings, breaking the requested format."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 4.958,
+      "prompt_tokens": 2547,
+      "completion_tokens": 205
+    },
+    {
+      "pair_id": "R4",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "definition of file-based ticketing system",
+          "main benefits",
+          "main drawbacks",
+          "migration section on how to migrate from external tracker",
+          "concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "medium",
+        "reason": "Both responses completed the task, but Response A maintained the original report structure more cleanly while adding the migration section. Response B had structural issues with the original report, including reformatting and rewording existing sections, which violated the 'keep existing sections accurate and do not repeat' constraint."
+      },
+      "attempts": [
+        {
+          "seconds": 8.099,
+          "server_timings": {
+            "prompt_n": 2402,
+            "prompt_ms": 2644.47,
+            "prompt_per_second": 908.31,
+            "predicted_n": 209,
+            "predicted_ms": 5143.15,
+            "predicted_per_second": 40.44
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4392,
+          "completion_tokens": 209,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "definition of file-based ticketing system",
+              "main benefits",
+              "main drawbacks",
+              "migration section on how to migrate from external tracker",
+              "concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "medium",
+            "reason": "Both responses completed the task, but Response A maintained the original report structure more cleanly while adding the migration section. Response B had structural issues with the original report, including reformatting and rewording existing sections, which violated the 'keep existing sections accurate and do not repeat' constraint."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 8.099,
+      "prompt_tokens": 4392,
+      "completion_tokens": 209
+    },
+    {
+      "pair_id": "R4",
+      "order": "ba",
+      "repeat": 1,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "definition of file-based ticketing system",
+          "main benefits",
+          "main drawbacks",
+          "migration section on moving tickets from external tracker",
+          "concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "explicit mapping of source fields to target attributes",
+            "format/location details for each field",
+            "notes on normalization, date handling, file naming, and attachments"
+          ],
+          "wrong": [
+            "lacks concrete details on how to actually perform the migration technically",
+            "does not specify YAML front matter for metadata",
+            "does not define file structure with folders based on status",
+            "missing field-by-field transformation logic"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A provides a complete and detailed migration plan with explicit field mapping, format specifications, and concrete implementation steps that fulfill the task requirements, while Response B lacks specific technical details required for proper migration implementation."
+      },
+      "attempts": [
+        {
+          "seconds": 7.456,
+          "server_timings": {
+            "prompt_n": 1,
+            "prompt_ms": 26.08,
+            "prompt_per_second": 38.34,
+            "predicted_n": 277,
+            "predicted_ms": 6948.28,
+            "predicted_per_second": 39.72
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 4392,
+          "completion_tokens": 277,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "definition of file-based ticketing system",
+              "main benefits",
+              "main drawbacks",
+              "migration section on moving tickets from external tracker",
+              "concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "explicit mapping of source fields to target attributes",
+                "format/location details for each field",
+                "notes on normalization, date handling, file naming, and attachments"
+              ],
+              "wrong": [
+                "lacks concrete details on how to actually perform the migration technically",
+                "does not specify YAML front matter for metadata",
+                "does not define file structure with folders based on status",
+                "missing field-by-field transformation logic"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A provides a complete and detailed migration plan with explicit field mapping, format specifications, and concrete implementation steps that fulfill the task requirements, while Response B lacks specific technical details required for proper migration implementation."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.456,
+      "prompt_tokens": 4392,
+      "completion_tokens": 277
+    },
+    {
+      "pair_id": "R5",
+      "order": "ab",
+      "repeat": 1,
+      "side": "tie",
+      "winner": "tie",
+      "verdict": {
+        "requested_items": [
+          "7-day schedule table",
+          "10-concept checklist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "A",
+          "concision": "B"
+        },
+        "winner": "tie",
+        "confidence": "high",
+        "reason": "Both responses fully address the requested deliverables. Response A offers more detailed structure with dependencies and dual tables, while Response B is more concise and streamlined. Neither has clear superiority across all evaluation dimensions."
+      },
+      "attempts": [
+        {
+          "seconds": 5.439,
+          "server_timings": {
+            "prompt_n": 601,
+            "prompt_ms": 1069.84,
+            "prompt_per_second": 561.77,
+            "predicted_n": 163,
+            "predicted_ms": 3879.42,
+            "predicted_per_second": 41.76
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3809,
+          "completion_tokens": 163,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day schedule table",
+              "10-concept checklist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "A",
+              "concision": "B"
+            },
+            "winner": "tie",
+            "confidence": "high",
+            "reason": "Both responses fully address the requested deliverables. Response A offers more detailed structure with dependencies and dual tables, while Response B is more concise and streamlined. Neither has clear superiority across all evaluation dimensions."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.439,
+      "prompt_tokens": 3809,
+      "completion_tokens": 163
+    },
+    {
+      "pair_id": "R5",
+      "order": "ba",
+      "repeat": 1,
+      "side": "b",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "7-day study schedule table",
+          "short checklist of 10 concepts"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "10-concept prerequisite checklist includes eigenvalues and eigenvectors, matrix norms (implied), and orthogonality/projection which were not explicitly requested in the task"
+          ],
+          "wrong": [
+            "Includes additional content beyond the task scope (eigenvalues, matrix norms, orthogonality/projection) which were not part of the requested basics of linear algebra (vectors, matrices, systems of equations)",
+            "Duplicates the 7-day study schedule table"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "A",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A better fulfills the task by providing exactly what was requested without adding unnecessary content. Response B includes extra topics not requested and duplicates the schedule table."
+      },
+      "attempts": [
+        {
+          "seconds": 6.653,
+          "server_timings": {
+            "prompt_n": 1,
+            "prompt_ms": 32.41,
+            "prompt_per_second": 30.86,
+            "predicted_n": 256,
+            "predicted_ms": 6219.91,
+            "predicted_per_second": 41.0
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3809,
+          "completion_tokens": 256,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day study schedule table",
+              "short checklist of 10 concepts"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "10-concept prerequisite checklist includes eigenvalues and eigenvectors, matrix norms (implied), and orthogonality/projection which were not explicitly requested in the task"
+              ],
+              "wrong": [
+                "Includes additional content beyond the task scope (eigenvalues, matrix norms, orthogonality/projection) which were not part of the requested basics of linear algebra (vectors, matrices, systems of equations)",
+                "Duplicates the 7-day study schedule table"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "A",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A better fulfills the task by providing exactly what was requested without adding unnecessary content. Response B includes extra topics not requested and duplicates the schedule table."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.653,
+      "prompt_tokens": 3809,
+      "completion_tokens": 256
+    },
+    {
+      "pair_id": "W1",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "one honest drawback"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A covers all requested items including the honest drawback, while B omits this key section entirely."
+      },
+      "attempts": [
+        {
+          "seconds": 4.875,
+          "server_timings": {
+            "prompt_n": 717,
+            "prompt_ms": 1089.47,
+            "prompt_per_second": 658.12,
+            "predicted_n": 153,
+            "predicted_ms": 3411.67,
+            "predicted_per_second": 44.55
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2576,
+          "completion_tokens": 153,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "one honest drawback"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A covers all requested items including the honest drawback, while B omits this key section entirely."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 4.875,
+      "prompt_tokens": 2576,
+      "completion_tokens": 153
+    },
+    {
+      "pair_id": "W1",
+      "order": "ba",
+      "repeat": 1,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "cost and hosting",
+          "searchability",
+          "review culture",
+          "one honest drawback",
+          "clear section headings"
+        ],
+        "a": {
+          "missing": [
+            "one honest drawback"
+          ],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "B",
+          "correctness": "tie",
+          "constraints": "tie",
+          "structure": "B",
+          "concision": "tie"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B includes all requested sections, including the honest drawback which Response A misses. Both are correct and well-structured, but B completes the task fully."
+      },
+      "attempts": [
+        {
+          "seconds": 4.885,
+          "server_timings": {
+            "prompt_n": 1056,
+            "prompt_ms": 1214.02,
+            "prompt_per_second": 869.84,
+            "predicted_n": 164,
+            "predicted_ms": 3645.01,
+            "predicted_per_second": 44.72
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2576,
+          "completion_tokens": 164,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "cost and hosting",
+              "searchability",
+              "review culture",
+              "one honest drawback",
+              "clear section headings"
+            ],
+            "a": {
+              "missing": [
+                "one honest drawback"
+              ],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "B",
+              "correctness": "tie",
+              "constraints": "tie",
+              "structure": "B",
+              "concision": "tie"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B includes all requested sections, including the honest drawback which Response A misses. Both are correct and well-structured, but B completes the task fully."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 4.885,
+      "prompt_tokens": 2576,
+      "completion_tokens": 164
+    },
+    {
+      "pair_id": "W2",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Accepts one or more file paths",
+          "Prints line count, word count, and character count in a table",
+          "Exits non-zero if a path does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "Line count calculation is incorrect: uses len(content.splitlines()) - 1 which undercounts lines by 1"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B's line count calculation is incorrect as it subtracts 1 from the splitlines() count, which already correctly counts lines. Response A has the correct line count implementation."
+      },
+      "attempts": [
+        {
+          "seconds": 6.22,
+          "server_timings": {
+            "prompt_n": 1108,
+            "prompt_ms": 1412.11,
+            "prompt_per_second": 784.64,
+            "predicted_n": 208,
+            "predicted_ms": 4534.74,
+            "predicted_per_second": 45.65
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2241,
+          "completion_tokens": 208,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Accepts one or more file paths",
+              "Prints line count, word count, and character count in a table",
+              "Exits non-zero if a path does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "Line count calculation is incorrect: uses len(content.splitlines()) - 1 which undercounts lines by 1"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B's line count calculation is incorrect as it subtracts 1 from the splitlines() count, which already correctly counts lines. Response A has the correct line count implementation."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.22,
+      "prompt_tokens": 2241,
+      "completion_tokens": 208
+    },
+    {
+      "pair_id": "W2",
+      "order": "ba",
+      "repeat": 1,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'wordcount'",
+          "Accepts one or more file paths",
+          "Prints line count, word count, and character count in a table",
+          "Exit non-zero if a path does not exist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "lines = len(content.splitlines()) - 1: This incorrectly subtracts 1, leading to wrong line count"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B correctly calculates line count, while A incorrectly subtracts 1 from the splitlines() result, leading to wrong line counts."
+      },
+      "attempts": [
+        {
+          "seconds": 5.941,
+          "server_timings": {
+            "prompt_n": 1108,
+            "prompt_ms": 1415.59,
+            "prompt_per_second": 782.71,
+            "predicted_n": 199,
+            "predicted_ms": 4327.97,
+            "predicted_per_second": 45.75
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2241,
+          "completion_tokens": 199,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'wordcount'",
+              "Accepts one or more file paths",
+              "Prints line count, word count, and character count in a table",
+              "Exit non-zero if a path does not exist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "lines = len(content.splitlines()) - 1: This incorrectly subtracts 1, leading to wrong line count"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B correctly calculates line count, while A incorrectly subtracts 1 from the splitlines() result, leading to wrong line counts."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.941,
+      "prompt_tokens": 2241,
+      "completion_tokens": 199
+    },
+    {
+      "pair_id": "W3",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "CLI tool 'csv2json'",
+          "reads CSV file path",
+          "prints JSON array of objects",
+          "header row as keys",
+          "--indent flag for pretty-printing",
+          "exit non-zero if file missing or empty",
+          "code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "indent parameter not used in json.dumps"
+          ],
+          "wrong": [
+            "JSON output does not use the indent parameter, making --indent flag non-functional"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "A",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response A correctly implements the --indent flag functionality by using the indent parameter in json.dumps, while Response B ignores the indent value making the flag non-functional."
+      },
+      "attempts": [
+        {
+          "seconds": 5.657,
+          "server_timings": {
+            "prompt_n": 653,
+            "prompt_ms": 1014.27,
+            "prompt_per_second": 643.82,
+            "predicted_n": 201,
+            "predicted_ms": 4375.94,
+            "predicted_per_second": 45.7
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2235,
+          "completion_tokens": 201,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool 'csv2json'",
+              "reads CSV file path",
+              "prints JSON array of objects",
+              "header row as keys",
+              "--indent flag for pretty-printing",
+              "exit non-zero if file missing or empty",
+              "code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "indent parameter not used in json.dumps"
+              ],
+              "wrong": [
+                "JSON output does not use the indent parameter, making --indent flag non-functional"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "A",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response A correctly implements the --indent flag functionality by using the indent parameter in json.dumps, while Response B ignores the indent value making the flag non-functional."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.657,
+      "prompt_tokens": 2235,
+      "completion_tokens": 201
+    },
+    {
+      "pair_id": "W3",
+      "order": "ba",
+      "repeat": 1,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "CLI tool in Python called 'csv2json'",
+          "Accepts a path to a CSV file",
+          "Prints rows as JSON array of objects (header = keys)",
+          "Flag '--indent' for pretty-printing",
+          "Exit non-zero if file is missing or empty",
+          "Provide the code"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "JSON output does not use the indentation value from the '--indent' flag (uses json.dumps(data) without indent parameter)"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "tie",
+          "structure": "tie",
+          "concision": "tie"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B correctly uses the indentation value from the '--indent' flag in json.dumps, fulfilling the pretty-printing requirement."
+      },
+      "attempts": [
+        {
+          "seconds": 5.406,
+          "server_timings": {
+            "prompt_n": 1,
+            "prompt_ms": 30.22,
+            "prompt_per_second": 33.09,
+            "predicted_n": 232,
+            "predicted_ms": 5121.35,
+            "predicted_per_second": 45.11
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 2235,
+          "completion_tokens": 232,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "CLI tool in Python called 'csv2json'",
+              "Accepts a path to a CSV file",
+              "Prints rows as JSON array of objects (header = keys)",
+              "Flag '--indent' for pretty-printing",
+              "Exit non-zero if file is missing or empty",
+              "Provide the code"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "JSON output does not use the indentation value from the '--indent' flag (uses json.dumps(data) without indent parameter)"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "tie",
+              "structure": "tie",
+              "concision": "tie"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B correctly uses the indentation value from the '--indent' flag in json.dumps, fulfilling the pretty-printing requirement."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.406,
+      "prompt_tokens": 2235,
+      "completion_tokens": 232
+    },
+    {
+      "pair_id": "W4",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "what a file-based ticketing system is",
+          "its main benefits",
+          "its main drawbacks",
+          "section on migration",
+          "concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": [
+            "duplicate section 'Why Migrate' repeats content from 'Primary Benefits'"
+          ]
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "A",
+          "constraints": "A",
+          "structure": "A",
+          "concision": "A"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B repeats content from the 'Primary Benefits' section in the 'Why Migrate' subsection, violating the constraint to not repeat existing content. Response A avoids repetition and adheres better to the follow-up instructions."
+      },
+      "attempts": [
+        {
+          "seconds": 6.621,
+          "server_timings": {
+            "prompt_n": 1639,
+            "prompt_ms": 1970.54,
+            "prompt_per_second": 831.75,
+            "predicted_n": 190,
+            "predicted_ms": 4366.85,
+            "predicted_per_second": 43.28
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3141,
+          "completion_tokens": 190,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "what a file-based ticketing system is",
+              "its main benefits",
+              "its main drawbacks",
+              "section on migration",
+              "concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": [
+                "duplicate section 'Why Migrate' repeats content from 'Primary Benefits'"
+              ]
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "A",
+              "constraints": "A",
+              "structure": "A",
+              "concision": "A"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B repeats content from the 'Primary Benefits' section in the 'Why Migrate' subsection, violating the constraint to not repeat existing content. Response A avoids repetition and adheres better to the follow-up instructions."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 6.621,
+      "prompt_tokens": 3141,
+      "completion_tokens": 190
+    },
+    {
+      "pair_id": "W4",
+      "order": "ba",
+      "repeat": 1,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "what a file-based ticketing system is",
+          "main benefits",
+          "main drawbacks",
+          "section on migration",
+          "concrete migration plan with three steps"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": [
+            "duplicate section 'Migrating Existing Tickets'",
+            "repeats benefits section under 'Why Migrate'",
+            "violates constraint: repeats existing content instead of keeping it accurate"
+          ]
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "tie",
+          "correctness": "B",
+          "constraints": "B",
+          "structure": "B",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response A repeats content and adds duplicate sections, violating the constraint to keep existing sections accurate and not repeat them. Response B maintains the original structure while correctly adding the migration section with a three-step plan."
+      },
+      "attempts": [
+        {
+          "seconds": 7.133,
+          "server_timings": {
+            "prompt_n": 1639,
+            "prompt_ms": 1978.18,
+            "prompt_per_second": 828.54,
+            "predicted_n": 212,
+            "predicted_ms": 4895.43,
+            "predicted_per_second": 43.1
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 3141,
+          "completion_tokens": 212,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "what a file-based ticketing system is",
+              "main benefits",
+              "main drawbacks",
+              "section on migration",
+              "concrete migration plan with three steps"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": [
+                "duplicate section 'Migrating Existing Tickets'",
+                "repeats benefits section under 'Why Migrate'",
+                "violates constraint: repeats existing content instead of keeping it accurate"
+              ]
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "tie",
+              "correctness": "B",
+              "constraints": "B",
+              "structure": "B",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response A repeats content and adds duplicate sections, violating the constraint to keep existing sections accurate and not repeat them. Response B maintains the original structure while correctly adding the migration section with a three-step plan."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.133,
+      "prompt_tokens": 3141,
+      "completion_tokens": 212
+    },
+    {
+      "pair_id": "W5",
+      "order": "ab",
+      "repeat": 1,
+      "side": "a",
+      "winner": "A",
+      "verdict": {
+        "requested_items": [
+          "7-day study schedule table",
+          "10 concepts checklist"
+        ],
+        "a": {
+          "missing": [],
+          "wrong": []
+        },
+        "b": {
+          "missing": [
+            "7-day study schedule table for day 7",
+            "10-concept checklist missing one concept (only 9 listed)"
+          ],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "A",
+          "correctness": "tie",
+          "constraints": "A",
+          "structure": "tie",
+          "concision": "B"
+        },
+        "winner": "A",
+        "confidence": "high",
+        "reason": "Response B is missing the day 7 content in the schedule and one concept in the checklist, making it incomplete compared to A which fully delivers both requested items."
+      },
+      "attempts": [
+        {
+          "seconds": 7.269,
+          "server_timings": {
+            "prompt_n": 2143,
+            "prompt_ms": 2371.63,
+            "prompt_per_second": 903.6,
+            "predicted_n": 177,
+            "predicted_ms": 4526.3,
+            "predicted_per_second": 38.88
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 5351,
+          "completion_tokens": 177,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day study schedule table",
+              "10 concepts checklist"
+            ],
+            "a": {
+              "missing": [],
+              "wrong": []
+            },
+            "b": {
+              "missing": [
+                "7-day study schedule table for day 7",
+                "10-concept checklist missing one concept (only 9 listed)"
+              ],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "A",
+              "correctness": "tie",
+              "constraints": "A",
+              "structure": "tie",
+              "concision": "B"
+            },
+            "winner": "A",
+            "confidence": "high",
+            "reason": "Response B is missing the day 7 content in the schedule and one concept in the checklist, making it incomplete compared to A which fully delivers both requested items."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 7.269,
+      "prompt_tokens": 5351,
+      "completion_tokens": 177
+    },
+    {
+      "pair_id": "W5",
+      "order": "ba",
+      "repeat": 1,
+      "side": "a",
+      "winner": "B",
+      "verdict": {
+        "requested_items": [
+          "7-day study schedule table",
+          "10 concepts checklist"
+        ],
+        "a": {
+          "missing": [
+            "Day 7 content in both the curriculum outline and study schedule"
+          ],
+          "wrong": []
+        },
+        "b": {
+          "missing": [],
+          "wrong": []
+        },
+        "dimension_winner": {
+          "completion": "B",
+          "correctness": "tie",
+          "constraints": "B",
+          "structure": "tie",
+          "concision": "B"
+        },
+        "winner": "B",
+        "confidence": "high",
+        "reason": "Response B completes the 7-day schedule by including Day 7 on 'Invertibility and Determinants', fulfilling the task's requirement for a full 7-day plan. Response A only provides a 6-day schedule."
+      },
+      "attempts": [
+        {
+          "seconds": 5.198,
+          "server_timings": {
+            "prompt_n": 1,
+            "prompt_ms": 34.82,
+            "prompt_per_second": 28.72,
+            "predicted_n": 177,
+            "predicted_ms": 4611.73,
+            "predicted_per_second": 38.16
+          },
+          "finish_reason": "stop",
+          "prompt_tokens": 5351,
+          "completion_tokens": 177,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "verdict": {
+            "requested_items": [
+              "7-day study schedule table",
+              "10 concepts checklist"
+            ],
+            "a": {
+              "missing": [
+                "Day 7 content in both the curriculum outline and study schedule"
+              ],
+              "wrong": []
+            },
+            "b": {
+              "missing": [],
+              "wrong": []
+            },
+            "dimension_winner": {
+              "completion": "B",
+              "correctness": "tie",
+              "constraints": "B",
+              "structure": "tie",
+              "concision": "B"
+            },
+            "winner": "B",
+            "confidence": "high",
+            "reason": "Response B completes the 7-day schedule by including Day 7 on 'Invertibility and Determinants', fulfilling the task's requirement for a full 7-day plan. Response A only provides a 6-day schedule."
+          },
+          "raw": null
+        }
+      ],
+      "seconds": 5.198,
+      "prompt_tokens": 5351,
+      "completion_tokens": 177
+    }
+  ],
+  "summary": {
+    "pairs": [
+      {
+        "pair_id": "R1",
+        "kind": "real",
+        "expected": null,
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          }
+        ],
+        "pass": [
+          null,
+          null
+        ]
+      },
+      {
+        "pair_id": "R2",
+        "kind": "real",
+        "expected": null,
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "b",
+            "ba": "a",
+            "outcome": "tie",
+            "position_consistent": false
+          },
+          {
+            "repeat": 1,
+            "ab": "b",
+            "ba": "a",
+            "outcome": "tie",
+            "position_consistent": false
+          }
+        ],
+        "pass": [
+          null,
+          null
+        ]
+      },
+      {
+        "pair_id": "R3",
+        "kind": "real",
+        "expected": null,
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          }
+        ],
+        "pass": [
+          null,
+          null
+        ]
+      },
+      {
+        "pair_id": "R4",
+        "kind": "real",
+        "expected": null,
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "tie",
+            "ba": "tie",
+            "outcome": "tie",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          }
+        ],
+        "pass": [
+          null,
+          null
+        ]
+      },
+      {
+        "pair_id": "R5",
+        "kind": "real",
+        "expected": null,
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "tie",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          },
+          {
+            "repeat": 1,
+            "ab": "tie",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          }
+        ],
+        "pass": [
+          null,
+          null
+        ]
+      },
+      {
+        "pair_id": "W1",
+        "kind": "damaged",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          }
+        ],
+        "pass": [
+          true,
+          true
+        ]
+      },
+      {
+        "pair_id": "W2",
+        "kind": "damaged",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          }
+        ],
+        "pass": [
+          true,
+          true
+        ]
+      },
+      {
+        "pair_id": "W3",
+        "kind": "damaged",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          }
+        ],
+        "pass": [
+          true,
+          true
+        ]
+      },
+      {
+        "pair_id": "W4",
+        "kind": "damaged",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          }
+        ],
+        "pass": [
+          true,
+          true
+        ]
+      },
+      {
+        "pair_id": "W5",
+        "kind": "damaged",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "a",
+            "outcome": "a",
+            "position_consistent": true
+          }
+        ],
+        "pass": [
+          true,
+          true
+        ]
+      },
+      {
+        "pair_id": "L1",
+        "kind": "padded",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          },
+          {
+            "repeat": 1,
+            "ab": "a",
+            "ba": "b",
+            "outcome": "tie",
+            "position_consistent": false
+          }
+        ],
+        "pass": [
+          false,
+          false
+        ]
+      },
+      {
+        "pair_id": "L2",
+        "kind": "padded",
+        "expected": "a",
+        "repeats": [
+          {
+            "repeat": 0,
+            "ab": "tie",
+            "ba": "tie",
+            "outcome": "tie",
+            "position_consistent": true
+          },
+          {
+            "repeat": 1,
+            "ab": "tie",
+            "ba": "tie",
+            "outcome": "tie",
+            "position_consistent": true
+          }
+        ],
+        "pass": [
+          true,
+          true
+        ]
+      }
+    ],
+    "q1": {
+      "real": {
+        "n": 5,
+        "status": "pending",
+        "note": "needs expected labels (the labelling app)"
+      },
+      "damaged": {
+        "n": 5,
+        "passed": 5,
+        "bar": 4,
+        "status": "pass",
+        "all_repeats": [
+          5,
+          5
+        ]
+      },
+      "padded": {
+        "n": 2,
+        "passed": 1,
+        "bar": 2,
+        "status": "fail",
+        "all_repeats": [
+          1,
+          1
+        ]
+      }
+    },
+    "q5": {
+      "pair_orders": 24,
+      "agree": 22,
+      "rate": 0.917,
+      "bar": 0.9,
+      "status": "pass"
+    },
+    "position_consistency": {
+      "n": 24,
+      "consistent": 13,
+      "rate": 0.542
+    },
+    "expected_side_rates": {
+      "n": 7,
+      "decisive": 5,
+      "wins": 5,
+      "ties": 2,
+      "decisive_win_rate": 1.0,
+      "wilson95": [
+        0.566,
+        1.0
+      ],
+      "tie_rate": 0.286,
+      "all_pairs_rate": 0.857
+    },
+    "no_verdict_calls": 0,
+    "cost": {
+      "calls": 48,
+      "attempts": 48,
+      "prompt_tokens": 158732,
+      "completion_tokens": 9893,
+      "seconds_sum": 328.2,
+      "seconds_p50": 6.65,
+      "seconds_max": 11.7,
+      "completion_tok_per_s_wall": 30.1,
+      "prefill_tok_per_s_p50": 834.3,
+      "decode_tok_per_s_p50": 43.2
+    }
+  }
+}
