@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # GPU watchdog for agent-run GPU work. Samples every INTERVAL s; on a trip it puts the box in a safe state:
 #   1. writes ~/models/.gpu-halt (judge-llama-server.sh refuses to boot while it exists),
-#   2. kills the Q-04 run chain (q04-run-judge.sh, quality.py judge) so nothing re-launches,
-#   3. stops every GPU container (judge_llama, vllm_qwen38fn_3090, anything else with --device nvidia.com/gpu),
+#   2. kills the Q-04 run chain (q04-run-judge.sh, quality.py judge) and the Q-02 experiment drivers
+#      (journal/baseline/arms.py, journal/baseline/harness.py) so nothing re-launches or keeps sending requests,
+#   3. stops every GPU container: the judge (judge_llama), the generators (gen_llama, vllm_qwen38fn_3090) and any
+#      other container from a CUDA image. The nested podman records --device nvidia.com/gpu=all nowhere in
+#      `inspect` (HostConfig.Devices is [] on 2026-10-23), so the names and the image's NVIDIA_VISIBLE_DEVICES
+#      are what identify a GPU container,
 #   4. logs the reason. Downloads are left running (no GPU).
 # Clear with: rm ~/models/.gpu-halt  (after a human or the agent has looked at the log).
 # Trips: core temp >= HARD (any sample); core temp >= SOFT for SUSTAIN consecutive samples; hardware or
@@ -16,9 +20,13 @@ soft_n=0; fail_n=0; last_warn=0
 log() { echo "$(date -u +%FT%TZ) $*" >> "$LOG"; }
 safe_state() {
   log "TRIP: $1"; echo "$(date -u +%FT%TZ) $1" > "$HALT"
-  pkill -f 'q04-run-judge.sh' 2>/dev/null; pkill -f 'quality.py judge' 2>/dev/null
+  pkill -f 'q04-chain.sh' 2>/dev/null; pkill -f 'q04-run-judge.sh' 2>/dev/null; pkill -f 'quality.py judge' 2>/dev/null
+  # pkill patterns are extended regexes. The drivers run as `<venv>/bin/python [-flags] [path/]arms.py ...`;
+  # the pattern needs the interpreter, so an editor or a grep that names the file survives.
+  pkill -f 'python[0-9.]*( +-[^ ]+)* +([^ ]*/)?(arms|harness)\.py' 2>/dev/null
   for c in $(docker ps --format '{{.Names}}' 2>/dev/null); do
-    if [ "$c" = judge_llama ] || [ "$c" = vllm_qwen38fn_3090 ] || docker inspect -f '{{json .HostConfig}}' "$c" 2>/dev/null | grep -q 'nvidia.com/gpu'; then
+    case "$c" in judge_llama|gen_llama|vllm_qwen38fn_3090) gpu=1 ;; *) gpu=0 ;; esac
+    if [ $gpu = 1 ] || docker inspect -f '{{json .HostConfig}} {{json .Config.Env}}' "$c" 2>/dev/null | grep -qE 'nvidia.com/gpu|NVIDIA_VISIBLE_DEVICES'; then
       docker stop -t 20 "$c" >/dev/null 2>&1; log "stopped container $c"
     fi
   done

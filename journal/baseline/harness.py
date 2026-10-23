@@ -15,6 +15,8 @@ LLM_BASE_URL - there is no default):
   .venv/bin/python journal/baseline/harness.py                 # all scenarios, 2 runs each
   .venv/bin/python journal/baseline/harness.py --scenario s2_report --runs 3
   .venv/bin/python journal/baseline/harness.py --jobs 2        # concurrent scenarios (server has 5 slots)
+  .venv/bin/python journal/baseline/harness.py --set components.executor=simple \
+      --set components.oracle=null                             # any OrchestratorConfig field
 
 Output: journal/baseline/runs/<timestamp>_<label>_<scenarios>.json plus a
 console summary.
@@ -34,6 +36,11 @@ Every call carries the thinking switch from `--thinking` (D-013, default
 off); each record keeps the switch it was sent with, its `reasoning_tokens`
 and a capped excerpt of its reasoning. The full text goes to the side log
 under `/runs/thinking/`, never into the run file or a prompt.
+
+`--set section.key=value` overrides any OrchestratorConfig field on top of
+the defaults and the --consolidation/--thinking flags (Q-02 arms, Q-05
+ablations); an unknown key is an error. The run file records the resolved
+config, the overrides and the commit it ran at (Q-9).
 """
 
 from __future__ import annotations
@@ -43,6 +50,7 @@ import contextvars
 import json
 import os
 import statistics
+import subprocess
 import sys
 import threading
 import time
@@ -55,9 +63,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from reasoning_sub_agents.config.schema import (  # noqa: E402
+from reasoning_sub_agents.config import (  # noqa: E402
+    ConfigError,
     OrchestratorConfig,
-    OptionsConfig,
+    apply_overrides,
+    parse_orchestrator_config,
 )
 from reasoning_sub_agents.document import Document  # noqa: E402
 from reasoning_sub_agents.llama_utils import (  # noqa: E402
@@ -106,6 +116,11 @@ PHASE_KINDS: tuple[tuple[str, str | None], ...] = (
     ('Composing after ', 'compose'),
     ('Updating summary after ', 'summary'),
     ('Consolidating document', 'consolidate'),
+    # arms.py's single-model calls (Q-02): one call, and self-refine's three.
+    ('Single call', 'single'),
+    ('Self-refine draft', 'refine_draft'),
+    ('Self-refine critique', 'refine_critique'),
+    ('Self-refine revision', 'refine_revise'),
 )
 # llm_step labels that split a phase into two kinds of call.
 STEP_KINDS: dict[str, dict[str, str]] = {
@@ -334,6 +349,22 @@ class MeasuredCompletions:
     def _append(self, rec: CallRecord) -> None:
         with self._lock:
             self._records.append(rec)
+
+
+def git_commit() -> dict:
+    """The commit a run used, and whether tracked files differed from it."""
+    def git(*args: str) -> str:
+        return subprocess.run(['git', *args], cwd=REPO_ROOT, capture_output=True,
+                              text=True, check=False).stdout.strip()
+    return {'commit': git('rev-parse', 'HEAD'),
+            'dirty': bool(git('status', '--porcelain', '--untracked-files=no'))}
+
+
+def resolve_config(consolidation: bool, thinking: str,
+                   overrides: list[str] | None) -> OrchestratorConfig:
+    """Defaults, then the two option flags, then `--set` overrides."""
+    raw = {'options': {'consolidation': consolidation, 'thinking': thinking}}
+    return parse_orchestrator_config(apply_overrides(raw, overrides or []))
 
 
 def install_instrumentation(client) -> MeasuredCompletions | None:
@@ -681,6 +712,9 @@ def main() -> int:
     ap.add_argument('--thinking', choices=('off', 'on'), default='off',
                     help="model thinking switch for every call (D-013; default off, "
                          "the baseline setting)")
+    ap.add_argument('--set', action='append', default=[], metavar='SECTION.KEY=VALUE',
+                    help='override an OrchestratorConfig field, e.g. components.executor=simple '
+                         'or options.max_oracle_rounds=4 (repeatable; values parse as YAML)')
     ap.add_argument('--label', default=None)
     ap.add_argument('--base-url', default=os.environ.get('LLM_BASE_URL'),
                     help='generator endpoint, e.g. http://host.containers.internal:5000/v1 '
@@ -708,6 +742,10 @@ def main() -> int:
     if env_url and env_url != args.base_url:
         ap.error(f'LLM_BASE_URL={env_url} would override --base-url={args.base_url}; '
                  'unset one of them')
+    try:
+        cfg = resolve_config(args.consolidation, args.thinking, args.set)
+    except (ConfigError, ValueError) as exc:
+        ap.error(str(exc))
     client = create_llama_client(base_url=args.base_url)
     backend = str(client.base_url).rstrip('/')
     print(f'Backend: {backend}')
@@ -723,11 +761,10 @@ def main() -> int:
     results: list[dict | None] = [None] * len(jobs)
     errors: list[str] = []
 
-    options = OptionsConfig(consolidation=args.consolidation, thinking=args.thinking)
+    options = cfg.options
     started = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 
     def make_orchestrator(llm_client):
-        cfg = OrchestratorConfig(options=options)
         return TaskOrchestrator.from_orchestrator_config(cfg, llm_client=llm_client)
 
     def work(idx: int, item: tuple[dict, int]) -> None:
@@ -760,6 +797,11 @@ def main() -> int:
         'label': label,
         'runs_per_scenario': args.runs,
         'jobs': args.jobs,
+        **git_commit(),
+        # The components and options every turn ran with (the endpoint is
+        # `backend`), and the --set overrides that produced them.
+        'config': cfg.model_dump(mode='json', exclude={'llm'}),
+        'overrides': args.set,
         # D-013: the switch every call was sent with, and where the full
         # reasoning text went (one JSONL per turn, named <started>_<turn id>).
         'thinking': {'setting': options.thinking, 'by_step': options.thinking_by_step,

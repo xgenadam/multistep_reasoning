@@ -32,3 +32,8 @@ def check():
 @pytest.fixture(scope='module')
 def compare():
     return load_baseline_module('compare')
+
+
+@pytest.fixture(scope='module')
+def hidden_tests():
+    return load_baseline_module('hidden_tests')

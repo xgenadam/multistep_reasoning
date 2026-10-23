@@ -246,7 +246,8 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     the rest; domains never pooled (Q-8).
   - The set is `journal/baseline/bench/v1/` (Q-9): ≥ ⅓ long prompts, ≥ 20 %
     follow-ups, a `g3` subset of ≈ 10, and `std-*` slices (design note
-    § 9). About 80 prompts.
+    § 9). 140 prompts, 70 per domain (the user, 2026-10-23; was about 80),
+    so each domain is powered on its own.
   - Three stages: bench v1 and the arm drivers (Opus 5.5 / high); the
     campaign (Sonnet 5.5 / low, `--jobs 3`, from a pinned worktree, wall
     time recorded per call, per prompt and per arm); the analysis (Opus
