@@ -14,7 +14,11 @@ import pytest
 
 from .conftest import RUNS
 
-RUN_FILES = sorted(RUNS.glob('*.json'))
+# Harness run files only: arms.py's (Q-02, `kind: q-e1-arms`) have no turns,
+# and the scorers' sidecars (`.tests.json`, `.checklists.json`) are not runs.
+RUN_FILES = sorted(p for p in RUNS.glob('*.json')
+                   if not p.name.endswith(('.tests.json', '.checklists.json', '.ifeval.json'))
+                   and json.loads(p.read_text()).get('kind') != 'q-e1-arms')
 
 
 def _is_legacy(path) -> bool:

@@ -99,4 +99,4 @@ def test_arms_loads_the_written_entries_and_counts_drafts(entries):
     written = {e['id'] for e in entries if e['status'] == 'written'}
     assert set(bench['prompts']) == written
     assert len(bench['drafts']) == len(entries) - len(written)
-    assert bench['frozen'] is False
+    assert bench['frozen'] is True and bench['drafts'] == []

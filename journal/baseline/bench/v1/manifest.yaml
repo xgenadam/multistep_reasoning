@@ -1,8 +1,9 @@
 # Bench v1 manifest (Q-02, Q-9). Fields and rules: README.md beside this file.
 # Defaults when a field is absent: long false, follows null, overlap false, subsets [].
-# DRAFT for the user's review (2026-10-23): only `status: written` entries have prompt files.
+# FROZEN 2026-10-23, provisional under D-022: written by the agent and its sub-agents, pending the
+# user's mass review. A change at review is a new version and voids the run files that used this one.
 version: v1
-frozen: false
+frozen: true
 prompts:
 
 # ---------------------------------------------------------------------------

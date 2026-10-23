@@ -6,11 +6,13 @@ prompt text (`journal/baseline/arms.py`). The set is frozen per version: once
 `manifest.yaml` says `frozen: true`, any change to a prompt, test, checklist
 or flag is a `v2`, never an edit.
 
-Status: **draft for the user's review.** The manifest lists all 140 entries.
-Entries with `status: draft` have only a one-line `brief`. The four with
-`status: written` (c06, c06f, r01, r01f) are complete and show the format.
-`arms.py` skips draft entries and refuses to treat a bench with any of them
-as frozen.
+Status: **frozen 2026-10-23, provisional under D-022.** All 140 entries are
+written. Every code prompt passes `hidden_tests.py check-bench`: the
+reference passes, an empty deliverable fails, and every broken variant is
+caught. Every report checklist passes `checklists.py check-bench`. The
+user's mass review may amend the set, and an amended set is a new version.
+The points flagged for that review are in `journal/design/Q-02-bench-v1.md`
+§ 9.
 
 ## Layout
 

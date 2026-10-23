@@ -279,3 +279,78 @@ What it showed:
   the bench's version of record.
 - PLAN § Phase Q: the Q-02 bullet cites this note. Any § 4 slices go into the
   Scope of Q-02.
+
+## 9. Flags for the user's mass review (bench as frozen, 2026-10-23)
+
+The sub-agents and the coordinator raised these points while writing and
+checking the bench. None was blocking. Each is a judgement the review can
+reverse.
+
+**Strictness: a correct-in-spirit answer can lose tests or items**
+- **c01f:** `--json` may appear between file arguments, which needs
+  `parse_intermixed_args`. This is stated in the prompt.
+- **c08:** pre-releases compare by plain precedence, the opposite of npm.
+  This is stated.
+- **c09 / c09f:** about a third of the tests check error positions. The
+  rules are given with worked examples.
+- **c14:** a left-aligned column's separator is `:---`. This is stated.
+- **c19:** a brute-force cron search runs about 1.5 M steps on the leap-day
+  test and should still fit the 120 s timeout.
+- **c25:** a model's solver bug that loops forever times out and scores 0
+  for the whole file.
+- **c31:** nodes need not be comparable, so `(dist, node)` heap entries
+  without a tie-breaker fail.
+- **c36 / c36f:** several tests check `SQLSyntaxError.pos`.
+- **c37 / c37f:** a deliberately non-CommonMark markdown subset. All rules
+  are stated.
+- **c40:** holds expire as if a job runs at the start of each day. This is
+  the subtlest rule in the bench.
+- **c43:** the `evaluations` counter enforces incremental recalculation.
+- **c46:** "Thompson NFA, no backtracking" is stated but not enforced,
+  because a pathological test would time out the whole file.
+- **c47:** the first error in reading order wins, so the parser must scan
+  lazily.
+- **c49:** the search order and the explanation format are fully specified,
+  which makes it more about following a spec than designing a solver.
+
+**Test counts**
+- Follow-ups exceed the 20–40 range (c33f 65, c36f 75, c47f 64, c50f 66,
+  c54f 65) because they copy the parent's tests whole.
+- c52 (24) and c53 (25) sit at the low end of the range.
+
+**Report checklists**
+- The long reports carry 18–33 items, against the brief's 8–14.
+- r39 (12 of 30 items) and r46 (9 of 29) weight arithmetic heavily.
+- Exact heading counts: r45 has 12 "Settings" headings, r48 has 13
+  "Errors" headings.
+- Exact counts from transcripts, not stated in the prompt: r06 and r06f
+  (decisions, action items).
+- Hard length bounds without the 10 % widening, because the prompt says
+  "under" or gives a range: r07, r08, r13, r14 and r15.
+- Format-dependent items: r20's single 16-row table, r27's continuous
+  numbering, r30's `<br>`-separated cells, r32's ID-led bullets, and
+  r39's column order.
+- Loose regexes that could rarely misfire: r23f (a level-1 title
+  containing "point-in-time"), r24 (`15 %`), r25 (`young`) and r45 (the
+  `E…` codes).
+- Follow-ups that depend on the parent's answer: r06f (Android 9 left
+  open) and r15f (assumes a self-hosted broker was chosen).
+- **Checklists are a secondary score.** The report-domain claim rests on
+  the judge (§ 3), so these flags affect the checklist table, not the
+  six claims.
+
+**Design choices to confirm**
+- **Overlap entries.** c34, c39, c41, c45, c48 and c51, plus r09, r21, r37,
+  r42, r47 and r51, ask for shared or repeated material on purpose. They
+  have no `max_section_overlap` item.
+- **r03f is a trap:** the cheapest new option breaks a stated requirement,
+  and only the judge scores the recommendation.
+- **r42 and r50 status definitions.** Their compliance statuses depend on
+  definitions written into the prompts.
+
+**Standard slice (v1-std)**
+- 18 BigCodeBench-Hard tasks: 21 selected by the rule, 3 excluded because
+  their tests import `faker`.
+- 20 IFEval prompts, whose scoring is pending the user's choice of checker:
+  the official checker (fetching code and four packages), the agent's own
+  checker, or dropping that half.
