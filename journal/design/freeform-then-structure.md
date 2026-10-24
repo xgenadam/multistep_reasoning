@@ -1,0 +1,149 @@
+# Idea: freeform first, JSON second (the user, 2026-10-24)
+
+- **Status:** a note to act on later. The harness is frozen for Q-02 at
+  `a82c5b7` (D-022), so nothing changes until Q-02's verdict. Take it up at
+  the re-plan point (Q-03) or as an A-phase ticket.
+- **Prompted by:** the 8 of 140 harness failures in Q-02 stage 1's flash-next
+  (b) run (`journal/baseline/runs/20261024T031144Z_q02-s1-b_flash-next.json`).
+
+## The idea, in the user's words
+
+> We are forcing json on the task breakdown, but depending on the complexity
+> of the task this might cause the model to fail to generate valid json, its
+> not guaranteed. one approach, token inefficient, is to not force json on
+> the first pass, allow the model to be more freeform in generating a reply,
+> i.e generate sub tasks freeform as a normal response with sections that
+> contain the info we require. Then we have a second call that feeds that
+> freeform response back into the llm but constrain it to json there...
+
+So there are two calls: (1) the decomposition, or any structured step, written
+as ordinary prose with fixed sections; (2) a short call that turns that prose
+into the schema, constrained to JSON.
+
+## What the code does now (checked 2026-10-24)
+
+- Structured calls go through `llama_utils.get_streamed_json_response`:
+  instructor `Mode.JSON` (prompted JSON plus parse/validate retries, up to 5).
+  This is **not** grammar-constrained decoding, so valid JSON is not
+  guaranteed, as the user says.
+- **Output caps.** The harness sends `max_tokens=8192` on every call
+  (`harness.MAX_TOKENS`). Outside the harness, the OpenAI-client path sends
+  none, so the server's default applies (≈ 2,804 on `:5000`, measured in
+  0-14). A 2,048-token JSON cap existed, but only the text-generation-webui
+  extension read it (`oobabooga_extension/script.py:663`), so it never
+  applied to Q-02. **Removed on master 2026-10-24 at the user's request**
+  (`llama_utils.get_streamed_json_response`). Q-02 keeps running from
+  `a82c5b7`, where it is present but inert. The critique's 1,024 limit
+  (`self_critique_decomposition.py:150`, prose, extension only) is
+  unchanged.
+- The composer (`document_composer.py:219`) retries 3 times on a
+  *document-rule* error, then raises `DocumentApplyError`, and the whole
+  turn fails.
+
+## What the 8 failures were
+
+All 8 were `DocumentApplyError("composer failed after 3 retries: …")`. Those
+are ops that parsed and validated but broke a document rule, not invalid JSON:
+- "sub-task result was not kept in part …": 6;
+- "body_source=current_result was used but the payload is not in the
+  document": 1;
+- "part id already exists": 1.
+
+7 of the 8 were report prompts.
+
+### The rule "sub-task result was not kept"
+
+`document/integrity.py:assert_payload_kept`, run on every compose attempt
+after the ops apply to a clone. Its purpose: a sub-task's result must never
+be lost or silently rewritten in composition. The composer can place the
+result in two ways:
+- `body_source: current_result`: the document takes the executor's text
+  verbatim. Kept by construction.
+- A literal `body` on add, append, update or insert: the model retypes the
+  text in its JSON. The rule then requires the executor's **entire** result
+  to appear as an exact substring of that part's body, with the outer code
+  fence allowed to differ. Anything else fails: a trim, a reworded
+  sentence, a dropped heading, a split across two parts, a changed
+  whitespace run.
+
+In the flash-next (b) run (console log `runs/q02-stage1-logs/flash-next_b.log`, git-ignored)
+the rule fired on 40 compose attempts; retries recovered most of them and 6
+turns failed. Other attempt errors: "part id already exists" 7, "anchor not
+found" 2, `body_source` without the payload 1, unknown part id 1. The
+composer also returned no ops 47 times and fell back to a verbatim add.
+
+A failed turn records nothing: the run file has `output` empty, no
+document and no calls, so the two finished parts of r30 (a 3-step SWOT
+report that failed at its last step, "Compose Summary and Finalize
+Document", into part `summary`) are lost, and the failing ops are not kept
+for diagnosis. Two later questions, separate from the user's idea:
+- should a last-step compose failure fall back to a verbatim add (the
+  no-ops path already does) instead of failing the turn;
+- should the run file keep the failing attempts' ops.
+
+### The user's view on the rule (2026-10-24)
+
+> I think its fine for the composer to retype it. Consider tasks that might
+> have some overlapping scope, if we stick to fully copying it, then its just
+> going to result in bloated responses with duplicate information
+
+How the rule bears on overlap now:
+- The *new* result must go in whole. Overlap with an earlier part can only
+  be removed backwards: a later step's `replace` or `delete` on an earlier
+  part is not checked, and neither is the end-of-turn consolidation pass
+  (`consolidate`, 0-06, off by default; Q-02's arm c tests it against b).
+- So the design today is "compose verbatim, dedupe afterwards". The user's
+  view is "dedupe while composing".
+- What the rule guards against is still real: the composer sees summaries
+  and a few attached parts, not the whole document, and a retype can drop
+  or degrade content silently (worst for code).
+
+Options for the later ticket, each tested with and without like the
+two-pass idea:
+1. Allow literal bodies to differ from the result, replacing the
+   exact-substring check with a coverage measure that is logged, not
+   enforced (for example, the share of the result's sentences or lines
+   that survive), so silent loss shows up in the run file.
+2. Ask the composer to declare what it left out and why ("duplicates part
+   X"), recorded in the op log, and fail only on undeclared loss.
+3. Keep `file` parts verbatim (retyped code breaks quietly), and relax the
+   rule for prose parts only.
+4. Whatever the rule, a final compose failure falls back to a verbatim
+   add instead of failing the turn.
+
+Q-02's c-vs-b result tells us how much dedupe-afterwards buys, which is
+the baseline for any dedupe-while-composing variant.
+
+## Later work (after Q-02's verdict; the harness is frozen until then)
+
+### Measure first (no new runs needed)
+
+From Q-02's run files, `/intermediates/` and the console logs:
+1. Count instructor parse and validation retries per call kind (decompose,
+   critique, compose, executor), if the instrumentation records them.
+   Otherwise, compare calls per turn with the expected count.
+2. Response lengths per call kind, and calls that stopped on `length`.
+3. The composer's failed attempts by error class, including the ones a
+   later retry fixed, across all three generators.
+4. Split each count by prompt length and stratum, to test "depending on the
+   complexity of the task".
+
+### The two-pass approach: investigate, with and without
+
+The user (2026-10-24): investigate it later; comparing results with and
+without it, qualitatively as well as by counts, is part of developing the
+harness. So it is an experiment with a control, not a fix to adopt:
+- arms: the current single JSON pass vs freeform-with-sections then a
+  constrained JSON conversion, on the same prompts and generator;
+- compare the outputs' quality (judged and read), the failure counts above,
+  and tokens and critical-path calls per turn (D-025);
+- start with the decomposer; the composer only if its errors grow with
+  complexity;
+- material prompt changes need a re-baseline (D-007).
+
+Other variants worth the same with/without treatment: grammar-constrained
+decoding (vLLM `guided_json` / `response_format`, llama.cpp `json_schema`;
+valid JSON in one call, but no help to reasoning; check the instrumentation
+seam still counts it, O-03), and thinking on for structured calls (free
+reasoning before the JSON in the same call; Q-02's (a′) arm tests thinking
+only for single calls).
