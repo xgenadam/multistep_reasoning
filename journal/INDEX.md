@@ -1,10 +1,10 @@
 # INDEX — live board (hand-maintained; ticket status lives only in front-matter: `make board`)
 
-updated: 2026-10-23 (Q-02 stage 0 done apart from the user's decisions: bench v1 frozen provisionally under D-022, three generators baselined, the (a″) pilot on all three; GPUs idle; S-022; `git log -1 -- journal/INDEX.md`)
+updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker adopted, speed check (5 jobs on 5 slots), cards at 250 W, watchdog hardened; mass review set for Sunday 2026-10-25 afternoon; S-022; `git log -1 -- journal/INDEX.md`)
 
 ## Now
 - **Phase:** A; A-01 is done (D-018, approved 2026-10-19). Phase 0 close-out: 0-14 (P0-6), 0-15 (P0-10), 0-16 (P0-7, D-016), 0-06 (P0-4) and 0-09 (D-017) are done; 0-11 is deferred by the user (2026-10-19), not dropped.
-- **Next move:** the user decides three things for Q-02 (blocked; nothing runs until then, D-022): (1) the (a″) compute-matching amendment, either the stratified N or a token budget (Q-02 Notes; the domain-level rule matches no generator, and the 35B-A3B's long reports overspend at N = 1); (2) the IFEval checker for `bench/v1-std` (approve the fetch, the agent writes one, or drop the half); (3) the mass review of bench v1 and the pre-registration (`journal/design/Q-02-bench-v1.md` § 9). Then commit the amendment, implement it if it touches `arms.py` (Opus 5.5 / high), and stage 1. R1–R5 labels are still due before Q-02 stage 2 (Q-06 app). Open AGENTS.md, this file, S-022, the ticket.
+- **Next move:** the user's mass review of Q-02, planned for Sunday 2026-10-25 afternoon: bench v1 and the pre-registration (`journal/design/Q-02-bench-v1.md` § 3, § 4, § 9), the token-budget amendment and its re-pilot (Q-02 Notes 2026-10-24: a″ overshoots the harness by ≈ 1.3× on the 35B-A3B; four options listed), and freezing v1-std. Nothing that depends on it starts before then, stage 1 included (D-022). Stage 1 then runs `arms.py --refine-budget` at the per-model `--jobs` (AGENTS.md § Environment). R1–R5 labels are still due before stage 2 (Q-06 app). Open AGENTS.md, this file, S-022, the ticket.
 
 ## Resources
 - **Generator:** `:8091` serves Qwen flash (`qwen3.8-flash-next`) on the user's customised vLLM at `http://host.containers.internal:8091/v1`, on all four cards plus 40–50 GiB RAM (≈ 125 tok/s on code); it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). `:5000` is text-generation-webui's API (loader llama.cpp, Qwen3.8-27B GGUF on disk) with no model loaded on 2026-10-19. Export `LLM_BASE_URL` (D-008). Q-02's generators boot in the container with `scripts/server/generator-server.sh <flash-next|qwen3.8-27b|qwen3.6-35b-a3b>` (`:8090` / `:8093` / `:8094`; `stop` to release).
@@ -12,10 +12,10 @@ updated: 2026-10-23 (Q-02 stage 0 done apart from the user's decisions: bench v1
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
 - **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design, the A-01 approval, the Q-01 stage 1 commits (S-018) and Q-01 stage 2 (S-019), Q-04, D-020, S-020, D-021, Q-06, S-021 and S-022 (Q-02 stage 0: tooling, bench v1, D-022, D-023, three baselines and pilots); the user pushes from the host.
-- **Server owner:** Q-02 token-budget re-pilot (2026-10-24 ~01:00Z): the 35B-A3B alone on four cards, a2 --refine-budget on the 12 pilot prompts. Every card is capped at 250 W by the user (not persistent across a host reboot). The watchdog is pid 314397: it kills GPU processes by PID and reads the slowdown counters.
+- **Server owner:** none since 2026-10-24 00:41Z (GPUs idle). Every card is capped at 250 W by the user (not persistent across a host reboot); run each llama.cpp generator alone on four cards. The watchdog is pid 314397: it kills GPU processes by PID and reads the slowdown counters.
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
-1. Q-02 — blocked on the user's three stage-0 decisions (Now); then the amendment (Opus 5.5/high, behavioural if a re-pilot is needed) — Q-01, Q-04 (formally; stage 2 needs the labels)
+1. Q-02 — blocked on the user's mass review (Sunday 2026-10-25 afternoon; Now); then any amendment it brings (Opus 5.5/high), then stage 1 — Q-01, Q-04 (formally; stage 2 needs the labels)
 2. Q-06 — labelling app built (Q-11); the user labels R1–R5 later, due before Q-02 stage 2 (deferred 2026-10-23) — Opus 5.5/medium — none — none
 3. Q-01 — blocked: Q-1's real-pair half waits on the R1–R5 labels (stage 2 done, S-019)
 4. Q-04 — slow tier scored (S-020); final pick waits on the R1–R5 labels (D-021's condition); fast tier deferred to Q-03 — Sonnet 5.5/medium — behavioural — Q-01
