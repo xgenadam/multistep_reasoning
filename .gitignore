@@ -4,6 +4,7 @@ __pycache__/
 build/
 dist/
 .venv/
+.venv-ifeval/
 venv/
 dsh-podman-venv/
 .pytest_cache/

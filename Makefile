@@ -9,7 +9,7 @@ PYTHON ?= 3.12
 VENV   := .venv
 PY     := $(VENV)/bin/python
 
-.PHONY: venv test smoke check board
+.PHONY: venv venv-ifeval test smoke check board
 
 venv:
 	@if command -v uv >/dev/null 2>&1; then \
@@ -19,6 +19,21 @@ venv:
 		python$(PYTHON) -m venv $(VENV) && \
 		$(PY) -m pip install -e '.[test]'; \
 	fi
+
+# Google's IFEval checker (bench/v1-std/ifeval_checker/SOURCE.md) in its own
+# venv, never imported from .venv: pinned packages plus NLTK's pickle-free
+# punkt_tab data.
+IFEVAL_VENV := .venv-ifeval
+IFEVAL_LOCK := journal/baseline/bench/v1-std/ifeval_checker/requirements.lock
+venv-ifeval:
+	@if command -v uv >/dev/null 2>&1; then \
+		uv venv --python $(PYTHON) $(IFEVAL_VENV) && \
+		uv pip install --python $(IFEVAL_VENV)/bin/python -r $(IFEVAL_LOCK); \
+	else \
+		python$(PYTHON) -m venv $(IFEVAL_VENV) && \
+		$(IFEVAL_VENV)/bin/python -m pip install -r $(IFEVAL_LOCK); \
+	fi
+	$(IFEVAL_VENV)/bin/python -I -c "import nltk; assert nltk.download('punkt_tab', download_dir='$(CURDIR)/$(IFEVAL_VENV)/nltk_data', quiet=True)"
 
 test:
 	$(PY) -m pytest tests/ -q

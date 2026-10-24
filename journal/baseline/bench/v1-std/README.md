@@ -12,9 +12,8 @@ are the ones listed under "Added paragraph" and "Test adaptations".
 
 Status: **data built, not frozen** (`frozen: false`).
 - Code: scored by hidden tests (`hidden_tests.py`).
-- Report: scoring is **pending**. The IFEval instruction data is stored, but
-  no IFEval checker is in the repo yet. Whether to use the official checker
-  is still undecided, so no report score exists until that decision is made.
+- Report: scored by Google's official IFEval checker (`ifeval_checker/`,
+  `journal/baseline/ifeval_score.py`; adopted by the user 2026-10-24).
 
 ## Contents
 
@@ -172,10 +171,14 @@ Known differences from BigCodeBench's own evaluation:
   has it. Otherwise it is 300. None of the 20 sampled rows has a `num_words`
   kwarg, so every report entry has `target_words: 300`. That value is a
   length budget for the arms, not an IFEval constraint.
-- **Scoring is pending.** There is no scorer in the repo for these entries.
-  `checklists.py` does not read `ifeval/`, and the official IFEval checker
-  has not been adopted (that decision is pending). Until a scorer exists,
-  report outputs from this slice are collected but not scored.
+- **Scoring:** Google's official IFEval checker, vendored at
+  `ifeval_checker/` (the pinned commit, its licence and the one local
+  change are in `ifeval_checker/SOURCE.md`; adopted by the user
+  2026-10-24). It runs only in its own venv:
+  `.venv-ifeval/bin/python journal/baseline/ifeval_score.py RUN_FILE`
+  (`make venv-ifeval` builds it). That writes `<run>.ifeval.json` with
+  strict and loose verdicts per instruction and IFEval's four headline
+  numbers per arm. `checklists.py` does not read `ifeval/`.
 
 ## Licences
 
