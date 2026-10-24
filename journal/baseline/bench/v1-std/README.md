@@ -80,9 +80,9 @@ URLs, into the raw dir (default `~/models/bench-std-raw`, `--raw DIR` /
   exactly the recorded file's format (re-serialising its rows that way gives
   its bytes), and the parquet's schema has the same columns in the same
   order with the same types. The output must match the pinned sha256 or it
-  is refused. The conversion needs pyarrow, which neither venv has: install
-  it into `.venv-ifeval` when the JSONL is not already in the raw dir
-  (convert_bcb.py prints the command).
+  is refused. The conversion runs in `.venv-ifeval`, which pins pyarrow
+  25.0.1 (`make venv-ifeval`). Verified 2026-10-24: converting the pinned
+  parquet in a fresh raw dir reproduces the pinned JSONL byte for byte.
 - The IFEval checker's source, commit and file hashes are in
   `ifeval_checker/SOURCE.md`.
 

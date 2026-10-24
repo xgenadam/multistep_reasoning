@@ -6,8 +6,12 @@ Usage (from the repo root; `make bench-std` runs it):
 
 If <raw>/BigCodeBench-Hard/v0.1.4.jsonl is already there with its pinned
 sha256 there is nothing to do, and any interpreter runs this. Otherwise it
-needs pyarrow, which is not part of either venv: without it, it prints the
-one-line install and exits 1.
+needs pyarrow, which `.venv-ifeval` has (pinned in
+ifeval_checker/requirements.lock; the user approved it 2026-10-24): run it
+there. Without pyarrow it prints the one-line install and exits 1.
+
+Verified 2026-10-24: converting the pinned parquet in a fresh raw dir gives
+the pinned JSONL sha256 (2f8a10ad…).
 
 The conversion: the parquet's rows in file order, each written as
 `json.dumps(row) + '\\n'` (the stdlib defaults: ASCII escapes, ", " and ": "
@@ -62,10 +66,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         import pyarrow  # noqa: F401
     except ImportError:
-        print('convert_bcb.py: pyarrow is needed to make the JSONL from the parquet. Install it '
-              'into the checker venv (make venv-ifeval) and rerun: '
-              'uv pip install --python .venv-ifeval/bin/python '
-              'pyarrow (without uv: .venv-ifeval/bin/python -m pip install pyarrow)',
+        print('convert_bcb.py: pyarrow is needed to make the JSONL from the parquet. Run this '
+              'with the checker venv, which pins it (make venv-ifeval): '
+              '.venv-ifeval/bin/python -I journal/baseline/bench/v1-std/convert_bcb.py',
               file=sys.stderr)
         return 1
     data = convert(parquet)
