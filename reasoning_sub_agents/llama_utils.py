@@ -439,7 +439,6 @@ def get_streamed_json_response(
     begin_llm('JSON completion')
     maybe_log_prompt(llm_input, kind='JSON')
     json_token = _json_completion.set(True)
-    limit_token = _inner_token_limit.set(_inner_token_limit.get() or 2048)
     try:
         return _get_streamed_json_response_inner(
             llama_client,
@@ -451,7 +450,6 @@ def get_streamed_json_response(
         )
     finally:
         _json_completion.reset(json_token)
-        _inner_token_limit.reset(limit_token)
 
 
 def _get_streamed_json_response_inner(
