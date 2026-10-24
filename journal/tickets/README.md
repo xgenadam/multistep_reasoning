@@ -61,9 +61,10 @@ What the fields mean:
   - `none`: no generator calls.
   - `behavioural`: needs generator calls whose outputs and tokens count, but
     whose wall times don't. The agent may be active, and `--jobs 3` is fine.
-  - `timing`: gates wall time. It needs an idle box and `--jobs 1`, and is
-    void if the agent was calling the model during the run (see
-    `../../AGENTS.md` § Measurement).
+  - `timing`: its wall times are kept as a clean record. It gates nothing
+    (D-025). It needs an idle box and `--jobs 1`, and its times are void if
+    the agent was calling the model during the run (see `../../AGENTS.md`
+    § Measurement).
 - **`depends_on`** is static and **`blocked_on`** is live. A ticket waiting on
   a run window or on the user says so in `blocked_on`; a ticket whose
   prerequisite tickets are not done just has `depends_on`.

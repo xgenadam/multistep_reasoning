@@ -32,14 +32,18 @@ more stores behind the oracle's one door.
    store, before any heavy backend exists.
 2. **Every phase is gated on cost, and from Q on also on quality** (D-007).
    Cost is marginal and measured on uncontaminated runs, and the baseline is
-   re-recorded when prompts change materially.
+   re-recorded when prompts change materially. Cost means tokens and calls,
+   never wall time (D-025). Where a criterion is about speed, it uses the
+   **critical path**: the chain of model calls in a turn that must run one
+   after another, counted in calls and in the tokens on that chain. Wall
+   time is recorded beside the hardware it ran on, for interest only.
 3. **Scale by tiers.** Bounded corpora first, and every tier step carries a
    10× scaling test.
 4. **Detection must trigger recovery** (D-009). Verdicts carry confidence
    tiers (D-010).
 5. **Server hours are the throughput limit.** One 5-slot server is shared
-   with the agent. Timing gates need an idle box, and long campaigns get
-   scheduled.
+   with the agent. Long campaigns get scheduled. No criterion needs an idle
+   box any more (D-025); a run kept as a clean wall-time record still does.
 6. **Parallel streams only on disjoint files.** One task per session.
 
 ## Phase map
@@ -150,7 +154,8 @@ The close-out exists because the Phase 0 measurements are not yet trustworthy:
 (0-15 is unallocated.)
 
 Pass criteria. The IDs are unchanged (no renumbering); P0-6…P0-9 were added
-by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
+by O-01 for the close-out tickets, and P0-4's text was revised per D-007
+and again per D-025.
 - **P0-1 Shape:** "write a CLI tool that does X" gives a final `Document`
   with ≥ 1 `file` part of runnable code and zero prose-report parts *about*
   the tool. Three different X; pass = 3/3.
@@ -162,9 +167,13 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
   it into a part that survives; updates, patches, moves, new parts and
   deleted scratch parts are all fine. In the final document no two parts
   share > 50% of body tokens (`n/a` with fewer than two parts).
-- **P0-4 Consolidation cost** (revised by D-007; was "turn totals B vs A"):
-  - On an uncontaminated `--jobs 1` run, the consolidate call's p50 ≤ 1.5×
-    the compose p50 from the same run.
+- **P0-4 Consolidation cost** (revised by D-007; was "turn totals B vs A";
+  revised by D-025; was "the consolidate call's p50 ≤ 1.5× the compose p50
+  on an uncontaminated `--jobs 1` run", which 0-06 passed on 2026-10-19 and
+  which stands as recorded):
+  - The consolidate call's tokens (prompt plus completion) p50 ≤ 1.5× the
+    compose call's p50 from the same run, and the pass adds at most two
+    calls to the critical path (consolidate and the summary it triggers).
   - Marginal tokens (the consolidate call plus the summary call it triggers)
     ≤ 25% of the turn total.
 - **P0-5 Regression:** the golden-fixture parser tests (truncated JSON, junk
@@ -249,8 +258,10 @@ by O-01 for the close-out tickets, and P0-4's text was revised per D-007.
     § 9). 140 prompts, 70 per domain (the user, 2026-10-23; was about 80),
     so each domain is powered on its own.
   - Three stages: bench v1 and the arm drivers (Opus 5.5 / high); the
-    campaign (Sonnet 5.5 / low, `--jobs 3`, from a pinned worktree, wall
-    time recorded per call, per prompt and per arm); the analysis (Opus
+    campaign (Sonnet 5.5 / low, at the per-model `--jobs` in AGENTS.md
+    § Environment, from a pinned worktree, wall time recorded per call, per
+    prompt and per arm with the hardware it ran on, as a record only,
+    D-025); the analysis (Opus
     5.5 / high: win-rate and CI per pairing, tokens, wall and length per
     arm). Judging is a slow-tier window on the committed run files. It
     answers the README's open question, whatever the answer is, and is the
@@ -279,7 +290,8 @@ Pass criteria:
   at least 20 % are follow-ups.
 - **Q-3:** G3 is exercised on the Q-E1 set.
 - **Q-4:** a judge budget is recorded ("10-pair set ≤ N tokens / ≤ M min"),
-  and judge calls never run inside a timing-gate window.
+  and judge calls never run during a generator run that is kept as a clean
+  wall-time record (revised by D-025; was "inside a timing-gate window").
 - **Q-5:** repeatability. The same pair in the same order, judged twice,
   agrees ≥ 90%.
 - **Q-6 Pre-registration:** the effect, n, the primary comparison and the
@@ -377,8 +389,11 @@ Pass criteria:
   exercised by a live call in A-1/A-2.
 - **A-5 Zero new runtime dependencies and zero new services.** If either
   appears, the phase has grown into B and is re-split.
-- **A-6 Latency:** `search`/`ask` wall time on a 30-part document is within
-  10% of the baseline oracle calls (P0-7 denominators).
+- **A-6 Oracle cost** (revised by D-025; was "Latency: `search`/`ask` wall
+  time … within 10% of the baseline oracle calls"): on a 30-part document,
+  `search`/`ask` tokens per query (prompt plus completion) and model calls
+  on the query's critical path are each within 10 % of, or below, the
+  pre-A oracle path measured on the same generator (A-05 Notes).
 - **A-7 One place per tool:** adding a tool touches one place; a test
   registers a dummy tool and the executor calls it.
 - **A-8 Persistence groundwork:**
@@ -516,8 +531,11 @@ Design detail is in v1 § Phase P. Steps:
    broken synthesiser and its 10 skipped tests.
 
 Pass criteria:
-- **P-P1:** a two-branch DAG (A → {B, C} → D) overlaps for real: frontier
-  wall ≤ 0.75× the sum of B and C run sequentially.
+- **P-P1** (revised by D-025; was "frontier wall ≤ 0.75× the sum of B and C
+  run sequentially"): a two-branch DAG (A → {B, C} → D) overlaps for real.
+  B's and C's calls are in flight at the same time (call start and end
+  timestamps), and the turn's critical path holds the longer of B and C,
+  not both. Frontier wall against the sequential sum is recorded.
 - **P-P2:** no executor mid-frontier sees a part created after the frontier
   started. Asserted via op-log `seq`/`ts`.
 - **P-P3:** when both siblings produce near-duplicates, the final document has
@@ -525,8 +543,9 @@ Pass criteria:
 - **P-P4:** with a missing edge (B needs A's output), the verifier flags B and
   B is re-run serially with A's output in context. The *recovered* result
   is correct.
-- **P-P5:** a degenerate 1-node DAG costs ≤ 10% more turn latency than the
-  baseline.
+- **P-P5** (revised by D-025; was "≤ 10% more turn latency"): a degenerate
+  1-node DAG costs ≤ 10 % more tokens per turn than the baseline and adds
+  no call to the critical path.
 - **P-P6:** 20 random decompositions all order topologically; an injected
   cycle is rejected with a clear error, not a hang.
 
@@ -561,7 +580,9 @@ Pass criteria:
 - **T-3:** every verdict in a run log carries its confidence tier and, at
   judge tier, its evidence. An unverifiable claim yields an annotation, not
   a silent pass or a hard block.
-- **T-4:** verifiers add ≤ 30% to code-pack turn latency vs the Phase P
+- **T-4** (revised by D-025; was "≤ 30% to code-pack turn latency"):
+  verifiers add ≤ 30 % to code-pack turn tokens (marginal, D-007) and
+  ≤ 30 % to the tokens on the turn's critical path, vs the Phase P
   baseline.
 - **T-5:** science. From 5 papers, ≥ 90% of the claim-card citations resolve
   to the right passage. A 3-paper comparison scores ≥ 3.5/5 from the judge.

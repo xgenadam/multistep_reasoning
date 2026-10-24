@@ -84,6 +84,16 @@ This file holds no decisions; it cites them by `D-nnn`.
   judge launcher refuses to boot past. Read the log before deleting the
   flag. GDDR6X memory temperature is not readable on these cards. Check it
   runs (`pgrep -af gpu-watchdog`) before starting GPU work.
+- **Power cap (the user, 2026-10-23): every card runs capped at 250 W.**
+  - The cap does not survive a host reboot.
+  - Before any GPU work, check every card shows 250 W and persistence
+    `Enabled`:
+    `nvidia-smi --query-gpu=index,persistence_mode,power.limit --format=csv`.
+  - Run this check again when resuming or continuing a session: a resumed
+    session skips Session start, and the host may have rebooted in between.
+  - If any card is above 250 W, start no GPU work. Ask the user to run
+    `sudo nvidia-smi -pm 1; sudo nvidia-smi -pl 250` on the host (the agent
+    cannot sudo), then check again.
 - **Python:**
   - Use `.venv/bin/python` (3.12, D-012; `make venv` builds it), or
     `dsh-podman-venv/bin/python` if `.venv` is absent. The latter has no
@@ -145,11 +155,17 @@ This file holds no decisions; it cites them by `D-nnn`.
 
 ## Measurement
 
+- **Wall time is a record, not a decision metric** (D-025). No criterion
+  gates on it. Speed criteria use tokens and the critical path (the model
+  calls that must run one after another). Every run file still records wall
+  time with where it ran.
 - **Contamination rule.** A run's wall times are void if the agent was
   calling the model during the run. Op counts, part shapes and token counts
-  stay clean. A void time means a rerun for the timing gate.
-- **Timing gates** (P0-4, A-6, P-P5, T-4, anything `compare.py` gates on
-  wall time) run with `--jobs 1` on an idle box (`needs_server: timing`).
+  stay clean.
+- **Clean wall-time records** run with `--jobs 1` on an idle box
+  (`needs_server: timing`). Only a run whose wall times are to be kept as a
+  clean record needs this. `compare.py` still refuses `jobs > 1` until a
+  follow-up changes it (D-025).
 - **Cost gates are marginal and uncontaminated, and the baseline is
   re-recorded after material prompt changes** (D-007).
 - **Token counts are distributions, not points.** Prompt tokens vary

@@ -1,10 +1,10 @@
 # INDEX — live board (hand-maintained; ticket status lives only in front-matter: `make board`)
 
-updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker adopted, speed check (5 jobs on 5 slots), cards at 250 W, watchdog hardened; mass review set for Sunday 2026-10-25 afternoon; S-022; `git log -1 -- journal/INDEX.md`)
+updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker adopted, speed check (5 jobs on 5 slots), cards at 250 W (checked before any GPU work, AGENTS.md), watchdog hardened; D-025 wall time a record only, PLAN criteria reworded; mass review set for Sunday 2026-10-25 afternoon; S-022; `git log -1 -- journal/INDEX.md`)
 
 ## Now
 - **Phase:** A; A-01 is done (D-018, approved 2026-10-19). Phase 0 close-out: 0-14 (P0-6), 0-15 (P0-10), 0-16 (P0-7, D-016), 0-06 (P0-4) and 0-09 (D-017) are done; 0-11 is deferred by the user (2026-10-19), not dropped.
-- **Next move:** the user's mass review of Q-02, planned for Sunday 2026-10-25 afternoon: bench v1 and the pre-registration (`journal/design/Q-02-bench-v1.md` § 3, § 4, § 9), the token-budget amendment and its re-pilot (Q-02 Notes 2026-10-24: a″ overshoots the harness by ≈ 1.3× on the 35B-A3B; four options listed), D-024 (intermediates stored and scored, the 3× ceilings), and freezing v1-std. Nothing that depends on it starts before then, stage 1 included (D-022). Stage 1 then runs `arms.py --refine-budget` at the per-model `--jobs` (AGENTS.md § Environment). R1–R5 labels are still due before stage 2 (Q-06 app). Open AGENTS.md, this file, S-022, the ticket.
+- **Next move:** the user's mass review of Q-02, planned for Sunday 2026-10-25 afternoon: bench v1 and the pre-registration (`journal/design/Q-02-bench-v1.md` § 3, § 4, § 9), the token-budget amendment and its re-pilot (Q-02 Notes 2026-10-24: a″ overshoots the harness by ≈ 1.3× on the 35B-A3B; four options listed), D-024 (intermediates stored and scored, the 3× ceilings), D-025's reworded PLAN criteria (P0-4, A-6, P-P1, P-P5, T-4, Q-4), and freezing v1-std. Nothing that depends on it starts before then, stage 1 included (D-022). Stage 1 then runs `arms.py --refine-budget` at the per-model `--jobs` (AGENTS.md § Environment). R1–R5 labels are still due before stage 2 (Q-06 app). Open AGENTS.md, this file, S-022, the ticket.
 
 ## Resources
 - **Generator:** `:8091` serves Qwen flash (`qwen3.8-flash-next`) on the user's customised vLLM at `http://host.containers.internal:8091/v1`, on all four cards plus 40–50 GiB RAM (≈ 125 tok/s on code); it needs `LLM_MODEL=qwen3.8-flash-next` (O-06). `:5000` is text-generation-webui's API (loader llama.cpp, Qwen3.8-27B GGUF on disk) with no model loaded on 2026-10-19. Export `LLM_BASE_URL` (D-008). Q-02's generators boot in the container with `scripts/server/generator-server.sh <flash-next|qwen3.8-27b|qwen3.6-35b-a3b>` (`:8090` / `:8093` / `:8094`; `stop` to release).
@@ -19,12 +19,13 @@ updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker a
 2. Q-06 — labelling app built (Q-11); the user labels R1–R5 later, due before Q-02 stage 2 (deferred 2026-10-23) — Opus 5.5/medium — none — none
 3. Q-01 — blocked: Q-1's real-pair half waits on the R1–R5 labels (stage 2 done, S-019)
 4. Q-04 — slow tier scored (S-020); final pick waits on the R1–R5 labels (D-021's condition); fast tier deferred to Q-03 — Sonnet 5.5/medium — behavioural — Q-01
-5. Q-02 stage 1 — the campaign (`--jobs 3`, pinned worktree) — Sonnet 5.5/low — behavioural — stage 0; an A-02 session (Opus 5.5/medium, none) may run meanwhile
+5. Q-02 stage 1 — the campaign (per-model `--jobs`, pinned worktree) — Sonnet 5.5/low — behavioural — stage 0; an A-02 session (Opus 5.5/medium, none) may run meanwhile
 6. Q-02 judging window + stage 2 — slow-tier judge batch, then analysis — Opus 5.5/high — behavioural — stage 1
 7. Q-03 — G3 gate in `compare.py` — Sonnet 5.5/medium — none — Q-01, Q-02; then the re-plan point (Fable 5.1/high if the harness lost)
-8. A-02 (if not already overlapped) → A-03 (Opus 5.5/high) → A-04 (Sonnet 5.5/medium) → A-05 (Sonnet 5.5/medium, timing; includes the `g3` G3 line) → N21 JSON schema dedup (Opus 5.5/medium → re-baseline, timing, D-016)
+8. A-02 (if not already overlapped) → A-03 (Opus 5.5/high) → A-04 (Sonnet 5.5/medium) → A-05 (Sonnet 5.5/medium, behavioural (D-025); includes the `g3` G3 line) → N21 JSON schema dedup (Opus 5.5/medium → re-baseline, D-016)
 - Any time, gates nothing in A: A-06 — retrieval escalation + conflict judgement, design only — Fable 5.1/high — none — A-01.
 - Deferred by the user (2026-10-19), come back to: 0-11 — extension repair — Sonnet 5.5/medium — none (+ user's UI).
+- D-025 follow-ups (Sonnet 5.5/medium, none): `compare.py` drops its `jobs > 1` refusal for cost gates; run files record power cap, card layout and server build.
 - Slot between the above, on a free server: 0-12, 0-13 (none); 0-10a (behavioural, unblocked by 0-16); Q-02 campaign (after Q-01, 0-14, A-04) → Q-03 → 0-10b.
 
 ## Phase status
