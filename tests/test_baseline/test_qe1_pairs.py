@@ -90,3 +90,46 @@ def test_refuses_mixed_generators(tmp_path, qp):
     two.write_text(json.dumps({'generator': 'g2', 'manifest_sha256': 'm', 'results': []}))
     with pytest.raises(SystemExit, match='more than one generator'):
         qp.build([one, two], 'b', 'a2', bench)
+
+
+def test_subset_domain_and_repeat(tmp_path, qp):
+    """--subset / --domain limit the prompts; --repeat pairs an arm with its
+    own repeat run (the A/A control), naming sides a and b in `decided`."""
+    bench = _bench(tmp_path)
+    rb = _write_run(tmp_path, 'b', 'b', [
+        _result('c1', 'b'), _result('c2', 'b'), _result('r1', 'b', 'memo'),
+        _result('r1f', 'b', 'memo+')], [_test('c1', 'b', 4), _test('c2', 'b', 2)])
+    rep = _write_run(tmp_path, 'rep', 'b', [
+        _result('c1', 'b'), _result('c2', 'b'), _result('r1f', 'b', 'memo++')],
+        [_test('c1', 'b', 3), _test('c2', 'b', 2)])
+    built = qp.build([rb], 'b', 'b', bench, repeat_files=[rep], domain='code')
+    assert [(d['prompt_id'], d['winner'], d['by']) for d in built['decided']] == \
+        [('c1', 'a', 'tests')]
+    assert [p['pair_id'] for p in built['pairs']] == ['c2']
+    assert 'b (repeat)' in built['pairs'][0]['source']
+    assert built['domain'] == 'code' and 'repeat_run_files' in built
+    followups = qp.build([rb], 'b', 'b', bench, repeat_files=[rep], subset='followup')
+    assert [p['pair_id'] for p in followups['pairs']] == ['r1f']
+    assert followups['decided'] == []      # r1 is outside the subset, never a "not run" loss
+    with pytest.raises(SystemExit, match='needs --repeat'):
+        qp.build([rb], 'b', 'b', bench)
+
+
+def test_plain_pairing_manifest_has_no_new_keys(tmp_path, qp):
+    bench = _bench(tmp_path)
+    rb = _write_run(tmp_path, 'b', 'b', [_result('r1', 'b', 'memo B')], [])
+    ra = _write_run(tmp_path, 'a2', 'a2', [_result('r1', 'a2', 'memo A')], [])
+    path = qp.write(qp.build([rb, ra], 'b', 'a2', bench), tmp_path / 'out')
+    manifest = yaml.safe_load(path.read_text())
+    assert not {'repeat_run_files', 'subset', 'domain'} & set(manifest)
+
+
+def test_outcome_rule_function(qp):
+    ok = {'ok': True, 'rate': 0.5, 'passed': 2, 'n': 4}
+    better = {'ok': True, 'rate': 1.0, 'passed': 4, 'n': 4}
+    failed = {'ok': False, 'why': 'error: boom'}
+    assert qp.outcome_rule(better, ok, 'code', 'b', 'a2')['winner'] == 'b'
+    assert qp.outcome_rule(ok, ok, 'code', 'b', 'a2') is None          # the judge breaks it
+    assert qp.outcome_rule(better, ok, 'report', 'b', 'a2') is None    # no tests in reports
+    assert qp.outcome_rule(failed, ok, 'report', 'b', 'a2')['winner'] == 'a2'
+    assert qp.outcome_rule(failed, failed, 'code', 'b', 'a2')['winner'] == 'tie'

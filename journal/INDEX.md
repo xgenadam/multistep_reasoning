@@ -19,7 +19,7 @@ updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker a
 2. Q-06 — labelling app built (Q-11); the user labels R1–R5 later, due before Q-02 stage 2 (deferred 2026-10-23) — Opus 5.5/medium — none — none
 3. Q-01 — blocked: Q-1's real-pair half waits on the R1–R5 labels (stage 2 done, S-019)
 4. Q-04 — slow tier scored (S-020); final pick waits on the R1–R5 labels (D-021's condition); fast tier deferred to Q-03 — Sonnet 5.5/medium — behavioural — Q-01
-5. Q-02 stage 2's analysis script (claims, long/short, roots-only, Devstral tie-break re-run), tested on synthetic verdicts before the judging window — Opus 5.5/high — none — D-026; an A-02 session (Opus 5.5/medium, none) may run during stage 1
+5. Q-02 stage 2's analysis script — done (S-022, `qe1_analysis.py report --spec`; readings chosen in the review note); the judging session builds c-vs-b pairs with `qe1_pairs.py --subset overlap` and A/A with `--repeat` — an A-02 session (Opus 5.5/medium, none) may run during stage 1
 6. Q-02 judging window + stage 2 — slow-tier judge batch, then analysis — Opus 5.5/high — behavioural — stage 1
 7. Q-03 — G3 gate in `compare.py` — Sonnet 5.5/medium — none — Q-01, Q-02; then the re-plan point (Fable 5.1/high if the harness lost)
 8. A-02 (if not already overlapped) → A-03 (Opus 5.5/high) → A-04 (Sonnet 5.5/medium) → A-05 (Sonnet 5.5/medium, behavioural (D-025); includes the `g3` G3 line) → N21 JSON schema dedup (Opus 5.5/medium → re-baseline, D-016)

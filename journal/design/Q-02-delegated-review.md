@@ -75,6 +75,28 @@ amendment.
 | 21 | Hidden-test scorer | 20 s per test (SIGALRM); the 120 s file timeout stays as the backstop | S, built by C | no | `hidden_tests.py` | code scores |
 | 22 | D-024's code | approved; the run file now carries each harness turn's completion tokens, estimated calls and ceiling stop | S, built by C | no | `harness.py`, `task_orchestrator.py` | n/a |
 
+## Stage 2 analysis script: readings chosen (Opus 5.5 / high)
+
+`journal/baseline/qe1_analysis.py` implements the amended
+pre-registration. Where the spec left a choice, it took the reading most
+conservative for a harness-gain claim. The ones worth your look:
+- **A gain where Q-7 is not met** ((a″) under 0.75× the harness, or the
+  ratio unknown) is reported as "gain … not compute-matched" and does
+  **not** count for the re-plan trigger.
+- **Missing inputs withhold a cell** (no verdict, reasons listed) rather
+  than count as losses: a missing concurrence file, an unjudged pair, a
+  missing arm, stale test scores, a wrong judge model or rubric, a pilot
+  run file. An errored arm on a prompt is still a loss, as pre-registered.
+- **Until the R1–R5 labels pass and your § 4.4 check is done**, every
+  verdict is marked provisional. If the labels fail, Devstral becomes the
+  judge of record for the primary claims (D-021).
+- **IFEval outcome:** an errored or empty side loses first, then the
+  strict instruction count decides (an empty answer can satisfy rules
+  such as "no commas").
+- **Not implemented: the length-controlled win-rate.** It is listed as a
+  secondary, but the pre-registration never defined its method. Length,
+  tokens and wall per arm are in the report's JSON.
+
 ## Corrections made on the reviewers' findings
 
 All in the commit that adds this file, with `make test` green.
