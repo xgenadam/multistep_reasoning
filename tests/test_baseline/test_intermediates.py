@@ -70,3 +70,14 @@ def test_scores_self_refine_rounds_and_harness_steps(inter, tmp_path):
     assert b['final']['score'] == 0.5 and b['best']['step'] == 1 and b['final_is_best'] is False
     assert report['summary']['b/report'] == {'prompts': 1, 'final_mean': 0.5, 'best_mean': 1.0,
                                              'final_is_best_share': 0.0, 'steps_median': 2}
+
+
+def test_runs_as_a_script():
+    """Run from the repo root the way the docstring says (it imports the package)."""
+    import subprocess
+    import sys
+    from pathlib import Path
+    repo = Path(__file__).resolve().parents[2]
+    proc = subprocess.run([sys.executable, 'journal/baseline/intermediates.py', 'score', '--help'],
+                          cwd=repo, capture_output=True, text=True, timeout=60)
+    assert proc.returncode == 0, proc.stderr
