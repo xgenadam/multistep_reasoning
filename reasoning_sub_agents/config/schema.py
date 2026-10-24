@@ -43,6 +43,16 @@ class OptionsConfig(BaseModel):
     # sub-task. Off by default so it cannot perturb the baseline or the
     # 0-04/0-05 verification runs.
     consolidation: bool = False
+    # Experimental, off by default (Q-02, the user, 2026-10-24): a hard cap on
+    # one turn's completion tokens. Once a turn has spent this many, no
+    # further sub-task starts (nor consolidation) and the turn returns the
+    # Document as it stands (every applied op left it valid), so a runaway
+    # turn ends with a partial deliverable instead of an error or an endless
+    # loop. Q-02 sizes it as 3x the harness's stratum median. Not used by any
+    # experiment arm yet: turning it on needs its own metrics first (the
+    # quality of the partial Documents it returns against what the full turn
+    # would have produced, from the stored intermediate snapshots).
+    token_ceiling: int | None = None
     # D-013: every call sends an explicit thinking switch. Off by default and
     # for baselines; thinking_by_step overrides it per call kind. Reasoning
     # text never reaches a prompt; it goes to a JSONL side log, one file per

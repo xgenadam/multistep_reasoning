@@ -17,7 +17,13 @@ from .execution_synthesiser.document_composer import (
     changed_part_ids,
 )
 from .executor.base import ExecutorBase
-from .llama_utils import create_llama_client, prompt_logging, thinking_session
+from .llama_utils import (
+    create_llama_client,
+    current_token_meter,
+    prompt_logging,
+    thinking_session,
+    token_meter,
+)
 from .oracle.document_oracle import DocumentOracle
 from .progress import (
     live,
@@ -34,6 +40,10 @@ from .task_decomposition.simple_decomposition import ensure_sub_tasks
 logger = logging.getLogger(__name__)
 
 OracleFactory = Callable[[Document], DocumentOracle]
+# on_step(kind, payload): 'plan' once the decomposer has finished, then
+# 'document' after each sub-task's compose and summary (and after
+# consolidation). Logging only: the orchestrator never reads anything back.
+StepObserver = Callable[[str, dict], None]
 
 
 class TaskOrchestrator:
@@ -48,6 +58,7 @@ class TaskOrchestrator:
         document_composer: DocumentComposer | None = None,
         oracle_factory: OracleFactory | None = None,
         options: OptionsConfig | None = None,
+        on_step: StepObserver | None = None,
     ):
         if llm_client is None:
             raise ValueError('llm_client is required')
@@ -65,6 +76,15 @@ class TaskOrchestrator:
         self.options = options or OptionsConfig()
         self.llm_client = llm_client
         self.history = [] if history is None else history
+        self.on_step = on_step
+
+    def _emit(self, kind: str, payload: dict) -> None:
+        if self.on_step is None:
+            return
+        try:
+            self.on_step(kind, payload)
+        except Exception:  # noqa: BLE001 - an observer never changes a turn
+            logger.exception('on_step observer failed on %s; ignored', kind)
 
     def query(
         self,
@@ -105,7 +125,7 @@ class TaskOrchestrator:
         """
         with prompt_logging(self.options.log_prompts), thinking_session(
             self.options, turn_id=turn_id
-        ):
+        ), token_meter(self.options.token_ceiling):
             yield from self._iter_query(
                 user_input, document=document, chat_context=chat_context
             )
@@ -133,6 +153,10 @@ class TaskOrchestrator:
             task.decomposed_sub_task.name for task in sub_tasks
         ]
         set_sub_tasks(names, 'queued')
+        self._emit('plan', {
+            'sub_tasks': [t.decomposed_sub_task.model_dump(mode='json') for t in sub_tasks],
+            'decomposition_history': self.decomposer.history,
+        })
         yield (
             'status',
             f'Decomposed {len(sub_tasks)} sub-tasks: {", ".join(names) or "(none)"}',
@@ -172,6 +196,9 @@ class TaskOrchestrator:
         }
         if sub_task_execution_result.document_snapshot is not None:
             history_entry['document'] = sub_task_execution_result.document_snapshot
+        meter = current_token_meter()
+        history_entry['completion_tokens'] = meter.completion_tokens if meter else None
+        history_entry['token_ceiling'] = getattr(self, '_ceiling_stop', None)
         self.history.append(history_entry)
         yield ('done', sub_task_execution_result)
 
@@ -210,8 +237,23 @@ class TaskOrchestrator:
         oracle = self.oracle_factory(document) if self.oracle_factory else None
         last_task = sub_tasks[0]
         total = len(sub_tasks)
+        self._ceiling_stop = None
+        meter = current_token_meter()
         for idx, sub_task in enumerate(sub_tasks):
             name = sub_task.decomposed_sub_task.name
+            if idx and meter is not None and meter.exceeded:
+                # options.token_ceiling: stop here and return the Document as
+                # it stands; the remaining sub-tasks stay pending.
+                skipped = [t.decomposed_sub_task.name for t in sub_tasks[idx:]]
+                self._ceiling_stop = {'ceiling': meter.ceiling, 'spent': meter.completion_tokens,
+                                      'completed_sub_tasks': idx, 'skipped': skipped}
+                logger.warning('token ceiling %s reached (%s spent) after %s/%s sub-tasks; '
+                               'returning the document as it stands', meter.ceiling,
+                               meter.completion_tokens, idx, total)
+                for skipped_name in skipped:
+                    set_task_status(skipped_name, 'skipped')
+                yield ('status', f'Token ceiling reached after {idx}/{total} sub-tasks')
+                break
             logger.info('Executing sub task %s of %s', idx, total)
             set_phase(f'Executing {idx + 1}/{total}: {name}')
             set_task_status(name, 'in_progress')
@@ -262,10 +304,15 @@ class TaskOrchestrator:
                     prompt_token_budget=self.options.prompt_token_budget,
                 )
             last_task = sub_task
+            self._emit('document', {
+                'step': idx + 1, 'of': total, 'sub_task': name, 'status': str(sub_task.status),
+                'completion_tokens': meter.completion_tokens if meter else None,
+                'snapshot': document.to_dict(),
+            })
 
         # 0-06: optional consolidation pass after the final sub-task.
         # Outline + rolling summary only (no previews, D-N), merge/move/delete, best-effort.
-        if self.options.consolidation:
+        if self.options.consolidation and self._ceiling_stop is None:
             set_phase('Consolidating document')
             yield ('status', 'Consolidating document')
             try:
@@ -290,6 +337,11 @@ class TaskOrchestrator:
                         max_words=self.options.summary_max_words,
                         prompt_token_budget=self.options.prompt_token_budget,
                     )
+                self._emit('document', {
+                    'step': 'consolidation', 'of': total, 'sub_task': None, 'status': 'completed',
+                    'completion_tokens': meter.completion_tokens if meter else None,
+                    'snapshot': document.to_dict(),
+                })
 
         yield (
             'done',

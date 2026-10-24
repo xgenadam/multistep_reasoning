@@ -15,4 +15,5 @@ dsh-podman-venv/
 llama_cpp_server/
 # anchored: an unanchored runs/ would also ignore journal/baseline/runs/
 /runs/
+/intermediates/
 corpora/

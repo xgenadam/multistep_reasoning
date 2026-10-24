@@ -12,7 +12,7 @@ updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker a
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
 - **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design, the A-01 approval, the Q-01 stage 1 commits (S-018) and Q-01 stage 2 (S-019), Q-04, D-020, S-020, D-021, Q-06, S-021 and S-022 (Q-02 stage 0: tooling, bench v1, D-022, D-023, three baselines and pilots); the user pushes from the host.
-- **Server owner:** none since 2026-10-24 00:41Z (GPUs idle). Every card is capped at 250 W by the user (not persistent across a host reboot); run each llama.cpp generator alone on four cards. The watchdog is pid 314397: it kills GPU processes by PID and reads the slowdown counters.
+- **Server owner:** Q-02 D-024 smoke test (2026-10-24 ~01:30Z): the 35B-A3B alone on four cards, b and a2 on c02 and r03, output to the ignored runs/ (not evidence). Every card is capped at 250 W by the user (not persistent across a host reboot). The watchdog is pid 314397.
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. Q-02 — blocked on the user's mass review (Sunday 2026-10-25 afternoon; Now); then any amendment it brings (Opus 5.5/high), then stage 1 — Q-01, Q-04 (formally; stage 2 needs the labels)

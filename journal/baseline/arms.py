@@ -22,8 +22,13 @@ pipeline does:
                  tokens so far plus half the last round's are below the
                  budget, so it stops at whichever side of the budget is
                  nearer; at least REFINE_MIN_ROUNDS, at most REFINE_CAP.
-                 Each result logs `refine_budget` (stratum, budget, spent,
-                 rounds, stop reason) and each round's completion tokens.
+                 A hard ceiling of REFINE_CEILING_FACTOR x the budget caps
+                 every call's max_tokens: a round the ceiling cuts off is
+                 discarded (logged, `discarded: true`) and the output is the
+                 most recent complete draft. Each result logs
+                 `refine_budget` (stratum, budget, ceiling, spent, rounds,
+                 stop reason: budget, cap or ceiling) and each round's
+                 completion tokens.
                --refine-rounds: a fixed N per domain (the pilots' rule).
              Either way, Q-7 wants a2's median completion tokens per prompt
              within ±25 % of the harness's (`match` reports it)
@@ -59,6 +64,17 @@ rewritten after every finished chain, so --resume continues an interrupted
 campaign (finished results are kept, errored ones re-run). Stored harness
 snapshots drop the op log (its counts stay in `document`), which keeps a
 full arm near the run-file size rule (tickets/README rule 8).
+
+Intermediates (the user, 2026-10-24): every harness turn's plan (the
+decomposer's sub-tasks and its history: initial plan, critique,
+regenerations) and its Document after every sub-task go to
+intermediates/<run file stem>/<turn id>/NN_<kind>.json at the repo root
+(git-ignored: large, on the big HDD), one file per TaskOrchestrator.on_step
+event. A finished run writes manifest.json there (every file's sha256), and
+the run file records the directory and the manifest's hash. Self-refine's
+rounds stay in the run file (`rounds`). `intermediates.py score` scores them
+all: hidden tests or checklists per intermediate, the final output against
+the best one.
 """
 
 from __future__ import annotations
@@ -67,6 +83,8 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import shutil
 import statistics
 import sys
 import threading
@@ -116,6 +134,8 @@ CONTINUE_CAP = 3
 # Self-refine under --refine-budget (the provisional amendment, Q-02 Notes).
 REFINE_CAP = 8
 REFINE_MIN_ROUNDS = 1
+REFINE_CEILING_FACTOR = 3  # the hard ceiling, x the budget (the user, 2026-10-24)
+INTERMEDIATES_ROOT = REPO_ROOT / 'intermediates'
 DEFAULT_BUDGET = Path(__file__).parent / 'refine_budget.yaml'
 STRATA = ('code-short', 'code-long', 'report-short', 'report-long')
 # The prompts below are part of the pre-registration (Q-02 Notes); a change
@@ -264,16 +284,27 @@ def _message_text(resp) -> tuple[str, str | None]:
 
 
 def complete(client, model: str, messages: list[dict], *, thinking: bool, phase: str,
-             counters: dict) -> str:
+             counters: dict, ceiling: int | None = None) -> str:
     """One logical call, continued until done: on `length` the partial output
     goes back as an assistant turn with CONTINUE_PROMPT, at most CONTINUE_CAP
-    times. Returns the joined text."""
+    times. Returns the joined text.
+
+    `ceiling` caps the prompt's completion tokens (counters['completion_tokens']
+    so far included): each attempt's max_tokens is at most the room left, and
+    when the room runs out the call stops there with counters['ceiling_hit']."""
     convo = list(messages)
     parts: list[str] = []
     for attempt in range(CONTINUE_CAP + 1):
+        max_tokens = harness.MAX_TOKENS
+        if ceiling is not None:
+            room = ceiling - counters.get('completion_tokens', 0)
+            if room <= 0:
+                counters['ceiling_hit'] = True
+                break
+            max_tokens = min(max_tokens, room)
         harness._current_phase.set(phase if attempt == 0 else f'{phase} (continuation {attempt})')
         resp = client.chat.completions.create(
-            model=model, messages=convo, max_tokens=harness.MAX_TOKENS, stream=False,
+            model=model, messages=convo, max_tokens=max_tokens, stream=False,
             timeout=3600,
             extra_body={'chat_template_kwargs': {'enable_thinking': thinking}},
         )
@@ -287,6 +318,9 @@ def complete(client, model: str, messages: list[dict], *, thinking: bool, phase:
         counters['completion_tokens'] = counters.get('completion_tokens', 0) + ctok
         counters['finish_reasons'].append(finish)
         if finish != 'length':
+            break
+        if ceiling is not None and counters['completion_tokens'] >= ceiling:
+            counters['ceiling_hit'] = True  # cut off by the ceiling, not by max_tokens
             break
         if attempt == CONTINUE_CAP:
             counters['capped'] += 1
@@ -325,15 +359,18 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
     if arm in ('a', 'a1'):
         return complete(client, model, messages, thinking=arm == 'a1', phase='Single call',
                         counters=counters), counters
+    ceiling = REFINE_CEILING_FACTOR * budget['tokens'] if budget else None
     draft = complete(client, model, messages, thinking=False, phase='Self-refine draft',
-                     counters=counters)
+                     counters=counters, ceiling=ceiling)
     # Every round's draft and critique, for the post-hoc confidence study
     # (D-023). Logging only: nothing below reads it back.
     counters['round_log'] = [{'round': 0, 'draft': draft,
                               'completion_tokens': counters['completion_tokens']}]
     task = task_block(history, prompt)
     last_round, stop = 0, 'rounds'
-    for r in range(REFINE_CAP if budget else rounds):
+    if counters.get('ceiling_hit'):  # the draft alone reached the ceiling: it is all there is
+        stop = 'ceiling'
+    for r in range(0 if stop == 'ceiling' else (REFINE_CAP if budget else rounds)):
         spent = counters['completion_tokens']
         if budget and r >= REFINE_MIN_ROUNDS and spent + last_round / 2 >= budget['tokens']:
             stop = 'budget'
@@ -341,22 +378,33 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
         critique = complete(
             client, model,
             [{'role': 'user', 'content': CRITIQUE_PROMPT.format(task=task, response=draft)}],
-            thinking=False, phase=f'Self-refine critique round {r + 1}', counters=counters)
-        draft = complete(
+            thinking=False, phase=f'Self-refine critique round {r + 1}', counters=counters,
+            ceiling=ceiling)
+        revised = '' if counters.get('ceiling_hit') else complete(
             client, model,
             [{'role': 'user', 'content': REVISE_PROMPT.format(
                 task=task, response=draft, critique=critique)}],
-            thinking=False, phase=f'Self-refine revision round {r + 1}', counters=counters)
-        counters['rounds'] += 1
+            thinking=False, phase=f'Self-refine revision round {r + 1}', counters=counters,
+            ceiling=ceiling)
         last_round = counters['completion_tokens'] - spent
+        if counters.get('ceiling_hit'):
+            # Cut off by the ceiling: the round is discarded and the most
+            # recent complete draft stands.
+            counters['round_log'].append({'round': r + 1, 'critique': critique,
+                                          'draft': revised, 'completion_tokens': last_round,
+                                          'discarded': True})
+            stop = 'ceiling'
+            break
+        draft = revised
+        counters['rounds'] += 1
         counters['round_log'].append({'round': r + 1, 'critique': critique, 'draft': draft,
                                       'completion_tokens': last_round})
     else:
-        if budget:
+        if budget and stop != 'ceiling':
             stop = 'cap'
     if budget:
         counters['budget'] = {'stratum': budget['stratum'], 'budget': budget['tokens'],
-                              'spent': counters['completion_tokens'],
+                              'ceiling': ceiling, 'spent': counters['completion_tokens'],
                               'rounds': counters['rounds'], 'stop': stop,
                               'cap': REFINE_CAP, 'min_rounds': REFINE_MIN_ROUNDS}
     return draft, counters
@@ -429,8 +477,52 @@ def _skipped(pid, arm, run_index, chain, prompts, failed) -> dict:
             'error': f'not run: {failed} failed earlier in the chain'}
 
 
+def _jsonable(obj):
+    if hasattr(obj, 'model_dump'):
+        return obj.model_dump(mode='json')
+    return str(obj)
+
+
+def turn_dir_name(turn_id: str) -> str:
+    return re.sub(r'[^A-Za-z0-9._-]+', '_', turn_id)
+
+
+class IntermediateWriter:
+    """TaskOrchestrator.on_step -> intermediates/<run stem>/<turn id>/NN_<kind>.json.
+
+    The turn comes from harness._current_turn (run_scenario sets it per
+    turn). A turn's directory is cleared the first time this writer sees it,
+    so a resumed chain's re-run replaces its old files."""
+
+    def __init__(self, root: Path):
+        self.root = root
+        self.lock = threading.Lock()
+        self.seen: dict[str, int] = {}
+
+    def __call__(self, kind: str, payload: dict) -> None:
+        turn = harness._current_turn.get() or 'no-turn'
+        d = self.root / turn_dir_name(turn)
+        with self.lock:
+            if turn not in self.seen:
+                shutil.rmtree(d, ignore_errors=True)
+                d.mkdir(parents=True, exist_ok=True)
+                self.seen[turn] = 0
+            n = self.seen[turn] = self.seen[turn] + 1
+        step = payload.get('step')
+        name = f'{n:02d}_{kind}' + (f'_{step}' if step is not None else '') + '.json'
+        (d / name).write_text(json.dumps({'kind': kind, 'turn_id': turn, **payload},
+                                         default=_jsonable))
+
+    def manifest(self) -> dict:
+        files = {str(f.relative_to(self.root)): hashlib.sha256(f.read_bytes()).hexdigest()
+                 for f in sorted(self.root.rglob('*.json')) if f.name != 'manifest.json'}
+        text = json.dumps(files, indent=1)
+        (self.root / 'manifest.json').write_text(text)
+        return {'files': len(files), 'manifest_sha256': sha256(text)}
+
+
 def run_chain_harness(client, measured, arm, chain, prompts, run_index, build,
-                      log_tag) -> list[dict]:
+                      log_tag, intermediates_root=None) -> list[dict]:
     scenario = {
         'id': f'{arm}:{chain[0]}',
         'turns': [{'name': pid, 'text': prompts[pid]['text'],
@@ -452,10 +544,15 @@ def run_chain_harness(client, measured, arm, chain, prompts, run_index, build,
         else:
             snapshot = turn.get('snapshot')
             text = Document.from_dict(snapshot).render() if snapshot else ''
+            inter = None
+            if intermediates_root is not None and turn.get('turn_id'):
+                d = intermediates_root / turn_dir_name(turn['turn_id'])
+                inter = {'dir': str(d.relative_to(REPO_ROOT)) if d.is_relative_to(REPO_ROOT)
+                         else str(d), 'files': len(list(d.glob('*.json'))) if d.exists() else 0}
             row = {
                 'prompt_id': pid, 'arm': arm, 'run': run_index, 'chain': chain,
                 'follows': prompts[pid]['follows'], 'domain': prompts[pid]['domain'],
-                'stratum': stratum(prompts[pid]),
+                'stratum': stratum(prompts[pid]), 'intermediates': inter,
                 'wall_seconds': turn['wall_seconds'], 'llm': turn['llm'],
                 'calls': turn.get('calls', []),
                 'document': turn.get('document'), 'sub_tasks': turn.get('sub_tasks'),
@@ -630,6 +727,8 @@ def run_arms(args) -> int:
         out_path = Path(args.out) / f'{started}_{label}_{args.generator}.json'
         out_path.parent.mkdir(parents=True, exist_ok=True)
     done = {result_key(r) for r in results}
+    writer = IntermediateWriter(Path(args.intermediates) / out_path.stem) \
+        if any(a in ('b', 'c') for a in arms) else None
 
     # A chain re-runs whole unless every prompt in it finished: a follow-up
     # must continue the parent output it is recorded beside.
@@ -662,6 +761,9 @@ def run_arms(args) -> int:
         'overrides': args.set,
         'selection': {'subset': args.subset, 'prompt': args.prompt, 'domain': args.domain},
         'runs_per_prompt': args.runs, 'jobs': args.jobs,
+        'intermediates_dir': (str(writer.root.relative_to(REPO_ROOT))
+                              if writer.root.is_relative_to(REPO_ROOT) else str(writer.root))
+        if writer else None,
         'caveat': ('per-call and per-prompt wall seconds are inflated by concurrent jobs; '
                    'use --jobs 1 for wall-time comparisons') if args.jobs > 1 else None,
     }
@@ -686,7 +788,12 @@ def run_arms(args) -> int:
 
     def build_for(arm):
         cfg = consol_cfg if arm == 'c' else base_cfg
-        return lambda: TaskOrchestrator.from_orchestrator_config(cfg, llm_client=client)
+
+        def build():
+            orch = TaskOrchestrator.from_orchestrator_config(cfg, llm_client=client)
+            orch.on_step = writer
+            return orch
+        return build
 
     def work(_idx: int, job: tuple[str, list[str], int]) -> None:
         arm, chain, run = job
@@ -696,7 +803,8 @@ def run_arms(args) -> int:
                                         rounds, budget['tokens'] if budget else None)
             else:
                 rows = run_chain_harness(client, measured, arm, chain, prompts, run,
-                                         build_for(arm), f'{started}_')
+                                         build_for(arm), f'{started}_',
+                                         writer.root if writer else None)
         except Exception as exc:  # noqa: BLE001 - report, keep other jobs
             with lock:
                 errors.append(f'{arm} {chain} r{run}: {exc!r}')
@@ -722,6 +830,8 @@ def run_arms(args) -> int:
         t0 = time.perf_counter()
         harness.run_jobs(arm_jobs, work, args.jobs)
         arm_elapsed[arm] = round(arm_elapsed.get(arm, 0.0) + time.perf_counter() - t0, 1)
+    if writer is not None and writer.root.exists():
+        header['intermediates'] = writer.manifest()
     write()
     print(json.dumps(summarise(results), indent=2))
     print(f'\nWrote {out_path}')
@@ -829,6 +939,9 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument('--label', default=None)
     run.add_argument('--resume', default=None, help='continue this run file')
     run.add_argument('--out', default=str(DEFAULT_OUT))
+    run.add_argument('--intermediates', default=str(INTERMEDIATES_ROOT),
+                     help='where harness plans and Document states go, one directory per run '
+                          'file (default: <repo>/intermediates, git-ignored)')
 
     plan = sub.add_parser('plan', help='print the chains a selection runs; no calls')
     selection(plan)

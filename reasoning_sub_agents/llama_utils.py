@@ -133,6 +133,50 @@ def thinking_session(options: Any = None, *, turn_id: str | None = None):
         _thinking_log.reset(token)
 
 
+@dataclass
+class TokenMeter:
+    """Completion tokens spent in one orchestrator turn, against an optional
+    ceiling (OptionsConfig.token_ceiling). Every call path below adds to it."""
+
+    ceiling: int | None = None
+    completion_tokens: int = 0
+    estimated_calls: int = 0  # calls without usage, counted as len(text) // 4
+
+    @property
+    def exceeded(self) -> bool:
+        return self.ceiling is not None and self.completion_tokens >= self.ceiling
+
+
+_token_meter: ContextVar[TokenMeter | None] = ContextVar('token_meter', default=None)
+
+
+@contextmanager
+def token_meter(ceiling: int | None = None):
+    """Meter one turn's completion tokens (TaskOrchestrator.iter_query)."""
+    meter = TokenMeter(ceiling=ceiling)
+    token = _token_meter.set(meter)
+    try:
+        yield meter
+    finally:
+        _token_meter.reset(token)
+
+
+def current_token_meter() -> TokenMeter | None:
+    return _token_meter.get()
+
+
+def meter_completion(usage: Any, text: str | None) -> None:
+    """Add one call's completion tokens to the turn's meter, if there is one."""
+    meter = _token_meter.get()
+    if meter is None:
+        return
+    n = getattr(usage, 'completion_tokens', None)
+    if n is None:
+        meter.estimated_calls += 1
+        n = len(text or '') // 4
+    meter.completion_tokens += n
+
+
 def thinking_enabled() -> bool:
     """Whether the call about to be made should think (per-step override first)."""
     session = _thinking_log.get()
@@ -459,6 +503,7 @@ def _get_streamed_json_response_inner(
                 extra_body=thinking_extra_body(),
             )
             message = completion.choices[0].message if completion.choices else None
+            meter_completion(getattr(completion, 'usage', None), getattr(message, 'content', None))
             think, content = split_reasoning(getattr(message, 'content', None) or '')
             record_reasoning(
                 message_reasoning(message) or think,
@@ -507,6 +552,7 @@ def _reasoning_capture(create: Callable[..., Any]) -> Callable[..., Any]:
         if kwargs.get('stream') or not choices:
             return response
         message = choices[0].message
+        meter_completion(getattr(response, 'usage', None), message.content)
         think, content = split_reasoning(message.content)
         if think:
             message.content = content
@@ -728,8 +774,10 @@ def stream_conversation(
     reasoning: list[str] = []
     content: list[str] = []
     tokens = None
+    usage = None
     for chunk in stream:
         if getattr(chunk, 'usage', None) is not None:
+            usage = chunk.usage
             tokens = reasoning_tokens(chunk.usage)
         if chunk.choices:
             delta = chunk.choices[0].delta
@@ -745,6 +793,7 @@ def stream_conversation(
 
         chunks.append(chunk)
 
+    meter_completion(usage, ''.join(reasoning) + ''.join(content))
     record_reasoning(
         ''.join(reasoning) or split_reasoning(''.join(content))[0],
         path='stream',

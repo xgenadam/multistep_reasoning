@@ -6,6 +6,7 @@ label. Every call goes through the stock OpenAI client and the harness seam.
 """
 
 import json
+from pathlib import Path
 
 import httpx
 import pytest
@@ -92,7 +93,7 @@ def _wire(monkeypatch, arms, server):
 def _run(arms, bench, out, *extra):
     return arms.main(['run', '--bench', str(bench), '--generator', 'flash-next',
                       '--base-url', 'http://arms.test/v1', '--jobs', '1', '--out', str(out),
-                      '--label', 't', *extra])
+                      '--intermediates', str(out.parent / 'intermediates'), '--label', 't', *extra])
 
 
 def _load(out):
@@ -336,7 +337,7 @@ def _budget_file(tmp_path, **tokens):
 @pytest.mark.parametrize('budget, rounds, stop', [
     (30, 3, 'budget'),    # 8 + 8 + 8 + 8 = 32: a fourth round would end at 40, farther from 30
     (21, 2, 'budget'),    # 24 is 3 over, 16 would be 5 under: the nearer side
-    (5, 1, 'budget'),     # the draft alone is over, but at least one round runs
+    (6, 1, 'budget'),     # the draft alone is over, but at least one round runs (ceiling 18)
     (10_000, 8, 'cap'),   # never reaches the budget: stops at REFINE_CAP
 ])
 def test_a2_token_budget(tmp_path, monkeypatch, arms, budget, rounds, stop):
@@ -352,6 +353,7 @@ def test_a2_token_budget(tmp_path, monkeypatch, arms, budget, rounds, stop):
     [row] = data['results']
     assert row['refine_rounds'] == rounds and len(row['rounds']) == rounds + 1
     assert row['refine_budget'] == {'stratum': 'report-short', 'budget': budget,
+                                    'ceiling': 3 * budget,
                                     'spent': 8 + 8 * rounds, 'rounds': rounds, 'stop': stop,
                                     'cap': arms.REFINE_CAP, 'min_rounds': 1}
     assert data['refine_budget']['tokens'] == {'report-short': budget, 'code-long': 99}
@@ -391,3 +393,47 @@ def test_budget_and_match_by_stratum(tmp_path, arms):
                                        'c01': 'code-long'})
     assert m['flash-next/report-short']['completion_p50'] == {'b': 200, 'a2@budget': 90}
     assert m['flash-next/report']['within_25pct'] == {'a2@budget': False}
+
+
+def test_a2_hard_ceiling_discards_the_cut_round_and_keeps_the_last_draft(tmp_path, monkeypatch,
+                                                                        arms):
+    """Ceiling 3 x 4 = 12: the draft spends 8 and the first critique 4, so the
+    revision has no room. The round is discarded (logged) and the output is
+    the draft; the ceiling overrides the one-round minimum."""
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    server = ArmsServer()
+    _wire(monkeypatch, arms, server)
+    path = _budget_file(tmp_path, **{'report-short': 4})
+    assert _run(arms, bench, out, '--arm', 'a2', '--prompt', 'r01',
+                '--refine-budget', str(path)) == 0
+    _, data = _load(out)
+    [row] = data['results']
+    assert row['refine_budget']['stop'] == 'ceiling' and row['refine_budget']['ceiling'] == 12
+    assert row['refine_rounds'] == 0 and row['refine_budget']['spent'] == 12
+    assert row['output']['text'] == 'ANSWER[Write a shor] (rest)'
+    assert row['rounds'][-1] == {'round': 1, 'critique': 'Problem: too short.', 'draft': '',
+                                 'completion_tokens': 4, 'discarded': True}
+    # Each call asked for no more than the room left under the ceiling.
+    assert [b['max_tokens'] for b in server.requests] == [12, 8, 4]
+
+
+def test_harness_intermediates_go_to_their_own_directory(tmp_path, monkeypatch, arms):
+    """Arm b writes each turn's plan and every Document state to
+    <intermediates>/<run stem>/<turn id>/, with a manifest the run file hashes."""
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    _wire(monkeypatch, arms, ArmsServer())
+    assert _run(arms, bench, out, '--arm', 'b', '--prompt', 'r01f') == 0
+    path, data = _load(out)
+    root = tmp_path / 'intermediates' / path.stem
+    assert data['intermediates_dir'] == str(root)
+    rows = {r['prompt_id']: r for r in data['results']}
+    for pid in ('r01', 'r01f'):  # the follow-up's chain runs its parent too
+        inter = rows[pid]['intermediates']
+        files = sorted(p.name for p in Path(inter['dir']).glob('*.json'))
+        assert inter['files'] == len(files) >= 2
+        assert files[0].startswith('01_plan') and any('_document_' in f for f in files)
+        doc = json.loads(sorted(Path(inter['dir']).glob('*_document_*.json'))[-1].read_text())
+        assert doc['turn_id'].endswith(':t0' if pid == 'r01' else ':t1')
+        assert doc['snapshot']['parts']
+    manifest = json.loads((root / 'manifest.json').read_text())
+    assert data['intermediates']['files'] == len(manifest) and len(manifest) >= 4
