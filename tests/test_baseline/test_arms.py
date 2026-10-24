@@ -308,3 +308,17 @@ def test_single_and_harness_arms_carry_no_rounds_log(tmp_path, monkeypatch, arms
     _run(arms, bench, out, '--arm', 'a', '--arm', 'b', '--prompt', 'r01')
     _, data = _load(out)
     assert all(r.get('rounds') is None for r in data['results'])
+
+
+def test_jobs_default_per_generator(tmp_path, monkeypatch, arms):
+    """Without --jobs, a llama.cpp generator runs 5 chains (its 5 slots) and flash-next 3."""
+    assert set(arms.DEFAULT_JOBS) == set(arms.GENERATORS)
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    _wire(monkeypatch, arms, ArmsServer())
+    monkeypatch.setitem(globals(), 'MODEL', arms.GENERATORS['qwen3.8-27b'])  # what the mock serves
+    monkeypatch.setenv('LLM_MODEL', arms.GENERATORS['qwen3.8-27b'])
+    assert arms.main(['run', '--bench', str(bench), '--generator', 'qwen3.8-27b',
+                      '--base-url', 'http://arms.test/v1', '--out', str(out), '--label', 't',
+                      '--arm', 'a']) == 0
+    _, data = _load(out)
+    assert data['jobs'] == 5

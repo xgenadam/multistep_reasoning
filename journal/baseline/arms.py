@@ -88,6 +88,11 @@ GENERATORS = {
     'qwen3.8-27b': 'qwen3.8-27b',
     'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
 }
+# Default --jobs per generator (Q-02 speed check, 2026-10-23, Notes): on the
+# llama.cpp generators' 5 slots, 5 concurrent chains give ~1.5x (27B) and
+# ~1.8x (35B-A3B) the throughput of 3 on a harness-shaped load, and 8 slots add
+# only 7-8 %. flash-next (vLLM) was not measured, so it keeps 3.
+DEFAULT_JOBS = {'flash-next': 3, 'qwen3.8-27b': 5, 'qwen3.6-35b-a3b': 5}
 ARMS = ('a', 'a1', 'a2', 'b', 'c')
 ARM_NAMES = {'a': '(a) single call, thinking off', 'a1': "(a') single call, thinking on",
              'a2': "(a'') self-refine", 'b': '(b) harness', 'c': '(c) harness + consolidation'}
@@ -496,6 +501,8 @@ def run_arms(args) -> int:
         raise SystemExit(f'LLM_MODEL={env_model} contradicts --generator {args.generator} '
                          f'({model}); unset it')
     os.environ['LLM_MODEL'] = model  # the pipeline's calls read it (llama_utils._model_name)
+    if args.jobs is None:
+        args.jobs = DEFAULT_JOBS[args.generator]
 
     client = create_llama_client(base_url=args.base_url)
     backend = str(client.base_url).rstrip('/')
@@ -699,8 +706,10 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument('--set', action='append', default=[], metavar='SECTION.KEY=VALUE',
                      help='OrchestratorConfig override for the harness arms (Q-05 ablations)')
     run.add_argument('--runs', type=int, default=1)
-    run.add_argument('--jobs', type=int, default=3,
-                     help='chains run concurrently (default 3); wall times need 1')
+    run.add_argument('--jobs', type=int, default=None,
+                     help='chains run concurrently (default per generator: '
+                          + ', '.join(f'{g} {n}' for g, n in DEFAULT_JOBS.items())
+                          + '); wall times need 1')
     run.add_argument('--label', default=None)
     run.add_argument('--resume', default=None, help='continue this run file')
     run.add_argument('--out', default=str(DEFAULT_OUT))

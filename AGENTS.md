@@ -120,11 +120,26 @@ This file holds no decisions; it cites them by `D-nnn`.
 - **The agent runs on the same server.** Harness runs and the agent's own
   calls share the 5 slots. Run harness jobs in a genuinely idle window, and
   claim the server in INDEX first (`journal/tickets/README.md` rule 7).
-- **Harness parallelism** (`harness.py --jobs N`):
-  - Scenarios run concurrently in a thread pool. The default is 3 and 4 is
-    the practical maximum.
-  - Above 1, per-turn call attribution and tokens stay exact (0-14), but
-    per-call wall times inflate.
+- **Parallelism** (`harness.py --jobs N`, `arms.py run --jobs N`):
+  - Scenarios and chains run concurrently in a thread pool. Above 1, per-turn
+    call attribution and tokens stay exact (0-14), but per-call wall times
+    inflate.
+  - The right N is per model, set by the server's slots. These are the Q-02
+    speed check figures (2026-10-23, Q-02 Notes), layer split, current
+    llama.cpp, 250 W:
+
+    | Generator | Server | `--jobs` | Why |
+    | --- | --- | --- | --- |
+    | qwen3.8-27b `:8093` | llama.cpp, 5 slots | 5 | ≈ 1.5× the throughput of 3 on a harness-shaped load; 8 slots add 8 % |
+    | qwen3.6-35b-a3b `:8094` | llama.cpp, 5 slots | 5 | ≈ 1.8× the throughput of 3; 8 slots add 7 % |
+    | flash-next `:8090` / `:8091` | vLLM | 3 | not measured |
+    | `:5000` (text-generation-webui) | llama.cpp, 5 slots | ≤ 4 | its slots are shared with other callers |
+
+  - `arms.py` defaults to the table's value for `--generator` (`DEFAULT_JOBS`).
+    `harness.py` cannot tell the model behind `LLM_BASE_URL`, so it keeps a
+    default of 3; pass `--jobs` from the table.
+  - Three concurrent requests underperform on llama.cpp (both models, every
+    run), so prefer 5 over 3 there.
 - **Sandbox:** approval policy is "ask"; files are `workspace-write` on
   `/workspace`.
 
