@@ -3,13 +3,20 @@
 
 Usage (from the repo root; it never runs dataset code):
   .venv/bin/python -I journal/baseline/bench/v1-std/build.py [--raw DIR] [--all]
+  .venv/bin/python -I journal/baseline/bench/v1-std/build.py --check
 
-It reads the two JSONL files, applies the fixed selection rules (README.md
-beside this file), and rewrites manifest.yaml, prompts/, tests/, reference/
-and ifeval/ here. Titles and briefs are hand-written below; everything else
-is taken verbatim from the rows. The tasks in EXCLUDED keep their sc id (ids
-are numbered over the rule's selection) but get no files and no manifest
-entry; README.md records why.
+It reads the two JSONL files (fetch.py and convert_bcb.py put them in the raw
+dir; build.py refuses them unless their sha256 match the pins in fetch.py),
+applies the fixed selection rules (README.md beside this file), and rewrites
+manifest.yaml, prompts/, tests/, reference/ and ifeval/ here. Titles and
+briefs are hand-written below; everything else is taken verbatim from the
+rows. The tasks in EXCLUDED keep their sc id (ids are numbered over the
+rule's selection) but get no files and no manifest entry; README.md records
+why.
+
+--check builds nothing: it verifies every generated and fetched file of the
+slice against data.lock and exits 1 on any difference (a missing, extra or
+changed file).
 """
 
 from __future__ import annotations
@@ -17,6 +24,7 @@ from __future__ import annotations
 import argparse
 import ast
 import hashlib
+import importlib.util
 import json
 import random
 import shutil
@@ -178,6 +186,25 @@ for _bcb_name, _bcb_value in list(globals().items()):
 '''
 
 
+def fetch_module():
+    """fetch.py beside this file (the pins and the data.lock check), loaded by path."""
+    spec = importlib.util.spec_from_file_location('bench_v1_std_fetch', HERE / 'fetch.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def check(fetch) -> int:
+    problems = fetch.check_lock(HERE)
+    if problems:
+        print(f'build.py --check: the tree does not match {fetch.LOCK.name}:', file=sys.stderr)
+        for p in problems:
+            print(f'  {p}', file=sys.stderr)
+        return 1
+    print(f'{len(fetch.read_lock())} files match {fetch.LOCK.name}')
+    return 0
+
+
 def reset(path: Path) -> None:
     if path.exists():
         shutil.rmtree(path)
@@ -189,9 +216,20 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument('--raw', type=Path, default=DEFAULT_RAW)
     ap.add_argument('--all', action='store_true',
                     help='write every selected task, ignoring EXCLUDED (to re-check the exclusions)')
+    ap.add_argument('--check', action='store_true',
+                    help='build nothing; verify the generated and fetched files against data.lock')
     args = ap.parse_args(argv)
+    fetch = fetch_module()
+    if args.check:
+        return check(fetch)
     excluded = {} if args.all else EXCLUDED
     bcb_path, ifeval_path = args.raw / BCB_FILE, args.raw / IFEVAL_FILE
+    for path in (bcb_path, ifeval_path):
+        want = fetch.RAW_PINS[path.relative_to(args.raw).as_posix()]
+        if not path.is_file() or sha256(path) != want:
+            print(f'build.py: {path} is missing or its sha256 is not the pinned {want}; '
+                  'run fetch.py and convert_bcb.py (make bench-std)', file=sys.stderr)
+            return 1
     code = select_code(read_jsonl(bcb_path))
     report = select_report(read_jsonl(ifeval_path))
     for sub in ('prompts', 'tests', 'reference', 'ifeval'):

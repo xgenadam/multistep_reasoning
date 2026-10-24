@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Score arms.py run files on bench v1-std's IFEval entries (Q-02 bias guard 4.1).
 
-Uses Google's official IFEval checker, vendored at
-bench/v1-std/ifeval_checker/ (SOURCE.md: the pinned commit and the one local
-change). It runs only in its own interpreter, .venv-ifeval (`make
-venv-ifeval`), never the project's .venv:
+Uses Google's official IFEval checker, fetched by `make bench-std` into
+bench/v1-std/ifeval_checker/ (SOURCE.md: the pinned commit, the file hashes
+and the one local change; it is not in the repo). It runs only in its own
+interpreter, .venv-ifeval (`make venv-ifeval`), never the project's .venv:
 
   .venv-ifeval/bin/python journal/baseline/ifeval_score.py RUN_FILE [RUN_FILE ...]
 

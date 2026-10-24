@@ -1,0 +1,15 @@
+--- a/instruction_following_eval/instructions_util.py
++++ b/instruction_following_eval/instructions_util.py
+@@ -132,7 +132,11 @@
+ 
+ @functools.lru_cache(maxsize=None)
+ def _get_sentence_tokenizer():
+-  return nltk.data.load("nltk:tokenizers/punkt/english.pickle")
++  # LOCAL CHANGE (Q-02, see ../SOURCE.md): upstream unpickles
++  # "nltk:tokenizers/punkt/english.pickle"; NLTK >= 3.8.2 removed pickle
++  # loading (CVE-2024-39705). The same Punkt English model from the
++  # pickle-free punkt_tab data.
++  return nltk.tokenize.PunktTokenizer("english")
+ 
+ 
+ def count_sentences(text):

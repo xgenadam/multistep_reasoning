@@ -9,7 +9,7 @@ PYTHON ?= 3.12
 VENV   := .venv
 PY     := $(VENV)/bin/python
 
-.PHONY: venv venv-ifeval test smoke check board
+.PHONY: venv venv-ifeval bench-std test smoke check board
 
 venv:
 	@if command -v uv >/dev/null 2>&1; then \
@@ -34,6 +34,20 @@ venv-ifeval:
 		$(IFEVAL_VENV)/bin/python -m pip install -r $(IFEVAL_LOCK); \
 	fi
 	$(IFEVAL_VENV)/bin/python -I -c "import nltk; assert nltk.download('punkt_tab', download_dir='$(CURDIR)/$(IFEVAL_VENV)/nltk_data', quiet=True)"
+
+# Bench v1-std's third-party data and checker are not in the repo: fetch them
+# by pinned URL and sha256, make the BigCodeBench JSONL from the parquet (needs
+# pyarrow in .venv-ifeval unless the JSONL is already there), build the slice
+# and check every file against data.lock (bench/v1-std/README.md).
+# Usage: make venv-ifeval bench-std [RAW=dir]   (default ~/models/bench-std-raw)
+BENCH_STD := journal/baseline/bench/v1-std
+bench-std:
+	$(PY) -I $(BENCH_STD)/fetch.py $(if $(RAW),--raw $(RAW))
+	@py=$(IFEVAL_VENV)/bin/python; [ -x $$py ] || py=$(PY); \
+		echo "$$py -I $(BENCH_STD)/convert_bcb.py"; \
+		$$py -I $(BENCH_STD)/convert_bcb.py $(if $(RAW),--raw $(RAW))
+	$(PY) -I $(BENCH_STD)/build.py $(if $(RAW),--raw $(RAW))
+	$(PY) -I $(BENCH_STD)/build.py --check
 
 test:
 	$(PY) -m pytest tests/ -q

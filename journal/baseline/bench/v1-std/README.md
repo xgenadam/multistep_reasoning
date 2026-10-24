@@ -10,7 +10,18 @@ When this README and the data differ, fidelity to the original datasets wins:
 every prompt, test and reference is the dataset's text. The only additions
 are the ones listed under "Added paragraph" and "Test adaptations".
 
-Status: **data built, not frozen** (`frozen: false`).
+**The datasets' text and the IFEval checker are not in this repo.** The repo
+keeps the references (pinned URLs and sha256s), the code that regenerates
+the slice, and `data.lock`, which proves the regenerated files are
+byte-identical to what the experiments ran on. From the repo root:
+
+```
+make venv-ifeval bench-std
+```
+
+See "Getting the data" below.
+
+Status: **frozen** 2026-10-24 (`frozen: true`, D-026).
 - Code: scored by hidden tests (`hidden_tests.py`).
 - Report: scored by Google's official IFEval checker (`ifeval_checker/`,
   `journal/baseline/ifeval_score.py`; adopted by the user 2026-10-24).
@@ -22,15 +33,26 @@ Status: **data built, not frozen** (`frozen: false`).
 | code (`sc`) | 18: 21 selected by the rule, minus 3 exclusions | BigCodeBench-Hard v0.1.4 |
 | report (`sr`) | 20 | IFEval |
 
-Layout (bench v1's schema, see `../v1/README.md`):
+Layout (bench v1's schema, see `../v1/README.md`). Committed:
 
 ```
 manifest.yaml              id, domain, status, title, brief, source, files / target_words
+build.py                   regenerates manifest.yaml and the generated files below from the raw files
+fetch.py                   downloads the raw files and the IFEval checker by pinned URL and sha256
+convert_bcb.py             makes the BigCodeBench JSONL from its parquet (needs pyarrow)
+data.lock                  sha256 of every generated and fetched file below, and of manifest.yaml
+ifeval_checker/            SOURCE.md, requirements.lock, local-change.patch
+```
+
+Generated or fetched, git-ignored:
+
+```
 prompts/<id>.md            the prompt text, exactly as sent
 tests/<id>/test_task.py    code: BigCodeBench's test, run against task.py
 reference/<id>/task.py     code: code_prompt + canonical_solution
 ifeval/<id>.json           report: {key, instruction_id_list, kwargs} from the IFEval row
-build.py                   regenerates all of the above from the raw files
+LICENSE                    the Apache-2.0 text (fetched)
+ifeval_checker/LICENSE, ifeval_checker/instruction_following_eval/   the checker (fetched)
 ```
 
 Every entry is `status: written`. The slice has no follow-ups, no `long` or
@@ -39,20 +61,30 @@ review; the prompt file is the only text the model sees.
 
 ## Sources and versions
 
-Both datasets were downloaded with `huggingface_hub` before this slice was
-built. The repo ids were not recorded on disk; the directory names are the
-datasets' names.
+The slice was built from these files. fetch.py downloads them, by these
+URLs, into the raw dir (default `~/models/bench-std-raw`, `--raw DIR` /
+`make bench-std RAW=DIR`), and refuses a file whose sha256 differs.
 
-| Dataset | File | sha256 | HF cache revision |
+| Dataset | URL (HF revision pinned) | File in the raw dir | sha256 |
 | --- | --- | --- | --- |
-| BigCodeBench-Hard v0.1.4 | `~/models/bench-std-raw/BigCodeBench-Hard/v0.1.4.jsonl` (148 rows) | `2f8a10ad5dc3eee6422dc84171fa599da4d309f81f2c4157b8d3c4bca957c85d` | `298d2cc7b96612e15e47313c3603ee124cee0c1f` |
-| IFEval | `~/models/bench-std-raw/IFEval/ifeval_input_data.jsonl` (541 rows) | `6a85310ca8ce15eff755aa08a3a4ff931c7e273e7515ebb3c492ea85fd8288f2` | `966cd89545d6b6acfd7638bc708b98261ca58e84` |
+| IFEval | `https://huggingface.co/datasets/google/IFEval/resolve/966cd89545d6b6acfd7638bc708b98261ca58e84/ifeval_input_data.jsonl` | `IFEval/ifeval_input_data.jsonl` (541 rows) | `6a85310ca8ce15eff755aa08a3a4ff931c7e273e7515ebb3c492ea85fd8288f2` |
+| BigCodeBench-Hard v0.1.4 | `https://huggingface.co/datasets/bigcode/bigcodebench-hard/resolve/298d2cc7b96612e15e47313c3603ee124cee0c1f/data/v0.1.4-00000-of-00001.parquet` | `BigCodeBench-Hard/data/v0.1.4-00000-of-00001.parquet` | `73a4270b43feb81abefad7bb1b592937c768ea45c3263bedc1cabd30a9a6ce79` |
+| BigCodeBench-Hard v0.1.4, as JSONL | made from the parquet by `convert_bcb.py` | `BigCodeBench-Hard/v0.1.4.jsonl` (148 rows) | `2f8a10ad5dc3eee6422dc84171fa599da4d309f81f2c4157b8d3c4bca957c85d` |
 
-- The BigCodeBench JSONL matches the split
-  `data/v0.1.4-00000-of-00001.parquet` beside it (sha256 `73a4270b…a6ce79`,
-  the parquet's cache etag).
-- The revisions are the first line of the `.metadata` files under each
-  `.cache/huggingface/download/`.
+- build.py reads the two JSONL files and refuses them unless their sha256
+  match these pins. manifest.yaml's header records the same two hashes.
+- The JSONL the slice was first built from was converted from the parquet
+  when the datasets were downloaded (with `huggingface_hub`, 2026-10-23),
+  but the conversion was not recorded. `convert_bcb.py` reproduces it as
+  the parquet's rows in file order, one `json.dumps(row)` per line: that is
+  exactly the recorded file's format (re-serialising its rows that way gives
+  its bytes), and the parquet's schema has the same columns in the same
+  order with the same types. The output must match the pinned sha256 or it
+  is refused. The conversion needs pyarrow, which neither venv has: install
+  it into `.venv-ifeval` when the JSONL is not already in the raw dir
+  (convert_bcb.py prints the command).
+- The IFEval checker's source, commit and file hashes are in
+  `ifeval_checker/SOURCE.md`.
 
 ## Selection rules (fixed)
 
@@ -172,10 +204,10 @@ Known differences from BigCodeBench's own evaluation:
   kwarg, so every report entry has `target_words: 300`. That value is
   metadata only: neither `arms.py` nor the harness reads it, and it is not
   an IFEval constraint.
-- **Scoring:** Google's official IFEval checker, vendored at
-  `ifeval_checker/` (the pinned commit, its licence and the one local
-  change are in `ifeval_checker/SOURCE.md`; adopted by the user
-  2026-10-24). It runs only in its own venv:
+- **Scoring:** Google's official IFEval checker, fetched into
+  `ifeval_checker/` at a pinned commit (the commit, the file hashes, its
+  licence and the one local change are in `ifeval_checker/SOURCE.md`;
+  adopted by the user 2026-10-24). It runs only in its own venv:
   `.venv-ifeval/bin/python journal/baseline/ifeval_score.py RUN_FILE`
   (`make venv-ifeval` builds it). That writes `<run>.ifeval.json` with
   strict and loose verdicts per instruction and IFEval's four headline
@@ -192,35 +224,62 @@ Known differences from BigCodeBench's own evaluation:
   rule (the higher hidden-test pass-rate wins; equal rates go to the
   judge), with task-level pass (all tests) reported beside it.
 
-## Licences
+## Licences and attribution
 
-Both sources are Apache License 2.0 (read from the published cards on
-2026-10-24; the files on disk carry no card or licence file). A copy of the
-licence is `LICENSE` beside this file.
+None of these sources' files is in this repo; they are fetched by the
+references above. All three are Apache License 2.0 (read from the published
+cards and the checker repository on 2026-10-24). The raw dataset files carry
+no card or licence file; fetch.py writes the licence text, the
+google-research repository's `LICENSE` at the checker's commit (the
+standard Apache-2.0 text), beside this file and in `ifeval_checker/`.
 
 | Source | Licence | Where it is stated | Cite |
 | --- | --- | --- | --- |
-| BigCodeBench-Hard v0.1.4 (BigCode) | Apache-2.0 | `huggingface.co/datasets/bigcode/bigcodebench` card ("BigCodeBench is licensed under the Apache License, Version 2.0"); the `-hard` subset's own card is empty, so its licence is the parent's; the GitHub repo `bigcode-project/bigcodebench` is Apache-2.0 too | Zhuo et al., 2024, arXiv:2406.15877 |
-| IFEval (Google) | Apache-2.0 | `huggingface.co/datasets/google/IFEval` card metadata and text | Zhou et al., 2023, arXiv:2311.07911 |
-| IFEval checker (google-research, vendored in `ifeval_checker/`) | Apache-2.0 | its `LICENSE`; the one local change is in `ifeval_checker/SOURCE.md` | as above |
+| BigCodeBench-Hard v0.1.4 (BigCode) | Apache-2.0 | the parent dataset card, `huggingface.co/datasets/bigcode/bigcodebench` ("BigCodeBench is licensed under the Apache License, Version 2.0"); the `-hard` subset's own card is empty, so its licence is the parent's; the GitHub repo `bigcode-project/bigcodebench` is Apache-2.0 too | Zhuo et al., 2024, "BigCodeBench: Benchmarking Code Generation with Diverse Function Calls and Complex Instructions", arXiv:2406.15877 |
+| IFEval (Google) | Apache-2.0 | `huggingface.co/datasets/google/IFEval` card metadata and text | Zhou et al., 2023, "Instruction-Following Evaluation for Large Language Models", arXiv:2311.07911 |
+| IFEval checker (google-research `instruction_following_eval/`) | Apache-2.0 | the repository's `LICENSE` at the pinned commit; the one local change is `ifeval_checker/local-change.patch` (`ifeval_checker/SOURCE.md`) | as IFEval |
 
 **Changes made** (Apache 2.0 § 4(b) asks modified files to say so):
 `build.py` reformats the source rows into this bench's layout, and the
 changes are those listed under "Code entries" and "Report entries" above:
 each BigCodeBench prompt gets one added delivery paragraph, each test file
 gets a documented header above the unchanged test code, and each reference
-is the stub plus the canonical solution. IFEval prompts are copied verbatim
-and their instruction lists kept as `ifeval/<id>.json`. Neither card adds
-restrictions beyond the licence (no no-training clause, no canary
+is the stub plus the canonical solution. IFEval prompts are written
+verbatim and their instruction lists kept as `ifeval/<id>.json`. Neither
+card adds restrictions beyond the licence (no no-training clause, no canary
 string).
+
+## Getting the data
+
+From the repo root, `make venv-ifeval bench-std` (`RAW=DIR` for another raw
+dir). The `bench-std` target runs, in order:
+
+1. `fetch.py` (stdlib only): downloads the two raw dataset files and the
+   checker, checks every sha256 against its pin, applies
+   `ifeval_checker/local-change.patch`, and checks the fetched files against
+   `data.lock`. Present files that match are not downloaded again; a present
+   file that does not match is an error.
+2. `convert_bcb.py`, in `.venv-ifeval`: makes the BigCodeBench JSONL from
+   the parquet unless it is already there with its pinned sha256. It needs
+   pyarrow and prints the install command when it is missing.
+3. `build.py`: writes manifest.yaml, prompts/, tests/, reference/ and
+   ifeval/.
+4. `build.py --check`: every generated and fetched file, and manifest.yaml,
+   against `data.lock`; any missing, extra or changed file fails.
+
+`data.lock` is in `sha256sum` format, so `cd journal/baseline/bench/v1-std
+&& sha256sum -c data.lock` checks it too. The rebuild was confirmed
+byte-identical to the files the experiments ran on (2026-10-24): all 105
+locked files, manifest.yaml included. Run files record manifest.yaml's
+sha256, so it is committed and must not change.
 
 ## How to run
 
 From the repo root:
 
 ```
-# regenerate the data from the raw files (reads JSON only; runs no dataset code)
-.venv/bin/python -I journal/baseline/bench/v1-std/build.py
+# fetch, convert, regenerate and check the data (fetch.py and build.py run no dataset code)
+make venv-ifeval bench-std
 
 # validate the code entries: each reference passes, an empty deliverable fails
 .venv/bin/python journal/baseline/hidden_tests.py check-bench --bench journal/baseline/bench/v1-std
@@ -233,7 +292,9 @@ From the repo root:
 .venv/bin/python journal/baseline/hidden_tests.py score RUN_FILE --bench journal/baseline/bench/v1-std
 ```
 
-The slice's structure is tested by `tests/test_baseline/test_bench_v1_std.py`.
+The slice's structure and `data.lock` are tested by
+`tests/test_baseline/test_bench_v1_std.py`; the tests that need the data skip
+when it has not been fetched.
 
 Last `check-bench`: `18/18 code prompts OK` (isolation netns). Every
 reference passes all of its tests (5–12 per task), and every empty

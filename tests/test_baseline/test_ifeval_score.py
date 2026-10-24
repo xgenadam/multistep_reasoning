@@ -1,7 +1,9 @@
-"""ifeval_score.py over the vendored IFEval checker (Q-02 bias guard 4.1).
+"""ifeval_score.py over the fetched IFEval checker (Q-02 bias guard 4.1).
 
 The checker's packages live only in .venv-ifeval (`make venv-ifeval`), so the
-scorer runs there in a subprocess; the test skips when that venv is absent.
+scorer runs there in a subprocess. The checker and the slice's IFEval rows are
+fetched, not committed (`make bench-std`). The scoring test skips when the venv,
+the checker or the rows are absent.
 """
 
 import json
@@ -14,7 +16,14 @@ REPO = Path(__file__).resolve().parents[2]
 PY = REPO / '.venv-ifeval' / 'bin' / 'python'
 SCORER = REPO / 'journal' / 'baseline' / 'ifeval_score.py'
 
+BENCH = REPO / 'journal' / 'baseline' / 'bench' / 'v1-std'
+
 pytestmark = pytest.mark.skipif(not PY.exists(), reason='no .venv-ifeval (make venv-ifeval)')
+needs_data = pytest.mark.skipif(
+    not (BENCH / 'ifeval_checker' / 'instruction_following_eval' / 'evaluation_lib.py').is_file()
+    or not (BENCH / 'ifeval' / 'sr01.json').is_file()
+    or not (BENCH / 'prompts' / 'sr01.md').is_file(),
+    reason='IFEval checker or bench v1-std data not fetched (make venv-ifeval bench-std)')
 
 # sr01: "might" at least 6 times, all lowercase, 3 paragraphs separated by ***.
 FOLLOWS = ('you might think this is fine. it might not be. you might regret it.\n'
@@ -34,6 +43,7 @@ def _row(pid, arm, text, error=None):
     return {'prompt_id': pid, 'arm': arm, 'run': 0, 'error': error, 'output': {'text': text}}
 
 
+@needs_data
 def test_scores_strict_and_loose_per_arm(tmp_path):
     path = _run_file(tmp_path, [
         _row('sr01', 'b', FOLLOWS),
