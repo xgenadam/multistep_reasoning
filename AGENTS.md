@@ -142,7 +142,7 @@ This file holds no decisions; it cites them by `D-nnn`.
     | --- | --- | --- | --- |
     | qwen3.8-27b `:8093` | llama.cpp, 5 slots | 5 | ≈ 1.5× the throughput of 3 on a harness-shaped load; 8 slots add 8 % |
     | qwen3.6-35b-a3b `:8094` | llama.cpp, 5 slots | 5 | ≈ 1.8× the throughput of 3; 8 slots add 7 % |
-    | flash-next `:8090` / `:8091` | vLLM | 3 | not measured |
+    | flash-next `:8090` / `:8091` | vLLM, 6 sequences (`seqs=6`) | 6 | +13 % mixed, +27 % decode over 3 (2026-10-24); 8 adds nothing (requests queue) |
     | `:5000` (text-generation-webui) | llama.cpp, 5 slots | ≤ 4 | its slots are shared with other callers |
 
   - `arms.py` defaults to the table's value for `--generator` (`DEFAULT_JOBS`).
