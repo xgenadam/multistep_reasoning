@@ -81,6 +81,7 @@ def test_on_step_sees_the_plan_and_every_document_state():
     assert docs[-1]['snapshot'] == accumulated.document_snapshot
     entry = orch.history[-1]
     assert entry['completion_tokens'] == 300 and entry['token_ceiling'] is None
+    assert entry['estimated_calls'] == 0
 
 
 def test_observer_errors_never_change_the_turn():

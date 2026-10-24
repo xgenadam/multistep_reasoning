@@ -4,7 +4,7 @@
 #          IFEval/ifeval_input_data.jsonl sha256 6a85310ca8ce15eff755aa08a3a4ff931c7e273e7515ebb3c492ea85fd8288f2
 # Same schema as bench v1 (no follow-ups, no long or overlap flags, no subsets).
 version: v1-std
-frozen: false
+frozen: true
 prompts:
 - id: sc01
   domain: code

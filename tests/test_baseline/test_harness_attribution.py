@@ -240,6 +240,12 @@ def test_sub_task_statuses_are_real(harness):
     # Without the tracker the history still gives real values (no failures).
     fallback = harness.turn_health({'execution_results': executor.history})
     assert fallback['exec_status_counts'] == {'completed': 1, 'budget_exhausted': 1}
+    # The token meter's fields reach the run file, None when the entry lacks them.
+    cut = harness.turn_health({'execution_results': [], 'completion_tokens': 200,
+                               'estimated_calls': 1, 'token_ceiling': {'ceiling': 150}})
+    assert (cut['completion_tokens'], cut['estimated_calls'], cut['token_ceiling']) == (
+        200, 1, {'ceiling': 150})
+    assert health['token_ceiling'] is None
 
 
 def test_a_call_that_raises_stays_in_its_turn(harness):

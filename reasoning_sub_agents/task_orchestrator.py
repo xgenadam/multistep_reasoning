@@ -198,6 +198,7 @@ class TaskOrchestrator:
             history_entry['document'] = sub_task_execution_result.document_snapshot
         meter = current_token_meter()
         history_entry['completion_tokens'] = meter.completion_tokens if meter else None
+        history_entry['estimated_calls'] = meter.estimated_calls if meter else None
         history_entry['token_ceiling'] = getattr(self, '_ceiling_stop', None)
         self.history.append(history_entry)
         yield ('done', sub_task_execution_result)

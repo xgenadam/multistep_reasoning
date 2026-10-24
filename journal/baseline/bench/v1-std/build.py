@@ -233,7 +233,7 @@ def main(argv: list[str] | None = None) -> int:
         f'# Sources: {BCB_FILE} sha256 {sha256(bcb_path)}\n'
         f'#          {IFEVAL_FILE} sha256 {sha256(ifeval_path)}\n'
         '# Same schema as bench v1 (no follow-ups, no long or overlap flags, no subsets).\n')
-    body = yaml.safe_dump({'version': 'v1-std', 'frozen': False, 'prompts': entries},
+    body = yaml.safe_dump({'version': 'v1-std', 'frozen': True, 'prompts': entries},
                           sort_keys=False, allow_unicode=True, width=1000)
     (HERE / 'manifest.yaml').write_text(header + body)
     counts = {d: sum(e['domain'] == d for e in entries) for d in ('code', 'report')}

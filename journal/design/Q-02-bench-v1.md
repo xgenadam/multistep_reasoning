@@ -10,6 +10,11 @@
   2026-10-23), with the agent's recommendations where § 7 left a choice.
   The pre-registration is committed in Q-02 Notes. The user's later mass
   review may amend or roll back any of it.
+- **Amended 2026-10-24 by the delegated review (D-026):** § 3's Test,
+  Multiplicity, n and power, and Compute matching are replaced (Q-02 Notes,
+  the 2026-10-24 amendment), § 4 is decided and § 9 is answered; every
+  decision is in `Q-02-delegated-review.md`. Where this note and Q-02
+  Notes differ, Q-02 Notes win.
 
 ## 0. What to review
 

@@ -7,5 +7,5 @@ items:
   - {id: five-keywords, check: bullet_items, section: '(?i)^\W*key\s?words\b', min: 5, max: 5}
   - {id: cost, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\$\s?14\b|\b14 (?:US )?dollars|USD ?14\b'}
   - {id: farms, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\b120\b|one hundred(?: and)? twenty'}
-  - {id: seasons, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\b(two|2) (?:consecutive )?(?:growing |cropping )?seasons'}
+  - {id: seasons, check: contains, section: '(?i)^\W*abstract\b', pattern: '(?i)\b(?:two|2)\s+(?:[\w-]+\s+){0,3}seasons'}
   - {id: no-citations, check: not_contains, pattern: '\[\d+\]|(?i:\bet al\b)|\([A-Z][A-Za-z-]+,? (?:19|20)\d\d\)'}

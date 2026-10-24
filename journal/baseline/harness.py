@@ -548,10 +548,15 @@ def turn_health(entry: dict, statuses: list[str] | None = None) -> dict:
         if isinstance(val, list):
             count = len(val)
             break
+    # The turn's token meter (D-024): whether options.token_ceiling cut it
+    # short, and how many calls it had to estimate for want of usage.
     return {'exec_entries': len(exec_results),
             'exec_status_counts': dict(Counter(statuses)),
             'sub_task_statuses': list(statuses),
-            'final_sub_task_count': count}
+            'final_sub_task_count': count,
+            'completion_tokens': entry.get('completion_tokens'),
+            'estimated_calls': entry.get('estimated_calls'),
+            'token_ceiling': entry.get('token_ceiling')}
 
 
 # ---------------------------------------------------------------------------

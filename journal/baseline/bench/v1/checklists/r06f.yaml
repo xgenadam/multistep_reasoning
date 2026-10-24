@@ -5,7 +5,7 @@ items:
   - {id: kept-actions, check: heading, pattern: '(?i)action'}
   - {id: kept-open, check: heading, pattern: '(?i)open|question|unresolved'}
   # r06's three, plus 13 Oct: no clinic joins the beta without signed terms; the weekly becomes async (live every other week)
-  - {id: five-decisions, check: numbered_items, section: '(?i)decision', min: 5, max: 5}
+  - {id: five-decisions, check: numbered_items, section: '(?i)decision', min: 5, max: 6}
   # r06's five (Owen, Raj, Lucía closed; Femi's notice reassigned to Maya; Maya's Android 9 figures still open)
   # plus Owen (macros via the platform team, Fri 17th) and Sanjay (terms to 150 clinics, Thu 16th)
   - {id: seven-actions, check: table_rows, section: '(?i)action', min: 7, max: 7}

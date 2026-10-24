@@ -54,12 +54,12 @@ def test_invalid_numbers(text, pos):
 
 def test_string_escapes_and_unicode():
     assert loads(r'"a\"b\\c\/d\b\f\n\r\t"') == 'a"b\\c/d\b\f\n\r\t'
-    assert loads(r'"éé"') == 'éé'
+    assert loads(r'"\u00e9\u00E9"') == 'éé'
     assert loads('"é😀"') == 'é😀'
 
 
 def test_surrogate_pair_decodes_to_one_character():
-    s = loads(r'"x😀y"')
+    s = loads(r'"x\ud83d\ude00y"')
     assert s == 'x😀y' and len(s) == 3
 
 

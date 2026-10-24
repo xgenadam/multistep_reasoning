@@ -54,7 +54,7 @@ O (organise) ─► 0-close-A (measure/bookkeep) ─► Q-01 (judge, offline) �
 0-close-B (defects) and Q-02 (server campaign): slotted when the server is idle.   P (execution model): deferrable.   C, H: after A, as capacity allows.
 ```
 
-Critical paths:
+Dependency chains:
 - Paper analysis: O → 0-close-A → A → V → B(papers) → T-science.
 - Books: … → R-mech → B2(books) → T-book.
 
@@ -245,8 +245,8 @@ and again per D-025.
     running every arm; comparisons stay within a generator.
   - Arms, same prompt, model and per-call `max_tokens`, per generator: (a) single call,
     thinking off; (a′) single call, thinking on; (a″) self-refine (draft →
-    critique → revise, N rounds) matched to the harness's median completion
-    tokens ±25 %; (b) harness; (c) harness + consolidation, on the overlap
+    critique → revise) on a per-prompt token budget from (b)'s run on the
+    same prompt (Q-02 Notes 2026-10-24, D-026); (b) harness; (c) harness + consolidation, on the overlap
     subset only. Single-model arms continue until done on long prompts.
   - The primary comparison is (b) against (a″), pre-registered with the
     effect (default 0.70 on decisive pairs), n and the analysis before the
@@ -298,9 +298,14 @@ Pass criteria:
   analysis are committed in Q-02's Notes before Q-02's first run file. A
   gain claim needs the Wilson 95 % lower bound above 0.5 on decisive pairs
   and a point estimate at or above the effect.
-- **Q-7 Compute-matched baseline:** at least one single-model arm is within
-  ±25 % of the harness's median completion tokens per prompt, per
-  generator (D-020).
+- **Q-7 Compute-matched baseline** (revised by D-026; was "at least one
+  single-model arm is within ±25 % of the harness's median completion
+  tokens per prompt, per generator"): per generator and domain, (a″)'s
+  median completion tokens per prompt are at least 0.75× the harness's;
+  the ratio of medians and the per-prompt ratio distribution are reported
+  per generator × domain × stratum. A cell above 1.25× is labelled "a″
+  over-resourced (r×)": a harness gain there stands; a harness "worse"
+  there is reported as "not better at r× compute", not as worse (D-020).
 - **Q-8 Objective scoring:** every code prompt has hidden tests, and no
   judge verdict replaces a test result. Domains are never pooled.
 - **Q-9 Standing benchmark:** one command reproduces a Q-E1 run from the
@@ -393,7 +398,10 @@ Pass criteria:
   time … within 10% of the baseline oracle calls"): on a 30-part document,
   `search`/`ask` tokens per query (prompt plus completion) and model calls
   on the query's critical path are each within 10 % of, or below, the
-  pre-A oracle path measured on the same generator (A-05 Notes).
+  pre-A oracle path measured on the same generator (A-05 Notes). Tokens
+  are medians over at least 10 queries; prompt tokens per query are within
+  10 %, completion tokens within 25 % (they vary between identical calls;
+  D-026).
 - **A-7 One place per tool:** adding a tool touches one place; a test
   registers a dummy tool and the executor calls it.
 - **A-8 Persistence groundwork:**
@@ -535,7 +543,10 @@ Pass criteria:
   run sequentially"): a two-branch DAG (A → {B, C} → D) overlaps for real.
   B's and C's calls are in flight at the same time (call start and end
   timestamps), and the turn's critical path holds the longer of B and C,
-  not both. Frontier wall against the sequential sum is recorded.
+  not both. Frontier wall against the sequential sum is recorded. This
+  needs new logging before Phase P: a start and end timestamp on every
+  `CallRecord` and a DAG-node id per call, from which the critical path is
+  computed (D-026).
 - **P-P2:** no executor mid-frontier sees a part created after the frontier
   started. Asserted via op-log `seq`/`ts`.
 - **P-P3:** when both siblings produce near-duplicates, the final document has
@@ -544,8 +555,10 @@ Pass criteria:
   B is re-run serially with A's output in context. The *recovered* result
   is correct.
 - **P-P5** (revised by D-025; was "≤ 10% more turn latency"): a degenerate
-  1-node DAG costs ≤ 10 % more tokens per turn than the baseline and adds
-  no call to the critical path.
+  1-node DAG costs ≤ 10 % more tokens per turn than the baseline (the
+  median per-turn tokens over the baseline scenarios, s1–s4 × 2, since
+  per-turn tokens vary ≈ 2× across identical scenarios; D-026) and adds no
+  call to the critical path.
 - **P-P6:** 20 random decompositions all order topologically; an injected
   cycle is rejected with a clear error, not a hang.
 
@@ -583,7 +596,8 @@ Pass criteria:
 - **T-4** (revised by D-025; was "≤ 30% to code-pack turn latency"):
   verifiers add ≤ 30 % to code-pack turn tokens (marginal, D-007) and
   ≤ 30 % to the tokens on the turn's critical path, vs the Phase P
-  baseline.
+  baseline, as medians per turn over the baseline scenarios (D-026). The
+  critical-path half needs P-P1's logging.
 - **T-5:** science. From 5 papers, ≥ 90% of the claim-card citations resolve
   to the right passage. A 3-paper comparison scores ≥ 3.5/5 from the judge.
 - **T-6:** book. Continue a 3-chapter seed with ingested canon: 0

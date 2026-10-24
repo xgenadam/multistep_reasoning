@@ -14,24 +14,28 @@ pipeline does:
   (a″) `a2`  self-refine: draft, then rounds of critique -> revision,
              thinking off; every round's draft and critique is saved in
              the result's `rounds` (logging only, D-023). Rounds are set by
-             one of two rules:
-               --refine-budget: a token budget per generator × domain ×
-                 length stratum (refine_budget.yaml, from the pilot's
-                 harness medians; the provisional amendment in Q-02 Notes).
-                 After the draft, a round runs while the prompt's completion
-                 tokens so far plus half the last round's are below the
-                 budget, so it stops at whichever side of the budget is
-                 nearer; at least REFINE_MIN_ROUNDS, at most REFINE_CAP.
-                 A hard ceiling of REFINE_CEILING_FACTOR x the budget caps
-                 every call's max_tokens: a round the ceiling cuts off is
-                 discarded (logged, `discarded: true`) and the output is the
-                 most recent complete draft. Each result logs
-                 `refine_budget` (stratum, budget, ceiling, spent, rounds,
-                 stop reason: budget, cap or ceiling) and each round's
-                 completion tokens.
-               --refine-rounds: a fixed N per domain (the pilots' rule).
-             Either way, Q-7 wants a2's median completion tokens per prompt
-             within ±25 % of the harness's (`match` reports it)
+             one of three rules:
+               --refine-budget-from B_RUN_FILE (the campaign's rule, Q-02
+                 Notes 2026-10-24, delegated review): each prompt's budget is
+                 the harness's (arm b's) completion tokens on that prompt in
+                 the same generator's run file (the median over its runs);
+                 a prompt b errored on gets b's median for its stratum.
+               --refine-budget [FILE]: a budget per generator × stratum
+                 (refine_budget.yaml, the pilots' harness medians; pilots
+                 only).
+               --refine-rounds: a fixed N per domain (the first pilots).
+             Under a budget, after the draft, a round starts only while the
+             prompt's completion tokens so far plus the last round's are at
+             or below the budget; at least REFINE_MIN_ROUNDS, at most
+             REFINE_CAP. A hard ceiling of REFINE_CEILING_FACTOR x the
+             larger of the budget and its stratum's median caps every
+             call's max_tokens: a round the ceiling cuts off is discarded
+             (logged, `discarded: true`) and the output is the most recent
+             complete draft. Each result logs `refine_budget` (stratum,
+             budget, its source, ceiling, spent, rounds, stop reason:
+             budget, cap or ceiling) and each round's completion tokens.
+             Q-7 wants a2's median completion tokens per prompt at least
+             0.75x the harness's (`match` reports the ratio)
   (b)  `b`   the harness (TaskOrchestrator, the harness's default config
              plus any --set overrides)
   (c)  `c`   the harness with consolidation on; meant for the overlap subset
@@ -54,6 +58,8 @@ Usage (from the repo root; the endpoint is required, D-008):
       --arm a2 --refine-rounds code=1,report=2 --prompt c01 --prompt r03
   .venv/bin/python journal/baseline/arms.py run --generator qwen3.6-35b-a3b \\
       --arm a2 --refine-budget --subset g3
+  .venv/bin/python journal/baseline/arms.py run --generator qwen3.6-35b-a3b \\
+      --arm a2 --refine-budget-from journal/baseline/runs/<the b run file>.json
   .venv/bin/python journal/baseline/arms.py budget RUN_FILE [RUN_FILE ...]  # derive budgets
   .venv/bin/python journal/baseline/arms.py run ... --resume RUN_FILE
   .venv/bin/python journal/baseline/arms.py plan --subset overlap --arm c   # no calls
@@ -359,7 +365,8 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
     if arm in ('a', 'a1'):
         return complete(client, model, messages, thinking=arm == 'a1', phase='Single call',
                         counters=counters), counters
-    ceiling = REFINE_CEILING_FACTOR * budget['tokens'] if budget else None
+    ceiling = (REFINE_CEILING_FACTOR * max(budget['tokens'], budget['stratum_median'])
+               if budget else None)
     draft = complete(client, model, messages, thinking=False, phase='Self-refine draft',
                      counters=counters, ceiling=ceiling)
     # Every round's draft and critique, for the post-hoc confidence study
@@ -372,7 +379,9 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
         stop = 'ceiling'
     for r in range(0 if stop == 'ceiling' else (REFINE_CAP if budget else rounds)):
         spent = counters['completion_tokens']
-        if budget and r >= REFINE_MIN_ROUNDS and spent + last_round / 2 >= budget['tokens']:
+        # The full last round predicts the next: rounds mostly grow (Q-02
+        # Notes 2026-10-24), so half of it would overshoot.
+        if budget and r >= REFINE_MIN_ROUNDS and spent + last_round > budget['tokens']:
             stop = 'budget'
             break
         critique = complete(
@@ -404,7 +413,7 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
             stop = 'cap'
     if budget:
         counters['budget'] = {'stratum': budget['stratum'], 'budget': budget['tokens'],
-                              'ceiling': ceiling, 'spent': counters['completion_tokens'],
+                              'source': budget['source'], 'ceiling': ceiling, 'spent': counters['completion_tokens'],
                               'rounds': counters['rounds'], 'stop': stop,
                               'cap': REFINE_CAP, 'min_rounds': REFINE_MIN_ROUNDS}
     return draft, counters
@@ -434,8 +443,7 @@ def run_chain_single(client, model, measured, arm, chain, prompts, run_index,
         turn_id = f'{arm}:{pid}#r{run_index}'
         harness._current_turn.set(turn_id)
         rounds = rounds_by_domain.get(entry['domain'], 0) if arm == 'a2' else 0
-        budget = ({'stratum': stratum(entry), 'tokens': budgets[stratum(entry)]}
-                  if arm == 'a2' and budgets else None)
+        budget = prompt_budget(budgets, pid, stratum(entry)) if arm == 'a2' and budgets else None
         t0 = time.perf_counter()
         error = None
         text, counters = '', {}
@@ -596,6 +604,42 @@ def load_budget(path: Path, generator: str) -> dict:
             'sha256': sha256(Path(path).read_text()), 'tokens': {k: int(v) for k, v in per.items()}}
 
 
+def load_budget_from_run(path: Path, generator: str, manifest_sha256: str,
+                         prompts: dict) -> dict:
+    """Per-prompt budgets from a harness run file: arm b's error-free
+    completion tokens per prompt (the median over runs), plus b's median per
+    stratum for prompts b has no clean result on. Refuses a file from another
+    generator or another bench manifest."""
+    data = json.loads(Path(path).read_text())
+    if data.get('generator') != generator:
+        raise SystemExit(f'{path}: generator {data.get("generator")!r}, not {generator!r}')
+    if data.get('manifest_sha256') != manifest_sha256:
+        raise SystemExit(f'{path}: ran on another bench manifest '
+                         f'({data.get("manifest_sha256")}); budgets must come from this one')
+    per: dict[str, list[int]] = {}
+    for r in data['results']:
+        if r['arm'] == 'b' and r['error'] is None and r['prompt_id'] in prompts:
+            per.setdefault(r['prompt_id'], []).append(r['llm']['completion_tokens'])
+    by_prompt = {pid: int(statistics.median(v)) for pid, v in sorted(per.items())}
+    by_stratum: dict[str, list[int]] = {}
+    for pid, tokens in by_prompt.items():
+        by_stratum.setdefault(stratum(prompts[pid]), []).append(tokens)
+    return {'path': str(Path(path).resolve().relative_to(REPO_ROOT))
+            if Path(path).resolve().is_relative_to(REPO_ROOT) else str(path),
+            'sha256': sha256(Path(path).read_text()), 'source': 'run-file',
+            'prompts': by_prompt,
+            'tokens': {st: int(statistics.median(v)) for st, v in sorted(by_stratum.items())}}
+
+
+def prompt_budget(budgets: dict, pid: str, st: str) -> dict:
+    """One prompt's budget: its own (a run-file source) or its stratum's."""
+    own = (budgets.get('prompts') or {}).get(pid)
+    return {'stratum': st, 'tokens': own if own is not None else budgets['tokens'][st],
+            'stratum_median': budgets['tokens'][st],
+            'source': 'prompt' if own is not None
+            else ('stratum-fallback' if budgets.get('source') == 'run-file' else 'stratum')}
+
+
 def budget_report(files: list[Path], bench_dir: Path) -> dict:
     """Per generator × stratum: the median completion tokens per prompt of
     the harness (arm b, error-free results only) across the run files, which
@@ -663,7 +707,10 @@ def run_arms(args) -> int:
     chains = plan_chains(prompts, selected)
     arms = args.arm or ['b']
     rounds = parse_rounds(args.refine_rounds)
-    budget = load_budget(args.refine_budget, args.generator) if args.refine_budget else None
+    budget = (load_budget(args.refine_budget, args.generator) if args.refine_budget
+              else load_budget_from_run(args.refine_budget_from, args.generator,
+                                        bench['sha256'], prompts)
+              if args.refine_budget_from else None)
     if 'a2' in arms:
         if budget:
             needed = {stratum(prompts[p]) for c in chains for p in c}
@@ -675,7 +722,8 @@ def run_arms(args) -> int:
             needed = {prompts[p]['domain'] for c in chains for p in c}
             missing = needed - set(rounds)
             if missing:
-                raise SystemExit('arm a2 needs --refine-budget or --refine-rounds for '
+                raise SystemExit('arm a2 needs --refine-budget-from, --refine-budget or '
+                                 '--refine-rounds for '
                                  + ', '.join(sorted(missing)))
     try:
         base_cfg = harness.resolve_config(False, 'off', args.set)
@@ -800,7 +848,7 @@ def run_arms(args) -> int:
         try:
             if arm in SINGLE_ARMS:
                 rows = run_chain_single(client, model, measured, arm, chain, prompts, run,
-                                        rounds, budget['tokens'] if budget else None)
+                                        rounds, budget)
             else:
                 rows = run_chain_harness(client, measured, arm, chain, prompts, run,
                                          build_for(arm), f'{started}_',
@@ -889,6 +937,12 @@ def match_report(files: list[Path], tolerance: float = 0.25,
         if target:
             entry['within_25pct'] = {arm: abs(m - target) <= tolerance * target
                                      for arm, m in med.items() if arm != 'b'}
+            # Q-7 as amended (2026-10-24): one-sided, a2 at least 0.75x the
+            # harness; above 1.25x it is labelled over-resourced.
+            entry['ratio_to_b'] = {arm: round(m / target, 3) for arm, m in med.items() if arm != 'b'}
+            entry['q7_met'] = {arm: r >= 1 - tolerance for arm, r in entry['ratio_to_b'].items()}
+            entry['over_resourced'] = [arm for arm, r in entry['ratio_to_b'].items()
+                                       if r > 1 + tolerance]
             per = call_medians.get((gen, domain))
             if per and per['draft'] and per['round']:
                 d, rnd = statistics.median(per['draft']), statistics.median(per['round'])
@@ -928,7 +982,11 @@ def main(argv: list[str] | None = None) -> int:
     rule.add_argument('--refine-budget', nargs='?', const=str(DEFAULT_BUDGET), default=None,
                       metavar='FILE',
                       help=f"a2's rounds by token budget per stratum (default file: "
-                           f"{DEFAULT_BUDGET.name}); a2 needs this or --refine-rounds")
+                           f"{DEFAULT_BUDGET.name}; pilots only)")
+    rule.add_argument('--refine-budget-from', default=None, metavar='B_RUN_FILE',
+                      help="a2's rounds by a per-prompt token budget: the harness's (arm b's) "
+                           "completion tokens per prompt in this run file, same generator and "
+                           "bench (the campaign's rule)")
     run.add_argument('--set', action='append', default=[], metavar='SECTION.KEY=VALUE',
                      help='OrchestratorConfig override for the harness arms (Q-05 ablations)')
     run.add_argument('--runs', type=int, default=1)

@@ -21,7 +21,7 @@ def bench():
 
 def test_load_bench(bench):
     assert bench['version'] == 'v1-std'
-    assert bench['frozen'] is False
+    assert bench['frozen'] is True  # frozen by the delegated review, 2026-10-24 (D-026)
     assert bench['drafts'] == []
 
 

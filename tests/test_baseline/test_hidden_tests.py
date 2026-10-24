@@ -266,6 +266,20 @@ def test_timeout_kills_the_run(hidden_tests, tmp_path):
     assert res['passed'] == 0 and res['total'] == 0
 
 
+def test_a_hanging_test_costs_only_itself(hidden_tests, tmp_path):
+    """One infinite loop fails its own test; the file's other tests still count."""
+    tests = tmp_path / 'tests'
+    write(tests, {'test_mix.py': 'def test_ok():\n    assert True\n\n'
+                                 'def test_hangs():\n    while True:\n        pass\n\n'
+                                 'def test_ok_too():\n    assert True\n'})
+    res = hidden_tests.run_tests({}, tests, timeout_s=60, test_timeout_s=1)
+    assert res['timed_out'] is False
+    assert res['outcomes'] == {'test_mix::test_ok': 'passed',
+                               'test_mix::test_hangs': 'failed',
+                               'test_mix::test_ok_too': 'passed'}
+    assert 'per-test timeout' in res['output_tail']
+
+
 def test_no_network_when_isolated(hidden_tests, tmp_path):
     if hidden_tests.isolation() != 'netns':
         pytest.skip('unshare -rn unavailable here')

@@ -200,7 +200,8 @@ tok/s (a 24–27B Q4 on one card).
 | `g3` subset, 10 pairs × 2 orders | 20 | ≈ 0.25 M | ≈ 20 min | ≈ 8 min |
 | Q-E1, 80 prompts, 3 full pairings + (c) subset, both orders, ⅓ long | ≈ 530 | ≈ 9 M | 10–18 h | n/a |
 
-Rules that follow: judge calls never run inside a timing-gate window (Q-4);
+Rules that follow: judge calls never run inside a run kept as a clean wall-time
+record (Q-4, as revised by D-025);
 a Q-E1 judge batch is one claimed slow-tier window, scheduled, resumable
 from the verdict file; code prompts whose tests decide skip the judge.
 

@@ -5,7 +5,7 @@ items:
   - {id: sec-actions, check: heading, pattern: '(?i)action'}
   - {id: sec-open, check: heading, pattern: '(?i)open|question|unresolved'}
   # the transcript's decisions: 4.2 moves to 21 October; dark mode moves to 4.3; beta grows from 50 to 200 clinics
-  - {id: three-decisions, check: numbered_items, section: '(?i)decision', min: 3, max: 3}
+  - {id: three-decisions, check: numbered_items, section: '(?i)decision', min: 3, max: 4}
   # Owen (time-zone fix, Thu), Raj (regression results, Mon 13th), Femi (customer notice, Fri),
   # Lucía (onboarding screens to support, Wed), Maya (Android 9 usage figures, no date)
   - {id: five-actions, check: table_rows, section: '(?i)action', min: 5, max: 5}

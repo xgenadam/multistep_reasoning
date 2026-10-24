@@ -2,7 +2,10 @@
 # Defaults when a field is absent: long false, follows null, overlap false, subsets [].
 # FROZEN 2026-10-23, provisional under D-022: written by the agent and its sub-agents, pending the
 # user's mass review. A change at review is a new version and voids the run files that used this one.
-version: v1
+# v1.1 (2026-10-24, the delegated review, D-026): c14 (rows may be any iterable), c36 (the `.`
+# error position), c47 and c47f (the surrogate-pair escapes restored in the prompt and tests),
+# r06 and r06f (one more decision allowed), r08 (the seasons pattern). No pilot used these prompts.
+version: v1.1
 frozen: true
 prompts:
 

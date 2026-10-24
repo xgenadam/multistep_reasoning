@@ -205,7 +205,7 @@ def test_resume_refuses_a_changed_setting(tmp_path, monkeypatch, arms):
 def test_refusals(tmp_path, monkeypatch, arms):
     bench, out = _bench(tmp_path), tmp_path / 'runs'
     _wire(monkeypatch, arms, ArmsServer())
-    with pytest.raises(SystemExit, match='needs --refine-budget or --refine-rounds'):
+    with pytest.raises(SystemExit, match='needs --refine-budget-from, --refine-budget or --refine-rounds'):
         _run(arms, bench, out, '--arm', 'a2')
     with pytest.raises(SystemExit, match='unknown key'):
         _run(arms, bench, out, '--set', 'options.nope=1')
@@ -335,14 +335,16 @@ def _budget_file(tmp_path, **tokens):
 
 
 @pytest.mark.parametrize('budget, rounds, stop', [
-    (30, 3, 'budget'),    # 8 + 8 + 8 + 8 = 32: a fourth round would end at 40, farther from 30
-    (21, 2, 'budget'),    # 24 is 3 over, 16 would be 5 under: the nearer side
+    (30, 2, 'budget'),    # 8 + 8 + 8 = 24; a third round would end at 32, over 30
+    (32, 3, 'budget'),    # ending exactly at the budget is allowed
+    (21, 1, 'budget'),    # 16 + 8 = 24 is over 21
     (6, 1, 'budget'),     # the draft alone is over, but at least one round runs (ceiling 18)
     (10_000, 8, 'cap'),   # never reaches the budget: stops at REFINE_CAP
 ])
 def test_a2_token_budget(tmp_path, monkeypatch, arms, budget, rounds, stop):
-    """--refine-budget: after the draft, a round runs while spent + half the last
-    round is below the stratum's budget; at least one round, at most REFINE_CAP."""
+    """--refine-budget: after the draft, a round starts while spent + the last
+    round is at or below the stratum's budget; at least one round, at most
+    REFINE_CAP."""
     bench, out = _bench(tmp_path), tmp_path / 'runs'
     server = ArmsServer()
     _wire(monkeypatch, arms, server)
@@ -353,7 +355,7 @@ def test_a2_token_budget(tmp_path, monkeypatch, arms, budget, rounds, stop):
     [row] = data['results']
     assert row['refine_rounds'] == rounds and len(row['rounds']) == rounds + 1
     assert row['refine_budget'] == {'stratum': 'report-short', 'budget': budget,
-                                    'ceiling': 3 * budget,
+                                    'source': 'stratum', 'ceiling': 3 * budget,
                                     'spent': 8 + 8 * rounds, 'rounds': rounds, 'stop': stop,
                                     'cap': arms.REFINE_CAP, 'min_rounds': 1}
     assert data['refine_budget']['tokens'] == {'report-short': budget, 'code-long': 99}
@@ -369,6 +371,55 @@ def test_a2_budget_refusals(tmp_path, monkeypatch, arms):
         _run(arms, bench, out, '--arm', 'a2', '--refine-budget', str(path))
     with pytest.raises(SystemExit):  # one rule or the other, never both
         _run(arms, bench, out, '--arm', 'a2', '--refine-budget', str(path), '--refine-rounds', '1')
+
+
+def _b_run_file(tmp_path, arms, bench, generator='flash-next', **tokens):
+    """A harness run file as arms.py writes it: arm b rows with completion tokens."""
+    path = tmp_path / 'b_run.json'
+    path.write_text(json.dumps({
+        'generator': generator, 'manifest_sha256': arms.load_bench(bench)['sha256'],
+        'results': [{'prompt_id': pid, 'arm': 'b', 'run': run, 'error': err,
+                     'llm': {'completion_tokens': ctok}}
+                    for pid, rows in tokens.items() for run, (ctok, err) in enumerate(rows)]}))
+    return path
+
+
+def test_a2_budget_from_the_harness_run_per_prompt(tmp_path, monkeypatch, arms):
+    """--refine-budget-from: each prompt gets b's tokens on that prompt (median
+    over runs, errored runs left out); a prompt b has no clean result on gets
+    b's median for its stratum. The ceiling is 3x the larger of the two."""
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    server = ArmsServer()
+    _wire(monkeypatch, arms, server)
+    path = _b_run_file(tmp_path, arms, bench, r01=[(30, None), (34, None), (999, 'boom')],
+                       r01f=[(5, 'boom')], c01=[(50, None)])
+    assert _run(arms, bench, out, '--arm', 'a2', '--prompt', 'r01f',
+                '--refine-budget-from', str(path)) == 0
+    _, data = _load(out)
+    assert data['refine_budget']['prompts'] == {'r01': 32, 'c01': 50}
+    assert data['refine_budget']['source'] == 'run-file'
+    by_pid = {r['prompt_id']: r['refine_budget'] for r in data['results']}
+    assert by_pid['r01'] == {'stratum': 'report-short', 'budget': 32, 'source': 'prompt',
+                             'ceiling': 96, 'spent': 32, 'rounds': 3, 'stop': 'budget',
+                             'cap': arms.REFINE_CAP, 'min_rounds': 1}
+    # r01f: b errored on it, so the stratum's median (r01's 32) stands in.
+    assert by_pid['r01f']['source'] == 'stratum-fallback' and by_pid['r01f']['budget'] == 32
+
+
+def test_a2_budget_from_refuses_another_generator_or_bench(tmp_path, monkeypatch, arms):
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    _wire(monkeypatch, arms, ArmsServer())
+    other = _b_run_file(tmp_path, arms, bench, generator='qwen3.8-27b', r01=[(30, None)])
+    with pytest.raises(SystemExit, match='generator'):
+        _run(arms, bench, out, '--arm', 'a2', '--prompt', 'r01', '--refine-budget-from', str(other))
+    stale = _b_run_file(tmp_path, arms, bench, r01=[(30, None)])
+    data = json.loads(stale.read_text())
+    stale.write_text(json.dumps({**data, 'manifest_sha256': 'old'}))
+    with pytest.raises(SystemExit, match='another bench manifest'):
+        _run(arms, bench, out, '--arm', 'a2', '--prompt', 'r01', '--refine-budget-from', str(stale))
+    with pytest.raises(SystemExit):  # one rule only
+        _run(arms, bench, out, '--arm', 'a2', '--refine-budget-from', str(stale),
+             '--refine-budget')
 
 
 def test_budget_and_match_by_stratum(tmp_path, arms):
@@ -393,6 +444,10 @@ def test_budget_and_match_by_stratum(tmp_path, arms):
                                        'c01': 'code-long'})
     assert m['flash-next/report-short']['completion_p50'] == {'b': 200, 'a2@budget': 90}
     assert m['flash-next/report']['within_25pct'] == {'a2@budget': False}
+    # r01's a2 at 90 against b's median 200: 0.45x, under Q-7's 0.75x floor.
+    assert m['flash-next/report']['ratio_to_b'] == {'a2@budget': 0.45}
+    assert m['flash-next/report']['q7_met'] == {'a2@budget': False}
+    assert m['flash-next/report']['over_resourced'] == []
 
 
 def test_a2_hard_ceiling_discards_the_cut_round_and_keeps_the_last_draft(tmp_path, monkeypatch,

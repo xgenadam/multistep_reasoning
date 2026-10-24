@@ -70,6 +70,42 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_BENCH = Path(__file__).parent / 'bench' / 'v1'
 DEFAULT_TIMEOUT_S = 120
+# Per test (setup and call), so a hang costs that test, not the whole file;
+# the file timeout stays as the backstop for hangs SIGALRM cannot interrupt.
+DEFAULT_TEST_TIMEOUT_S = 20
+# Loaded with -p from a dir of its own, ahead of the deliverable on PYTHONPATH.
+_TIMEOUT_PLUGIN = '''\
+import os
+import signal
+
+import pytest
+
+LIMIT = float(os.environ['HIDDEN_TEST_TIMEOUT_S'])
+
+
+def _expire(signum, frame):
+    raise TimeoutError(f'test exceeded {LIMIT:g} s (hidden_tests per-test timeout)')
+
+
+def _limited():
+    old = signal.signal(signal.SIGALRM, _expire)
+    signal.setitimer(signal.ITIMER_REAL, LIMIT)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, old)
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_setup(item):
+    yield from _limited()
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_call(item):
+    yield from _limited()
+'''
 OUTPUT_TAIL_BYTES = 2048
 BROKEN_DIR = 'broken'
 PYTHON_LANGS = {'python', 'py', 'python3', 'py3'}
@@ -481,8 +517,12 @@ def _parse_junit(path: Path) -> dict[str, str]:
 
 
 def run_tests(files: dict[str, str], tests_dir: str | Path,
-              timeout_s: float = DEFAULT_TIMEOUT_S) -> dict:
+              timeout_s: float = DEFAULT_TIMEOUT_S,
+              test_timeout_s: float = DEFAULT_TEST_TIMEOUT_S) -> dict:
     """Write files to a fresh temp dir, copy the hidden tests in, run pytest there.
+
+    Each test's setup and call get test_timeout_s (SIGALRM, so a pure-Python
+    hang fails that test only); the whole run gets timeout_s.
 
     Returns passed, failed, errors, skipped, total (from the junit XML),
     collection_error, timed_out, seconds, exit_code, outcomes (name ->
@@ -523,13 +563,18 @@ def run_tests(files: dict[str, str], tests_dir: str | Path,
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src, dest)
         (tmp / 'pytest.ini').write_text('[pytest]\n')
+        plugin_dir = tmp / 'plugin'
+        plugin_dir.mkdir()
+        (plugin_dir / '_hidden_test_timeout.py').write_text(_TIMEOUT_PLUGIN)
         junit = tmp / 'junit.xml'
         cmd = [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
+               '-p', '_hidden_test_timeout',
                f'--junitxml={junit}', '-c', str(tmp / 'pytest.ini'), '--rootdir', str(work),
                *_test_files(tests_dir)]
         if iso == 'netns':
             cmd = ['unshare', '-rn', *cmd]
-        env = {'HOME': str(work), 'PYTHONPATH': str(work), 'PYTHONDONTWRITEBYTECODE': '1',
+        env = {'HOME': str(work), 'PYTHONPATH': f'{plugin_dir}{os.pathsep}{work}',
+               'HIDDEN_TEST_TIMEOUT_S': str(test_timeout_s), 'PYTHONDONTWRITEBYTECODE': '1',
                'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1', 'PATH': '/usr/local/bin:/usr/bin:/bin',
                'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8', 'TMPDIR': str(tmp)}
         out_path = tmp / 'output.txt'

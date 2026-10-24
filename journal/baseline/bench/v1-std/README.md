@@ -169,8 +169,9 @@ Known differences from BigCodeBench's own evaluation:
   in the row.
 - `target_words` is the `num_words` kwarg when one of the row's instructions
   has it. Otherwise it is 300. None of the 20 sampled rows has a `num_words`
-  kwarg, so every report entry has `target_words: 300`. That value is a
-  length budget for the arms, not an IFEval constraint.
+  kwarg, so every report entry has `target_words: 300`. That value is
+  metadata only: neither `arms.py` nor the harness reads it, and it is not
+  an IFEval constraint.
 - **Scoring:** Google's official IFEval checker, vendored at
   `ifeval_checker/` (the pinned commit, its licence and the one local
   change are in `ifeval_checker/SOURCE.md`; adopted by the user
@@ -179,6 +180,17 @@ Known differences from BigCodeBench's own evaluation:
   (`make venv-ifeval` builds it). That writes `<run>.ifeval.json` with
   strict and loose verdicts per instruction and IFEval's four headline
   numbers per arm. `checklists.py` does not read `ifeval/`.
+
+## How it is compared (Q-02 § 4.1, the delegated review, 2026-10-24)
+
+- **Frozen** 2026-10-24 (D-026), as built: `build.py` writes `frozen: true`.
+- Every prompt here is short, so (b)'s decisive rate over (a″) on this
+  slice is compared with bench v1's **short** strata, never with v1 as a
+  whole. It is its own table and never part of the six claims.
+- **Per-prompt outcome.** IFEval half: the arm that follows strictly more
+  instructions (IFEval strict) wins; equal counts tie. Code half: the v1
+  rule (the higher hidden-test pass-rate wins; equal rates go to the
+  judge), with task-level pass (all tests) reported beside it.
 
 ## Licences
 
