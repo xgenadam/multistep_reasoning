@@ -152,7 +152,7 @@ Known differences from BigCodeBench's own evaluation:
   in BigCodeBench's shared namespace.
 - **Sandbox.** BigCodeBench's process sandbox and its time and memory limits
   are not reproduced. The sandbox is `hidden_tests.py`'s: netns, temp cwd,
-  and a 120 s wall timeout per pytest run.
+  a 20 s timeout per test and a 120 s wall timeout per pytest run.
 - **Scoring.** BigCodeBench's metric is task-level pass (every test in the
   task passes). `hidden_tests.py score` reports passed/total per prompt. The
   BigCodeBench-equivalent task pass is `passed == total` with no collection
@@ -194,12 +194,25 @@ Known differences from BigCodeBench's own evaluation:
 
 ## Licences
 
-Only the files on disk were checked. They hold the data files and
-`huggingface_hub` cache metadata (`.gitignore`, `CACHEDIR.TAG`, `.lock`,
-`.metadata`). **Neither dataset's card, README or licence file is on disk**,
-so neither licence is recorded here. Both must be read from the dataset
-cards, and recorded here, before any of this slice is redistributed outside
-the repo.
+Both sources are Apache License 2.0 (read from the published cards on
+2026-10-24; the files on disk carry no card or licence file). A copy of the
+licence is `LICENSE` beside this file.
+
+| Source | Licence | Where it is stated | Cite |
+| --- | --- | --- | --- |
+| BigCodeBench-Hard v0.1.4 (BigCode) | Apache-2.0 | `huggingface.co/datasets/bigcode/bigcodebench` card ("BigCodeBench is licensed under the Apache License, Version 2.0"); the `-hard` subset's own card is empty, so its licence is the parent's; the GitHub repo `bigcode-project/bigcodebench` is Apache-2.0 too | Zhuo et al., 2024, arXiv:2406.15877 |
+| IFEval (Google) | Apache-2.0 | `huggingface.co/datasets/google/IFEval` card metadata and text | Zhou et al., 2023, arXiv:2311.07911 |
+| IFEval checker (google-research, vendored in `ifeval_checker/`) | Apache-2.0 | its `LICENSE`; the one local change is in `ifeval_checker/SOURCE.md` | as above |
+
+**Changes made** (Apache 2.0 § 4(b) asks modified files to say so):
+`build.py` reformats the source rows into this bench's layout, and the
+changes are those listed under "Code entries" and "Report entries" above:
+each BigCodeBench prompt gets one added delivery paragraph, each test file
+gets a documented header above the unchanged test code, and each reference
+is the stub plus the canonical solution. IFEval prompts are copied verbatim
+and their instruction lists kept as `ifeval/<id>.json`. Neither card adds
+restrictions beyond the licence (no no-training clause, no canary
+string).
 
 ## How to run
 

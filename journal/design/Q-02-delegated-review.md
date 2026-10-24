@@ -67,7 +67,7 @@ amendment.
 | 13 | § 4.2 long/short split | adopted as written (descriptive) | F | no | Q-02 Notes | n/a |
 | 14 | § 4.3 A/A control | adopted on flash-next; the repeat (a″) run reuses run 0's budgets | F | no | Q-02 Notes | the A/A run |
 | 15 | § 4.4 your blind spot check | adopted; due before the stage 2 verdict, not blocking stage 1 | F | **yes** (needs your hour) | Q-02 Notes | n/a |
-| 16 | Freezing v1-std | frozen as built. **Its two licences are not verified on disk**: read them from the dataset cards before anything leaves the repo | F | no | `bench/v1-std/` | v1-std run files |
+| 16 | Freezing v1-std | frozen as built. Licences checked by C from the published cards: both Apache-2.0 (BigCodeBench-Hard via its parent card); `LICENSE`, attribution and the changes made are now in `bench/v1-std/` | F, licences C | no | `bench/v1-std/` | v1-std run files |
 | 17 | D-025 thresholds | kept, with medians named (A-6 over ≥ 10 queries, prompt tokens ±10 %, completion ±25 %; P-P5 and T-4 over s1–s4 × 2) and P-P1's new logging flagged | F and S, reconciled by C | no | PLAN | nothing in Q-02 |
 | 18 | V-4, B-3 (pure-store latency) | left as wall-time bounds | C | **yes, yours** | D-026 | nothing in Q-02 |
 | 19 | Bench § 9 flags | all kept except c14, c36, r06/r06f, r08 (row 20) | S | no | this file | n/a |
