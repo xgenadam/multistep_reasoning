@@ -1,0 +1,33 @@
+# Self-refine (a'') token budgets per generator x stratum, read by
+# `arms.py run --refine-budget` (Q-02; the provisional amendment of 2026-10-24
+# in Q-02 Notes, under D-022, for the user's later review).
+#
+# Each value is the harness's (arm b) median completion tokens per prompt in
+# the (a'') pilot run files, error-free results only, from `arms.py budget`:
+#   flash-next       20261023T122354Z_q02-pilot-code_flash-next.json,
+#                    20261023T123936Z_q02-pilot-report_flash-next.json,
+#                    20261023T131346Z_q02-pilot-strata_flash-next.json
+#   qwen3.8-27b      20261023T152223Z_q02-pilot-27b_qwen3.8-27b.json (c35's b failed: code-long n = 2)
+#   qwen3.6-35b-a3b  20261023T182019Z_q02-pilot-35b_qwen3.6-35b-a3b.json
+# Pilot prompts: c02 c09 c16 (code short), c35 c42 c43 (code long),
+# r03 r10 r22 (report short), r37 r38 r46 (report long); n = 3 per stratum,
+# so the values are noisy (35B-A3B code-short sits above its code-long).
+# The rule (arms.py): after the draft, a round runs while the prompt's
+# completion tokens so far plus half the last round's are below the budget;
+# at least 1 round, at most 8.
+budgets:
+  flash-next:
+    code-short: 11019
+    code-long: 13632
+    report-short: 10338
+    report-long: 22812
+  qwen3.8-27b:
+    code-short: 12666
+    code-long: 17731
+    report-short: 10295
+    report-long: 17729
+  qwen3.6-35b-a3b:
+    code-short: 23674
+    code-long: 13437
+    report-short: 12100
+    report-long: 15689

@@ -11,12 +11,22 @@ sends a temperature, so all of them sample at the server's defaults, as the
 pipeline does:
   (a)  `a`   one call, thinking off
   (a′) `a1`  one call, thinking on
-  (a″) `a2`  self-refine: draft, then N rounds of critique -> revision,
+  (a″) `a2`  self-refine: draft, then rounds of critique -> revision,
              thinking off; every round's draft and critique is saved in
-             the result's `rounds` (logging only, D-023); N per domain
-             (--refine-rounds), tuned so the
-             median completion tokens per prompt are within ±25 % of the
-             harness's (Q-7; `match` reports it)
+             the result's `rounds` (logging only, D-023). Rounds are set by
+             one of two rules:
+               --refine-budget: a token budget per generator × domain ×
+                 length stratum (refine_budget.yaml, from the pilot's
+                 harness medians; the provisional amendment in Q-02 Notes).
+                 After the draft, a round runs while the prompt's completion
+                 tokens so far plus half the last round's are below the
+                 budget, so it stops at whichever side of the budget is
+                 nearer; at least REFINE_MIN_ROUNDS, at most REFINE_CAP.
+                 Each result logs `refine_budget` (stratum, budget, spent,
+                 rounds, stop reason) and each round's completion tokens.
+               --refine-rounds: a fixed N per domain (the pilots' rule).
+             Either way, Q-7 wants a2's median completion tokens per prompt
+             within ±25 % of the harness's (`match` reports it)
   (b)  `b`   the harness (TaskOrchestrator, the harness's default config
              plus any --set overrides)
   (c)  `c`   the harness with consolidation on; meant for the overlap subset
@@ -37,6 +47,9 @@ Usage (from the repo root; the endpoint is required, D-008):
       --arm a --arm b --subset g3 --label q02-g3-smoke
   .venv/bin/python journal/baseline/arms.py run --generator qwen3.8-27b \\
       --arm a2 --refine-rounds code=1,report=2 --prompt c01 --prompt r03
+  .venv/bin/python journal/baseline/arms.py run --generator qwen3.6-35b-a3b \\
+      --arm a2 --refine-budget --subset g3
+  .venv/bin/python journal/baseline/arms.py budget RUN_FILE [RUN_FILE ...]  # derive budgets
   .venv/bin/python journal/baseline/arms.py run ... --resume RUN_FILE
   .venv/bin/python journal/baseline/arms.py plan --subset overlap --arm c   # no calls
   .venv/bin/python journal/baseline/arms.py match RUN_FILE [RUN_FILE ...]
@@ -100,6 +113,11 @@ SINGLE_ARMS = ('a', 'a1', 'a2')
 DOMAINS = ('code', 'report')
 
 CONTINUE_CAP = 3
+# Self-refine under --refine-budget (the provisional amendment, Q-02 Notes).
+REFINE_CAP = 8
+REFINE_MIN_ROUNDS = 1
+DEFAULT_BUDGET = Path(__file__).parent / 'refine_budget.yaml'
+STRATA = ('code-short', 'code-long', 'report-short', 'report-long')
 # The prompts below are part of the pre-registration (Q-02 Notes); a change
 # is a new version and voids comparisons with run files made before it.
 PROMPTS_VERSION = 'arms-v1'
@@ -183,6 +201,10 @@ def load_bench(bench_dir: Path) -> dict:
             'prompts': prompts}
 
 
+def stratum(entry: dict) -> str:
+    return f'{entry["domain"]}-{"long" if entry.get("long") else "short"}'
+
+
 def chain_of(prompts: dict[str, dict], pid: str) -> list[str]:
     """pid's ancestors, root first, ending with pid."""
     out = [pid]
@@ -257,6 +279,12 @@ def complete(client, model: str, messages: list[dict], *, thinking: bool, phase:
         )
         text, finish = _message_text(resp)
         parts.append(text)
+        usage = getattr(resp, 'usage', None)
+        ctok = getattr(usage, 'completion_tokens', None)
+        if ctok is None:  # no usage from the server: estimate, and say so
+            counters['usage_missing'] = counters.get('usage_missing', 0) + 1
+            ctok = len(text) // 4
+        counters['completion_tokens'] = counters.get('completion_tokens', 0) + ctok
         counters['finish_reasons'].append(finish)
         if finish != 'length':
             break
@@ -283,9 +311,12 @@ def task_block(history: list[tuple[str, str]], prompt: str) -> str:
 
 
 def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[str, str]],
-               rounds: int) -> tuple[str, dict]:
-    """One prompt through arm a, a1 or a2. Returns the output and counters."""
-    counters = {'continuations': 0, 'capped': 0, 'finish_reasons': [], 'rounds': 0}
+               rounds: int, budget: dict | None = None) -> tuple[str, dict]:
+    """One prompt through arm a, a1 or a2. Returns the output and counters.
+    a2 runs `rounds` rounds, or, given `budget` ({stratum, tokens}), the
+    budget rule in the module docstring."""
+    counters = {'continuations': 0, 'capped': 0, 'finish_reasons': [], 'rounds': 0,
+                'completion_tokens': 0}
     messages = []
     for asked, answered in history:
         messages += [{'role': 'user', 'content': asked},
@@ -298,9 +329,15 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
                      counters=counters)
     # Every round's draft and critique, for the post-hoc confidence study
     # (D-023). Logging only: nothing below reads it back.
-    counters['round_log'] = [{'round': 0, 'draft': draft}]
+    counters['round_log'] = [{'round': 0, 'draft': draft,
+                              'completion_tokens': counters['completion_tokens']}]
     task = task_block(history, prompt)
-    for r in range(rounds):
+    last_round, stop = 0, 'rounds'
+    for r in range(REFINE_CAP if budget else rounds):
+        spent = counters['completion_tokens']
+        if budget and r >= REFINE_MIN_ROUNDS and spent + last_round / 2 >= budget['tokens']:
+            stop = 'budget'
+            break
         critique = complete(
             client, model,
             [{'role': 'user', 'content': CRITIQUE_PROMPT.format(task=task, response=draft)}],
@@ -311,7 +348,17 @@ def run_single(client, model: str, arm: str, prompt: str, history: list[tuple[st
                 task=task, response=draft, critique=critique)}],
             thinking=False, phase=f'Self-refine revision round {r + 1}', counters=counters)
         counters['rounds'] += 1
-        counters['round_log'].append({'round': r + 1, 'critique': critique, 'draft': draft})
+        last_round = counters['completion_tokens'] - spent
+        counters['round_log'].append({'round': r + 1, 'critique': critique, 'draft': draft,
+                                      'completion_tokens': last_round})
+    else:
+        if budget:
+            stop = 'cap'
+    if budget:
+        counters['budget'] = {'stratum': budget['stratum'], 'budget': budget['tokens'],
+                              'spent': counters['completion_tokens'],
+                              'rounds': counters['rounds'], 'stop': stop,
+                              'cap': REFINE_CAP, 'min_rounds': REFINE_MIN_ROUNDS}
     return draft, counters
 
 
@@ -331,7 +378,7 @@ def result_key(r: dict) -> tuple[str, str, int]:
 
 
 def run_chain_single(client, model, measured, arm, chain, prompts, run_index,
-                     rounds_by_domain) -> list[dict]:
+                     rounds_by_domain, budgets=None) -> list[dict]:
     results = []
     history: list[tuple[str, str]] = []
     for pid in chain:
@@ -339,21 +386,26 @@ def run_chain_single(client, model, measured, arm, chain, prompts, run_index,
         turn_id = f'{arm}:{pid}#r{run_index}'
         harness._current_turn.set(turn_id)
         rounds = rounds_by_domain.get(entry['domain'], 0) if arm == 'a2' else 0
+        budget = ({'stratum': stratum(entry), 'tokens': budgets[stratum(entry)]}
+                  if arm == 'a2' and budgets else None)
         t0 = time.perf_counter()
         error = None
         text, counters = '', {}
         try:
-            text, counters = run_single(client, model, arm, entry['text'], history, rounds)
+            text, counters = run_single(client, model, arm, entry['text'], history, rounds,
+                                        budget)
         except Exception as exc:  # noqa: BLE001 - record it; the chain stops here
             error = repr(exc)
         wall = time.perf_counter() - t0
         calls = measured.records_for_turn(turn_id)
         results.append({
             'prompt_id': pid, 'arm': arm, 'run': run_index, 'chain': chain,
-            'follows': entry['follows'], 'domain': entry['domain'],
+            'follows': entry['follows'], 'domain': entry['domain'], 'stratum': stratum(entry),
             'wall_seconds': round(wall, 1), 'llm': harness.llm_stats(calls),
             'calls': [asdict(c) for c in calls],
             'refine_rounds': counters.get('rounds'),
+            # a2 under --refine-budget: stratum, budget, spent, rounds, stop
+            'refine_budget': counters.get('budget'),
             # a2 only: [{round 0: draft}, {round k: critique, draft}, ...] (D-023)
             'rounds': counters.get('round_log'),
             'continuations': counters.get('continuations'),
@@ -403,6 +455,7 @@ def run_chain_harness(client, measured, arm, chain, prompts, run_index, build,
             row = {
                 'prompt_id': pid, 'arm': arm, 'run': run_index, 'chain': chain,
                 'follows': prompts[pid]['follows'], 'domain': prompts[pid]['domain'],
+                'stratum': stratum(prompts[pid]),
                 'wall_seconds': turn['wall_seconds'], 'llm': turn['llm'],
                 'calls': turn.get('calls', []),
                 'document': turn.get('document'), 'sub_tasks': turn.get('sub_tasks'),
@@ -430,6 +483,40 @@ def parse_rounds(spec: str | None) -> dict[str, int]:
             raise ValueError(f'--refine-rounds: unknown domain {domain!r}')
         out[domain] = int(n)
     return out
+
+
+def load_budget(path: Path, generator: str) -> dict:
+    """refine_budget.yaml's entry for one generator: {stratum: tokens}, plus the file's hash."""
+    raw = yaml.safe_load(Path(path).read_text())
+    per = (raw.get('budgets') or {}).get(generator)
+    if not per:
+        raise SystemExit(f'{path}: no refine budget for generator {generator!r}')
+    bad = set(per) - set(STRATA)
+    if bad:
+        raise SystemExit(f'{path}: unknown strata {sorted(bad)} for {generator}')
+    return {'path': str(Path(path).resolve().relative_to(REPO_ROOT))
+            if Path(path).resolve().is_relative_to(REPO_ROOT) else str(path),
+            'sha256': sha256(Path(path).read_text()), 'tokens': {k: int(v) for k, v in per.items()}}
+
+
+def budget_report(files: list[Path], bench_dir: Path) -> dict:
+    """Per generator × stratum: the median completion tokens per prompt of
+    the harness (arm b, error-free results only) across the run files, which
+    is the --refine-budget value; with n and the prompts behind it."""
+    prompts = load_bench(bench_dir)['prompts']
+    rows: dict[str, dict[str, dict[str, int]]] = {}
+    for path in files:
+        data = json.loads(Path(path).read_text())
+        for r in data['results']:
+            if r['arm'] != 'b' or r['error'] is not None or r['prompt_id'] not in prompts:
+                continue
+            per = rows.setdefault(data['generator'], {}).setdefault(
+                stratum(prompts[r['prompt_id']]), {})
+            per[r['prompt_id']] = r['llm']['completion_tokens']
+    return {gen: {st: {'tokens': int(statistics.median(v.values())), 'n': len(v),
+                       'prompts': dict(sorted(v.items()))}
+                  for st, v in sorted(per.items())}
+            for gen, per in sorted(rows.items())}
 
 
 def summarise(results: list[dict]) -> dict:
@@ -479,11 +566,20 @@ def run_arms(args) -> int:
     chains = plan_chains(prompts, selected)
     arms = args.arm or ['b']
     rounds = parse_rounds(args.refine_rounds)
+    budget = load_budget(args.refine_budget, args.generator) if args.refine_budget else None
     if 'a2' in arms:
-        needed = {prompts[p]['domain'] for c in chains for p in c}
-        missing = needed - set(rounds)
-        if missing:
-            raise SystemExit(f'arm a2 needs --refine-rounds for {", ".join(sorted(missing))}')
+        if budget:
+            needed = {stratum(prompts[p]) for c in chains for p in c}
+            missing = needed - set(budget['tokens'])
+            if missing:
+                raise SystemExit(f'{budget["path"]} has no {args.generator} budget for '
+                                 f'{", ".join(sorted(missing))}')
+        else:
+            needed = {prompts[p]['domain'] for c in chains for p in c}
+            missing = needed - set(rounds)
+            if missing:
+                raise SystemExit('arm a2 needs --refine-budget or --refine-rounds for '
+                                 + ', '.join(sorted(missing)))
     try:
         base_cfg = harness.resolve_config(False, 'off', args.set)
         consol_cfg = harness.resolve_config(True, 'off', args.set)
@@ -518,7 +614,8 @@ def run_arms(args) -> int:
         for field, now in (('generator', args.generator), ('model', model),
                            ('manifest_sha256', bench['sha256']),
                            ('prompts_version', PROMPTS_VERSION),
-                           ('overrides', args.set), ('refine_rounds', rounds)):
+                           ('overrides', args.set), ('refine_rounds', rounds),
+                           ('refine_budget', budget)):
             if old.get(field) != now:
                 raise SystemExit(f'--resume: {field} differs ({old.get(field)!r} vs {now!r})')
         head = harness.git_commit()['commit']
@@ -554,7 +651,10 @@ def run_arms(args) -> int:
         'generator': args.generator, 'model': model, 'backend': backend,
         'served_models': served,
         'arms': arms, 'arm_names': {a: ARM_NAMES[a] for a in arms},
-        'refine_rounds': rounds, 'continue_cap': CONTINUE_CAP,
+        'refine_rounds': rounds, 'refine_budget': budget,
+        'refine_cap': REFINE_CAP if budget else None,
+        'refine_min_rounds': REFINE_MIN_ROUNDS if budget else None,
+        'continue_cap': CONTINUE_CAP,
         'max_tokens': harness.MAX_TOKENS, 'sampling': 'server defaults (no temperature sent)',
         'prompts_version': PROMPTS_VERSION,
         'prompts_sha256': sha256(CONTINUE_PROMPT + CRITIQUE_PROMPT + REVISE_PROMPT),
@@ -593,7 +693,7 @@ def run_arms(args) -> int:
         try:
             if arm in SINGLE_ARMS:
                 rows = run_chain_single(client, model, measured, arm, chain, prompts, run,
-                                        rounds)
+                                        rounds, budget['tokens'] if budget else None)
             else:
                 rows = run_chain_harness(client, measured, arm, chain, prompts, run,
                                          build_for(arm), f'{started}_')
@@ -633,12 +733,15 @@ def run_arms(args) -> int:
 # ---------------------------------------------------------------------------
 
 
-def match_report(files: list[Path], tolerance: float = 0.25) -> dict:
+def match_report(files: list[Path], tolerance: float = 0.25,
+                 strata: dict[str, str] | None = None) -> dict:
     """Per generator × domain: the harness's median completion tokens per
     prompt against a2's at each N tried (`a2@N`; and a's, a1's), the ±25 %
     check, and the N that the N = 1 pilot's per-call medians predict:
     draft + N × (critique + revision). Rounds grow longer with N on long
-    documents, so the prediction is a lower bound; verify it."""
+    documents, so the prediction is a lower bound; verify it. Results are
+    also reported per stratum (gen/code-long, ...), from each result's
+    `stratum` or, for older run files, `strata` (prompt id -> stratum)."""
     rows: dict[tuple[str, str], dict[str, list]] = {}
     call_medians: dict[tuple[str, str], dict[str, list[int]]] = {}
     for path in files:
@@ -648,9 +751,17 @@ def match_report(files: list[Path], tolerance: float = 0.25) -> dict:
             if r['error'] is not None:
                 continue
             key = (gen, r['domain'])
-            # a2 runs at different N are different arms for matching: a2@N.
-            arm = f'a2@{r.get("refine_rounds")}' if r['arm'] == 'a2' else r['arm']
+            # a2 runs at different N are different arms for matching: a2@N,
+            # and a2@budget under --refine-budget.
+            if r['arm'] == 'a2':
+                arm = 'a2@budget' if r.get('refine_budget') else f'a2@{r.get("refine_rounds")}'
+            else:
+                arm = r['arm']
             rows.setdefault(key, {}).setdefault(arm, []).append(r['llm']['completion_tokens'])
+            st = r.get('stratum') or (strata or {}).get(r.get('prompt_id'))
+            if st:
+                rows.setdefault((gen, st), {}).setdefault(arm, []).append(
+                    r['llm']['completion_tokens'])
             if r['arm'] == 'a2' and r.get('refine_rounds') == 1:
                 per = call_medians.setdefault(key, {'draft': [], 'round': []})
                 draft = sum(c['completion_tokens'] or 0 for c in r['calls']
@@ -701,8 +812,13 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument('--generator', choices=sorted(GENERATORS), required=True)
     run.add_argument('--base-url', default=os.environ.get('LLM_BASE_URL'),
                      help='generator endpoint (default: $LLM_BASE_URL; required)')
-    run.add_argument('--refine-rounds', default=None,
-                     help="a2's rounds: N for both domains or code=N,report=M (required for a2)")
+    rule = run.add_mutually_exclusive_group()
+    rule.add_argument('--refine-rounds', default=None,
+                      help="a2's rounds: N for both domains or code=N,report=M")
+    rule.add_argument('--refine-budget', nargs='?', const=str(DEFAULT_BUDGET), default=None,
+                      metavar='FILE',
+                      help=f"a2's rounds by token budget per stratum (default file: "
+                           f"{DEFAULT_BUDGET.name}); a2 needs this or --refine-rounds")
     run.add_argument('--set', action='append', default=[], metavar='SECTION.KEY=VALUE',
                      help='OrchestratorConfig override for the harness arms (Q-05 ablations)')
     run.add_argument('--runs', type=int, default=1)
@@ -719,10 +835,23 @@ def main(argv: list[str] | None = None) -> int:
 
     match = sub.add_parser('match', help='compute-matching report over run files (Q-7)')
     match.add_argument('files', nargs='+')
+    match.add_argument('--bench', default=str(DEFAULT_BENCH),
+                       help='for the strata of run files that predate the `stratum` field')
+
+    budget = sub.add_parser('budget', help="a2's token budgets per generator × stratum: the "
+                            "harness's median completion tokens in the given run files")
+    budget.add_argument('files', nargs='+')
+    budget.add_argument('--bench', default=str(DEFAULT_BENCH))
 
     args = ap.parse_args(argv)
     if args.cmd == 'match':
-        print(json.dumps(match_report([Path(f) for f in args.files]), indent=2))
+        prompts = load_bench(Path(args.bench))['prompts']
+        strata = {pid: stratum(e) for pid, e in prompts.items()}
+        print(json.dumps(match_report([Path(f) for f in args.files], strata=strata), indent=2))
+        return 0
+    if args.cmd == 'budget':
+        print(yaml.safe_dump(budget_report([Path(f) for f in args.files], Path(args.bench)),
+                             sort_keys=False))
         return 0
     if args.cmd == 'plan':
         bench = load_bench(Path(args.bench))

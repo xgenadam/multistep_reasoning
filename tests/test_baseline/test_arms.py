@@ -204,7 +204,7 @@ def test_resume_refuses_a_changed_setting(tmp_path, monkeypatch, arms):
 def test_refusals(tmp_path, monkeypatch, arms):
     bench, out = _bench(tmp_path), tmp_path / 'runs'
     _wire(monkeypatch, arms, ArmsServer())
-    with pytest.raises(SystemExit, match='needs --refine-rounds'):
+    with pytest.raises(SystemExit, match='needs --refine-budget or --refine-rounds'):
         _run(arms, bench, out, '--arm', 'a2')
     with pytest.raises(SystemExit, match='unknown key'):
         _run(arms, bench, out, '--set', 'options.nope=1')
@@ -292,8 +292,11 @@ def test_a2_logs_every_round_without_changing_what_it_sends(tmp_path, monkeypatc
     [row] = data['results']
     log = row['rounds']
     assert [r['round'] for r in log] == [0, 1, 2]
-    assert log[0] == {'round': 0, 'draft': 'ANSWER[Write a shor] (rest)'}
-    assert all(r['critique'] == 'Problem: too short.' and r['draft'] == 'REVISED' for r in log[1:])
+    # Each round also logs its completion tokens: the draft is 2 calls x 4, a round 2 x 4.
+    assert log[0] == {'round': 0, 'draft': 'ANSWER[Write a shor] (rest)', 'completion_tokens': 8}
+    assert all(r['critique'] == 'Problem: too short.' and r['draft'] == 'REVISED'
+               and r['completion_tokens'] == 8 for r in log[1:])
+    assert row['refine_budget'] is None and row['stratum'] == 'report-short'
     assert row['output']['text'] == log[-1]['draft']
     # Each revision request carries the previous round's draft, as before.
     revisions = [b['messages'][-1]['content'] for b in server.requests
@@ -322,3 +325,69 @@ def test_jobs_default_per_generator(tmp_path, monkeypatch, arms):
                       '--arm', 'a']) == 0
     _, data = _load(out)
     assert data['jobs'] == 5
+
+
+def _budget_file(tmp_path, **tokens):
+    path = tmp_path / 'budget.yaml'
+    path.write_text(yaml.safe_dump({'budgets': {'flash-next': tokens}}))
+    return path
+
+
+@pytest.mark.parametrize('budget, rounds, stop', [
+    (30, 3, 'budget'),    # 8 + 8 + 8 + 8 = 32: a fourth round would end at 40, farther from 30
+    (21, 2, 'budget'),    # 24 is 3 over, 16 would be 5 under: the nearer side
+    (5, 1, 'budget'),     # the draft alone is over, but at least one round runs
+    (10_000, 8, 'cap'),   # never reaches the budget: stops at REFINE_CAP
+])
+def test_a2_token_budget(tmp_path, monkeypatch, arms, budget, rounds, stop):
+    """--refine-budget: after the draft, a round runs while spent + half the last
+    round is below the stratum's budget; at least one round, at most REFINE_CAP."""
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    server = ArmsServer()
+    _wire(monkeypatch, arms, server)
+    path = _budget_file(tmp_path, **{'report-short': budget, 'code-long': 99})
+    assert _run(arms, bench, out, '--arm', 'a2', '--prompt', 'r01',
+                '--refine-budget', str(path)) == 0
+    _, data = _load(out)
+    [row] = data['results']
+    assert row['refine_rounds'] == rounds and len(row['rounds']) == rounds + 1
+    assert row['refine_budget'] == {'stratum': 'report-short', 'budget': budget,
+                                    'spent': 8 + 8 * rounds, 'rounds': rounds, 'stop': stop,
+                                    'cap': arms.REFINE_CAP, 'min_rounds': 1}
+    assert data['refine_budget']['tokens'] == {'report-short': budget, 'code-long': 99}
+    assert data['refine_cap'] == arms.REFINE_CAP and data['refine_rounds'] == {}
+    assert row['llm']['completion_tokens'] == 8 + 8 * rounds  # the seam agrees with the rule
+
+
+def test_a2_budget_refusals(tmp_path, monkeypatch, arms):
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    _wire(monkeypatch, arms, ArmsServer())
+    path = _budget_file(tmp_path, **{'report-short': 30})
+    with pytest.raises(SystemExit, match='no flash-next budget for code-long'):
+        _run(arms, bench, out, '--arm', 'a2', '--refine-budget', str(path))
+    with pytest.raises(SystemExit):  # one rule or the other, never both
+        _run(arms, bench, out, '--arm', 'a2', '--refine-budget', str(path), '--refine-rounds', '1')
+
+
+def test_budget_and_match_by_stratum(tmp_path, arms):
+    """`budget` takes the harness's error-free median per stratum; `match`
+    reports a2@budget beside b per domain and per stratum."""
+    bench = _bench(tmp_path)
+
+    def row(pid, arm, ctok, error=None, **extra):
+        return {'prompt_id': pid, 'arm': arm, 'run': 0, 'domain': 'code' if pid == 'c01' else 'report',
+                'error': error, 'llm': {'completion_tokens': ctok}, 'calls': [], **extra}
+    f = tmp_path / 'pilot.json'
+    f.write_text(json.dumps({'generator': 'flash-next', 'results': [
+        row('r01', 'b', 100), row('r01f', 'b', 300), row('c01', 'b', 50),
+        row('c01', 'b', 999, error='boom') | {'run': 1},
+        row('r01', 'a2', 90, refine_budget={'stop': 'budget'}, stratum='report-short'),
+    ]}))
+    report = arms.budget_report([f], bench)
+    assert report['flash-next']['report-short'] == {'tokens': 200, 'n': 2,
+                                                    'prompts': {'r01': 100, 'r01f': 300}}
+    assert report['flash-next']['code-long']['tokens'] == 50  # the errored run is left out
+    m = arms.match_report([f], strata={'r01': 'report-short', 'r01f': 'report-short',
+                                       'c01': 'code-long'})
+    assert m['flash-next/report-short']['completion_p50'] == {'b': 200, 'a2@budget': 90}
+    assert m['flash-next/report']['within_25pct'] == {'a2@budget': False}
