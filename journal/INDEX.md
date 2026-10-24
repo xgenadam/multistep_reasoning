@@ -12,7 +12,7 @@ updated: 2026-10-24 (Q-02: token-budget amendment and re-pilot, IFEval checker a
 - **Interpreter:** `.venv/bin/python` (3.12.15, D-012); `make venv` rebuilds it, `make test` runs the suite.
 - **Baseline:** 0-16 denominators (`:8091`, thinking off) in `../AGENTS.md` § Baseline; contamination yardsticks per backend in `compare.CLEAN_COMPOSE_P50_S`. `:5000` has no current-code baseline.
 - **Pushed:** `origin/master` = `f5c590c` (S-012). `master` adds the 0-06 close, S-014, the 0-09 close, the A-01 design, the A-01 approval, the Q-01 stage 1 commits (S-018) and Q-01 stage 2 (S-019), Q-04, D-020, S-020, D-021, Q-06, S-021 and S-022 (Q-02 stage 0: tooling, bench v1, D-022, D-023, three baselines and pilots); the user pushes from the host.
-- **Server owner:** none since 2026-10-24 01:31Z (GPUs idle). Every card is capped at 250 W by the user (not persistent across a host reboot); run each llama.cpp generator alone on four cards. The watchdog is pid 314397: it kills GPU processes by PID and reads the slowdown counters.
+- **Server owner:** Q-02 stage 1 (S-022, a Sonnet 5.5 sub-agent), claimed 2026-10-24T03:04Z: flash-next on `:8090`, then the 35B-A3B, then the 27B, from the pinned worktree `runs/q02-stage1-a82c5b7` (commit `a82c5b7`). Every card is capped at 250 W by the user (not persistent across a host reboot); run each llama.cpp generator alone on four cards. The watchdog is pid 314397: it kills GPU processes by PID and reads the slowdown counters.
 
 ## Queue (execution order: id — title — model/effort — needs_server — depends_on)
 1. Q-02 stage 1 — the campaign (Now); stage 2 needs the R1–R5 labels and the § 4.4 check — Q-01, Q-04 (formally)
