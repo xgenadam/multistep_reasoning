@@ -42,7 +42,12 @@ pipeline does:
 
 Every call of a single-model arm continues until done: when it ends on
 `length`, the driver sends CONTINUE_PROMPT with the partial output, at most
-CONTINUE_CAP times, and joins the parts (design § 1, P6).
+CONTINUE_CAP times, and joins the parts (design § 1, P6). With thinking on
+(a1) the whole allowance, (CONTINUE_CAP + 1) x MAX_TOKENS, goes to the first
+call: the server returns reasoning apart from the answer, so a cut inside
+the reasoning leaves nothing to continue from, and a continuation would
+restart the thinking from scratch (Q-02 Notes, 2026-10-24). A thinking call
+continues only once its answer has started, within what is left.
 
 Follow-up prompts (`follows:` in the manifest) run in a chain after their
 parent, in the same job and the same arm. The harness continues the
@@ -137,6 +142,9 @@ SINGLE_ARMS = ('a', 'a1', 'a2')
 DOMAINS = ('code', 'report')
 
 CONTINUE_CAP = 3
+# A thinking-on call's completion tokens, reasoning included: the same total
+# as a thinking-off call with every continuation (4 x 8,192), in one call.
+THINKING_ALLOWANCE = (CONTINUE_CAP + 1) * harness.MAX_TOKENS
 # Self-refine under --refine-budget (the provisional amendment, Q-02 Notes).
 REFINE_CAP = 8
 REFINE_MIN_ROUNDS = 1
@@ -300,8 +308,14 @@ def complete(client, model: str, messages: list[dict], *, thinking: bool, phase:
     when the room runs out the call stops there with counters['ceiling_hit']."""
     convo = list(messages)
     parts: list[str] = []
+    spent = 0  # this logical call's completion tokens (a thinking call's allowance)
     for attempt in range(CONTINUE_CAP + 1):
         max_tokens = harness.MAX_TOKENS
+        if thinking:
+            max_tokens = THINKING_ALLOWANCE - spent
+            if max_tokens <= 0:
+                counters['capped'] += 1
+                break
         if ceiling is not None:
             room = ceiling - counters.get('completion_tokens', 0)
             if room <= 0:
@@ -322,8 +336,12 @@ def complete(client, model: str, messages: list[dict], *, thinking: bool, phase:
             counters['usage_missing'] = counters.get('usage_missing', 0) + 1
             ctok = len(text) // 4
         counters['completion_tokens'] = counters.get('completion_tokens', 0) + ctok
+        spent += ctok
         counters['finish_reasons'].append(finish)
         if finish != 'length':
+            break
+        if thinking and not text.strip():
+            counters['capped'] += 1  # cut inside the reasoning: nothing to continue from
             break
         if ceiling is not None and counters['completion_tokens'] >= ceiling:
             counters['ceiling_hit'] = True  # cut off by the ceiling, not by max_tokens

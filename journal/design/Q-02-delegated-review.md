@@ -74,6 +74,7 @@ amendment.
 | 20 | Bench v1 → v1.1 | c14: `rows` may be any iterable; c36: the `.` error is at the `.`; c47/c47f: the surrogate-pair escapes restored in the prompt and tests (they tested nothing); r06/r06f: one more decision allowed; r08: a wider "two seasons" pattern | S, checked by C | no | `bench/v1/` | v1.1 run files |
 | 21 | Hidden-test scorer | 20 s per test (SIGALRM); the 120 s file timeout stays as the backstop | S, built by C | no | `hidden_tests.py` | code scores |
 | 22 | D-024's code | approved; the run file now carries each harness turn's completion tokens, estimated calls and ceiling stop | S, built by C | no | `harness.py`, `task_orchestrator.py` | n/a |
+| 23 | (a′) thinking-call defect | a thinking call gets the whole allowance (4 × 8,192 = 32,768) in one call and continues only once its answer has started; flash-next's 60 a1 results are void and a1 re-runs in full at the fix commit; a is kept (a derived a-only file, original under `runs/`) | C, the user approved the re-run | no (a defect fix restoring the pre-registered arm) | `arms.py`, Q-02 Notes 2026-10-24 | the a1 run files |
 
 ## Stage 2 analysis script: readings chosen (Opus 5.5 / high)
 

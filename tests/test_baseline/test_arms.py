@@ -492,3 +492,41 @@ def test_harness_intermediates_go_to_their_own_directory(tmp_path, monkeypatch, 
         assert doc['snapshot']['parts']
     manifest = json.loads((root / 'manifest.json').read_text())
     assert data['intermediates']['files'] == len(manifest) and len(manifest) >= 4
+
+
+class ThinkingServer(ArmsServer):
+    """Thinking-on calls answer only with reasoning, cut on `length`: the
+    server's reasoning field, no content (the a1 defect, 2026-10-24)."""
+
+    def handle(self, request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith('/models'):
+            return super().handle(request)
+        body = json.loads(request.content)
+        if not body.get('chat_template_kwargs', {}).get('enable_thinking'):
+            return super().handle(request)
+        self.requests.append(body)
+        return httpx.Response(200, json={
+            'id': 'c', 'object': 'chat.completion', 'created': 0, 'model': MODEL,
+            'choices': [{'index': 0, 'finish_reason': 'length', 'message': {
+                'role': 'assistant', 'content': None, 'reasoning_content': 'thinking...'}}],
+            'usage': {'prompt_tokens': 10, 'completion_tokens': body['max_tokens'],
+                      'total_tokens': 10 + body['max_tokens']},
+        })
+
+
+def test_thinking_call_gets_the_whole_allowance_and_no_blind_continuation(
+        tmp_path, monkeypatch, arms):
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    server = ThinkingServer()
+    _wire(monkeypatch, arms, server)
+    assert _run(arms, bench, out, '--arm', 'a1', '--prompt', 'c01') == 0
+    _, data = _load(out)
+    [row] = data['results']
+    # One call with the whole allowance; a cut inside the reasoning is not
+    # sent back as an empty turn to "continue".
+    assert [b['max_tokens'] for b in server.requests] == [arms.THINKING_ALLOWANCE]
+    assert arms.THINKING_ALLOWANCE == (arms.CONTINUE_CAP + 1) * 8192
+    assert not any(m['content'].startswith('Continue exactly')
+                   for b in server.requests for m in b['messages'] if m.get('content'))
+    assert row['continuations'] == 0 and row['capped'] == 1
+    assert row['output']['text'] == '' and row['error'] is None
