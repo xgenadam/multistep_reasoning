@@ -114,3 +114,28 @@ def test_token_ceiling_stops_and_returns_the_document_as_it_stands():
                                                  'skipped': ['Chapter 3', 'Chapter 4']}
     # No consolidation pass after a ceiling stop.
     assert [p['step'] for k, p in events if k == 'document'] == [1, 2]
+
+
+def test_document_steps_carry_the_result_and_that_steps_composer_attempts():
+    events = []
+    orch, _ = _orchestrator(2, on_step=lambda kind, payload: events.append((kind, payload)))
+    _run(orch)
+    docs = [p for k, p in events if k == 'document']
+    assert [d['result'] for d in docs] == ['Body of Chapter 1.', 'Body of Chapter 2.']
+    assert [[a['attempt'] for a in d['compose_attempts']] for d in docs] == [[1], [1]]
+    assert docs[1]['compose_attempts'][0]['ops'][0]['id'] == 'chapter-2'
+
+
+def test_a_failed_compose_is_recorded_before_the_turn_fails():
+    import pytest
+    from reasoning_sub_agents.execution_synthesiser.document_composer import ComposerResponse
+    events = []
+    orch, _ = _orchestrator(1, on_step=lambda kind, payload: events.append((kind, payload)))
+    bad = ComposerResponse(ops=[AddPart(id='x', kind='section', title='X', body='not the result')])
+    with patch('reasoning_sub_agents.execution_synthesiser.document_composer'
+               '.get_streamed_json_response', return_value=bad), pytest.raises(Exception):
+        orch.query('Write a book')
+    kind, failed = events[-1]
+    assert kind == 'compose_failed' and failed['step'] == 1
+    assert failed['result'] == 'Body of Chapter 1.' and 'composer failed' in failed['error']
+    assert len(failed['compose_attempts']) == 3 and all(a['error'] for a in failed['compose_attempts'])

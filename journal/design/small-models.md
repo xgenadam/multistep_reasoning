@@ -71,3 +71,22 @@ Gemma's template takes `enable_thinking` (default off); checked live: thinking o
   prompt's rule 1 allows merging, deduplication and refactoring instead of "Do not re-type the sub-task result".
 - gemma's b runs, after a1: `names` + fallback, `off` + fallback, and `verbatim` + fallback (the agent). Why the
   third: the first b run had no fallback, so without it a gain could not be split between the rule and the fallback.
+- 21:22Z: `b-off` failed at startup (the agent's bug): `--set options.keep_rule=off` reaches the config as the YAML
+  boolean `false`. Re-run as `--set 'options.keep_rule="off"'` by a new driver (`keep2.sh`, chained after keep.sh by
+  `chain_keep2.sh`) rather than by editing the running one. Rejected: mapping `false` to `off` in the config, which
+  would change the frozen harness code under a running study for a quoting slip.
+- 21:30Z, b-names partial (48 of 54 done prompts scored): 0.312 against a's 0.474 on the same prompts, 0.055 for
+  b-verbatim. The scorer's extraction failed on 11 of them (b 0.042, a 0.243 there), but on the 37 clean ones b still
+  trails (0.392 against 0.542), so the gap is not only extraction.
+- 22:30Z: a trace viewer (the user: "a visualisation tool for the flow of the harness and its prompts ... see where it
+  broke"; suspects: sub-tasks get too little information, the composer does not tie it together, or the validity
+  criteria are wrong). Runs recorded call counts but no call text and no composer attempts, so the agent added:
+  - `arms.py run --trace-calls`: every call's messages, request fields and reply under the turn's intermediates
+    (`calls/`), through `MeasuredCompletions.trace`. Opt-in because the text is large (compose prompts run to tens
+    of K tokens, about 30 calls per turn); a failing trace never changes a call.
+  - The orchestrator's `document` step record gains the sub-task's result and that step's composer attempts, and a
+    `compose_failed` record precedes a failed turn. Logging only; no harness behaviour changes.
+  - `journal/baseline/trace_view.py` (+ `trace_view.html`): a static page per run under `runs/trace-view/` (one data
+    file per turn, loaded on demand, so a 13 MB run opens from file://), with a per-turn "where it went wrong" list.
+    Rejected: one self-contained HTML (too large once calls are traced) and a published artifact (the data stays local).
+  - Next: re-run about 10 prompts where b lost to a with `--trace-calls` after the running b runs finish.

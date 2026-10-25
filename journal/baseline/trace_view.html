@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness Trace</title>
+<!-- Template for trace_view.py: it replaces the INDEX marker below with the run's index. -->
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e2e1dc;
+  --accent: #2f5fd0; --ok: #1f7a3d; --ok-bg: #e6f4ea; --bad: #b3261e; --bad-bg: #fbe9e7;
+  --warn: #8a5a00; --warn-bg: #fff4d6; --same: #8b8b85; --code-bg: #f1f0ec; --sel: #e8eefc;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --panel: #1f1f1d; --ink: #e9e8e3; --muted: #9c9b95; --line: #34332f;
+    --accent: #7ea2ff; --ok: #6fcf8e; --ok-bg: #173323; --bad: #ff8a80; --bad-bg: #3a1c1a;
+    --warn: #f0c35a; --warn-bg: #3a2f12; --same: #7a7a74; --code-bg: #262624; --sel: #24304d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --panel: #1f1f1d; --ink: #e9e8e3; --muted: #9c9b95; --line: #34332f;
+  --accent: #7ea2ff; --ok: #6fcf8e; --ok-bg: #173323; --bad: #ff8a80; --bad-bg: #3a1c1a;
+  --warn: #f0c35a; --warn-bg: #3a2f12; --same: #7a7a74; --code-bg: #262624; --sel: #24304d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel);
+  display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+header h1 { font-size: 16px; margin: 0; }
+header .meta { color: var(--muted); font-size: 12px; }
+.layout { display: grid; grid-template-columns: 340px 1fr; height: calc(100vh - 46px); }
+aside { border-right: 1px solid var(--line); overflow: auto; background: var(--panel); }
+main { overflow: auto; padding: 16px 24px 80px; }
+.filters { padding: 8px; display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; background: var(--panel); }
+.filters button, .btn { border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  border-radius: 4px; padding: 2px 8px; font-size: 12px; cursor: pointer; }
+.filters button.on { background: var(--accent); color: var(--panel); border-color: var(--accent); }
+.row { padding: 6px 10px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.row:hover { background: var(--bg); } .row.sel { background: var(--sel); }
+.row .top { display: flex; justify-content: space-between; gap: 8px; }
+.row .pid { font-weight: 600; font-variant-numeric: tabular-nums; }
+.row .t { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scores { font-variant-numeric: tabular-nums; font-size: 12px; white-space: nowrap; }
+.badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.b { font-size: 11px; padding: 0 5px; border-radius: 3px; background: var(--code-bg); color: var(--muted); }
+.b.bad { background: var(--bad-bg); color: var(--bad); } .b.warn { background: var(--warn-bg); color: var(--warn); }
+.b.ok { background: var(--ok-bg); color: var(--ok); }
+section.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  padding: 10px 14px; margin: 0 0 12px; }
+section.card > h2 { font-size: 14px; margin: 0 0 6px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.flow { border-left: 3px solid var(--line); margin-left: 6px; padding-left: 14px; }
+.sub { margin: 8px 0; } .sub > h3 { font-size: 13px; margin: 0 0 4px; color: var(--muted); }
+details { margin: 4px 0; } summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+pre { background: var(--code-bg); padding: 8px; border-radius: 4px; white-space: pre-wrap;
+  word-break: break-word; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; margin: 4px 0;
+  max-height: 520px; overflow: auto; }
+.attempt { border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; margin: 4px 0; }
+.attempt.rejected { border-color: var(--bad); background: var(--bad-bg); }
+.attempt.accepted { border-color: var(--ok); background: var(--ok-bg); }
+.attempt.fallback { border-color: var(--warn); background: var(--warn-bg); }
+.attempt .why { font-weight: 600; }
+.op { font: 12px ui-monospace, monospace; }
+.part { padding: 3px 6px; border-radius: 3px; margin: 2px 0; font-size: 13px; }
+.part.added { background: var(--ok-bg); } .part.changed { background: var(--warn-bg); }
+.part.removed { background: var(--bad-bg); text-decoration: line-through; } .part.same { color: var(--same); }
+.problems { background: var(--bad-bg); border: 1px solid var(--bad); border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; }
+.problems ol { margin: 4px 0 0 18px; padding: 0; } .problems a { color: var(--bad); }
+.call { border-top: 1px dashed var(--line); padding-top: 4px; margin-top: 4px; }
+.call .hd { font-size: 12px; color: var(--muted); }
+.msg-role { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: .04em; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+.muted { color: var(--muted); } .bad { color: var(--bad); } .ok { color: var(--ok); } .warn { color: var(--warn); }
+.empty { color: var(--muted); padding: 40px; text-align: center; }
+table.tests { border-collapse: collapse; font-size: 12px; } table.tests td { padding: 1px 8px 1px 0; }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; height: auto; } aside { max-height: 40vh; }
+  main { padding: 12px 16px 60px; }
+}
+</style>
+</head>
+<body>
+<header><h1 id="title">Harness trace</h1><span class="meta" id="meta"></span>
+  <button class="btn" id="theme" title="Toggle light/dark">◐</button></header>
+<div class="layout">
+  <aside><div class="filters" id="filters"></div><div id="list"></div></aside>
+  <main id="main"><div class="empty">Pick a prompt on the left.</div></main>
+</div>
+<script>
+const INDEX = /*__INDEX__*/null;
+const META = INDEX.meta, TURNS = INDEX.turns, CMP = META.compare;
+const cache = {};
+window.__turn = (slug, data) => { cache[slug] = data; if (pending[slug]) { pending[slug](data); delete pending[slug]; } };
+const pending = {};
+function load(slug) {
+  return new Promise(res => {
+    if (cache[slug]) return res(cache[slug]);
+    pending[slug] = res;
+    const s = document.createElement('script'); s.src = `data/${slug}.js`; document.body.appendChild(s);
+  });
+}
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) if (k != null) e.append(k instanceof Node ? k : document.createTextNode(String(k)));
+  return e;
+}
+const pct = r => r == null ? '–' : `${Math.round(r * 100)}%`;
+function pre(text, open) { return el('pre', {text: text || '(empty)'}); }
+function fold(label, text, open = false) {
+  if (!text) return el('div', {class: 'muted', text: `${label}: (empty)`});
+  const d = el('details', {open: open || null}, el('summary', {text: `${label} (${text.length.toLocaleString()} chars)`}), pre(text));
+  return d;
+}
+
+// ---- header + theme
+document.getElementById('title').textContent = `Harness trace: ${META.label || ''}`;
+document.getElementById('meta').textContent = [META.generator, META.model, META.commit && META.commit.slice(0, 7),
+  (META.overrides || []).join(' '), META.trace_calls ? 'call text recorded' : 'no call text (run without --trace-calls)',
+  CMP.length ? `vs ${CMP.join(', ')}` : ''].filter(Boolean).join(' · ');
+document.getElementById('theme').onclick = () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark'
+    : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+};
+
+// ---- list + filters
+const FILTERS = {
+  all: () => true,
+  ['lost to ' + (CMP[0] || 'compare')]: t => CMP.length && t.compare[CMP[0]] != null && (t.score ? t.score.rate : 0) < t.compare[CMP[0]],
+  errors: t => t.error,
+  rejected: t => t.rejected > 0,
+  fallback: t => t.fallbacks > 0,
+  'extraction': t => t.score && (!t.score.extraction_ok || t.score.missing.length || t.score.unclosed_fence),
+  'zero': t => !t.score || t.score.passed === 0,
+};
+let filter = 'all', selected = null, sortGap = false;
+function renderFilters() {
+  const f = document.getElementById('filters'); f.replaceChildren();
+  for (const k of Object.keys(FILTERS)) {
+    const n = TURNS.filter(FILTERS[k]).length;
+    f.append(el('button', {class: k === filter ? 'on' : '', onclick: () => { filter = k; renderFilters(); renderList(); }}, `${k} ${n}`));
+  }
+  if (CMP.length) f.append(el('button', {class: sortGap ? 'on' : '', onclick: () => { sortGap = !sortGap; renderFilters(); renderList(); }}, 'sort by gap'));
+}
+function gap(t) { return (t.compare[CMP[0]] ?? 0) - (t.score ? t.score.rate : 0); }
+function renderList() {
+  const list = document.getElementById('list'); list.replaceChildren();
+  let rows = TURNS.filter(FILTERS[filter]);
+  if (sortGap) rows = [...rows].sort((a, b) => gap(b) - gap(a));
+  for (const t of rows) {
+    const sc = t.score;
+    const scoreTxt = [`${t.arm} ${sc ? `${sc.passed}/${sc.total}` : '–'}`, ...CMP.map(c => `${c} ${pct(t.compare[c])}`)].join(' · ');
+    const badges = [];
+    if (t.error) badges.push(el('span', {class: 'b bad', text: 'error'}));
+    if (t.rejected) badges.push(el('span', {class: 'b warn', text: `${t.rejected} rejected`}));
+    if (t.fallbacks) badges.push(el('span', {class: 'b warn', text: `${t.fallbacks} fallback`}));
+    if (sc && (!sc.extraction_ok || sc.missing.length || sc.unclosed_fence)) badges.push(el('span', {class: 'b bad', text: 'extraction'}));
+    if (sc && sc.total && sc.passed === sc.total) badges.push(el('span', {class: 'b ok', text: 'all pass'}));
+    badges.push(el('span', {class: 'b', text: `${t.steps} steps`}));
+    list.append(el('div', {class: 'row' + (selected === t.slug ? ' sel' : ''), onclick: () => select(t.slug)},
+      el('div', {class: 'top'}, el('span', {class: 'pid', text: t.prompt_id + (t.run ? ` r${t.run}` : '')}),
+        el('span', {class: 'scores', text: scoreTxt})),
+      el('div', {class: 't', text: `${t.title || ''} ${t.stratum ? '· ' + t.stratum : ''}`}),
+      el('div', {class: 'badges'}, badges)));
+  }
+}
+
+// ---- one turn
+function callView(c) {
+  const hd = `#${c.index} ${c.kind}${c.label ? ' · ' + c.label : ''} · ${c.prompt_tokens ?? '?'} in / ${c.completion_tokens ?? '?'} out`
+    + ` · ${c.response_format || 'text'} · max ${c.max_tokens ?? '?'}${c.thinking ? ' · thinking' : ''}`
+    + `${c.finish_reason ? ' · ' + c.finish_reason : ''}${c.seconds ? ` · ${c.seconds.toFixed(1)} s` : ''}`;
+  const msgs = c.messages.map((m, i) => el('div', {},
+    el('div', {class: 'msg-role', text: m.role}),
+    fold(`${m.role} message ${i + 1}`, m.text, i === c.messages.length - 1 && m.role === 'user')));
+  return el('div', {class: 'call', id: `call-${c.index}`},
+    el('div', {class: 'hd' + (c.error || c.finish_reason === 'length' ? ' bad' : ''), text: hd + (c.error ? ` · ERROR ${c.error}` : '')}),
+    el('details', {}, el('summary', {text: `prompt: ${c.messages.length} messages`}), msgs,
+      c.schema ? fold('json_schema sent', c.schema) : null),
+    c.reasoning ? fold('reasoning', c.reasoning) : null,
+    fold('reply', c.content, true));
+}
+function callsFor(turn, step, kinds) {
+  return turn.calls.filter(c => String(c.step) === String(step) && (!kinds || kinds.includes(c.kind)));
+}
+function opLine(op) {
+  const keys = Object.keys(op).filter(k => !['body', 'type'].includes(k) && op[k] != null);
+  const head = `${op.type} ` + keys.map(k => `${k}=${JSON.stringify(op[k])}`).join(' ');
+  return el('div', {class: 'op'}, head, op.body ? fold('body', op.body) : null);
+}
+function attemptView(a) {
+  const cls = a.attempt === 'fallback' ? 'fallback' : a.error ? 'rejected' : (a.need_part_ids ? '' : 'accepted');
+  const why = a.attempt === 'fallback' ? `Fallback: result added verbatim after: ${a.fallback_after}`
+    : a.error ? `Rejected: ${a.error}` : a.need_part_ids ? `Asked to see parts: ${a.need_part_ids.join(', ')}` : 'Accepted';
+  return el('div', {class: 'attempt ' + cls},
+    el('div', {}, el('span', {class: 'muted', text: `attempt ${a.attempt} · `}), el('span', {class: 'why', text: why})),
+    a.keep ? el('div', {class: 'muted', text: 'keep check: ' + JSON.stringify(a.keep)}) : null,
+    (a.ops || []).map(opLine));
+}
+function partsView(parts) {
+  return parts.map(p => el('div', {class: 'part ' + p.change},
+    el('span', {text: `${p.change === 'same' ? '·' : p.change} ${p.id} (${p.kind || '?'})${p.title ? ' · ' + p.title : ''}`}),
+    p.diff ? fold('diff', p.diff) : null,
+    p.change !== 'same' ? fold('body', p.body) : null));
+}
+function stepView(turn, s, prevSubTask) {
+  const failed = s.kind === 'compose_failed';
+  const title = s.step === 'consolidation' ? 'Consolidation' : `Step ${s.step}/${s.of}: ${s.sub_task || ''}`;
+  const attempts = s.compose_attempts;
+  const nRej = (attempts || []).filter(a => a.error).length;
+  const fb = (attempts || []).some(a => a.attempt === 'fallback');
+  const execCalls = callsFor(turn, s.step, ['executor_turn', 'oracle']);
+  const composeCalls = callsFor(turn, s.step, ['compose', 'consolidate']);
+  const summaryCalls = callsFor(turn, s.step, ['summary']);
+  const tags = [
+    failed ? el('span', {class: 'b bad', text: 'composer gave up'}) : null,
+    s.status && /FAILED/i.test(s.status) ? el('span', {class: 'b bad', text: 'sub-task failed'}) : null,
+    nRej ? el('span', {class: 'b warn', text: `${nRej} rejected`}) : null,
+    fb ? el('span', {class: 'b warn', text: 'fallback'}) : null];
+  return el('section', {class: 'card', id: `step-${s.step}`}, el('h2', {}, title, tags),
+    el('div', {class: 'flow'},
+      prevSubTask ? el('div', {class: 'sub'}, el('h3', {text: 'Sub-task as planned'}),
+        el('div', {text: prevSubTask.objective || prevSubTask.description || ''}),
+        fold('context given', prevSubTask.context)) : null,
+      el('div', {class: 'sub'}, el('h3', {text: `Executor (${execCalls.length} calls)`}),
+        turn.traced ? execCalls.map(callView) : el('div', {class: 'muted', text: 'call text not recorded'})),
+      el('div', {class: 'sub'}, el('h3', {text: 'Sub-task result'}),
+        s.result == null ? el('div', {class: 'muted', text: 'not recorded (run before the trace fields)'}) : fold('result', s.result, true)),
+      el('div', {class: 'sub'}, el('h3', {text: 'Composer attempts'}),
+        attempts == null ? el('div', {class: 'muted', text: 'not recorded (run before the trace fields)'}) : attempts.map(attemptView),
+        turn.traced && composeCalls.length ? el('details', {}, el('summary', {text: `composer calls (${composeCalls.length})`}), composeCalls.map(callView)) : null),
+      failed ? el('div', {class: 'bad', text: s.error}) : null,
+      el('div', {class: 'sub'}, el('h3', {text: failed ? 'Document when it failed' : 'Document after this step'}), partsView(s.parts)),
+      s.summary ? fold('rolling summary', s.summary) : null,
+      turn.traced && summaryCalls.length ? el('details', {}, el('summary', {text: `summary calls (${summaryCalls.length})`}), summaryCalls.map(callView)) : null));
+}
+function testsView(t) {
+  if (!t) return el('div', {class: 'muted', text: 'not scored'});
+  const sc = t.score, ex = t.extraction || {};
+  const failed = Object.entries(t.outcomes).filter(([, o]) => o !== 'passed');
+  return el('div', {},
+    el('div', {class: sc.total && sc.passed === sc.total ? 'ok' : 'bad', text: `${sc.passed}/${sc.total} hidden tests passed${sc.timed_out ? ' (timed out)' : ''}`}),
+    el('div', {class: sc.extraction_ok ? 'muted' : 'bad',
+      text: `extraction: ${sc.extraction_ok ? 'ok' : 'INCOMPLETE'} · source ${ex.source || '?'} · ${ex.blocks ?? '?'} blocks · files ${JSON.stringify(ex.files || {})}`
+        + (sc.missing.length ? ` · missing ${sc.missing.join(', ')}` : '') + (sc.unclosed_fence ? ' · unclosed fence' : '')}),
+    failed.length ? el('table', {class: 'tests'}, failed.map(([k, o]) => el('tr', {}, el('td', {class: 'bad', text: o}), el('td', {text: k})))) : null,
+    fold('pytest output (tail)', t.output_tail));
+}
+function turnView(turn) {
+  const main = document.getElementById('main'); main.replaceChildren();
+  const probs = turn.problems;
+  main.append(el('section', {class: 'card'},
+    el('h2', {}, `${turn.prompt_id} · arm ${turn.arm} · run ${turn.run}`,
+      turn.test ? el('span', {class: 'b', text: `${turn.test.score.passed}/${turn.test.score.total}`}) : null,
+      ...CMP.map(c => el('span', {class: 'b', text: `${c} ${turn.compare[c].score ? `${turn.compare[c].score.passed}/${turn.compare[c].score.total}` : '–'}`}))),
+    fold('request', turn.prompt)));
+  if (probs.length) main.append(el('div', {class: 'problems'}, el('b', {text: `Where it went wrong (${probs.length}, in order)`}),
+    el('ol', {}, probs.map(p => el('li', {}, el('a', {href: '#' + p.anchor, onclick: e => { e.preventDefault(); document.getElementById(p.anchor)?.scrollIntoView({behavior: 'smooth'}); }, text: p.what}))))));
+  const plan = turn.plan;
+  main.append(el('section', {class: 'card', id: 'plan'}, el('h2', {}, 'Plan', plan ? el('span', {class: 'b', text: `${plan.sub_tasks.length} sub-tasks`}) : null),
+    !plan ? el('div', {class: 'muted', text: 'no plan recorded'}) : el('div', {class: 'flow'},
+      el('ol', {}, plan.sub_tasks.map(st => el('li', {}, el('b', {text: st.name}), ` (${st.type || ''}, complexity ${st.complexity ?? '?'}) `,
+        el('div', {class: 'muted', text: st.objective || st.description || ''})))),
+      el('div', {class: 'muted', text: `regeneration needed: ${plan.regeneration_needed} · initial count ${plan.initial_count ?? '?'}`}),
+      fold('decomposition prompt', plan.decomposition_prompt), fold('critique', plan.critique),
+      turn.traced ? el('details', {}, el('summary', {text: `decompose calls (${callsFor(turn, 'plan').length})`}), callsFor(turn, 'plan').map(callView)) : null)));
+  const byName = Object.fromEntries((plan?.sub_tasks || []).map(st => [st.name, st]));
+  for (const s of turn.steps) main.append(stepView(turn, s, byName[s.sub_task]));
+  main.append(el('section', {class: 'card', id: 'final'}, el('h2', {}, 'Final answer and hidden tests', turn.error ? el('span', {class: 'b bad', text: 'turn error'}) : null),
+    turn.error ? el('pre', {class: 'bad', text: turn.error}) : null,
+    el('div', {class: 'grid2'},
+      el('div', {}, el('h3', {text: `arm ${turn.arm}`}), testsView(turn.test), fold('final output', turn.output)),
+      ...CMP.map(c => el('div', {}, el('h3', {text: c}),
+        turn.compare[c].score ? el('div', {text: `${turn.compare[c].score.passed}/${turn.compare[c].score.total} passed`}) : el('div', {class: 'muted', text: 'not scored'}),
+        turn.compare[c].error ? el('div', {class: 'bad', text: turn.compare[c].error}) : null,
+        fold(`${c} output`, turn.compare[c].output))))));
+  main.scrollTop = 0;
+}
+async function select(slug) {
+  selected = slug; renderList();
+  try { history.replaceState(null, '', '#' + slug); } catch (e) {}
+  turnView(await load(slug));
+}
+renderFilters(); renderList();
+const initial = decodeURIComponent(location.hash.slice(1));
+if (TURNS.some(t => t.slug === initial)) select(initial);
+</script>
+</body>
+</html>

@@ -535,19 +535,35 @@ class IntermediateWriter:
         self.lock = threading.Lock()
         self.seen: dict[str, int] = {}
 
+    def _turn_dir(self, turn: str) -> Path:
+        d = self.root / turn_dir_name(turn)
+        if turn not in self.seen:
+            shutil.rmtree(d, ignore_errors=True)
+            d.mkdir(parents=True, exist_ok=True)
+            self.seen[turn] = 0
+        return d
+
     def __call__(self, kind: str, payload: dict) -> None:
         turn = harness._current_turn.get() or 'no-turn'
-        d = self.root / turn_dir_name(turn)
         with self.lock:
-            if turn not in self.seen:
-                shutil.rmtree(d, ignore_errors=True)
-                d.mkdir(parents=True, exist_ok=True)
-                self.seen[turn] = 0
+            d = self._turn_dir(turn)
             n = self.seen[turn] = self.seen[turn] + 1
         step = payload.get('step')
         name = f'{n:02d}_{kind}' + (f'_{step}' if step is not None else '') + '.json'
         (d / name).write_text(json.dumps({'kind': kind, 'turn_id': turn, **payload},
                                          default=_jsonable))
+
+    def call(self, rec, request: dict, content: str, reasoning: str) -> None:
+        """MeasuredCompletions.trace (--trace-calls) -> <turn id>/calls/NNNNN_<kind>.json:
+        the messages sent, the other request fields and the reply, for the trace viewer."""
+        turn = rec.turn or 'no-turn'
+        with self.lock:
+            d = self._turn_dir(turn) / 'calls'
+            d.mkdir(exist_ok=True)
+        params = {k: v for k, v in request.items() if k != 'messages'}
+        (d / f'{rec.index:05d}_{rec.kind}.json').write_text(json.dumps(
+            {'record': asdict(rec), 'messages': request.get('messages') or [], 'params': params,
+             'content': content, 'reasoning': reasoning}, default=_jsonable))
 
     def manifest(self) -> dict:
         files = {str(f.relative_to(self.root)): hashlib.sha256(f.read_bytes()).hexdigest()
@@ -812,6 +828,8 @@ def run_arms(args) -> int:
     done = {result_key(r) for r in results}
     writer = IntermediateWriter(Path(args.intermediates) / out_path.stem) \
         if any(a in ('b', 'c') for a in arms) else None
+    if writer is not None and args.trace_calls:
+        measured.trace = writer.call
 
     # A chain re-runs whole unless every prompt in it finished: a follow-up
     # must continue the parent output it is recorded beside.
@@ -847,6 +865,7 @@ def run_arms(args) -> int:
         'intermediates_dir': (str(writer.root.relative_to(REPO_ROOT))
                               if writer.root.is_relative_to(REPO_ROOT) else str(writer.root))
         if writer else None,
+        'trace_calls': bool(writer and args.trace_calls),
         'caveat': ('per-call and per-prompt wall seconds are inflated by concurrent jobs; '
                    'use --jobs 1 for wall-time comparisons') if args.jobs > 1 else None,
     }
@@ -1041,6 +1060,9 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument('--intermediates', default=str(INTERMEDIATES_ROOT),
                      help='where harness plans and Document states go, one directory per run '
                           'file (default: <repo>/intermediates, git-ignored)')
+    run.add_argument('--trace-calls', action='store_true',
+                     help='also write every harness call\'s messages and reply under the '
+                          'intermediates (calls/), for trace_view.py; off by default (size)')
 
     plan = sub.add_parser('plan', help='print the chains a selection runs; no calls')
     selection(plan)

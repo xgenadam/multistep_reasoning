@@ -48,6 +48,7 @@ from __future__ import annotations
 import argparse
 import contextvars
 import json
+import logging
 import os
 import statistics
 import subprocess
@@ -59,6 +60,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Callable
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
@@ -232,6 +234,9 @@ class MeasuredCompletions:
         self._records: list[CallRecord] = []
         self._next_index = 0
         self._lock = threading.Lock()
+        # trace(record, request, content, reasoning): the full text of each
+        # call, for the trace viewer (arms.py --trace-calls). None records no text.
+        self.trace: Callable[[CallRecord, dict, str, str], None] | None = None
 
     def start_index(self) -> int:
         with self._lock:
@@ -284,7 +289,7 @@ class MeasuredCompletions:
                 **base, stream=stream, seconds=time.perf_counter() - t0,
                 first_token_s=None, chunks=0, prompt_tokens=None,
                 completion_tokens=None, error=type(exc).__name__,
-            ))
+            ), kwargs, f'[the call raised] {exc!r}')
             raise
         if not stream:
             dt = time.perf_counter() - t0
@@ -300,11 +305,11 @@ class MeasuredCompletions:
                 finish_reason=getattr(choices[0], 'finish_reason', None) if choices else None,
                 usage_reported=usage is not None,
                 **_reasoning_fields(text, usage),
-            ))
+            ), kwargs, getattr(message, 'content', None) or '', text)
             return resp
-        return self._streaming(resp, base, t0)
+        return self._streaming(resp, base, t0, kwargs)
 
-    def _streaming(self, gen, base: dict, t0: float):
+    def _streaming(self, gen, base: dict, t0: float, request: dict):
         first_token_s = None
         chunks = 0
         finish_reason = None
@@ -344,11 +349,17 @@ class MeasuredCompletions:
                 error=error,
                 **_reasoning_fields(
                     ''.join(reasoning) or split_reasoning(''.join(content))[0], usage),
-            ))
+            ), request, ''.join(content), ''.join(reasoning))
 
-    def _append(self, rec: CallRecord) -> None:
+    def _append(self, rec: CallRecord, request: dict | None = None, content: str = '',
+                reasoning: str = '') -> None:
         with self._lock:
             self._records.append(rec)
+        if self.trace is not None and request is not None:
+            try:
+                self.trace(rec, request, content, reasoning)
+            except Exception:  # noqa: BLE001 - a trace never changes a call
+                logging.getLogger(__name__).exception('call trace failed; ignored')
 
 
 def git_commit() -> dict:

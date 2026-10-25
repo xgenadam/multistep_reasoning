@@ -14,6 +14,7 @@ from .document.summary import update_rolling_summary
 from .execution_synthesiser.base import ExecutorSynthesiserBase
 from .execution_synthesiser.document_composer import (
     DocumentComposer,
+    _result_text,
     changed_part_ids,
 )
 from .executor.base import ExecutorBase
@@ -43,7 +44,9 @@ logger = logging.getLogger(__name__)
 OracleFactory = Callable[[Document], DocumentOracle]
 # on_step(kind, payload): 'plan' once the decomposer has finished, then
 # 'document' after each sub-task's compose and summary (and after
-# consolidation). Logging only: the orchestrator never reads anything back.
+# consolidation), with the sub-task's result and that step's composer
+# attempts; 'compose_failed' when the composer raises, before the turn fails.
+# Logging only: the orchestrator never reads anything back.
 StepObserver = Callable[[str, dict], None]
 
 
@@ -287,12 +290,23 @@ class TaskOrchestrator:
                 set_task_status(name, 'completed')
             set_phase(f'Composing after {idx + 1}/{total}: {name}')
             yield ('status', f'Composing after {idx + 1}/{total}: {name}')
-            ops = self.document_composer.compose(
-                user_request=user_input,
-                sub_tasks=sub_tasks,
-                current_sub_task=sub_task,
-                document=document,
-            )
+            attempts_from = len(self.document_composer.history)
+            result_text = _result_text(sub_task)
+            try:
+                ops = self.document_composer.compose(
+                    user_request=user_input,
+                    sub_tasks=sub_tasks,
+                    current_sub_task=sub_task,
+                    document=document,
+                )
+            except Exception as exc:
+                self._emit('compose_failed', {
+                    'step': idx + 1, 'of': total, 'sub_task': name, 'status': str(sub_task.status),
+                    'result': result_text, 'error': str(exc),
+                    'compose_attempts': self.document_composer.history[attempts_from:],
+                    'snapshot': document.to_dict(),
+                })
+                raise
             changed = changed_part_ids(ops)
             set_document(document.render())
             yield ('status', f'Updating summary after {idx + 1}/{total}: {name}')
@@ -310,6 +324,8 @@ class TaskOrchestrator:
             self._emit('document', {
                 'step': idx + 1, 'of': total, 'sub_task': name, 'status': str(sub_task.status),
                 'completion_tokens': meter.completion_tokens if meter else None,
+                'result': result_text,
+                'compose_attempts': self.document_composer.history[attempts_from:],
                 'snapshot': document.to_dict(),
             })
 
