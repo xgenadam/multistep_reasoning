@@ -101,3 +101,54 @@ def test_options_accept_the_modes():
     assert opts.structured_output == 'two_pass'
     with pytest.raises(ValueError):
         OptionsConfig(structured_output='grammar')
+
+
+def _schema(model):
+    from instructor.process_response import handle_response_model
+    import instructor
+    parsed, _ = handle_response_model(model, mode=instructor.Mode.JSON,
+                                      messages=[{'role': 'user', 'content': 'x'}])
+    return L.forced_schema(parsed.model_json_schema())
+
+
+def test_forced_schema_splits_body_and_body_source_into_variants():
+    from reasoning_sub_agents.execution_synthesiser.document_composer import ComposerResponse
+    add = _schema(ComposerResponse)['$defs']['AddPart']
+    by_keep = {next(k for k in ('body', 'body_source') if k in v['properties']): v for v in add['anyOf']}
+    assert set(by_keep) == {'body', 'body_source'}
+    for keep, variant in by_keep.items():
+        other = 'body_source' if keep == 'body' else 'body'
+        assert other not in variant['properties'] and variant['additionalProperties'] is False
+        assert variant['required'][:1] == ['type'] and keep in variant['required']
+        assert list(variant['properties'])[0] == 'type' and list(variant['properties'])[-1] == keep
+    assert by_keep['body']['properties']['body'] == {'type': 'string', 'title': 'Body', 'minLength': 1}
+    assert by_keep['body_source']['properties']['body_source']['const'] == 'current_result'
+    # ops without the pair keep one shape, with the tag now required
+    move = _schema(ComposerResponse)['$defs']['MovePart']
+    assert move['required'] == ['type', 'id', 'after'] and 'default' not in move['properties']['type']
+
+
+def test_forced_schema_needs_exactly_one_of_tool_calls_or_result():
+    from reasoning_sub_agents.oracle.tools import ExecutorTurn
+    turn = _schema(ExecutorTurn)
+    tools, result = turn['anyOf']
+    assert tools['required'] == ['tool_calls'] and tools['properties']['tool_calls']['minItems'] == 1
+    assert result['required'] == ['result'] and 'tool_calls' not in result['properties']
+    assert list(result['properties']) == ['thinking', 'result']
+    assert turn['$defs']['ListPartsTool']['required'] == ['name']
+
+
+def test_forced_schema_variants_parse_under_the_pydantic_models():
+    from reasoning_sub_agents.document.operations import AddPart
+    from reasoning_sub_agents.oracle.tools import ExecutorTurn
+    AddPart.model_validate({'type': 'add_part', 'id': 'a', 'kind': 'section', 'body': 'x'})
+    AddPart.model_validate({'type': 'add_part', 'id': 'a', 'kind': 'file', 'body_source': 'current_result'})
+    ExecutorTurn.model_validate({'thinking': 't', 'result': 'r'})
+    ExecutorTurn.model_validate({'tool_calls': [{'name': 'list_parts'}]})
+
+
+def test_json_schema_mode_sends_the_forced_schema():
+    server = Server([GOOD])
+    _call(server, 'json_schema')
+    sent = server.requests[0]['response_format']['json_schema']['schema']
+    assert sent == L.forced_schema(Answer.model_json_schema())

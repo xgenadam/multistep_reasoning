@@ -240,6 +240,68 @@ TWO_PASS_CONVERT_PROMPT = (
 )
 
 
+# Field pairs that a pydantic validator requires exactly one of (DocumentOp's
+# body / body_source, ExecutorTurn's tool_calls / result). The JSON schema
+# makes both optional, so a forced grammar allows both or neither; the forced
+# schema gives each object one variant per field instead. The second of each
+# pair is the long one, so it is written last.
+EXCLUSIVE_FIELDS = (('body_source', 'body'), ('tool_calls', 'result'))
+
+
+def _non_null(prop: dict) -> dict:
+    """A nullable property's schema without its null branch."""
+    branches = [b for b in prop.get('anyOf', ()) if b.get('type') != 'null']
+    if len(branches) != 1:
+        return prop
+    kept = {k: v for k, v in prop.items() if k not in ('anyOf', 'default')}
+    return {**branches[0], **kept}
+
+
+def _forced_object(obj: dict) -> dict:
+    """One object of the forced schema: union tags required and written first,
+    an exclusive pair split into one variant per field."""
+    props = dict(obj.get('properties', {}))
+    required = list(obj.get('required', []))
+    tags = [k for k, p in props.items() if 'const' in p and p.get('default') == p['const']]
+    for k in tags:
+        props[k] = {key: v for key, v in props[k].items() if key != 'default'}
+    required = tags + [k for k in required if k not in tags]
+    order = tags + [k for k in props if k not in tags]
+    for short, long in EXCLUSIVE_FIELDS:
+        if short in props and long in props:
+            variants = []
+            for keep, drop in ((short, long), (long, short)):
+                names = [k for k in order if k != drop and k != keep] + [keep]
+                vprops = {k: props[k] for k in names}
+                vprops[keep] = _non_null(props[keep])
+                if vprops[keep].get('type') == 'array':
+                    vprops[keep]['minItems'] = max(1, vprops[keep].get('minItems', 0))
+                elif vprops[keep].get('type') == 'string':
+                    vprops[keep]['minLength'] = max(1, vprops[keep].get('minLength', 0))
+                variant = {k: v for k, v in obj.items() if k not in ('properties', 'required', '$defs')}
+                variants.append({**variant, 'properties': vprops, 'required': required + [keep],
+                                 'additionalProperties': False})
+            return {'anyOf': variants, **{k: obj[k] for k in ('title', 'description', '$defs') if k in obj}}
+    return {**obj, 'properties': {k: props[k] for k in order}, 'required': required}
+
+
+def forced_schema(schema: dict) -> dict:
+    """The schema a forced mode (json_schema, two_pass) sends: the parsed
+    model's JSON schema with the rules its validators add that a grammar can
+    hold. instructor's json_object mode never sends it."""
+    def walk(node: Any) -> Any:
+        if isinstance(node, list):
+            return [walk(n) for n in node]
+        if not isinstance(node, dict):
+            return node
+        node = {k: walk(v) for k, v in node.items()}
+        if node.get('type') == 'object' and 'properties' in node:
+            return _forced_object(node)
+        return node
+
+    return walk(schema)
+
+
 def _schema_format(create: Callable[..., Any], schema: dict) -> Callable[..., Any]:
     """create with instructor's json_object format replaced by the schema itself."""
 
@@ -573,7 +635,7 @@ def _get_streamed_json_response_inner(
             # The schema of the model instructor parses into (list[...] is wrapped).
             parsed_model, _ = handle_response_model(
                 response_model, mode=instructor.Mode.JSON, messages=list(messages))
-            schema = parsed_model.model_json_schema()
+            schema = forced_schema(parsed_model.model_json_schema())
             create = _schema_format(create, schema)
             if mode == 'two_pass':
                 messages = _two_pass_messages(llama_client, messages, schema)
