@@ -1,0 +1,43 @@
+# Q-02 stage 2 analysis spec: DRAFT (2026-10-25, the coordinator, S-022).
+# Filled in as run files land, so the judging session only adds verdict files.
+# Usage: .venv/bin/python journal/baseline/qe1_analysis.py report --spec <final copy>
+# Format: journal/baseline/qe1_analysis.py docstring. TODO marks what is not on
+# disk yet. Pilots never go in `runs`.
+#
+# flash-next notes:
+# - a1 is the re-run at 369419e (the thinking-call fix); the a-only file is
+#   derived from the a+a1 file (its `derived_from` names the original's sha256).
+# - Code scores use the 2026-10-25 scoring amendment (hidden_tests._fenced_body).
+# - c, the A/A repeats and v1-std ran at a82c5b7 (b and a2's commit), at --jobs 6.
+
+bench: journal/baseline/bench/v1
+std_bench: journal/baseline/bench/v1-std
+conditions:
+  judge_labels: pending   # D-021: the R1-R5 labels (Q-06)
+  spot_check: pending     # § 4.4, the user's blind spot check
+
+generators:
+  flash-next:
+    runs:
+      - journal/baseline/runs/20261024T031144Z_q02-s1-b_flash-next.json
+      - journal/baseline/runs/20261024T072757Z_q02-s1-a2_flash-next.json
+      - journal/baseline/runs/20261024T105233Z_q02-s1-a_flash-next.json
+      - TODO the a1 run file (q02-s1-a1)
+      - TODO the c run file (q02-s1-c, overlap subset)
+    verdicts:   # TODO the judging session: qe1_pairs.py, then quality.py
+      b:a2: {record: TODO, concurrence: TODO}
+      b:a: {record: TODO}
+      b:a1: {record: TODO}
+      c:b: {record: TODO}            # qe1_pairs --subset overlap
+    aa:
+      runs: [TODO q02-s1-aa-b, TODO q02-s1-aa-a2]
+      verdicts: {b: TODO, a2: TODO}   # qe1_pairs --pair X:X --repeat ... --subset g3
+    std:
+      runs: [TODO q02-s1-std-b, TODO q02-s1-std-a2]
+      verdicts: {b:a2: {record: TODO}}
+  qwen3.6-35b-a3b:
+    runs: [TODO b, a2 (--refine-budget-from its b), a+a1, c]
+    verdicts: {b:a2: {record: TODO, concurrence: TODO}, b:a: {record: TODO}, b:a1: {record: TODO}, c:b: {record: TODO}}
+  qwen3.8-27b:
+    runs: [TODO b, a2 (--refine-budget-from its b), a+a1, c]
+    verdicts: {b:a2: {record: TODO, concurrence: TODO}, b:a: {record: TODO}, b:a1: {record: TODO}, c:b: {record: TODO}}
