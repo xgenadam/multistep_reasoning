@@ -196,3 +196,71 @@ Run files `journal/baseline/runs/20261025T0*_smoke06b-*_qwen3-0.6b.json`
   text, and so the default mode, would be unchanged.
 - The 0.6B passes no hidden test in any arm, single call included: no
   harness can lift it on this bench. Not a Q-02 generator.
+
+## Smoke test 2: the forced schema (2026-10-25 13:01–13:11Z, commit eb5b187)
+
+`forced_schema` (`llama_utils`): the forced modes send the parsed model's
+schema with each exclusive pair (`body_source` / `body`, `tool_calls` /
+`result`) split into one variant per field (`anyOf`, `additionalProperties:
+false`, the kept field required and non-empty), union tags required and
+written first, and the long field last. `json_object` is unchanged. Run files
+`20261025T13*_smoke06b-v2-b-*_qwen3-0.6b.json`; a and b-`json_object` were not
+re-run (nothing they send changed).
+
+| Arm | Turns completed (of 10) | Composer failures, by kind | Hidden tests |
+| --- | --- | --- | --- |
+| b, `json_schema` | 2 (c36, c47; were 0) | keep rule 3, duplicate part id 2, unknown part id 1 | 0 |
+| b, `two_pass` | 0 (was 1) | duplicate part id 5, `merge_parts` with the same id twice 3 | 0 |
+
+- The rule the grammar now holds stopped failing: no "exactly one of"
+  error in either arm.
+- What remains is **document state the model gets wrong**, not JSON: adding
+  a part id that exists, naming one that doesn't, merging a part into itself,
+  dropping the sub-task result. A grammar cannot hold these (they depend on
+  the current document; `uniqueItems` is not in llama.cpp's grammar subset).
+- n = 10 per arm on a model that solves nothing, so 1 → 0 and 0 → 2 are noise.
+  Still 0 hidden tests anywhere.
+
+## What the steps ask the model to write (review, 2026-10-25)
+
+Forced-schema sizes: compose 5.1K characters (8 op types), decompose 3.8K
+(4 item types, 7 required fields per sub-task), executor 2.0K, consolidate
+2.0K. instructor's `Mode.JSON` puts this schema text in every prompt.
+
+1. **Union tags were optional.** `type: Literal[...] = '...'` has a default,
+   so pydantic leaves it out of `required`; a forced grammar let the model drop
+   the tag the union is parsed on. Fixed in `forced_schema`.
+2. **The long field came first.** `AddPart` lists `body` before `type`, `id`,
+   `kind`: the model writes the content before saying what to do with it.
+   `forced_schema` now writes it last. llama.cpp's converter (as I understand
+   it) orders required fields before optional ones, so `title` and `after`
+   still follow `body` there.
+3. **Developer notes reach the model.** `MergeParts`' docstring becomes its
+   schema description, including "this is what the consolidation pass uses to
+   replace the delete-then-re-add churn observed in the s3 baseline", in every
+   compose prompt. Same for other docstrings. A prompt change, so after Q-02.
+4. **Code inside JSON strings.** The executor's `result` and the composer's
+   `body` carry whole files as escaped JSON strings. This is the cost
+   `two_pass` and `body_source: current_result` exist to avoid.
+5. **The composer's job is broad for a small model**: eight op types and
+   document bookkeeping (existing ids, anchors, keep rule) on every sub-task.
+   For small models, a reduced op set (add, append, with `body_source` only)
+   or a deterministic default (append each result as its own part, with the
+   composer only choosing titles and order) would remove most of the failures
+   above. Both are harness changes, so after Q-02.
+
+## An easier bench for small models (proposal, 2026-10-25)
+
+The 0.6B scores 0 on v1 even in a single call, so v1 cannot show whether the
+harness helps it. A harness gain is only measurable where the single call
+passes sometimes (say 20–60 % of tests).
+- **v1-easy**: ~20–30 code prompts of our own, in v1's format with hidden
+  tests (no third-party data): single-file, 1–3 functions, HumanEval-to-
+  LRU-cache difficulty, a few of them decomposable into 2–3 independent
+  pieces (the case the harness is for). Calibrate on the target model's
+  single call first; keep prompts in its 20–60 % band.
+- Reports: the 0.6B already writes coherent reports in a single call, so the
+  report strata are measurable through the judge once b completes turns.
+- The 0.6B may sit below the floor where any multi-call harness works (its
+  code is 9 tokens or a fence repeated to the cap). A 1.7B–4B model is the
+  likelier "end user's small model"; none is on disk.
