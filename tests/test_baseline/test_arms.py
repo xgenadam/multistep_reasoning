@@ -530,3 +530,16 @@ def test_thinking_call_gets_the_whole_allowance_and_no_blind_continuation(
                    for b in server.requests for m in b['messages'] if m.get('content'))
     assert row['continuations'] == 0 and row['capped'] == 1
     assert row['output']['text'] == '' and row['error'] is None
+
+
+def test_relaxed_budgets_reach_the_calls_and_the_run_file(tmp_path, monkeypatch, arms):
+    bench, out = _bench(tmp_path), tmp_path / 'runs'
+    server = ThinkingServer()
+    _wire(monkeypatch, arms, server)
+    monkeypatch.setattr(arms.harness, 'MAX_TOKENS', arms.harness.MAX_TOKENS)  # restored after
+    monkeypatch.setattr(arms, 'THINKING_ALLOWANCE', arms.THINKING_ALLOWANCE)
+    assert _run(arms, bench, out, '--arm', 'a1', '--prompt', 'c01',
+                '--max-tokens', '16384', '--thinking-allowance', '98304') == 0
+    _, data = _load(out)
+    assert [b['max_tokens'] for b in server.requests] == [98304]
+    assert data['max_tokens'] == 16384 and data['thinking_allowance'] == 98304

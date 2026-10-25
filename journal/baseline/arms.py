@@ -772,6 +772,13 @@ def run_arms(args) -> int:
     os.environ['LLM_MODEL'] = model  # the pipeline's calls read it (llama_utils._model_name)
     if args.jobs is None:
         args.jobs = DEFAULT_JOBS[args.generator]
+    if args.max_tokens is not None or args.thinking_allowance is not None:
+        # Relaxed budgets (the user, 2026-10-25: quality first for the small models,
+        # speed later). Every arm and harness call gets the same per-call cap.
+        global THINKING_ALLOWANCE
+        if args.max_tokens is not None:
+            harness.MAX_TOKENS = args.max_tokens
+        THINKING_ALLOWANCE = args.thinking_allowance or (CONTINUE_CAP + 1) * harness.MAX_TOKENS
 
     client = create_llama_client(base_url=args.base_url)
     backend = str(client.base_url).rstrip('/')
@@ -830,7 +837,7 @@ def run_arms(args) -> int:
         'refine_cap': REFINE_CAP if budget else None,
         'refine_min_rounds': REFINE_MIN_ROUNDS if budget else None,
         'continue_cap': CONTINUE_CAP,
-        'max_tokens': harness.MAX_TOKENS, 'sampling': 'server defaults (no temperature sent)',
+        'max_tokens': harness.MAX_TOKENS, 'thinking_allowance': THINKING_ALLOWANCE, 'sampling': 'server defaults (no temperature sent)',
         'prompts_version': PROMPTS_VERSION,
         'prompts_sha256': sha256(CONTINUE_PROMPT + CRITIQUE_PROMPT + REVISE_PROMPT),
         'config': base_cfg.model_dump(mode='json', exclude={'llm'}),
@@ -1017,6 +1024,12 @@ def main(argv: list[str] | None = None) -> int:
                            "bench (the campaign's rule)")
     run.add_argument('--set', action='append', default=[], metavar='SECTION.KEY=VALUE',
                      help='OrchestratorConfig override for the harness arms (Q-05 ablations)')
+    run.add_argument('--max-tokens', type=int, default=None,
+                     help=f'per-call max_tokens for every arm and harness call (default '
+                          f'{harness.MAX_TOKENS}); the thinking allowance follows unless set')
+    run.add_argument('--thinking-allowance', type=int, default=None,
+                     help="a1's one-call completion tokens, reasoning included (default "
+                          "(CONTINUE_CAP + 1) x max_tokens)")
     run.add_argument('--runs', type=int, default=1)
     run.add_argument('--jobs', type=int, default=None,
                      help='chains run concurrently (default per generator: '
