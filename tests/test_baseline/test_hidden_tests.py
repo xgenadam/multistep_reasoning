@@ -379,3 +379,24 @@ def test_several_unlabelled_python_blocks_take_the_definitions(hidden_tests):
     assert files['lru.py'].startswith('class LRUCache')
     assert notes['files']['lru.py']['rule'] == 'largest_python_block_guess'
     assert any(u.get('reason') == 'several unlabelled python blocks' for u in notes['unlabelled'])
+
+
+def test_snapshot_file_part_holding_a_markdown_reply(hidden_tests):
+    # The executor's reply kept verbatim in a file part (Q-02, 2026-10-25):
+    # the code inside the fence is the file, by the text rule.
+    code = 'import sys\n\nprint(sys.argv)'
+    snap = {'parts': [
+        {'id': 'a', 'kind': 'file', 'title': 'csv2json.py', 'body': f'csv2json.py\n```\n{code}\n```'},
+        {'id': 'b', 'kind': 'file', 'title': 'pkg/core.py', 'body': f'\n```python\n{code}\n```\n'},
+        {'id': 'c', 'kind': 'file', 'title': 'doc.py',
+         'body': 'def f():\n    """Example:\n    ```\n    f()\n    ```\n    """'},
+        {'id': 'd', 'kind': 'file', 'title': 'tictactoe.py',
+         'body': f'Here is `games/tictactoe.py`:\n\n```python\n{code}\n```\nDone.'},
+        {'id': 'e', 'kind': 'file', 'title': 'notes.txt', 'body': 'plain text'},
+    ]}
+    files, notes = hidden_tests.extract_from_snapshot(snap)
+    assert files['csv2json.py'] == code and files['pkg/core.py'] == code
+    assert notes['files']['csv2json.py']['rule'] == 'snapshot_part+fenced_body'
+    assert files['doc.py'].startswith('def f():')  # a real file with fences inside
+    assert files['tictactoe.py'] == code             # intro and a longer label
+    assert files['notes.txt'] == 'plain text'

@@ -76,6 +76,8 @@ amendment.
 | 22 | D-024's code | approved; the run file now carries each harness turn's completion tokens, estimated calls and ceiling stop | S, built by C | no | `harness.py`, `task_orchestrator.py` | n/a |
 | 23 | (a′) thinking-call defect | a thinking call gets the whole allowance (4 × 8,192 = 32,768) in one call and continues only once its answer has started; flash-next's 60 a1 results are void and a1 re-runs in full at the fix commit; a is kept (a derived a-only file, original under `runs/`) | C, the user approved the re-run | no (a defect fix restoring the pre-registered arm) | `arms.py`, Q-02 Notes 2026-10-24 | the a1 run files |
 | 24 | flash-next `--jobs` | 6 (measured: +13 % mixed, +27 % decode over 3; 8 queues) for the remaining flash-next runs | C, at the user's request | no (throughput only; tokens exact at any `--jobs`, D-025) | `arms.DEFAULT_JOBS`, AGENTS.md, Q-02 Notes | nothing |
+| 25 | Reading harness file parts that hold a markdown reply | the scorer reads them with the single-call arms' text rule (`hidden_tests._fenced_body`); b 0.091 → 0.677 on flash-next | you (C built it) | no | `hidden_tests.py`, Q-02 Notes 2026-10-25 | every code score |
+| 26 | Layout for the 35B-A3B and 27B | side by side, 2 cards each; the 27B at q8_0 KV | you | no | Q-02 Notes 2026-10-25 | nothing (throughput; KV type recorded) |
 
 ## Stage 2 analysis script: readings chosen (Opus 5.5 / high)
 

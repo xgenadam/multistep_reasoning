@@ -188,10 +188,34 @@ def extract_from_snapshot(snapshot: dict,
             notes['ignored'].append({'block': i, 'reason': 'unsafe path', 'detail': str(e)})
             continue
         path, how = _map_to_expected(path, expected)
-        _claim(files, notes, path, part.get('body') or '', i,
+        body, fenced = _fenced_body(part.get('body') or '', path)
+        how = '+'.join(h for h in (how, fenced) if h)
+        _claim(files, notes, path, body, i,
                'snapshot_part' + (f'+{how}' if how else ''), title)
     _finish_notes(notes, files, expected)
     return files, notes
+
+
+def _fenced_body(body: str, path: str) -> tuple[str, str | None]:
+    """A file part whose body is a markdown reply, not the file (the
+    executor's reply kept verbatim: an intro or a line naming the file, then
+    fenced code, sometimes several files; Q-02 Notes 2026-10-25, the user's
+    scoring amendment). Its file is read by extract_files, the rule the
+    single-call arms' text gets, for this part's path. A body without fence
+    lines, or a .py body that compiles (a docstring with a fence in it), is
+    the file as is; so is a body the text rule finds no file for."""
+    if not any(_FENCE.match(ln) for ln in body.splitlines()):
+        return body, None
+    if path.endswith('.py'):
+        try:
+            compile(body, path, 'exec')
+            return body, None
+        except (SyntaxError, ValueError):
+            pass
+    found, _ = extract_files(body, [path])
+    if path in found:
+        return found[path], 'fenced_body'
+    return body, None
 
 
 def files_from_snapshot(snapshot: dict) -> dict[str, str]:
