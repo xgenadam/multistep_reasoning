@@ -87,6 +87,8 @@ def _composer_document(ctx: BuildContext) -> Any:
         llm_client=ctx.llm_client,
         max_retries=ctx.options.composer_max_retries,
         prompt_token_budget=ctx.options.prompt_token_budget,
+        keep_rule=ctx.options.keep_rule,
+        compose_fallback=ctx.options.compose_fallback,
     )
 
 

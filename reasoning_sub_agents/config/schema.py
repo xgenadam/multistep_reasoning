@@ -38,6 +38,17 @@ class OptionsConfig(BaseModel):
     summary_max_words: int = 400
     render: Literal['markdown_with_files', 'sections_only'] = 'markdown_with_files'
     composer_max_retries: int = 3
+    # D-030: how a sub-task's result must survive composition. verbatim (the
+    # default): the whole result as an exact substring of the part. names: a
+    # retyped .py part must parse and every top-level def/class the result
+    # defined must still be defined in the document; prose coverage is logged.
+    # off: nothing enforced, coverage logged. Non-verbatim rules also let the
+    # composer prompt allow merging, deduplicating and refactoring.
+    keep_rule: Literal['verbatim', 'names', 'off'] = 'verbatim'
+    # D-030: after the last failed compose attempt, add the result verbatim as
+    # its own part instead of failing the turn. Off by default (the harness's
+    # default behaviour is frozen until Q-02's verdict).
+    compose_fallback: bool = False
     prompt_token_budget: int = 16384
     log_prompts: bool = False
     # 0-06: run a consolidation pass (merge/delete/move only) after the final

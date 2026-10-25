@@ -16,6 +16,7 @@ from ..document import (
     MergeParts,
     MovePart,
     assert_payload_kept,
+    check_payload,
     preview_text,
 )
 from ..llama_utils import generate_simple_llm_input, get_streamed_json_response
@@ -94,6 +95,18 @@ Output JSON matching this schema:
 """
 
 
+# Rule 1 of COMPOSE_PROMPT by keep rule (D-030); verbatim is the original text.
+RULE_ONE = {
+    'verbatim': """1. Prefer adding a new part with body_source="current_result" so the sub-task
+   output is copied verbatim in code. Do not re-type the sub-task result.""",
+    'names': """1. Use body_source="current_result" to copy the sub-task output as it is, or
+   write the body yourself when that makes the document better: merge it into
+   an existing part, remove duplication with earlier parts, or refactor code
+   (shared helpers, DRY). Keep every function and class the sub-task defined,
+   and keep every code file valid and complete (no placeholders).""",
+}
+RULE_ONE['off'] = RULE_ONE['names']
+
 COMPOSE_PROMPT = """
 You are the document composer for a multi-step LLM pipeline.
 A user request was split into sub-tasks. After each sub-task you MUST update a
@@ -113,8 +126,7 @@ Available operations:
 - delete_part: remove a part.
 
 Rules:
-1. Prefer adding a new part with body_source="current_result" so the sub-task
-   output is copied verbatim in code. Do not re-type the sub-task result.
+{rule_one}
 2. You may write small glue yourself (titles, transitions, TOC, one-sentence
    bridges) as literal `body` text.
 3. To revise an existing part, use replace_in_part / insert_in_part / update_part
@@ -197,7 +209,11 @@ class DocumentComposer:
         max_retries: int = 3,
         max_attached_parts: int = MAX_ATTACHED_PARTS,
         prompt_token_budget: int = 16384,
+        keep_rule: str = 'verbatim',
+        compose_fallback: bool = False,
     ) -> None:
+        self.keep_rule = keep_rule
+        self.compose_fallback = compose_fallback
         self.llm_client = llm_client
         self.history: list = history if history is not None else []
         self.max_retries = max_retries
@@ -260,7 +276,7 @@ class DocumentComposer:
                     current_result=current_result,
                     origin_task=origin_task,
                 )
-                assert_payload_kept(working, ops, current_result)
+                kept = check_payload(working, ops, current_result, self.keep_rule)
             except (DocumentApplyError, DocumentIntegrityError) as exc:
                 last_error = str(exc)
                 logger.warning('compose attempt %s failed: %s', attempt + 1, last_error)
@@ -280,11 +296,33 @@ class DocumentComposer:
             document.parts = working.parts
             document.summary = working.summary
             document.op_log = working.op_log
+            entry = {
+                'attempt': attempt + 1,
+                'ops': TypeAdapter(list[DocumentOp]).dump_python(ops),
+                'error': None,
+            }
+            if self.keep_rule != 'verbatim':
+                entry['keep'] = kept
+            self.history.append(entry)
+            return ops
+
+        if self.compose_fallback:
+            # D-030: keep the work instead of failing the turn.
+            ops = [_fallback_add_part(current_sub_task, document)]
+            working = document.clone()
+            working.apply(ops, current_result=current_result, origin_task=origin_task)
+            document.title = working.title
+            document.parts = working.parts
+            document.summary = working.summary
+            document.op_log = working.op_log
+            logger.warning('composer failed after %s retries; added the result verbatim: %s',
+                           self.max_retries, last_error)
             self.history.append(
                 {
-                    'attempt': attempt + 1,
+                    'attempt': 'fallback',
                     'ops': TypeAdapter(list[DocumentOp]).dump_python(ops),
                     'error': None,
+                    'fallback_after': last_error,
                 }
             )
             return ops
@@ -432,6 +470,7 @@ class DocumentComposer:
                 PromptPiece(
                     'core',
                     COMPOSE_PROMPT.format(
+                        rule_one=RULE_ONE[self.keep_rule],
                         user_request=user_request,
                         sub_tasks=json.dumps(sub_task_brief, indent=2),
                         current_sub_task=current_sub_task.decomposed_sub_task.model_dump_json(

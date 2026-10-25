@@ -65,3 +65,9 @@ Gemma's template takes `enable_thinking` (default off); checked live: thinking o
 - 17:56Z: b-think and a2 held after b (the agent). Why: b failed 28 of 70 turns on the keep rule, and b-think and a2
   (whose budget comes from b's tokens) would inherit it, wasting ~4 h. a and a1 (single calls) are unaffected and run.
 - 18:15Z: the keep rule becomes a setting (D-030, the user: "sounds sensible").
+- 18:45Z: D-030 built (`options.keep_rule`, `options.compose_fallback`). Clarification of D-030: the fallback is its
+  own option, off by default, rather than on "under any rule", because the harness's default behaviour is frozen until
+  Q-02's verdict; the default compose prompt is byte-identical to before (checked). Under `names` / `off` the
+  prompt's rule 1 allows merging, deduplication and refactoring instead of "Do not re-type the sub-task result".
+- gemma's b runs, after a1: `names` + fallback, `off` + fallback, and `verbatim` + fallback (the agent). Why the
+  third: the first b run had no fallback, so without it a gain could not be split between the rule and the fallback.
