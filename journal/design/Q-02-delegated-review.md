@@ -78,6 +78,7 @@ amendment.
 | 24 | flash-next `--jobs` | 6 (measured: +13 % mixed, +27 % decode over 3; 8 queues) for the remaining flash-next runs | C, at the user's request | no (throughput only; tokens exact at any `--jobs`, D-025) | `arms.DEFAULT_JOBS`, AGENTS.md, Q-02 Notes | nothing |
 | 25 | Reading harness file parts that hold a markdown reply | the scorer reads them with the single-call arms' text rule (`hidden_tests._fenced_body`); b 0.091 → 0.677 on flash-next | you (C built it) | no | `hidden_tests.py`, Q-02 Notes 2026-10-25 | every code score |
 | 26 | Layout for the 35B-A3B and 27B | side by side, 2 cards each; the 27B at q8_0 KV | you | no | Q-02 Notes 2026-10-25 | nothing (throughput; KV type recorded) |
+| 27 | Generators | the Qwen3.8-27B dropped (D-028); the 35B-A3B alone on 4 cards, f16 KV; row 26's layout void; a flash-next thinking-levels study added, exploratory | you | no | D-028, Q-02 Notes 2026-10-25 | nothing (no 27B run existed) |
 
 ## Stage 2 analysis script: readings chosen (Opus 5.5 / high)
 

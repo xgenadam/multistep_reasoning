@@ -38,6 +38,3 @@ generators:
   qwen3.6-35b-a3b:
     runs: [TODO b, a2 (--refine-budget-from its b), a+a1, c]
     verdicts: {b:a2: {record: TODO, concurrence: TODO}, b:a: {record: TODO}, b:a1: {record: TODO}, c:b: {record: TODO}}
-  qwen3.8-27b:
-    runs: [TODO b, a2 (--refine-budget-from its b), a+a1, c]
-    verdicts: {b:a2: {record: TODO, concurrence: TODO}, b:a: {record: TODO}, b:a1: {record: TODO}, c:b: {record: TODO}}
