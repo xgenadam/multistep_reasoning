@@ -147,3 +147,27 @@ valid JSON in one call, but no help to reasoning; check the instrumentation
 seam still counts it, O-03), and thinking on for structured calls (free
 reasoning before the JSON in the same call; Q-02's (a′) arm tests thinking
 only for single calls).
+
+## Built 2026-10-25 (the user: test the smoke model both ways)
+
+- **Correction to the start of this note:** every JSON call already sends
+  `response_format: {"type": "json_object"}` (instructor 1.3.2 `Mode.JSON`
+  sets it), which vLLM and llama.cpp treat as "decode valid JSON only". So
+  syntax was already forced; the **schema** was not (it is only described
+  in the prompt, then validated and retried).
+- `options.structured_output` (+ `structured_output_by_step`), set per run
+  with `--set`:
+  - `json_object` (default, every run so far): as above;
+  - `json_schema`: the response format is the schema of the model instructor
+    parses into, so the server forces the structure;
+  - `two_pass`: a prose call (one heading per field, told the structure),
+    then the conversion: the request, the prose as the assistant turn, and
+    "Now give your answer above as JSON…", under the forced schema.
+- **Counting:** each turn's meter records per step kind the mode, logical
+  JSON calls, attempts (retries included) and calls that failed every
+  attempt; the run file's turn health carries it as `json_calls`.
+  Composer document-rule retries are separate (the composer's own history).
+- Tests: `tests/test_llama_utils/test_structured_output.py`. The Q-02
+  campaign runs from pinned worktrees, so none of its runs change.
+- First use: the smoke model `qwen3-0.6b` (`generator-server.sh qwen3-0.6b`,
+  `:8095`, one card) on the g3 subset: a, and b under each mode.

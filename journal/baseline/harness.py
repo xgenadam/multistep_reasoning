@@ -556,7 +556,8 @@ def turn_health(entry: dict, statuses: list[str] | None = None) -> dict:
             'final_sub_task_count': count,
             'completion_tokens': entry.get('completion_tokens'),
             'estimated_calls': entry.get('estimated_calls'),
-            'token_ceiling': entry.get('token_ceiling')}
+            'token_ceiling': entry.get('token_ceiling'),
+            'json_calls': entry.get('json_calls')}
 
 
 # ---------------------------------------------------------------------------

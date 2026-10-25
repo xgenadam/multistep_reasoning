@@ -129,12 +129,13 @@ GENERATORS = {
     'flash-next': 'qwen3.8-flash-next',
     'qwen3.8-27b': 'qwen3.8-27b',
     'qwen3.6-35b-a3b': 'qwen3.6-35b-a3b',
+    'qwen3-0.6b': 'qwen3-0.6b',  # the smoke model, exploratory only (2026-10-25)
 }
 # Default --jobs per generator (Q-02 speed check, 2026-10-23, Notes): on the
 # llama.cpp generators' 5 slots, 5 concurrent chains give ~1.5x (27B) and
 # ~1.8x (35B-A3B) the throughput of 3 on a harness-shaped load, and 8 slots add
 # only 7-8 %. flash-next (vLLM) was not measured, so it keeps 3.
-DEFAULT_JOBS = {'flash-next': 6, 'qwen3.8-27b': 5, 'qwen3.6-35b-a3b': 5}
+DEFAULT_JOBS = {'flash-next': 6, 'qwen3.8-27b': 5, 'qwen3.6-35b-a3b': 5, 'qwen3-0.6b': 5}
 ARMS = ('a', 'a1', 'a2', 'b', 'c')
 ARM_NAMES = {'a': '(a) single call, thinking off', 'a1': "(a') single call, thinking on",
              'a2': "(a'') self-refine", 'b': '(b) harness', 'c': '(c) harness + consolidation'}

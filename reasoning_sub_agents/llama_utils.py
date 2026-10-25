@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, TypeVar, get_args, get_origin
 
 import instructor
+from instructor.process_response import handle_response_model
 from openai import OpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionChunk, ChatCompletionMessage
 from pydantic import TypeAdapter
@@ -141,6 +142,9 @@ class TokenMeter:
     ceiling: int | None = None
     completion_tokens: int = 0
     estimated_calls: int = 0  # calls without usage, counted as len(text) // 4
+    # Per step kind: the structured_output mode, logical JSON calls, attempts
+    # (retries included) and calls that failed every attempt.
+    json_calls: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     @property
     def exceeded(self) -> bool:
@@ -188,6 +192,98 @@ def thinking_enabled() -> bool:
 def thinking_extra_body() -> dict:
     """The explicit switch every call sends (vLLM and llama-server templates)."""
     return {'chat_template_kwargs': {'enable_thinking': thinking_enabled()}}
+
+
+_structured: ContextVar[tuple[str, dict] | None] = ContextVar('structured_output', default=None)
+
+
+@contextmanager
+def structured_output_session(options: Any = None):
+    """Apply options.structured_output* for one orchestrator turn."""
+    setting = getattr(options, 'structured_output', 'json_object')
+    by_step = dict(getattr(options, 'structured_output_by_step', None) or {})
+    token = _structured.set((setting, by_step))
+    try:
+        yield
+    finally:
+        _structured.reset(token)
+
+
+def structured_mode() -> str:
+    """json_object, json_schema or two_pass for the call about to be made."""
+    session = _structured.get()
+    if session is None:
+        return 'json_object'
+    setting, by_step = session
+    return by_step.get(current_step_kind() or '', setting)
+
+
+def _json_stats(mode: str) -> dict[str, Any] | None:
+    meter = _token_meter.get()
+    if meter is None:
+        return None
+    stats = meter.json_calls.setdefault(
+        current_step_kind() or 'other', {'mode': mode, 'calls': 0, 'attempts': 0, 'failed': 0})
+    stats['calls'] += 1
+    return stats
+
+
+TWO_PASS_PROSE_PROMPT = (
+    'Before any JSON: answer the request above in plain prose. Use one heading for each '
+    'piece of information the JSON will need, and give every value in full under its '
+    'heading. Do not write JSON or code fences around the whole answer. The JSON will '
+    'have this structure:\n\n{schema}'
+)
+TWO_PASS_CONVERT_PROMPT = (
+    'Now give your answer above as JSON that matches the schema. Use only what your '
+    'answer says; do not add, drop or change any content.'
+)
+
+
+def _schema_format(create: Callable[..., Any], schema: dict) -> Callable[..., Any]:
+    """create with instructor's json_object format replaced by the schema itself."""
+
+    def create_forced(*args: Any, **kwargs: Any) -> Any:
+        kwargs['response_format'] = {
+            'type': 'json_schema',
+            'json_schema': {'name': 'response', 'schema': schema},
+        }
+        return create(*args, **kwargs)
+
+    return create_forced
+
+
+def _counted(create: Callable[..., Any], stats: dict[str, Any] | None) -> Callable[..., Any]:
+    def create_counted(*args: Any, **kwargs: Any) -> Any:
+        if stats is not None:
+            stats['attempts'] += 1
+        return create(*args, **kwargs)
+
+    return create_counted
+
+
+def _two_pass_messages(llama_client: OpenAI, messages: list[dict], schema: dict) -> list[dict]:
+    """The prose pass of two_pass: messages for the conversion call, which sees
+    the request, the model's prose answer, and the instruction to convert it."""
+    prose_request = messages + [{'role': 'user', 'content': TWO_PASS_PROSE_PROMPT.format(
+        schema=json.dumps(schema, indent=2))}]
+    completion = llama_client.chat.completions.create(
+        model=_model_name(),
+        messages=prose_request,
+        stream=False,
+        timeout=3600,
+        extra_body=thinking_extra_body(),
+    )
+    message = completion.choices[0].message if completion.choices else None
+    meter_completion(getattr(completion, 'usage', None), getattr(message, 'content', None))
+    think, prose = split_reasoning(getattr(message, 'content', None) or '')
+    record_reasoning(
+        message_reasoning(message) or think,
+        path='two_pass',
+        tokens=reasoning_tokens(getattr(completion, 'usage', None)),
+    )
+    return prose_request + [{'role': 'assistant', 'content': prose},
+                            {'role': 'user', 'content': TWO_PASS_CONVERT_PROMPT}]
 
 
 _THINK_BLOCK = re.compile(r'\s*<think>(.*?)(?:</think>|$)\s*', re.DOTALL)
@@ -470,24 +566,37 @@ def _get_streamed_json_response_inner(
         # attempt's reasoning is logged and stripped before instructor parses
         # (D-013, D-015). Built per request: it must bind the client's current
         # chat.completions.create, which is the harness seam (O-03).
+        mode = structured_mode()
+        stats = _json_stats(mode)
+        create = _counted(_reasoning_capture(llama_client.chat.completions.create), stats)
+        if mode != 'json_object':
+            # The schema of the model instructor parses into (list[...] is wrapped).
+            parsed_model, _ = handle_response_model(
+                response_model, mode=instructor.Mode.JSON, messages=list(messages))
+            schema = parsed_model.model_json_schema()
+            create = _schema_format(create, schema)
+            if mode == 'two_pass':
+                messages = _two_pass_messages(llama_client, messages, schema)
         instr_client = instructor.Instructor(
             client=llama_client,
-            create=instructor.patch(
-                create=_reasoning_capture(llama_client.chat.completions.create),
-                mode=instructor.Mode.JSON,
-            ),
+            create=instructor.patch(create=create, mode=instructor.Mode.JSON),
             mode=instructor.Mode.JSON,
         )
         if instr_client is not None and callable(getattr(instr_client, 'create', None)):
-            response = instr_client.create(
-                model=_model_name(),
-                messages=messages,
-                response_model=response_model,
-                max_retries=max_retries,
-                timeout=3600,
-                extra_body=thinking_extra_body(),
-                **instructor_kwargs,
-            )
+            try:
+                response = instr_client.create(
+                    model=_model_name(),
+                    messages=messages,
+                    response_model=response_model,
+                    max_retries=max_retries,
+                    timeout=3600,
+                    extra_body=thinking_extra_body(),
+                    **instructor_kwargs,
+                )
+            except Exception:
+                if stats is not None:
+                    stats['failed'] += 1
+                raise
             return _finalize_instructor_response(response, partial_callbacks)
 
     last_error: Exception | None = None

@@ -3,6 +3,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 Thinking = Literal['off', 'on']
+StructuredOutput = Literal['json_object', 'json_schema', 'two_pass']
 StepKind = Literal[
     'decompose', 'decompose_critique', 'executor_turn', 'oracle',
     'compose', 'consolidate', 'summary',
@@ -62,6 +63,15 @@ class OptionsConfig(BaseModel):
     thinking_by_step: dict[StepKind, Thinking] = Field(default_factory=dict)
     log_thinking: Literal['off', 'jsonl'] | None = None
     thinking_log_dir: str = 'runs/thinking'
+    # How a JSON step asks for its structure (the user, 2026-10-25). json_object,
+    # the default and every run before it: the server forces valid JSON, the
+    # schema is only in the prompt, checked after the call and retried.
+    # json_schema: the server forces the schema itself. two_pass: the model
+    # first answers in prose under a heading per field, then a second call,
+    # forced to the schema, turns that answer into JSON.
+    # structured_output_by_step overrides it per call kind.
+    structured_output: StructuredOutput = 'json_object'
+    structured_output_by_step: dict[StepKind, StructuredOutput] = Field(default_factory=dict)
 
     @field_validator('thinking', 'log_thinking', mode='before')
     @classmethod

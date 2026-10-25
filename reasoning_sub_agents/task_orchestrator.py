@@ -21,6 +21,7 @@ from .llama_utils import (
     create_llama_client,
     current_token_meter,
     prompt_logging,
+    structured_output_session,
     thinking_session,
     token_meter,
 )
@@ -125,7 +126,7 @@ class TaskOrchestrator:
         """
         with prompt_logging(self.options.log_prompts), thinking_session(
             self.options, turn_id=turn_id
-        ), token_meter(self.options.token_ceiling):
+        ), structured_output_session(self.options), token_meter(self.options.token_ceiling):
             yield from self._iter_query(
                 user_input, document=document, chat_context=chat_context
             )
@@ -199,6 +200,7 @@ class TaskOrchestrator:
         meter = current_token_meter()
         history_entry['completion_tokens'] = meter.completion_tokens if meter else None
         history_entry['estimated_calls'] = meter.estimated_calls if meter else None
+        history_entry['json_calls'] = dict(meter.json_calls) if meter else None
         history_entry['token_ceiling'] = getattr(self, '_ceiling_stop', None)
         self.history.append(history_entry)
         yield ('done', sub_task_execution_result)

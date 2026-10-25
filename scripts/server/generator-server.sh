@@ -69,12 +69,15 @@ if [ "${1:-}" = stop ]; then
   exit 0
 fi
 
-GEN="${1:?usage: generator-server.sh <flash-next|qwen3.8-27b|qwen3.6-35b-a3b|stop>}"
+GEN="${1:?usage: generator-server.sh <flash-next|qwen3.8-27b|qwen3.6-35b-a3b|qwen3-0.6b|stop>}"
 case "$GEN" in
   flash-next)      PORT=8090; SERVED=qwen3.8-flash-next ;;
   qwen3.8-27b)     PORT=8093; SERVED=qwen3.8-27b;     MODEL_REL=Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-Q6_K.gguf;          DEF_SPLIT=layer ;;
   qwen3.6-35b-a3b) PORT=8094; SERVED=qwen3.6-35b-a3b; MODEL_REL=Qwen3.6-35B-A3B-GGUF/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf; DEF_SPLIT=layer ;;
-  *) echo "unknown generator '$GEN' (flash-next|qwen3.8-27b|qwen3.6-35b-a3b|stop)" >&2; exit 2 ;;
+  # The smoke model (the user, 2026-10-25: does a 0.6B gain from the harness?): one card, its 40,960 trained context.
+  qwen3-0.6b)      PORT=8095; SERVED=qwen3-0.6b;      MODEL_REL=smoke-Qwen3-0.6B-GGUF/Qwen3-0.6B-Q8_0.gguf;            DEF_SPLIT=layer
+                   GPUS="${GPUS:-0}"; SLOT_CTX="${SLOT_CTX:-40960}" ;;
+  *) echo "unknown generator '$GEN' (flash-next|qwen3.8-27b|qwen3.6-35b-a3b|qwen3-0.6b|stop)" >&2; exit 2 ;;
 esac
 
 show_models() { echo "/v1/models: $(curl -s -m 10 "http://localhost:$PORT/v1/models")"
