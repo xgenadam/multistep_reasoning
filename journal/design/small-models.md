@@ -92,3 +92,16 @@ Gemma's template takes `enable_thinking` (default off); checked live: thinking o
   - Next: re-run about 10 prompts where b lost to a with `--trace-calls` after the running b runs finish.
 - 23:05Z: the decomposition prompt's climate-website example removed (D-031, the user: "remove it"), on master only;
   the running gemma b runs keep it (worktree dc1f102). Runs after this commit compare against the ones before.
+- 23:41Z, b-names and b-verbfb scored on all 70 (mean pass, all-pass, extraction incomplete):
+
+  | Arm | Mean | All pass | Incomplete | Errors | Fallbacks |
+  | --- | --- | --- | --- | --- | --- |
+  | a | 0.355 | 6 | 2 | 0 | – |
+  | a1 | 0.385 | 6 | 1 | 0 | – |
+  | b (verbatim, no fallback) | 0.037 | 1 | 44 | 36 | – |
+  | b-verbfb (verbatim + fallback) | 0.057 | 0 | 32 | 7 | 44 |
+  | b-names (+ fallback) | 0.219 | 1 | 26 | 4 | 25 |
+
+  The fallback alone rescues turns (36 errors to 7) but not scores (0.037 to 0.057): it appends fragments verbatim.
+  The rule change is what moves b (0.219), still well under a. b-names' partial 0.312 (48 prompts) fell on the last
+  22, the longer ones. b-off is still to run (cancelled for the container restart; runs after it).
