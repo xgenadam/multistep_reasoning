@@ -18,7 +18,7 @@ The user's request is:
 {user_input}
 ================================================================================
 
-{conversation_block}Break THAT request into sub-tasks. Every sub-task name and objective MUST be a step toward this exact request. Do not invent a different topic. Do not follow the climate-website example below as the task — it is only a format illustration.
+{conversation_block}Break THAT request into sub-tasks. Every sub-task name and objective MUST be a step toward this exact request. Do not invent a different topic.
 
 Output JSON in this schema:
 ```
@@ -38,12 +38,6 @@ Rules:
   artifact (e.g. "Write the wordcount.py script", "Add error handling to the
   script"), not merely design, explain, or summarize around it. If the user
   asks for prose (a report, analysis), sub-task deliverables are prose.
-
-Format illustration only (NOT the user's task):
-User query: "Design a website about climate change"
-1. Research climate statistics for the site
-2. Outline pages
-3. Draft homepage copy
 """
 
 CONVERSATION_BLOCK = """

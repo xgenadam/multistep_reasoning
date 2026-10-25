@@ -90,3 +90,5 @@ Gemma's template takes `enable_thinking` (default off); checked live: thinking o
     file per turn, loaded on demand, so a 13 MB run opens from file://), with a per-turn "where it went wrong" list.
     Rejected: one self-contained HTML (too large once calls are traced) and a published artifact (the data stays local).
   - Next: re-run about 10 prompts where b lost to a with `--trace-calls` after the running b runs finish.
+- 23:05Z: the decomposition prompt's climate-website example removed (D-031, the user: "remove it"), on master only;
+  the running gemma b runs keep it (worktree dc1f102). Runs after this commit compare against the ones before.
