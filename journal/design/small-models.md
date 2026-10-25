@@ -49,3 +49,19 @@ b's file). Two cards, 5 × 131,072 (the model's trained context). Driver `runs/s
 Gemma's template takes `enable_thinking` (default off); checked live: thinking on gives separate reasoning
 (c06: 3,646 reasoning characters, 4,743 of answer). Readout: per prompt, what b solves that a and a1 do not.
 **The user (2026-10-25): gemma-4-e4b is the small model to work with; qwen3.5-4b and qwen3.5-9b are dropped, gemma being both more capable and faster.**
+
+## Decisions and why (in order; D-029 and D-030 hold the load-bearing ones)
+
+- 13:20Z: six models downloaded (Qwen3-1.7B, Qwen3.5-2B/4B/9B, granite-4.2-3b, gemma-4-E4B), from the publishers'
+  repos or unsloth, text weights only. Why: a spread over 1.7–9B and four families; Q8_0 except the 9B (Q6_K) to keep
+  quantisation loss out of the comparison.
+- Speed on one card, arm a on two. Why: one card is what an end user has; the code run's context (5 × 40,960) needs
+  more memory than one card for the larger KV caches, and its timing is not a criterion (D-025).
+- 15:17Z: gemma and the 9B moved to cards 2–3 in parallel (the user: yes). Why: ~50 min sooner. Cost: their speed
+  figures share CPU and PCIe with the other run.
+- 16:25Z: gemma picked by the approved rule (best single-call rate among the fast models); D-029.
+- 17:45Z: arm a moved ahead of b-think (the agent). Why: the user asked how soon the harness's effectiveness is known;
+  b against a at the same budgets needs a, a 20-minute arm, instead of waiting ~3 h behind b-think. No arm changed.
+- 17:56Z: b-think and a2 held after b (the agent). Why: b failed 28 of 70 turns on the keep rule, and b-think and a2
+  (whose budget comes from b's tokens) would inherit it, wasting ~4 h. a and a1 (single calls) are unaffected and run.
+- 18:15Z: the keep rule becomes a setting (D-030, the user: "sounds sensible").
