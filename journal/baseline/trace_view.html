@@ -74,6 +74,15 @@ pre { background: var(--code-bg); padding: 8px; border-radius: 4px; white-space:
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
 .muted { color: var(--muted); } .bad { color: var(--bad); } .ok { color: var(--ok); } .warn { color: var(--warn); }
 .empty { color: var(--muted); padding: 40px; text-align: center; }
+table.sbs { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 4px 0;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code-bg); }
+table.sbs td { padding: 0 6px; vertical-align: top; white-space: pre-wrap; word-break: break-word; }
+table.sbs td.n { width: 3.5em; text-align: right; color: var(--muted); user-select: none; border-right: 1px solid var(--line); }
+table.sbs th { text-align: left; font-weight: 600; color: var(--muted); padding: 2px 6px; border-bottom: 1px solid var(--line); }
+table.sbs tr.del td.l, table.sbs tr.chg td.l { background: var(--bad-bg); }
+table.sbs tr.add td.r, table.sbs tr.chg td.r { background: var(--ok-bg); }
+table.sbs tr.skip td { color: var(--muted); text-align: center; font-style: italic; }
+.sbs-wrap { max-height: 620px; overflow: auto; border-radius: 4px; }
 table.tests { border-collapse: collapse; font-size: 12px; } table.tests td { padding: 1px 8px 1px 0; }
 @media (max-width: 760px) {
   .layout { grid-template-columns: 1fr; height: auto; } aside { max-height: 40vh; }
@@ -204,10 +213,20 @@ function attemptView(a) {
     a.keep ? el('div', {class: 'muted', text: 'keep check: ' + JSON.stringify(a.keep)}) : null,
     (a.ops || []).map(opLine));
 }
+function sbsView(rows) {
+  const tr = r => {
+    if (r[0] === 'skip') return el('tr', {class: 'skip'}, el('td', {colspan: 4, text: typeof r[2] === 'number' ? `… ${r[2]} unchanged lines` : r[2]}));
+    return el('tr', {class: r[0]}, el('td', {class: 'n', text: r[1] ?? ''}), el('td', {class: 'l', text: r[2] ?? ''}),
+      el('td', {class: 'n', text: r[3] ?? ''}), el('td', {class: 'r', text: r[4] ?? ''}));
+  };
+  return el('div', {class: 'sbs-wrap'}, el('table', {class: 'sbs'},
+    el('colgroup', {}, el('col', {style: 'width:3.5em'}), el('col', {}), el('col', {style: 'width:3.5em'}), el('col', {})),
+    el('tr', {}, el('th', {colspan: 2, text: 'before'}), el('th', {colspan: 2, text: 'after'})), rows.map(tr)));
+}
 function partsView(parts) {
   return parts.map(p => el('div', {class: 'part ' + p.change},
     el('span', {text: `${p.change === 'same' ? '·' : p.change} ${p.id} (${p.kind || '?'})${p.title ? ' · ' + p.title : ''}`}),
-    p.diff ? fold('diff', p.diff) : null,
+    p.diff ? el('details', {open: true}, el('summary', {text: `side-by-side diff (${p.diff.filter(r => r[0] !== 'eq' && r[0] !== 'skip').length} changed lines)`}), sbsView(p.diff)) : null,
     p.change !== 'same' ? fold('body', p.body) : null));
 }
 function stepView(turn, s, prevSubTask) {

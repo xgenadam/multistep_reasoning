@@ -72,6 +72,36 @@ def message_text(message: dict) -> str:
     return content or ''
 
 
+DIFF_CONTEXT = 3  # unchanged lines kept around each change in a side-by-side diff
+DIFF_ROWS_CAP = 4000
+
+
+def side_by_side(before: str, after: str) -> list[list]:
+    """Rows [tag, left line no, left text, right line no, right text] for a two-column diff.
+    tag is eq / del / add / chg, or skip (left text is the count of unchanged lines folded)."""
+    a, b = before.splitlines(), after.splitlines()
+    rows: list[list] = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if op == 'equal':
+            n = i2 - i1
+            lead = DIFF_CONTEXT if rows else 0  # context after the previous change
+            trail = DIFF_CONTEXT if (i2 < len(a) or j2 < len(b)) else 0  # before the next one
+            shown = range(n) if lead + trail >= n else [*range(lead), None, *range(n - trail, n)]
+            for k in shown:
+                rows.append(['skip', None, n - lead - trail, None, None] if k is None
+                            else ['eq', i1 + k + 1, a[i1 + k], j1 + k + 1, b[j1 + k]])
+        else:
+            tag = {'replace': 'chg', 'delete': 'del', 'insert': 'add'}[op]
+            for k in range(max(i2 - i1, j2 - j1)):
+                li, rj = i1 + k, j1 + k
+                rows.append([tag, li + 1 if li < i2 else None, a[li] if li < i2 else None,
+                             rj + 1 if rj < j2 else None, b[rj] if rj < j2 else None])
+        if len(rows) > DIFF_ROWS_CAP:
+            rows = rows[:DIFF_ROWS_CAP] + [['skip', None, 'diff cut', None, None]]
+            break
+    return rows
+
+
 def parts_diff(before: list[dict], after: list[dict]) -> list[dict]:
     """Each part of `after` (and each removed one) as added / changed / same / removed."""
     old = {p['id']: p for p in before}
@@ -85,9 +115,7 @@ def parts_diff(before: list[dict], after: list[dict]) -> list[dict]:
             row['change'] = 'added'
         elif (prev.get('body'), prev.get('title'), prev.get('kind')) != (p.get('body'), p.get('title'), p.get('kind')):
             row['change'] = 'changed'
-            row['diff'] = cap(''.join(difflib.unified_diff(
-                (prev.get('body') or '').splitlines(True), (p.get('body') or '').splitlines(True),
-                'before', 'after', n=2)))
+            row['diff'] = side_by_side(prev.get('body') or '', p.get('body') or '')
         else:
             row['change'] = 'same'
         rows.append(row)

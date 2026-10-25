@@ -119,3 +119,14 @@ def test_trace_view_builds_a_turn_and_lists_its_problems(tmp_path):
     assert whats[0] == 'step 1 attempt 1 rejected: does not parse'
     assert any('fallback' in w for w in whats) and any('extract' in w for w in whats)
     assert whats[-1] == '3 of 4 hidden tests failed'
+
+
+def test_side_by_side_diff_pairs_lines_and_folds_unchanged_runs():
+    from tests.test_baseline.conftest import load_baseline_module
+    view = load_baseline_module('trace_view')
+    before = '\n'.join(f'l{i}' for i in range(20))
+    rows = view.side_by_side(before, before.replace('l10', 'L10') + '\nnew')
+    assert rows[0] == ['skip', None, 7, None, None]
+    assert ['chg', 11, 'l10', 11, 'L10'] in rows and rows[-1] == ['add', None, None, 21, 'new']
+    assert ['skip', None, 3, None, None] in rows
+    assert sum(r[2] for r in rows if r[0] == 'skip') + sum(1 for r in rows if r[0] != 'skip') == 21
