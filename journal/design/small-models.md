@@ -48,4 +48,4 @@ with the same budgets: `--max-tokens 32768 --thinking-allowance 98304`, `options
 b's file). Two cards, 5 × 131,072 (the model's trained context). Driver `runs/small-models/relaxed.sh`.
 Gemma's template takes `enable_thinking` (default off); checked live: thinking on gives separate reasoning
 (c06: 3,646 reasoning characters, 4,743 of answer). Readout: per prompt, what b solves that a and a1 do not.
-Next candidate: qwen3.5-4b (lower single-call rate, so more room for a gain).
+**The user (2026-10-25): gemma-4-e4b is the small model to work with; qwen3.5-4b and qwen3.5-9b are dropped, gemma being both more capable and faster.**
