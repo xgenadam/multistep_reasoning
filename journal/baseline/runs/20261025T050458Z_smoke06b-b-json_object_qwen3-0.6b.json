@@ -1,0 +1,1064 @@
+{
+  "kind": "q-e1-arms",
+  "bench": "v1.1",
+  "bench_frozen": true,
+  "manifest_path": "journal/baseline/bench/v1/manifest.yaml",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "prompt_sha256": {
+    "c13": "3ece8935569d93c081bbf57535af52db0200e09f78b65905c3e18f41660c91fd",
+    "c36": "06f02a541ef312445c89cf5713081221b7d34f789e6751e9d301628a1e1ac65a",
+    "c47": "a5af187e9a431933d105fd4def7f8247a9e661d05b06668c7fb5bd780d3d85b7",
+    "c06": "67d9d89575aec2b278cb9c8e10f081233472607ffa067e922baccae9c0e7eaa9",
+    "c06f": "216962990d0bc87667bd12b5202c12a18376a711f31b848753d8bbcf674cd80a",
+    "r06": "47f92b39356e40f87ea0d72c3d330bf8a3dc0d9b01329b2d00626350aaf26e8e",
+    "r23": "afd1c5d58641fdf6e82d03cc61dc5606575fdcd588dfd9b4f9e69848ea05b5de",
+    "r36": "2441aa97296a8f17bdc2f93dc240e536375d0de3d8b7c539f101a24c50b71f29",
+    "r01": "e2cbe71699e8759db7e98a04a8a0d5adde428e9b654733d4faf586efc8e3d734",
+    "r01f": "ae4b9fca749b10d10826e7d932bb73c1c1213fb8f9cd6e10cd5eaf42cd5ec3f1"
+  },
+  "generator": "qwen3-0.6b",
+  "model": "qwen3-0.6b",
+  "backend": "http://localhost:8095/v1",
+  "served_models": [
+    "qwen3-0.6b"
+  ],
+  "arms": [
+    "b"
+  ],
+  "arm_names": {
+    "b": "(b) harness"
+  },
+  "refine_rounds": {},
+  "refine_budget": null,
+  "refine_cap": null,
+  "refine_min_rounds": null,
+  "continue_cap": 3,
+  "max_tokens": 8192,
+  "sampling": "server defaults (no temperature sent)",
+  "prompts_version": "arms-v1",
+  "prompts_sha256": "ab881e9b5c698b0cf7140ec1689512ae01fe4fc250304d37408b9f56ead2dda6",
+  "config": {
+    "components": {
+      "decomposer": "self_critique",
+      "executor": "oracle_loop",
+      "composer": "document",
+      "oracle": "document_oracle"
+    },
+    "options": {
+      "max_oracle_rounds": 8,
+      "summary_max_words": 400,
+      "render": "markdown_with_files",
+      "composer_max_retries": 3,
+      "prompt_token_budget": 16384,
+      "log_prompts": false,
+      "consolidation": false,
+      "token_ceiling": null,
+      "thinking": "off",
+      "thinking_by_step": {},
+      "log_thinking": null,
+      "thinking_log_dir": "runs/thinking",
+      "structured_output": "json_object",
+      "structured_output_by_step": {}
+    }
+  },
+  "overrides": [],
+  "selection": {
+    "subset": "g3",
+    "prompt": null,
+    "domain": null
+  },
+  "runs_per_prompt": 1,
+  "jobs": 5,
+  "intermediates_dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b",
+  "caveat": "per-call and per-prompt wall seconds are inflated by concurrent jobs; use --jobs 1 for wall-time comparisons",
+  "intermediates": {
+    "files": 3,
+    "manifest_sha256": "8b0f949fbfc6de253222dbef8bcc90ae5a905358178679ded75247fa97e319c8"
+  },
+  "commit": "7768432b1d414634e036c4ab158af9854ff8fe7d",
+  "dirty": false,
+  "commit_at_end": null,
+  "label": "smoke06b-b-json_object",
+  "started_at": "20261025T050458Z",
+  "updated_at": "20261025T050612Z",
+  "results": [
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_c06_r0_t0",
+        "files": 0
+      },
+      "wall_seconds": 34.7,
+      "llm": {
+        "calls": 5,
+        "prompt_tokens": 23657,
+        "completion_tokens": 2208,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 5
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 34.63,
+        "by_kind": {
+          "decompose": {
+            "count": 5,
+            "p50_s": 5.42,
+            "max_s": 12.41,
+            "prompt_tokens": 23657,
+            "completion_tokens": 2208,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 5,
+            "p50_s": 5.42,
+            "max_s": 12.41,
+            "prompt_tokens": 23657,
+            "completion_tokens": 2208,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(4 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...he required operations'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...most recently used key'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...most recently used key'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...apacity and evict keys'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": "c06",
+      "domain": "code",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: c06 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c13"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_c13_r0_t0",
+        "files": 0
+      },
+      "wall_seconds": 24.4,
+      "llm": {
+        "calls": 5,
+        "prompt_tokens": 21920,
+        "completion_tokens": 1535,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 5
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 24.36,
+        "by_kind": {
+          "decompose": {
+            "count": 5,
+            "p50_s": 3.76,
+            "max_s": 9.94,
+            "prompt_tokens": 21920,
+            "completion_tokens": 1535,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 5,
+            "p50_s": 3.76,
+            "max_s": 9.94,
+            "prompt_tokens": 21920,
+            "completion_tokens": 1535,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(3 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...letion of the sub task'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...letion of the sub task'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...letion of the sub task'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    },
+    {
+      "prompt_id": "c36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c36"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_c36_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 36.9,
+      "llm": {
+        "calls": 14,
+        "prompt_tokens": 76796,
+        "completion_tokens": 2296,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 14
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 36.78,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 1.06,
+            "max_s": 2.96,
+            "prompt_tokens": 38020,
+            "completion_tokens": 432,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 3,
+            "p50_s": 2.18,
+            "max_s": 10.33,
+            "prompt_tokens": 14275,
+            "completion_tokens": 616,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 4.27,
+            "max_s": 4.27,
+            "prompt_tokens": 2033,
+            "completion_tokens": 344,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 5,
+            "p50_s": 1.73,
+            "max_s": 4.63,
+            "prompt_tokens": 22468,
+            "completion_tokens": 904,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/1: Design and Implement the minisql Package": {
+            "count": 5,
+            "p50_s": 1.06,
+            "max_s": 2.96,
+            "prompt_tokens": 38020,
+            "completion_tokens": 432,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 4,
+            "p50_s": 3.22,
+            "max_s": 10.33,
+            "prompt_tokens": 16308,
+            "completion_tokens": 960,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/1: Design and Implement the minisql Package": {
+            "count": 5,
+            "p50_s": 1.73,
+            "max_s": 4.63,
+            "prompt_tokens": 22468,
+            "completion_tokens": 904,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0\n  Input tag 'AddPart' found using 'type' does not match any of the expected tags: 'add_part', 'append_to_part', 'replace_in_part', 'insert_in_part', 'update_part', 'merge_parts', 'move_part', 'delete_part' [type=union_tag_invalid, input_value={'type': 'AddPart', 'id':...nt the minisql Package'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    },
+    {
+      "prompt_id": "c47",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c47"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_c47_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 59.4,
+      "llm": {
+        "calls": 7,
+        "prompt_tokens": 26435,
+        "completion_tokens": 4116,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 7
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 59.3,
+        "by_kind": {
+          "compose": {
+            "count": 1,
+            "p50_s": 27.12,
+            "max_s": 27.12,
+            "prompt_tokens": 7024,
+            "completion_tokens": 2109,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 11.48,
+            "max_s": 11.81,
+            "prompt_tokens": 9229,
+            "completion_tokens": 1387,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 3.8,
+            "max_s": 3.8,
+            "prompt_tokens": 2013,
+            "completion_tokens": 341,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 2.09,
+            "max_s": 3.39,
+            "prompt_tokens": 7959,
+            "completion_tokens": 219,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 1.26,
+            "max_s": 1.26,
+            "prompt_tokens": 210,
+            "completion_tokens": 60,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/1: Research climate statistics": {
+            "count": 1,
+            "p50_s": 27.12,
+            "max_s": 27.12,
+            "prompt_tokens": 7024,
+            "completion_tokens": 2109,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 11.14,
+            "max_s": 11.81,
+            "prompt_tokens": 11242,
+            "completion_tokens": 1728,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/1: Research climate statistics": {
+            "count": 2,
+            "p50_s": 2.09,
+            "max_s": 3.39,
+            "prompt_tokens": 7959,
+            "completion_tokens": 219,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/1: Research climate statistics": {
+            "count": 1,
+            "p50_s": 1.26,
+            "max_s": 1.26,
+            "prompt_tokens": 210,
+            "completion_tokens": 60,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [
+        {
+          "index": 4,
+          "kind": "decompose",
+          "stream": false,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 11.812603710000985,
+          "first_token_s": 11.812603710000985,
+          "chunks": 1,
+          "prompt_tokens": 4470,
+          "completion_tokens": 408,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Initial decomposition (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 7,
+          "kind": "decompose_critique",
+          "stream": true,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 3.8010262099996908,
+          "first_token_s": 0.4873264449997805,
+          "chunks": 343,
+          "prompt_tokens": 2013,
+          "completion_tokens": 341,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Critique decomposition",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 12,
+          "kind": "decompose",
+          "stream": false,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 11.140281922998838,
+          "first_token_s": 11.140281922998838,
+          "chunks": 1,
+          "prompt_tokens": 4759,
+          "completion_tokens": 979,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Regenerate decomposition (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 24,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 1/1: Research climate statistics",
+          "seconds": 3.3897290859968052,
+          "first_token_s": 3.3897290859968052,
+          "chunks": 1,
+          "prompt_tokens": 3791,
+          "completion_tokens": 157,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Execute Research climate statistics (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 29,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 1/1: Research climate statistics",
+          "seconds": 0.7810083639997174,
+          "first_token_s": 0.7810083639997174,
+          "chunks": 1,
+          "prompt_tokens": 4168,
+          "completion_tokens": 62,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Execute Research climate statistics (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 30,
+          "kind": "compose",
+          "stream": false,
+          "phase": "Composing after 1/1: Research climate statistics",
+          "seconds": 27.11742627499916,
+          "first_token_s": 27.11742627499916,
+          "chunks": 1,
+          "prompt_tokens": 7024,
+          "completion_tokens": 2109,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Compose document ops (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 47,
+          "kind": "summary",
+          "stream": true,
+          "phase": "Updating summary after 1/1: Research climate statistics",
+          "seconds": 1.2605464949956513,
+          "first_token_s": 0.7581633999943733,
+          "chunks": 62,
+          "prompt_tokens": 210,
+          "completion_tokens": 60,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Rolling summary",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        }
+      ],
+      "document": {
+        "part_count": 1,
+        "part_kinds": {
+          "section": 1
+        },
+        "body_h2_headings": 0,
+        "part_titles": [
+          "Research climate statistics"
+        ],
+        "summary_chars": 371,
+        "content_chars": 13,
+        "top_dup_pairs": [],
+        "max_dup_jaccard": null,
+        "op_counts": {
+          "add_part": 1
+        },
+        "turn_op_counts": {
+          "add_part": 1
+        },
+        "non_empty": true
+      },
+      "sub_tasks": {
+        "exec_entries": 1,
+        "exec_status_counts": {
+          "completed": 1
+        },
+        "sub_task_statuses": [
+          "completed"
+        ],
+        "final_sub_task_count": 1,
+        "completion_tokens": 4181,
+        "estimated_calls": 2,
+        "token_ceiling": null,
+        "json_calls": {
+          "decompose": {
+            "mode": "json_object",
+            "calls": 2,
+            "attempts": 2,
+            "failed": 0
+          },
+          "executor_turn": {
+            "mode": "json_object",
+            "calls": 1,
+            "attempts": 2,
+            "failed": 0
+          },
+          "compose": {
+            "mode": "json_object",
+            "calls": 1,
+            "attempts": 1,
+            "failed": 0
+          }
+        }
+      },
+      "output": {
+        "text": "## Research climate statistics\n\n{\"parts\": []}",
+        "snapshot": {
+          "title": null,
+          "parts": [
+            {
+              "id": "research-climate-statistics",
+              "kind": "section",
+              "title": "Research climate statistics",
+              "body": "{\"parts\": []}",
+              "origin_task": "Research climate statistics"
+            }
+          ],
+          "summary": "The document now contains a research section titled \"Research climate statistics,\" with no additional content. The summary highlights that this section outlines the current state of climate-related research, including data collection, analysis, and findings. The outline indicates that the document is structured to provide a comprehensive overview of climate statistics.",
+          "render_mode": "markdown_with_files",
+          "op_log_len": 1
+        },
+        "chars": 45
+      },
+      "error": null
+    },
+    {
+      "prompt_id": "r01",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_r01_r0_t0",
+        "files": 0
+      },
+      "wall_seconds": 24.2,
+      "llm": {
+        "calls": 5,
+        "prompt_tokens": 22135,
+        "completion_tokens": 2005,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 5
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 24.18,
+        "by_kind": {
+          "decompose": {
+            "count": 5,
+            "p50_s": 4.79,
+            "max_s": 5.3,
+            "prompt_tokens": 22135,
+            "completion_tokens": 2005,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 5,
+            "p50_s": 4.79,
+            "max_s": 5.3,
+            "prompt_tokens": 22135,
+            "completion_tokens": 2005,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(4 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...fect cost and hosting.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...on search performance.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...ging a review culture.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...rawback of the system.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    },
+    {
+      "prompt_id": "r01f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": "r01",
+      "domain": "report",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: r01 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "r06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r06"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_r06_r0_t0",
+        "files": 0
+      },
+      "wall_seconds": 44.1,
+      "llm": {
+        "calls": 5,
+        "prompt_tokens": 32318,
+        "completion_tokens": 2941,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 5
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 44.08,
+        "by_kind": {
+          "decompose": {
+            "count": 5,
+            "p50_s": 7.56,
+            "max_s": 14.24,
+            "prompt_tokens": 32318,
+            "completion_tokens": 2941,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 5,
+            "p50_s": 7.56,
+            "max_s": 14.24,
+            "prompt_tokens": 32318,
+            "completion_tokens": 2941,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(6 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...des the time-zone fix.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...x for the 4.2 release.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...e for the 4.2 release.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS... the new booking flow.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.4\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...e for the 4.3 release.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.5\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...to the relevant teams.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    },
+    {
+      "prompt_id": "r23",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r23"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_r23_r0_t0",
+        "files": 0
+      },
+      "wall_seconds": 43.3,
+      "llm": {
+        "calls": 5,
+        "prompt_tokens": 31483,
+        "completion_tokens": 3869,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 5
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 43.28,
+        "by_kind": {
+          "decompose": {
+            "count": 5,
+            "p50_s": 9.26,
+            "max_s": 11.95,
+            "prompt_tokens": 31483,
+            "completion_tokens": 3869,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 5,
+            "p50_s": 9.26,
+            "max_s": 11.95,
+            "prompt_tokens": 31483,
+            "completion_tokens": 3869,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(8 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...e database restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...r database restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...up and restore process'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...resent and functioning'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.4\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...during the restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.5\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS... after the restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.6\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...ational and up-to-date'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.7\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...directory is preserved'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    },
+    {
+      "prompt_id": "r36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r36"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050458Z_smoke06b-b-json_object_qwen3-0.6b/b_r36_r0_t0",
+        "files": 0
+      },
+      "wall_seconds": 39.2,
+      "llm": {
+        "calls": 5,
+        "prompt_tokens": 36907,
+        "completion_tokens": 4506,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 5
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 39.21,
+        "by_kind": {
+          "decompose": {
+            "count": 5,
+            "p50_s": 7.45,
+            "max_s": 12.09,
+            "prompt_tokens": 36907,
+            "completion_tokens": 4506,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 5,
+            "p50_s": 7.45,
+            "max_s": 12.09,
+            "prompt_tokens": 36907,
+            "completion_tokens": 4506,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(9 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...he platform's mission.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...er the user's request.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...d a table as required.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...a high-level overview.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.4\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...athered and processed.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.5\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...rvice's functionality.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.6\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...r the service's needs.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.7\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...ervice's requirements.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.8\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...t format as specified.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+    }
+  ],
+  "summary": {
+    "b/code": {
+      "prompts": 5,
+      "errors": 4,
+      "completion_tokens_p50": 4116,
+      "prompt_tokens_p50": 26435,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": 59.4,
+      "wall_seconds_sum": 59.4,
+      "calls_sum": 7,
+      "output_chars_p50": 45,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    },
+    "b/report": {
+      "prompts": 5,
+      "errors": 5,
+      "completion_tokens_p50": null,
+      "prompt_tokens_p50": null,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": null,
+      "wall_seconds_sum": 0,
+      "calls_sum": 0,
+      "output_chars_p50": null,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    }
+  },
+  "arm_elapsed_seconds": {
+    "b": 74.0
+  },
+  "errors": [
+    "b c13 r0: InstructorRetryException(3 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...letion of the sub task'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...letion of the sub task'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...letion of the sub task'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+    "b c06 r0: InstructorRetryException(4 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...he required operations'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...most recently used key'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...most recently used key'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...apacity and evict keys'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+    "b c06f r0: not run: c06 failed earlier in the chain",
+    "b c36 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.0\n  Input tag 'AddPart' found using 'type' does not match any of the expected tags: 'add_part', 'append_to_part', 'replace_in_part', 'insert_in_part', 'update_part', 'merge_parts', 'move_part', 'delete_part' [type=union_tag_invalid, input_value={'type': 'AddPart', 'id':...nt the minisql Package'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+    "b r06 r0: InstructorRetryException(6 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...des the time-zone fix.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...x for the 4.2 release.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...e for the 4.2 release.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS... the new booking flow.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.4\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...e for the 4.3 release.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.5\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...to the relevant teams.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+    "b r01 r0: InstructorRetryException(4 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...fect cost and hosting.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...on search performance.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...ging a review culture.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...rawback of the system.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+    "b r01f r0: not run: r01 failed earlier in the chain",
+    "b r23 r0: InstructorRetryException(8 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...e database restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...r database restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...up and restore process'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...resent and functioning'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.4\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...during the restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.5\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS... after the restoration'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.6\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...ational and up-to-date'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.7\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...directory is preserved'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+    "b r36 r0: InstructorRetryException(9 validation errors for Response\ncontent.0\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...he platform's mission.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.1\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...er the user's request.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.2\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...d a table as required.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.3\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...a high-level overview.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.4\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...athered and processed.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.5\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...rvice's functionality.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.6\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...r the service's needs.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.7\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...ervice's requirements.\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid\ncontent.8\n  Input tag 'DecomposeSubTask' found using 'meta_type' does not match any of the expected tags: 'sub_task_detail', 'thinking_step', 'pause', 'reset' [type=union_tag_invalid, input_value={'meta_type': 'DecomposeS...t format as specified.'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)"
+  ]
+}

@@ -1,0 +1,2971 @@
+{
+  "run_file": "journal/baseline/runs/20261026T201122Z_work-fnH_flash-next.json",
+  "run_file_sha256": "53c63c4041e49a4ef2c9ada33026aaa699c935defb436fc936340e173c0a9659",
+  "bench": "journal/baseline/bench/v1",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "commit": "f2027e832f36e4f5925b45994474adc466625b4f",
+  "dirty": false,
+  "isolation": "netns",
+  "timeout_s": 120,
+  "scored_at": "2026-10-26T21:00:42Z",
+  "references": {
+    "c01": {
+      "n_tests": 16,
+      "passed": 16,
+      "source": "reference"
+    },
+    "c01f": {
+      "n_tests": 28,
+      "passed": 28,
+      "source": "reference"
+    },
+    "c03": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c06": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c06f": {
+      "n_tests": 37,
+      "passed": 37,
+      "source": "reference"
+    },
+    "c07": {
+      "n_tests": 21,
+      "passed": 21,
+      "source": "reference"
+    },
+    "c08": {
+      "n_tests": 16,
+      "passed": 16,
+      "source": "reference"
+    },
+    "c12": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c13": {
+      "n_tests": 13,
+      "passed": 13,
+      "source": "reference"
+    },
+    "c15": {
+      "n_tests": 13,
+      "passed": 13,
+      "source": "reference"
+    },
+    "c18": {
+      "n_tests": 22,
+      "passed": 22,
+      "source": "reference"
+    },
+    "c23": {
+      "n_tests": 14,
+      "passed": 14,
+      "source": "reference"
+    },
+    "c27": {
+      "n_tests": 14,
+      "passed": 14,
+      "source": "reference"
+    },
+    "c28": {
+      "n_tests": 14,
+      "passed": 14,
+      "source": "reference"
+    },
+    "c30": {
+      "n_tests": 20,
+      "passed": 20,
+      "source": "reference"
+    },
+    "c38": {
+      "n_tests": 38,
+      "passed": 38,
+      "source": "reference"
+    },
+    "c40": {
+      "n_tests": 33,
+      "passed": 33,
+      "source": "reference"
+    },
+    "c43": {
+      "n_tests": 40,
+      "passed": 40,
+      "source": "reference"
+    },
+    "c49": {
+      "n_tests": 35,
+      "passed": 35,
+      "source": "reference"
+    },
+    "c51": {
+      "n_tests": 37,
+      "passed": 37,
+      "source": "reference"
+    }
+  },
+  "skipped_unknown_prompts": [],
+  "results": [
+    {
+      "prompt_id": "c01",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 16,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 16,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.72,
+        "exit_code": 0,
+        "outcomes": {
+          "test_wordcount::test_single_file_exact_output": "passed",
+          "test_wordcount::test_no_total_row_for_one_file": "passed",
+          "test_wordcount::test_two_files_with_total_in_argument_order": "passed",
+          "test_wordcount::test_columns_widen_for_large_numbers": "passed",
+          "test_wordcount::test_path_shown_as_given": "passed",
+          "test_wordcount::test_last_line_without_newline_counts": "passed",
+          "test_wordcount::test_empty_file": "passed",
+          "test_wordcount::test_chars_are_code_points_not_bytes": "passed",
+          "test_wordcount::test_crlf_counts_two_chars": "passed",
+          "test_wordcount::test_words_split_on_any_whitespace": "passed",
+          "test_wordcount::test_missing_file_reported_others_counted": "passed",
+          "test_wordcount::test_missing_file_leaves_one_row_without_total": "passed",
+          "test_wordcount::test_all_missing_prints_nothing": "passed",
+          "test_wordcount::test_directory_is_not_readable": "passed",
+          "test_wordcount::test_no_arguments_is_usage_error": "passed",
+          "test_wordcount::test_no_trailing_spaces": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "................                                                         [100%]\n16 passed in 0.49s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c01",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 16,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 16,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.717,
+        "exit_code": 0,
+        "outcomes": {
+          "test_wordcount::test_single_file_exact_output": "passed",
+          "test_wordcount::test_no_total_row_for_one_file": "passed",
+          "test_wordcount::test_two_files_with_total_in_argument_order": "passed",
+          "test_wordcount::test_columns_widen_for_large_numbers": "passed",
+          "test_wordcount::test_path_shown_as_given": "passed",
+          "test_wordcount::test_last_line_without_newline_counts": "passed",
+          "test_wordcount::test_empty_file": "passed",
+          "test_wordcount::test_chars_are_code_points_not_bytes": "passed",
+          "test_wordcount::test_crlf_counts_two_chars": "passed",
+          "test_wordcount::test_words_split_on_any_whitespace": "passed",
+          "test_wordcount::test_missing_file_reported_others_counted": "passed",
+          "test_wordcount::test_missing_file_leaves_one_row_without_total": "passed",
+          "test_wordcount::test_all_missing_prints_nothing": "passed",
+          "test_wordcount::test_directory_is_not_readable": "passed",
+          "test_wordcount::test_no_arguments_is_usage_error": "passed",
+          "test_wordcount::test_no_trailing_spaces": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "................                                                         [100%]\n16 passed in 0.49s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c01f",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 28,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 28,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.118,
+        "exit_code": 0,
+        "outcomes": {
+          "test_wordcount_json_stdin::test_stdin_in_table": "passed",
+          "test_wordcount_json_stdin::test_stdin_mixed_with_files_and_total": "passed",
+          "test_wordcount_json_stdin::test_stdin_has_no_newline_translation": "passed",
+          "test_wordcount_json_stdin::test_stdin_is_utf8": "passed",
+          "test_wordcount_json_stdin::test_json_single_file_has_total": "passed",
+          "test_wordcount_json_stdin::test_json_several_files_in_order": "passed",
+          "test_wordcount_json_stdin::test_json_flag_between_files": "passed",
+          "test_wordcount_json_stdin::test_json_counts_are_integers": "passed",
+          "test_wordcount_json_stdin::test_json_with_stdin": "passed",
+          "test_wordcount_json_stdin::test_json_with_missing_file": "passed",
+          "test_wordcount_json_stdin::test_json_all_missing_still_prints": "passed",
+          "test_wordcount_json_stdin::test_json_without_files_is_usage_error": "passed",
+          "test_wordcount_unchanged::test_single_file_exact_output": "passed",
+          "test_wordcount_unchanged::test_no_total_row_for_one_file": "passed",
+          "test_wordcount_unchanged::test_two_files_with_total_in_argument_order": "passed",
+          "test_wordcount_unchanged::test_columns_widen_for_large_numbers": "passed",
+          "test_wordcount_unchanged::test_path_shown_as_given": "passed",
+          "test_wordcount_unchanged::test_last_line_without_newline_counts": "passed",
+          "test_wordcount_unchanged::test_empty_file": "passed",
+          "test_wordcount_unchanged::test_chars_are_code_points_not_bytes": "passed",
+          "test_wordcount_unchanged::test_crlf_counts_two_chars": "passed",
+          "test_wordcount_unchanged::test_words_split_on_any_whitespace": "passed",
+          "test_wordcount_unchanged::test_missing_file_reported_others_counted": "passed",
+          "test_wordcount_unchanged::test_missing_file_leaves_one_row_without_total": "passed",
+          "test_wordcount_unchanged::test_all_missing_prints_nothing": "passed",
+          "test_wordcount_unchanged::test_directory_is_not_readable": "passed",
+          "test_wordcount_unchanged::test_no_arguments_is_usage_error": "passed",
+          "test_wordcount_unchanged::test_no_trailing_spaces": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "............................                                             [100%]\n28 passed in 0.90s\n"
+      },
+      "n_tests": 28,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c01f",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 5,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 16,
+        "failed": 12,
+        "skipped": 0,
+        "errors": 0,
+        "total": 28,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.167,
+        "exit_code": 1,
+        "outcomes": {
+          "test_wordcount_json_stdin::test_stdin_in_table": "failed",
+          "test_wordcount_json_stdin::test_stdin_mixed_with_files_and_total": "failed",
+          "test_wordcount_json_stdin::test_stdin_has_no_newline_translation": "failed",
+          "test_wordcount_json_stdin::test_stdin_is_utf8": "failed",
+          "test_wordcount_json_stdin::test_json_single_file_has_total": "failed",
+          "test_wordcount_json_stdin::test_json_several_files_in_order": "failed",
+          "test_wordcount_json_stdin::test_json_flag_between_files": "failed",
+          "test_wordcount_json_stdin::test_json_counts_are_integers": "failed",
+          "test_wordcount_json_stdin::test_json_with_stdin": "failed",
+          "test_wordcount_json_stdin::test_json_with_missing_file": "failed",
+          "test_wordcount_json_stdin::test_json_all_missing_still_prints": "failed",
+          "test_wordcount_json_stdin::test_json_without_files_is_usage_error": "failed",
+          "test_wordcount_unchanged::test_single_file_exact_output": "passed",
+          "test_wordcount_unchanged::test_no_total_row_for_one_file": "passed",
+          "test_wordcount_unchanged::test_two_files_with_total_in_argument_order": "passed",
+          "test_wordcount_unchanged::test_columns_widen_for_large_numbers": "passed",
+          "test_wordcount_unchanged::test_path_shown_as_given": "passed",
+          "test_wordcount_unchanged::test_last_line_without_newline_counts": "passed",
+          "test_wordcount_unchanged::test_empty_file": "passed",
+          "test_wordcount_unchanged::test_chars_are_code_points_not_bytes": "passed",
+          "test_wordcount_unchanged::test_crlf_counts_two_chars": "passed",
+          "test_wordcount_unchanged::test_words_split_on_any_whitespace": "passed",
+          "test_wordcount_unchanged::test_missing_file_reported_others_counted": "passed",
+          "test_wordcount_unchanged::test_missing_file_leaves_one_row_without_total": "passed",
+          "test_wordcount_unchanged::test_all_missing_prints_nothing": "passed",
+          "test_wordcount_unchanged::test_directory_is_not_readable": "passed",
+          "test_wordcount_unchanged::test_no_arguments_is_usage_error": "passed",
+          "test_wordcount_unchanged::test_no_trailing_spaces": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "eration as err:\n>           raise JSONDecodeError(\"Expecting value\", s, err.value) from None\nE           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/json/decoder.py:356: JSONDecodeError\n____________________ test_json_without_files_is_usage_error ____________________\n\ntmp_path = PosixPath('/tmp/hidden-tests-kpeyc6zi/pytest-of-root/pytest-0/test_json_without_files_is_usa0')\n\n    def test_json_without_files_is_usage_error(tmp_path):\n        res = run(tmp_path, '--json')\n>       assert res.returncode == 2\nE       AssertionError: assert 1 == 2\nE        +  where 1 = CompletedProcess(args=['/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/.venv/bin/python', '/tmp/hidden-tests-kpeyc6zi/work/wordcount.py', '--json'], returncode=1, stdout='', stderr='wordcount.py: cannot read --json\\n').returncode\n\ntest_wordcount_json_stdin.py:114: AssertionError\n=========================== short test summary info ============================\nFAILED test_wordcount_json_stdin.py::test_stdin_in_table - AssertionError: as...\nFAILED test_wordcount_json_stdin.py::test_stdin_mixed_with_files_and_total - ...\nFAILED test_wordcount_json_stdin.py::test_stdin_has_no_newline_translation - ...\nFAILED test_wordcount_json_stdin.py::test_stdin_is_utf8 - IndexError: list in...\nFAILED test_wordcount_json_stdin.py::test_json_single_file_has_total - Assert...\nFAILED test_wordcount_json_stdin.py::test_json_several_files_in_order - json....\nFAILED test_wordcount_json_stdin.py::test_json_flag_between_files - json.deco...\nFAILED test_wordcount_json_stdin.py::test_json_counts_are_integers - json.dec...\nFAILED test_wordcount_json_stdin.py::test_json_with_stdin - json.decoder.JSON...\nFAILED test_wordcount_json_stdin.py::test_json_with_missing_file - AssertionE...\nFAILED test_wordcount_json_stdin.py::test_json_all_missing_still_prints - jso...\nFAILED test_wordcount_json_stdin.py::test_json_without_files_is_usage_error\n12 failed, 16 passed in 0.95s\n"
+      },
+      "n_tests": 28,
+      "pass_rate": 0.5714
+    },
+    {
+      "prompt_id": "c03",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "logscan.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "logscan.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "logscan.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.868,
+        "exit_code": 0,
+        "outcomes": {
+          "test_logscan::test_exact_level_in_file_order": "passed",
+          "test_logscan::test_level_word_in_message_does_not_count": "passed",
+          "test_logscan::test_info_lines": "passed",
+          "test_logscan::test_level_argument_is_case_insensitive": "passed",
+          "test_logscan::test_at_least_includes_higher_levels": "passed",
+          "test_logscan::test_at_least_info_is_every_levelled_line": "passed",
+          "test_logscan::test_at_least_error_is_error_only": "passed",
+          "test_logscan::test_limit_stops_printing_but_count_is_total": "passed",
+          "test_logscan::test_limit_zero": "passed",
+          "test_logscan::test_limit_larger_than_matches": "passed",
+          "test_logscan::test_no_match_exits_zero": "passed",
+          "test_logscan::test_lines_kept_exactly_and_last_line_gets_newline": "passed",
+          "test_logscan::test_short_lines_have_no_level": "passed",
+          "test_logscan::test_missing_file": "passed",
+          "test_logscan::test_usage_errors[args0]": "passed",
+          "test_logscan::test_usage_errors[args1]": "passed",
+          "test_logscan::test_usage_errors[args2]": "passed",
+          "test_logscan::test_usage_errors[args3]": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.65s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c03",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "logscan.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "logscan.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "logscan.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.868,
+        "exit_code": 0,
+        "outcomes": {
+          "test_logscan::test_exact_level_in_file_order": "passed",
+          "test_logscan::test_level_word_in_message_does_not_count": "passed",
+          "test_logscan::test_info_lines": "passed",
+          "test_logscan::test_level_argument_is_case_insensitive": "passed",
+          "test_logscan::test_at_least_includes_higher_levels": "passed",
+          "test_logscan::test_at_least_info_is_every_levelled_line": "passed",
+          "test_logscan::test_at_least_error_is_error_only": "passed",
+          "test_logscan::test_limit_stops_printing_but_count_is_total": "passed",
+          "test_logscan::test_limit_zero": "passed",
+          "test_logscan::test_limit_larger_than_matches": "passed",
+          "test_logscan::test_no_match_exits_zero": "passed",
+          "test_logscan::test_lines_kept_exactly_and_last_line_gets_newline": "passed",
+          "test_logscan::test_short_lines_have_no_level": "passed",
+          "test_logscan::test_missing_file": "passed",
+          "test_logscan::test_usage_errors[args0]": "passed",
+          "test_logscan::test_usage_errors[args1]": "passed",
+          "test_logscan::test_usage_errors[args2]": "passed",
+          "test_logscan::test_usage_errors[args3]": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.64s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.218,
+        "exit_code": 0,
+        "outcomes": {
+          "test_lru::test_capacity_below_one_raises[0]": "passed",
+          "test_lru::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru::test_get_returns_value_and_default": "passed",
+          "test_lru::test_put_returns_none_until_full": "passed",
+          "test_lru::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru::test_get_refreshes_recency": "passed",
+          "test_lru::test_missing_get_changes_nothing": "passed",
+          "test_lru::test_update_existing_key_never_evicts": "passed",
+          "test_lru::test_update_refreshes_recency": "passed",
+          "test_lru::test_contains_does_not_touch_recency": "passed",
+          "test_lru::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru::test_capacity_one": "passed",
+          "test_lru::test_none_values_are_stored": "passed",
+          "test_lru::test_resize_down_evicts_in_order": "passed",
+          "test_lru::test_resize_up_keeps_everything": "passed",
+          "test_lru::test_resize_below_one_raises[0]": "passed",
+          "test_lru::test_resize_below_one_raises[-3]": "passed",
+          "test_lru::test_long_sequence_matches_model": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.04s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_lru::test_capacity_below_one_raises[0]": "passed",
+          "test_lru::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru::test_get_returns_value_and_default": "passed",
+          "test_lru::test_put_returns_none_until_full": "passed",
+          "test_lru::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru::test_get_refreshes_recency": "passed",
+          "test_lru::test_missing_get_changes_nothing": "passed",
+          "test_lru::test_update_existing_key_never_evicts": "passed",
+          "test_lru::test_update_refreshes_recency": "passed",
+          "test_lru::test_contains_does_not_touch_recency": "passed",
+          "test_lru::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru::test_capacity_one": "passed",
+          "test_lru::test_none_values_are_stored": "passed",
+          "test_lru::test_resize_down_evicts_in_order": "passed",
+          "test_lru::test_resize_up_keeps_everything": "passed",
+          "test_lru::test_resize_below_one_raises[0]": "passed",
+          "test_lru::test_resize_below_one_raises[-3]": "passed",
+          "test_lru::test_long_sequence_matches_model": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.04s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 34,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 37,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_lru_ttl::test_ttl_must_be_positive[0]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-1]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-0.5]": "passed",
+          "test_lru_ttl::test_default_clock_works_without_ttl": "passed",
+          "test_lru_ttl::test_expires_exactly_at_ttl": "passed",
+          "test_lru_ttl::test_get_does_not_extend_life": "passed",
+          "test_lru_ttl::test_put_restarts_the_clock": "passed",
+          "test_lru_ttl::test_expired_entries_are_invisible": "passed",
+          "test_lru_ttl::test_expired_entries_do_not_count_towards_capacity": "passed",
+          "test_lru_ttl::test_put_returns_only_a_live_evicted_key": "passed",
+          "test_lru_ttl::test_put_of_an_expired_key_is_a_new_key": "passed",
+          "test_lru_ttl::test_lru_order_among_live_entries": "passed",
+          "test_lru_ttl::test_stats_counts": "passed",
+          "test_lru_ttl::test_expirations_count_without_being_looked_at": "passed",
+          "test_lru_ttl::test_replaced_or_evicted_entries_never_expire": "passed",
+          "test_lru_ttl::test_stats_is_a_fresh_dict_with_four_int_keys": "passed",
+          "test_lru_ttl::test_resize_skips_expired_entries": "failed",
+          "test_lru_ttl::test_no_ttl_never_expires": "passed",
+          "test_lru_ttl::test_time_is_read_only_through_the_clock": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru_unchanged::test_get_returns_value_and_default": "passed",
+          "test_lru_unchanged::test_put_returns_none_until_full": "passed",
+          "test_lru_unchanged::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru_unchanged::test_get_refreshes_recency": "passed",
+          "test_lru_unchanged::test_missing_get_changes_nothing": "passed",
+          "test_lru_unchanged::test_update_existing_key_never_evicts": "passed",
+          "test_lru_unchanged::test_update_refreshes_recency": "passed",
+          "test_lru_unchanged::test_contains_does_not_touch_recency": "passed",
+          "test_lru_unchanged::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru_unchanged::test_capacity_one": "passed",
+          "test_lru_unchanged::test_none_values_are_stored": "passed",
+          "test_lru_unchanged::test_resize_down_evicts_in_order": "failed",
+          "test_lru_unchanged::test_resize_up_keeps_everything": "failed",
+          "test_lru_unchanged::test_resize_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_resize_below_one_raises[-3]": "passed",
+          "test_lru_unchanged::test_long_sequence_matches_model": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "................F...............FF...                                    [100%]\n=================================== FAILURES ===================================\n______________________ test_resize_skips_expired_entries _______________________\n\nclock = <test_lru_ttl.Clock object at 0x709cb93811c0>\n\n    def test_resize_skips_expired_entries(clock):\n        cache = LRUCache(4, ttl=10, clock=clock)\n        cache.put('a', 1)\n        clock.advance(5)\n        for k in 'bcd':\n            cache.put(k, k)\n        clock.advance(5)  # a expired\n>       assert cache.resize(2) == ['b']\nE       AssertionError: assert None == ['b']\nE        +  where None = resize(2)\nE        +    where resize = <lru.LRUCache object at 0x709cb9381130>.resize\n\ntest_lru_ttl.py:167: AssertionError\n_______________________ test_resize_down_evicts_in_order _______________________\n\n    def test_resize_down_evicts_in_order():\n        cache = filled('a', 'b', 'c', capacity=4)\n        cache.put('d', 'D')\n        cache.get('a')  # order: b c d a\n>       assert cache.resize(2) == ['b', 'c']\nE       AssertionError: assert None == ['b', 'c']\nE        +  where None = resize(2)\nE        +    where resize = <lru.LRUCache object at 0x709cb93a0320>.resize\n\ntest_lru_unchanged.py:102: AssertionError\n_______________________ test_resize_up_keeps_everything ________________________\n\n    def test_resize_up_keeps_everything():\n        cache = filled('a', 'b')\n>       assert cache.resize(5) == []\nE       assert None == []\nE        +  where None = resize(5)\nE        +    where resize = <lru.LRUCache object at 0x709cb93a1550>.resize\n\ntest_lru_unchanged.py:109: AssertionError\n=========================== short test summary info ============================\nFAILED test_lru_ttl.py::test_resize_skips_expired_entries - AssertionError: a...\nFAILED test_lru_unchanged.py::test_resize_down_evicts_in_order - AssertionErr...\nFAILED test_lru_unchanged.py::test_resize_up_keeps_everything - assert None =...\n3 failed, 34 passed in 0.10s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.9189
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 30,
+        "failed": 7,
+        "skipped": 0,
+        "errors": 0,
+        "total": 37,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_lru_ttl::test_ttl_must_be_positive[0]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-1]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-0.5]": "passed",
+          "test_lru_ttl::test_default_clock_works_without_ttl": "passed",
+          "test_lru_ttl::test_expires_exactly_at_ttl": "passed",
+          "test_lru_ttl::test_get_does_not_extend_life": "passed",
+          "test_lru_ttl::test_put_restarts_the_clock": "passed",
+          "test_lru_ttl::test_expired_entries_are_invisible": "passed",
+          "test_lru_ttl::test_expired_entries_do_not_count_towards_capacity": "passed",
+          "test_lru_ttl::test_put_returns_only_a_live_evicted_key": "passed",
+          "test_lru_ttl::test_put_of_an_expired_key_is_a_new_key": "passed",
+          "test_lru_ttl::test_lru_order_among_live_entries": "passed",
+          "test_lru_ttl::test_stats_counts": "failed",
+          "test_lru_ttl::test_expirations_count_without_being_looked_at": "failed",
+          "test_lru_ttl::test_replaced_or_evicted_entries_never_expire": "failed",
+          "test_lru_ttl::test_stats_is_a_fresh_dict_with_four_int_keys": "passed",
+          "test_lru_ttl::test_resize_skips_expired_entries": "passed",
+          "test_lru_ttl::test_no_ttl_never_expires": "passed",
+          "test_lru_ttl::test_time_is_read_only_through_the_clock": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru_unchanged::test_get_returns_value_and_default": "passed",
+          "test_lru_unchanged::test_put_returns_none_until_full": "passed",
+          "test_lru_unchanged::test_put_evicts_least_recent_and_returns_it": "failed",
+          "test_lru_unchanged::test_get_refreshes_recency": "failed",
+          "test_lru_unchanged::test_missing_get_changes_nothing": "passed",
+          "test_lru_unchanged::test_update_existing_key_never_evicts": "passed",
+          "test_lru_unchanged::test_update_refreshes_recency": "passed",
+          "test_lru_unchanged::test_contains_does_not_touch_recency": "passed",
+          "test_lru_unchanged::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru_unchanged::test_capacity_one": "failed",
+          "test_lru_unchanged::test_none_values_are_stored": "passed",
+          "test_lru_unchanged::test_resize_down_evicts_in_order": "passed",
+          "test_lru_unchanged::test_resize_up_keeps_everything": "passed",
+          "test_lru_unchanged::test_resize_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_resize_below_one_raises[-3]": "passed",
+          "test_lru_unchanged::test_long_sequence_matches_model": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "t cache.keys() == ['b']\nE       AssertionError: assert [] == ['b']\nE         \nE         Right contains one more item: 'b'\nE         Use -v to get more diff\n\ntest_lru_unchanged.py:88: AssertionError\n_______________________ test_long_sequence_matches_model _______________________\n\n    def test_long_sequence_matches_model():\n        import random\n        rng = random.Random(6)\n        cache, model = LRUCache(5), []\n        for _ in range(2000):\n            k = rng.randrange(9)\n            if rng.random() < 0.5:\n                evicted = cache.put(k, k * 10)\n                if k in model:\n                    model.remove(k)\n                    expected = None\n                elif len(model) == 5:\n                    expected = model.pop(0)\n                else:\n                    expected = None\n                model.append(k)\n                assert evicted == expected\n            else:\n                got = cache.get(k)\n                if k in model:\n                    model.remove(k)\n                    model.append(k)\n                    assert got == k * 10\n                else:\n                    assert got is None\n>           assert cache.keys() == model\nE           assert [0, 1, 8, 4] == [0, 1, 8, 4, 3]\nE             \nE             Right contains one more item: 3\nE             Use -v to get more diff\n\ntest_lru_unchanged.py:148: AssertionError\n=========================== short test summary info ============================\nFAILED test_lru_ttl.py::test_stats_counts - AssertionError: assert {'hits': 1...\nFAILED test_lru_ttl.py::test_expirations_count_without_being_looked_at - asse...\nFAILED test_lru_ttl.py::test_replaced_or_evicted_entries_never_expire - Asser...\nFAILED test_lru_unchanged.py::test_put_evicts_least_recent_and_returns_it - A...\nFAILED test_lru_unchanged.py::test_get_refreshes_recency - AssertionError: as...\nFAILED test_lru_unchanged.py::test_capacity_one - AssertionError: assert [] =...\nFAILED test_lru_unchanged.py::test_long_sequence_matches_model - assert [0, 1...\n7 failed, 30 passed in 0.11s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.8108
+    },
+    {
+      "prompt_id": "c07",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ini.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "ini.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ini.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 21,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 21,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_ini::test_sections_in_order": "passed",
+          "test_ini::test_keys_in_order": "passed",
+          "test_ini::test_get_strips_and_keeps_hash_and_semicolon": "passed",
+          "test_ini::test_get_missing_returns_default": "passed",
+          "test_ini::test_continuation_lines_joined_with_newline": "passed",
+          "test_ini::test_getint": "passed",
+          "test_ini::test_getint_rejects": "passed",
+          "test_ini::test_getbool_words_any_case": "passed",
+          "test_ini::test_getbool_rejects_and_defaults": "passed",
+          "test_ini::test_getlist": "passed",
+          "test_ini::test_split_at_first_equals": "passed",
+          "test_ini::test_blank_or_comment_ends_continuation": "passed",
+          "test_ini::test_indented_comment_is_a_comment": "passed",
+          "test_ini::test_indented_line_after_header_is_an_error": "passed",
+          "test_ini::test_key_before_section": "passed",
+          "test_ini::test_duplicate_key_reports_second_line": "passed",
+          "test_ini::test_same_key_in_two_sections_is_fine": "passed",
+          "test_ini::test_duplicate_section": "passed",
+          "test_ini::test_empty_key_and_empty_section_name": "passed",
+          "test_ini::test_malformed_lines": "passed",
+          "test_ini::test_empty_text": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....................                                                    [100%]\n21 passed in 0.04s\n"
+      },
+      "n_tests": 21,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c07",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ini.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "ini.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ini.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 21,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 21,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_ini::test_sections_in_order": "passed",
+          "test_ini::test_keys_in_order": "passed",
+          "test_ini::test_get_strips_and_keeps_hash_and_semicolon": "passed",
+          "test_ini::test_get_missing_returns_default": "passed",
+          "test_ini::test_continuation_lines_joined_with_newline": "passed",
+          "test_ini::test_getint": "passed",
+          "test_ini::test_getint_rejects": "passed",
+          "test_ini::test_getbool_words_any_case": "passed",
+          "test_ini::test_getbool_rejects_and_defaults": "passed",
+          "test_ini::test_getlist": "passed",
+          "test_ini::test_split_at_first_equals": "passed",
+          "test_ini::test_blank_or_comment_ends_continuation": "passed",
+          "test_ini::test_indented_comment_is_a_comment": "passed",
+          "test_ini::test_indented_line_after_header_is_an_error": "passed",
+          "test_ini::test_key_before_section": "passed",
+          "test_ini::test_duplicate_key_reports_second_line": "passed",
+          "test_ini::test_same_key_in_two_sections_is_fine": "passed",
+          "test_ini::test_duplicate_section": "passed",
+          "test_ini::test_empty_key_and_empty_section_name": "passed",
+          "test_ini::test_malformed_lines": "passed",
+          "test_ini::test_empty_text": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....................                                                    [100%]\n21 passed in 0.04s\n"
+      },
+      "n_tests": 21,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c08",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "semver.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "semver.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "semver.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.366,
+        "exit_code": 2,
+        "outcomes": {
+          "test_semver": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_semver.py ________________________\n/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule\n    mod = import_path(\n/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path\n    importlib.import_module(module_name)\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntest_semver.py:5: in <module>\n    from semver import Version, satisfies\nE     File \"/tmp/hidden-tests-fkftkyts/work/semver.py\", line 1\nE       ```\nE       ^\nE   SyntaxError: invalid syntax\n=========================== short test summary info ============================\nERROR test_semver.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.16s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c08",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "semver.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "semver.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "semver.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_semver": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_semver.py ________________________\nImportError while importing test module '/tmp/hidden-tests-fu1wil9c/work/test_semver.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_semver.py:5: in <module>\n    from semver import Version, satisfies\nE   ImportError: cannot import name 'satisfies' from 'semver' (/tmp/hidden-tests-fu1wil9c/work/semver.py)\n=========================== short test summary info ============================\nERROR test_semver.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c12",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "bizdays.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "bizdays.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "bizdays.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 0,
+        "outcomes": {
+          "test_bizdays::test_is_business_day_defaults": "passed",
+          "test_bizdays::test_is_business_day_holidays_and_weekend": "passed",
+          "test_bizdays::test_between_monday_to_monday": "passed",
+          "test_bizdays::test_between_flags": "passed",
+          "test_bizdays::test_between_same_day": "passed",
+          "test_bizdays::test_between_adjacent_days_exclusive": "passed",
+          "test_bizdays::test_between_start_after_end_raises": "passed",
+          "test_bizdays::test_between_holidays": "passed",
+          "test_bizdays::test_between_duplicate_holidays_count_once": "passed",
+          "test_bizdays::test_between_custom_weekend": "passed",
+          "test_bizdays::test_long_span": "passed",
+          "test_bizdays::test_between_matches_brute_force": "passed",
+          "test_bizdays::test_add_forward_skips_weekend": "passed",
+          "test_bizdays::test_add_backward": "passed",
+          "test_bizdays::test_add_zero_rolls_forward": "passed",
+          "test_bizdays::test_add_with_holidays_and_weekend": "passed",
+          "test_bizdays::test_add_matches_between": "passed",
+          "test_bizdays::test_invalid_weekend_raises": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.13s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c12",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "bizdays.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "bizdays.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "bizdays.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.466,
+        "exit_code": 0,
+        "outcomes": {
+          "test_bizdays::test_is_business_day_defaults": "passed",
+          "test_bizdays::test_is_business_day_holidays_and_weekend": "passed",
+          "test_bizdays::test_between_monday_to_monday": "passed",
+          "test_bizdays::test_between_flags": "passed",
+          "test_bizdays::test_between_same_day": "passed",
+          "test_bizdays::test_between_adjacent_days_exclusive": "passed",
+          "test_bizdays::test_between_start_after_end_raises": "passed",
+          "test_bizdays::test_between_holidays": "passed",
+          "test_bizdays::test_between_duplicate_holidays_count_once": "passed",
+          "test_bizdays::test_between_custom_weekend": "passed",
+          "test_bizdays::test_long_span": "passed",
+          "test_bizdays::test_between_matches_brute_force": "passed",
+          "test_bizdays::test_add_forward_skips_weekend": "passed",
+          "test_bizdays::test_add_backward": "passed",
+          "test_bizdays::test_add_zero_rolls_forward": "passed",
+          "test_bizdays::test_add_with_holidays_and_weekend": "passed",
+          "test_bizdays::test_add_matches_between": "passed",
+          "test_bizdays::test_invalid_weekend_raises": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.29s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ratelimit.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "ratelimit.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ratelimit.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_ratelimit::test_invalid_rate_or_capacity": "passed",
+          "test_ratelimit::test_starts_full_and_reads_injected_clock": "passed",
+          "test_ratelimit::test_default_clock_works": "passed",
+          "test_ratelimit::test_refill_is_continuous_and_fractional": "passed",
+          "test_ratelimit::test_refill_capped_at_capacity": "passed",
+          "test_ratelimit::test_failed_acquire_removes_nothing": "passed",
+          "test_ratelimit::test_wait_time": "passed",
+          "test_ratelimit::test_wait_time_then_acquire_succeeds": "passed",
+          "test_ratelimit::test_wait_time_returns_float": "passed",
+          "test_ratelimit::test_bad_n": "passed",
+          "test_ratelimit::test_clock_going_backwards": "passed",
+          "test_ratelimit::test_steady_rate_over_many_steps": "passed",
+          "test_ratelimit::test_float_rate_and_capacity": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............                                                            [100%]\n13 passed in 0.04s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ratelimit.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "ratelimit.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ratelimit.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_ratelimit::test_invalid_rate_or_capacity": "passed",
+          "test_ratelimit::test_starts_full_and_reads_injected_clock": "passed",
+          "test_ratelimit::test_default_clock_works": "passed",
+          "test_ratelimit::test_refill_is_continuous_and_fractional": "passed",
+          "test_ratelimit::test_refill_capped_at_capacity": "passed",
+          "test_ratelimit::test_failed_acquire_removes_nothing": "passed",
+          "test_ratelimit::test_wait_time": "passed",
+          "test_ratelimit::test_wait_time_then_acquire_succeeds": "passed",
+          "test_ratelimit::test_wait_time_returns_float": "passed",
+          "test_ratelimit::test_bad_n": "passed",
+          "test_ratelimit::test_clock_going_backwards": "passed",
+          "test_ratelimit::test_steady_rate_over_many_steps": "passed",
+          "test_ratelimit::test_float_rate_and_capacity": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............                                                            [100%]\n13 passed in 0.04s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c15",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "linediff.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "linediff.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "linediff.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.217,
+        "exit_code": 0,
+        "outcomes": {
+          "test_linediff::test_example_from_the_spec": "passed",
+          "test_linediff::test_identical_and_empty": "passed",
+          "test_linediff::test_deletions_before_insertions_in_a_block": "passed",
+          "test_linediff::test_equal_lines_matched_as_soon_as_met": "passed",
+          "test_linediff::test_insertion_when_it_keeps_more_in_common": "passed",
+          "test_linediff::test_tie_prefers_deletion": "passed",
+          "test_linediff::test_lines_compared_exactly": "passed",
+          "test_linediff::test_lines_starting_with_prefix_characters": "passed",
+          "test_linediff::test_inputs_not_modified": "passed",
+          "test_linediff::test_returns_list_of_str": "passed",
+          "test_linediff::test_random_matches_rule": "passed",
+          "test_linediff::test_random_reconstructs_and_is_minimal": "passed",
+          "test_linediff::test_large_inputs": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............                                                            [100%]\n13 passed in 1.01s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c15",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "linediff.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "linediff.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "linediff.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.217,
+        "exit_code": 0,
+        "outcomes": {
+          "test_linediff::test_example_from_the_spec": "passed",
+          "test_linediff::test_identical_and_empty": "passed",
+          "test_linediff::test_deletions_before_insertions_in_a_block": "passed",
+          "test_linediff::test_equal_lines_matched_as_soon_as_met": "passed",
+          "test_linediff::test_insertion_when_it_keeps_more_in_common": "passed",
+          "test_linediff::test_tie_prefers_deletion": "passed",
+          "test_linediff::test_lines_compared_exactly": "passed",
+          "test_linediff::test_lines_starting_with_prefix_characters": "passed",
+          "test_linediff::test_inputs_not_modified": "passed",
+          "test_linediff::test_returns_list_of_str": "passed",
+          "test_linediff::test_random_matches_rule": "passed",
+          "test_linediff::test_random_reconstructs_and_is_minimal": "passed",
+          "test_linediff::test_large_inputs": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............                                                            [100%]\n13 passed in 1.03s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c18",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "slug.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "slug.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "slug.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 20,
+        "failed": 2,
+        "skipped": 0,
+        "errors": 0,
+        "total": 22,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 1,
+        "outcomes": {
+          "test_slug::test_basic_transformations[Hello, World!-hello-world]": "passed",
+          "test_slug::test_basic_transformations[  Leading and trailing  -leading-and-trailing]": "passed",
+          "test_slug::test_basic_transformations[Don't Stop-dont-stop]": "passed",
+          "test_slug::test_basic_transformations[It\\u2019s here-its-here]": "passed",
+          "test_slug::test_basic_transformations[Cr\\xe8me Br\\xfbl\\xe9e-creme-brulee]": "passed",
+          "test_slug::test_basic_transformations[\\ufb01nal \\u2163-final-iv]": "passed",
+          "test_slug::test_basic_transformations[a--b__c  d-a-b-c-d]": "passed",
+          "test_slug::test_basic_transformations[Version 2.0 (beta)-version-2-0-beta]": "passed",
+          "test_slug::test_basic_transformations[\\u65e5\\u672c\\u8a9e title-title]": "passed",
+          "test_slug::test_empty_becomes_untitled[]": "passed",
+          "test_slug::test_empty_becomes_untitled[!!!]": "passed",
+          "test_slug::test_empty_becomes_untitled[\\u65e5\\u672c\\u8a9e]": "passed",
+          "test_slug::test_empty_becomes_untitled[']": "passed",
+          "test_slug::test_cut_at_word_boundary": "failed",
+          "test_slug::test_long_first_word_is_hard_cut": "passed",
+          "test_slug::test_max_len_default_is_50": "passed",
+          "test_slug::test_max_len_below_one_raises": "passed",
+          "test_slug::test_unique_suffixes": "passed",
+          "test_slug::test_untitled_is_made_unique_too": "passed",
+          "test_slug::test_suffix_respects_max_len": "passed",
+          "test_slug::test_suffix_shortens_from_full_base": "failed",
+          "test_slug::test_existing_not_modified": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............F......F.                                                   [100%]\n=================================== FAILURES ===================================\n__________________________ test_cut_at_word_boundary ___________________________\n\n    def test_cut_at_word_boundary():\n        assert slugify('the quick brown fox', max_len=12) == 'the-quick'\n>       assert slugify('the quick brown fox', max_len=15) == 'the-quick-brown'\nE       AssertionError: assert 'the-quick' == 'the-quick-brown'\nE         \nE         - the-quick-brown\nE         ?          ------\nE         + the-quick\n\ntest_slug.py:28: AssertionError\n_____________________ test_suffix_shortens_from_full_base ______________________\n\n    def test_suffix_shortens_from_full_base():\n        # base is 'alpha-beta-gamma'; max_len 14 gives 'alpha-beta'; with '-2' the\n        # base must fit in 12 characters, which is still 'alpha-beta'.\n        assert slugify('alpha beta gamma', max_len=14, existing={'alpha-beta'}) == 'alpha-beta-2'\n        # with '-10' (3 chars) the base must fit in 11: still 'alpha-beta'\n        taken = {'alpha-beta'} | {f'alpha-beta-{n}' for n in range(2, 10)}\n>       assert slugify('alpha beta gamma', max_len=13, existing=taken) == 'alpha-beta-10'\nE       AssertionError: assert 'alpha-10' == 'alpha-beta-10'\nE         \nE         - alpha-beta-10\nE         ?       -----\nE         + alpha-10\n\ntest_slug.py:71: AssertionError\n=========================== short test summary info ============================\nFAILED test_slug.py::test_cut_at_word_boundary - AssertionError: assert 'the-...\nFAILED test_slug.py::test_suffix_shortens_from_full_base - AssertionError: as...\n2 failed, 20 passed in 0.05s\n"
+      },
+      "n_tests": 22,
+      "pass_rate": 0.9091
+    },
+    {
+      "prompt_id": "c18",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "slug.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "slug.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "slug.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 21,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 22,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_slug::test_basic_transformations[Hello, World!-hello-world]": "passed",
+          "test_slug::test_basic_transformations[  Leading and trailing  -leading-and-trailing]": "passed",
+          "test_slug::test_basic_transformations[Don't Stop-dont-stop]": "passed",
+          "test_slug::test_basic_transformations[It\\u2019s here-its-here]": "passed",
+          "test_slug::test_basic_transformations[Cr\\xe8me Br\\xfbl\\xe9e-creme-brulee]": "passed",
+          "test_slug::test_basic_transformations[\\ufb01nal \\u2163-final-iv]": "passed",
+          "test_slug::test_basic_transformations[a--b__c  d-a-b-c-d]": "passed",
+          "test_slug::test_basic_transformations[Version 2.0 (beta)-version-2-0-beta]": "passed",
+          "test_slug::test_basic_transformations[\\u65e5\\u672c\\u8a9e title-title]": "passed",
+          "test_slug::test_empty_becomes_untitled[]": "passed",
+          "test_slug::test_empty_becomes_untitled[!!!]": "passed",
+          "test_slug::test_empty_becomes_untitled[\\u65e5\\u672c\\u8a9e]": "passed",
+          "test_slug::test_empty_becomes_untitled[']": "passed",
+          "test_slug::test_cut_at_word_boundary": "failed",
+          "test_slug::test_long_first_word_is_hard_cut": "passed",
+          "test_slug::test_max_len_default_is_50": "passed",
+          "test_slug::test_max_len_below_one_raises": "passed",
+          "test_slug::test_unique_suffixes": "passed",
+          "test_slug::test_untitled_is_made_unique_too": "passed",
+          "test_slug::test_suffix_respects_max_len": "passed",
+          "test_slug::test_suffix_shortens_from_full_base": "passed",
+          "test_slug::test_existing_not_modified": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............F........                                                   [100%]\n=================================== FAILURES ===================================\n__________________________ test_cut_at_word_boundary ___________________________\n\n    def test_cut_at_word_boundary():\n        assert slugify('the quick brown fox', max_len=12) == 'the-quick'\n>       assert slugify('the quick brown fox', max_len=15) == 'the-quick-brown'\nE       AssertionError: assert 'the-quick' == 'the-quick-brown'\nE         \nE         - the-quick-brown\nE         ?          ------\nE         + the-quick\n\ntest_slug.py:28: AssertionError\n=========================== short test summary info ============================\nFAILED test_slug.py::test_cut_at_word_boundary - AssertionError: assert 'the-...\n1 failed, 21 passed in 0.05s\n"
+      },
+      "n_tests": 22,
+      "pass_rate": 0.9545
+    },
+    {
+      "prompt_id": "c23",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "trie.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "trie.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "trie.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_trie::test_orders_by_weight_descending": "passed",
+          "test_trie::test_ties_alphabetical_by_casefold_keeping_spelling": "passed",
+          "test_trie::test_prefix_is_case_insensitive": "passed",
+          "test_trie::test_casefold_not_just_lower": "passed",
+          "test_trie::test_k_limits_results": "passed",
+          "test_trie::test_empty_prefix_matches_everything": "passed",
+          "test_trie::test_word_is_its_own_prefix_and_no_match": "passed",
+          "test_trie::test_readd_replaces_spelling_and_weight": "passed",
+          "test_trie::test_default_weight_is_one": "passed",
+          "test_trie::test_add_empty_raises": "passed",
+          "test_trie::test_delete_case_insensitive": "passed",
+          "test_trie::test_delete_missing_and_prefix_only": "passed",
+          "test_trie::test_delete_keeps_longer_and_shorter_words": "passed",
+          "test_trie::test_contains_and_len": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..............                                                           [100%]\n14 passed in 0.03s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c23",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "trie.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "trie.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "trie.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_trie::test_orders_by_weight_descending": "passed",
+          "test_trie::test_ties_alphabetical_by_casefold_keeping_spelling": "passed",
+          "test_trie::test_prefix_is_case_insensitive": "passed",
+          "test_trie::test_casefold_not_just_lower": "passed",
+          "test_trie::test_k_limits_results": "passed",
+          "test_trie::test_empty_prefix_matches_everything": "passed",
+          "test_trie::test_word_is_its_own_prefix_and_no_match": "passed",
+          "test_trie::test_readd_replaces_spelling_and_weight": "passed",
+          "test_trie::test_default_weight_is_one": "passed",
+          "test_trie::test_add_empty_raises": "passed",
+          "test_trie::test_delete_case_insensitive": "passed",
+          "test_trie::test_delete_missing_and_prefix_only": "passed",
+          "test_trie::test_delete_keeps_longer_and_shorter_words": "passed",
+          "test_trie::test_contains_and_len": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..............                                                           [100%]\n14 passed in 0.03s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c27",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "search.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "search.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "search.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_search::test_first_and_last_with_duplicates": "passed",
+          "test_search::test_absent_and_empty": "passed",
+          "test_search::test_all_equal": "passed",
+          "test_search::test_insertion_point": "passed",
+          "test_search::test_count": "passed",
+          "test_search::test_matches_bisect_on_random_lists": "passed",
+          "test_search::test_search_rotated": "passed",
+          "test_search::test_search_rotated_every_rotation": "passed",
+          "test_search::test_rotation_offset": "passed",
+          "test_search::test_isqrt_small": "passed",
+          "test_search::test_isqrt_large_exact": "passed",
+          "test_search::test_isqrt_errors": "passed",
+          "test_search::test_arguments_not_modified": "passed",
+          "test_search::test_logarithmic_reads": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..............                                                           [100%]\n14 passed in 0.05s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c27",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "search.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "search.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "search.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_search": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_search.py ________________________\ntest_search.py:5: in <module>\n    import search\nsearch.py:1: in <module>\n    search.py\n    ^^^^^^\nE   NameError: name 'search' is not defined\n=========================== short test summary info ============================\nERROR test_search.py - NameError: name 'search' is not defined\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c28",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "events.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "events.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "events.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_events::test_on_and_emit_in_order_with_args": "passed",
+          "test_events::test_emit_without_listeners": "passed",
+          "test_events::test_events_are_separate": "passed",
+          "test_events::test_same_listener_twice": "passed",
+          "test_events::test_once_runs_once": "passed",
+          "test_events::test_once_removed_before_call_reentrant": "passed",
+          "test_events::test_off_removes_earliest_registration": "passed",
+          "test_events::test_off_once_registration_and_unknown": "passed",
+          "test_events::test_off_all": "passed",
+          "test_events::test_listener_added_during_emit_not_called": "passed",
+          "test_events::test_listener_removed_during_emit_not_called": "passed",
+          "test_events::test_errors_collected_after_all_listeners": "passed",
+          "test_events::test_failing_once_listener_is_still_removed": "passed",
+          "test_events::test_listeners_returns_a_copy": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..............                                                           [100%]\n14 passed in 0.04s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c28",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "events.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "events.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "events.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_events::test_on_and_emit_in_order_with_args": "passed",
+          "test_events::test_emit_without_listeners": "passed",
+          "test_events::test_events_are_separate": "passed",
+          "test_events::test_same_listener_twice": "passed",
+          "test_events::test_once_runs_once": "passed",
+          "test_events::test_once_removed_before_call_reentrant": "passed",
+          "test_events::test_off_removes_earliest_registration": "passed",
+          "test_events::test_off_once_registration_and_unknown": "passed",
+          "test_events::test_off_all": "passed",
+          "test_events::test_listener_added_during_emit_not_called": "passed",
+          "test_events::test_listener_removed_during_emit_not_called": "passed",
+          "test_events::test_errors_collected_after_all_listeners": "passed",
+          "test_events::test_failing_once_listener_is_still_removed": "passed",
+          "test_events::test_listeners_returns_a_copy": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..............                                                           [100%]\n14 passed in 0.04s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c30",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "money.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "money.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "money.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 3,
+        "failed": 17,
+        "skipped": 0,
+        "errors": 0,
+        "total": 20,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.365,
+        "exit_code": 1,
+        "outcomes": {
+          "test_money::test_to_cents_bankers_rounding[2.675-2.68]": "failed",
+          "test_money::test_to_cents_bankers_rounding[2.665-2.66]": "failed",
+          "test_money::test_to_cents_bankers_rounding[0.125-0.12]": "failed",
+          "test_money::test_to_cents_bankers_rounding[0.135-0.14]": "failed",
+          "test_money::test_to_cents_bankers_rounding[-2.675--2.68]": "failed",
+          "test_money::test_to_cents_bankers_rounding[5-5.00]": "passed",
+          "test_money::test_to_cents_bankers_rounding[x6-1.00]": "passed",
+          "test_money::test_to_cents_bankers_rounding[  3.1 -3.10]": "failed",
+          "test_money::test_to_cents_bankers_rounding[1e2-100.00]": "failed",
+          "test_money::test_to_cents_type_and_value_errors": "failed",
+          "test_money::test_allocate_examples": "failed",
+          "test_money::test_allocate_largest_remainder_not_position": "failed",
+          "test_money::test_allocate_ties_go_to_earlier_parts": "failed",
+          "test_money::test_allocate_zero_ratio_and_decimal_ratios": "failed",
+          "test_money::test_allocate_negative_amount": "failed",
+          "test_money::test_allocate_rounds_amount_first": "failed",
+          "test_money::test_allocate_always_sums_exactly": "passed",
+          "test_money::test_allocate_errors": "failed",
+          "test_money::test_split_even": "failed",
+          "test_money::test_format_money": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "ype for monetary values\")\n    \n        if isinstance(x, int):\n            d = Decimal(x)\n        elif isinstance(x, Decimal):\n            d = x\n        elif isinstance(x, str):\n            try:\n                d = Decimal(x.strip())\n            except InvalidOperation:\n                raise ValueError(f\"Invalid string format for monetary value: {x!r}\")\n    \n>           if not d.isfinite():\n                   ^^^^^^^^^^\nE           AttributeError: 'decimal.Decimal' object has no attribute 'isfinite'. Did you mean: 'is_finite'?\n\nmoney.py:38: AttributeError\n=========================== short test summary info ============================\nFAILED test_money.py::test_to_cents_bankers_rounding[2.675-2.68] - AttributeE...\nFAILED test_money.py::test_to_cents_bankers_rounding[2.665-2.66] - AttributeE...\nFAILED test_money.py::test_to_cents_bankers_rounding[0.125-0.12] - AttributeE...\nFAILED test_money.py::test_to_cents_bankers_rounding[0.135-0.14] - AttributeE...\nFAILED test_money.py::test_to_cents_bankers_rounding[-2.675--2.68] - Attribut...\nFAILED test_money.py::test_to_cents_bankers_rounding[  3.1 -3.10] - Attribute...\nFAILED test_money.py::test_to_cents_bankers_rounding[1e2-100.00] - AttributeE...\nFAILED test_money.py::test_to_cents_type_and_value_errors - AttributeError: '...\nFAILED test_money.py::test_allocate_examples - AttributeError: 'decimal.Decim...\nFAILED test_money.py::test_allocate_largest_remainder_not_position - Attribut...\nFAILED test_money.py::test_allocate_ties_go_to_earlier_parts - AttributeError...\nFAILED test_money.py::test_allocate_zero_ratio_and_decimal_ratios - Attribute...\nFAILED test_money.py::test_allocate_negative_amount - AttributeError: 'decima...\nFAILED test_money.py::test_allocate_rounds_amount_first - AttributeError: 'de...\nFAILED test_money.py::test_allocate_errors - TypeError: ratios must be ints o...\nFAILED test_money.py::test_split_even - AttributeError: 'decimal.Decimal' obj...\nFAILED test_money.py::test_format_money - AttributeError: 'decimal.Decimal' o...\n17 failed, 3 passed in 0.16s\n"
+      },
+      "n_tests": 20,
+      "pass_rate": 0.15
+    },
+    {
+      "prompt_id": "c30",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "money.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "money.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "money.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 20,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 20,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_money::test_to_cents_bankers_rounding[2.675-2.68]": "passed",
+          "test_money::test_to_cents_bankers_rounding[2.665-2.66]": "passed",
+          "test_money::test_to_cents_bankers_rounding[0.125-0.12]": "passed",
+          "test_money::test_to_cents_bankers_rounding[0.135-0.14]": "passed",
+          "test_money::test_to_cents_bankers_rounding[-2.675--2.68]": "passed",
+          "test_money::test_to_cents_bankers_rounding[5-5.00]": "passed",
+          "test_money::test_to_cents_bankers_rounding[x6-1.00]": "passed",
+          "test_money::test_to_cents_bankers_rounding[  3.1 -3.10]": "passed",
+          "test_money::test_to_cents_bankers_rounding[1e2-100.00]": "passed",
+          "test_money::test_to_cents_type_and_value_errors": "passed",
+          "test_money::test_allocate_examples": "passed",
+          "test_money::test_allocate_largest_remainder_not_position": "passed",
+          "test_money::test_allocate_ties_go_to_earlier_parts": "passed",
+          "test_money::test_allocate_zero_ratio_and_decimal_ratios": "passed",
+          "test_money::test_allocate_negative_amount": "passed",
+          "test_money::test_allocate_rounds_amount_first": "passed",
+          "test_money::test_allocate_always_sums_exactly": "passed",
+          "test_money::test_allocate_errors": "passed",
+          "test_money::test_split_even": "passed",
+          "test_money::test_format_money": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "....................                                                     [100%]\n20 passed in 0.04s\n"
+      },
+      "n_tests": 20,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c38",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "fsm/machine.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "fsm/machine.py"
+          },
+          "fsm/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "fsm/__init__.py"
+          },
+          "vending.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "vending.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "fsm/__init__.py",
+          "fsm/machine.py",
+          "vending.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 34,
+        "failed": 4,
+        "skipped": 0,
+        "errors": 0,
+        "total": 38,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_fsm::test_initial_state_and_no_hooks_at_construction": "passed",
+          "test_fsm::test_constructor_validation[states0-transitions0-a]": "passed",
+          "test_fsm::test_constructor_validation[states1-transitions1-a]": "passed",
+          "test_fsm::test_constructor_validation[states2-transitions2-b]": "passed",
+          "test_fsm::test_constructor_validation[states3-transitions3-a]": "passed",
+          "test_fsm::test_constructor_validation[states4-transitions4-a]": "passed",
+          "test_fsm::test_fire_returns_state_and_hook_order": "passed",
+          "test_fsm::test_invalid_transition_attributes_and_state_kept": "passed",
+          "test_fsm::test_first_passing_guard_wins_and_later_guards_not_called": "passed",
+          "test_fsm::test_unguarded_transition_after_rejected_one": "passed",
+          "test_fsm::test_guard_rejected_runs_nothing": "passed",
+          "test_fsm::test_event_object_and_shared_data_dict": "failed",
+          "test_fsm::test_hooks_receive_the_machine": "passed",
+          "test_fsm::test_self_transition_runs_exit_and_enter": "passed",
+          "test_fsm::test_internal_transition_runs_only_action": "failed",
+          "test_fsm::test_wildcard_and_list_sources": "passed",
+          "test_fsm::test_listeners_called_in_order_after_enter": "failed",
+          "test_fsm::test_exception_in_action_leaves_state_unchanged": "passed",
+          "test_fsm::test_exception_in_on_enter_after_state_changed": "passed",
+          "test_fsm::test_reentrant_fire_raises_and_machine_stays_usable": "passed",
+          "test_fsm::test_can_fire_calls_guards_only": "passed",
+          "test_fsm::test_available_events_sorted_unique_ignoring_guards": "passed",
+          "test_fsm::test_reset_restores_initial_without_hooks": "passed",
+          "test_vending::test_starts_idle_and_is_built_on_fsm": "passed",
+          "test_vending::test_insert_accumulates_and_moves_to_credit": "passed",
+          "test_vending::test_bad_coin_raises_value_error_and_changes_nothing[1]": "passed",
+          "test_vending::test_bad_coin_raises_value_error_and_changes_nothing[50]": "passed",
+          "test_vending::test_bad_coin_raises_value_error_and_changes_nothing[200]": "passed",
+          "test_vending::test_select_sells_and_gives_greedy_change": "passed",
+          "test_vending::test_exact_payment_gives_no_change": "passed",
+          "test_vending::test_select_requires_credit_state": "failed",
+          "test_vending::test_select_check_order_and_failure_keeps_everything": "passed",
+          "test_vending::test_cancel_refunds_greedily": "passed",
+          "test_vending::test_cancel_when_idle_is_invalid": "passed",
+          "test_vending::test_sold_out_after_last_unit": "passed",
+          "test_vending::test_maintenance_restock_and_price_change": "passed",
+          "test_vending::test_illegal_operations_by_state": "passed",
+          "test_vending::test_views_and_revenue_over_several_sales": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "ers_called_in_order_after_enter():\n        log = []\n        m = Machine(['a', State('b', on_enter=lambda m, ev: log.append('enter'))],\n                    [Transition('go', 'a', 'b')], 'a')\n        m.on_transition(lambda s, e, t: log.append(('L1', s, e, t)))\n        m.on_transition(lambda s, e, t: log.append(('L2', s, e, t)))\n        m.fire('go')\n>       assert log == ['enter', ('L1', 'a', 'go', 'b'), ('L2', 'a', 'go', 'b')]\nE       AssertionError: assert ['enter', ('L...ata={}), 'b')] == ['enter', ('L...', 'go', 'b')]\nE         \nE         At index 1 diff: ('L1', 'a', Event(name='go', source='a', target='b', data={}), 'b') != ('L1', 'a', 'go', 'b')\nE         Use -v to get more diff\n\ntest_fsm.py:181: AssertionError\n______________________ test_select_requires_credit_state _______________________\n\n    def test_select_requires_credit_state():\n        v = vm()\n        with pytest.raises(fsm.InvalidTransition):\n>           v.select('B2')  # state is checked before stock\n            ^^^^^^^^^^^^^^\n\ntest_vending.py:54: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <vending.VendingMachine object at 0x7712f7b2d670>, code = 'B2'\n\n    def select(self, code: str) -> list[int]:\n        # Checks happen before firing to ensure specific errors are raised\n        # and state is unchanged on failure.\n        if code not in self._products:\n            raise KeyError(code)\n    \n        price, stock = self._products[code]\n    \n        if stock <= 0:\n>           raise SoldOut(f\"{code} is sold out\")\nE           vending.SoldOut: B2 is sold out\n\nvending.py:130: SoldOut\n=========================== short test summary info ============================\nFAILED test_fsm.py::test_event_object_and_shared_data_dict - AssertionError: ...\nFAILED test_fsm.py::test_internal_transition_runs_only_action - AssertionErro...\nFAILED test_fsm.py::test_listeners_called_in_order_after_enter - AssertionErr...\nFAILED test_vending.py::test_select_requires_credit_state - vending.SoldOut: ...\n4 failed, 34 passed in 0.12s\n"
+      },
+      "n_tests": 38,
+      "pass_rate": 0.8947
+    },
+    {
+      "prompt_id": "c38",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "fsm/machine.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "fsm/machine.py"
+          },
+          "fsm/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "fsm/__init__.py"
+          },
+          "vending.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "vending.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "fsm/__init__.py",
+          "fsm/machine.py",
+          "vending.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 37,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 38,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_fsm::test_initial_state_and_no_hooks_at_construction": "passed",
+          "test_fsm::test_constructor_validation[states0-transitions0-a]": "passed",
+          "test_fsm::test_constructor_validation[states1-transitions1-a]": "passed",
+          "test_fsm::test_constructor_validation[states2-transitions2-b]": "passed",
+          "test_fsm::test_constructor_validation[states3-transitions3-a]": "passed",
+          "test_fsm::test_constructor_validation[states4-transitions4-a]": "passed",
+          "test_fsm::test_fire_returns_state_and_hook_order": "passed",
+          "test_fsm::test_invalid_transition_attributes_and_state_kept": "passed",
+          "test_fsm::test_first_passing_guard_wins_and_later_guards_not_called": "passed",
+          "test_fsm::test_unguarded_transition_after_rejected_one": "passed",
+          "test_fsm::test_guard_rejected_runs_nothing": "passed",
+          "test_fsm::test_event_object_and_shared_data_dict": "passed",
+          "test_fsm::test_hooks_receive_the_machine": "passed",
+          "test_fsm::test_self_transition_runs_exit_and_enter": "passed",
+          "test_fsm::test_internal_transition_runs_only_action": "passed",
+          "test_fsm::test_wildcard_and_list_sources": "passed",
+          "test_fsm::test_listeners_called_in_order_after_enter": "passed",
+          "test_fsm::test_exception_in_action_leaves_state_unchanged": "passed",
+          "test_fsm::test_exception_in_on_enter_after_state_changed": "passed",
+          "test_fsm::test_reentrant_fire_raises_and_machine_stays_usable": "passed",
+          "test_fsm::test_can_fire_calls_guards_only": "passed",
+          "test_fsm::test_available_events_sorted_unique_ignoring_guards": "passed",
+          "test_fsm::test_reset_restores_initial_without_hooks": "passed",
+          "test_vending::test_starts_idle_and_is_built_on_fsm": "passed",
+          "test_vending::test_insert_accumulates_and_moves_to_credit": "passed",
+          "test_vending::test_bad_coin_raises_value_error_and_changes_nothing[1]": "passed",
+          "test_vending::test_bad_coin_raises_value_error_and_changes_nothing[50]": "passed",
+          "test_vending::test_bad_coin_raises_value_error_and_changes_nothing[200]": "passed",
+          "test_vending::test_select_sells_and_gives_greedy_change": "passed",
+          "test_vending::test_exact_payment_gives_no_change": "passed",
+          "test_vending::test_select_requires_credit_state": "passed",
+          "test_vending::test_select_check_order_and_failure_keeps_everything": "passed",
+          "test_vending::test_cancel_refunds_greedily": "failed",
+          "test_vending::test_cancel_when_idle_is_invalid": "passed",
+          "test_vending::test_sold_out_after_last_unit": "passed",
+          "test_vending::test_maintenance_restock_and_price_change": "passed",
+          "test_vending::test_illegal_operations_by_state": "passed",
+          "test_vending::test_views_and_revenue_over_several_sales": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "................................F.....                                   [100%]\n=================================== FAILURES ===================================\n_________________________ test_cancel_refunds_greedily _________________________\n\n    def test_cancel_refunds_greedily():\n        v = vm()\n        for c in (5, 5, 5, 5, 5, 10, 100):\n            v.insert(c)\n>       assert v.cancel() == [100, 25, 10]\nE       assert [] == [100, 25, 10]\nE         \nE         Right contains 3 more items, first extra item: 100\nE         Use -v to get more diff\n\ntest_vending.py:80: AssertionError\n=========================== short test summary info ============================\nFAILED test_vending.py::test_cancel_refunds_greedily - assert [] == [100, 25,...\n1 failed, 37 passed in 0.10s\n"
+      },
+      "n_tests": 38,
+      "pass_rate": 0.9737
+    },
+    {
+      "prompt_id": "c40",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "library/fines.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "library/fines.py"
+          },
+          "library/catalog.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "library/catalog.py"
+          },
+          "library/loans.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "library/loans.py"
+          },
+          "library/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "library/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "library/__init__.py",
+          "library/catalog.py",
+          "library/fines.py",
+          "library/loans.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 33,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 33,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 0,
+        "outcomes": {
+          "test_loans::test_checkout_creates_numbered_loans": "passed",
+          "test_loans::test_checkout_due_date_skips_sunday": "passed",
+          "test_loans::test_unknown_ids_raise_key_error": "passed",
+          "test_loans::test_not_available_when_all_copies_out": "passed",
+          "test_loans::test_duplicate_and_limit": "passed",
+          "test_loans::test_fine_blocks_until_paid_and_blocked_comes_first": "passed",
+          "test_loans::test_checkin_fine_grace_and_double_checkin": "passed",
+          "test_loans::test_pay_errors": "passed",
+          "test_loans::test_renew_counts_from_old_due_and_runs_out": "passed",
+          "test_loans::test_renew_allowed_on_due_day_refused_after": "passed",
+          "test_loans::test_renew_refused_when_held_and_returned_is_loan_error": "passed",
+          "test_loans::test_loans_and_overdue_sorted": "passed",
+          "test_loans::test_place_hold_rules_and_positions": "passed",
+          "test_loans::test_checkin_sets_copy_aside_for_first_hold": "passed",
+          "test_loans::test_expired_holds_chain_by_deadline_not_by_usage": "passed",
+          "test_loans::test_cancel_ready_hold_passes_copy_from_today": "passed",
+          "test_loans::test_checkout_removes_waiting_hold_when_copies_added": "passed",
+          "test_policy_catalog::test_policy_table": "passed",
+          "test_policy_catalog::test_due_date[start0-21-expected0]": "passed",
+          "test_policy_catalog::test_due_date[start1-14-expected1]": "passed",
+          "test_policy_catalog::test_due_date[start2-1-expected2]": "passed",
+          "test_policy_catalog::test_fine_for[standard-0-0]": "passed",
+          "test_policy_catalog::test_fine_for[standard--5-0]": "passed",
+          "test_policy_catalog::test_fine_for[standard-1-25]": "passed",
+          "test_policy_catalog::test_fine_for[student-2-0]": "passed",
+          "test_policy_catalog::test_fine_for[student-3-30]": "passed",
+          "test_policy_catalog::test_fine_for[standard-60-1000]": "passed",
+          "test_policy_catalog::test_fine_for[student-51-500]": "passed",
+          "test_policy_catalog::test_fine_for[staff-30-0]": "passed",
+          "test_policy_catalog::test_fine_for_unknown_kind": "passed",
+          "test_policy_catalog::test_catalog_add_and_errors": "passed",
+          "test_policy_catalog::test_add_copies": "passed",
+          "test_policy_catalog::test_search_ignores_case_and_sorts": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".................................                                        [100%]\n33 passed in 0.08s\n"
+      },
+      "n_tests": 33,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c40",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "library/fines.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "library/fines.py"
+          },
+          "library/catalog.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "library/catalog.py"
+          },
+          "library/loans.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "library/loans.py"
+          },
+          "library/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "library/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "library/__init__.py",
+          "library/catalog.py",
+          "library/fines.py",
+          "library/loans.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 31,
+        "failed": 2,
+        "skipped": 0,
+        "errors": 0,
+        "total": 33,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_loans::test_checkout_creates_numbered_loans": "passed",
+          "test_loans::test_checkout_due_date_skips_sunday": "passed",
+          "test_loans::test_unknown_ids_raise_key_error": "passed",
+          "test_loans::test_not_available_when_all_copies_out": "passed",
+          "test_loans::test_duplicate_and_limit": "passed",
+          "test_loans::test_fine_blocks_until_paid_and_blocked_comes_first": "passed",
+          "test_loans::test_checkin_fine_grace_and_double_checkin": "passed",
+          "test_loans::test_pay_errors": "passed",
+          "test_loans::test_renew_counts_from_old_due_and_runs_out": "passed",
+          "test_loans::test_renew_allowed_on_due_day_refused_after": "passed",
+          "test_loans::test_renew_refused_when_held_and_returned_is_loan_error": "passed",
+          "test_loans::test_loans_and_overdue_sorted": "passed",
+          "test_loans::test_place_hold_rules_and_positions": "passed",
+          "test_loans::test_checkin_sets_copy_aside_for_first_hold": "failed",
+          "test_loans::test_expired_holds_chain_by_deadline_not_by_usage": "failed",
+          "test_loans::test_cancel_ready_hold_passes_copy_from_today": "passed",
+          "test_loans::test_checkout_removes_waiting_hold_when_copies_added": "passed",
+          "test_policy_catalog::test_policy_table": "passed",
+          "test_policy_catalog::test_due_date[start0-21-expected0]": "passed",
+          "test_policy_catalog::test_due_date[start1-14-expected1]": "passed",
+          "test_policy_catalog::test_due_date[start2-1-expected2]": "passed",
+          "test_policy_catalog::test_fine_for[standard-0-0]": "passed",
+          "test_policy_catalog::test_fine_for[standard--5-0]": "passed",
+          "test_policy_catalog::test_fine_for[standard-1-25]": "passed",
+          "test_policy_catalog::test_fine_for[student-2-0]": "passed",
+          "test_policy_catalog::test_fine_for[student-3-30]": "passed",
+          "test_policy_catalog::test_fine_for[standard-60-1000]": "passed",
+          "test_policy_catalog::test_fine_for[student-51-500]": "passed",
+          "test_policy_catalog::test_fine_for[staff-30-0]": "passed",
+          "test_policy_catalog::test_fine_for_unknown_kind": "passed",
+          "test_policy_catalog::test_catalog_add_and_errors": "passed",
+          "test_policy_catalog::test_add_copies": "passed",
+          "test_policy_catalog::test_search_ignores_case_and_sorts": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "first_hold(lib, clock):\n        loan = lib.checkout('ann', 'B1')\n        lib.place_hold('bob', 'B1')\n        lib.place_hold('cat', 'B1')\n        clock.advance(5)\n        lib.checkin(loan.loan_id)\n        assert lib.available('B1') == 0\n        assert lib.hold_status('bob', 'B1') == ('ready', date(2026, 3, 10))\n        assert lib.hold_status('cat', 'B1') == ('waiting', 2)\n        with pytest.raises(NotAvailable):\n            lib.checkout('dan', 'B1')\n        with pytest.raises(NotAvailable):\n            lib.checkout('cat', 'B1')\n        clock.today = date(2026, 3, 10)  # the deadline day still counts\n        got = lib.checkout('bob', 'B1')\n        assert got.member_id == 'bob'\n>       assert lib.holds('B1') == ['cat']\nE       AssertionError: assert [] == ['cat']\nE         \nE         Right contains one more item: 'cat'\nE         Use -v to get more diff\n\ntest_loans.py:213: AssertionError\n______________ test_expired_holds_chain_by_deadline_not_by_usage _______________\n\nlib = <library.loans.Library object at 0x733cc3c0b710>\nclock = <test_loans.Clock object at 0x733cc3c0b770>\n\n    def test_expired_holds_chain_by_deadline_not_by_usage(lib, clock):\n        loan = lib.checkout('ann', 'B1')\n        for m in ('bob', 'cat', 'dan'):\n            lib.place_hold(m, 'B1')\n        lib.checkin(loan.loan_id)  # 03-02: bob ready until 03-05\n        clock.today = date(2026, 3, 12)  # nobody used the library meanwhile\n        # bob expires 03-06 -> cat ready until 03-09; cat expires 03-10 -> dan until 03-13\n>       assert lib.holds('B1') == ['dan']\nE       AssertionError: assert ['cat', 'dan'] == ['dan']\nE         \nE         At index 0 diff: 'cat' != 'dan'\nE         Left contains one more item: 'dan'\nE         Use -v to get more diff\n\ntest_loans.py:223: AssertionError\n=========================== short test summary info ============================\nFAILED test_loans.py::test_checkin_sets_copy_aside_for_first_hold - Assertion...\nFAILED test_loans.py::test_expired_holds_chain_by_deadline_not_by_usage - Ass...\n2 failed, 31 passed in 0.10s\n"
+      },
+      "n_tests": 33,
+      "pass_rate": 0.9394
+    },
+    {
+      "prompt_id": "c43",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "sheet/formula.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "sheet/formula.py"
+          },
+          "sheet/graph.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "sheet/graph.py"
+          },
+          "sheet/sheet.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "sheet/sheet.py"
+          },
+          "sheet/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "sheet/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "sheet/__init__.py",
+          "sheet/formula.py",
+          "sheet/graph.py",
+          "sheet/sheet.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 40,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 40,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.568,
+        "exit_code": 0,
+        "outcomes": {
+          "test_formula::test_arithmetic[1+2*3-7]": "passed",
+          "test_formula::test_arithmetic[(1+2)*3-9]": "passed",
+          "test_formula::test_arithmetic[10-4-3-3]": "passed",
+          "test_formula::test_arithmetic[-2*3--6]": "passed",
+          "test_formula::test_arithmetic[- -4 + +1-5]": "passed",
+          "test_formula::test_number_types": "passed",
+          "test_formula::test_references_and_empty_cells": "passed",
+          "test_formula::test_text_and_division_errors": "passed",
+          "test_formula::test_errors_propagate_left_first": "passed",
+          "test_formula::test_references_set": "passed",
+          "test_formula::test_parse_errors[]": "passed",
+          "test_formula::test_parse_errors[1+]": "passed",
+          "test_formula::test_parse_errors[(1+2]": "passed",
+          "test_formula::test_parse_errors[2 3]": "passed",
+          "test_formula::test_parse_errors[1.]": "passed",
+          "test_formula::test_parse_errors[A1 $ 2]": "passed",
+          "test_formula::test_parse_errors[AA1]": "passed",
+          "test_formula::test_parse_errors[B1000]": "passed",
+          "test_formula::test_parse_errors[A01]": "passed",
+          "test_graph::test_direct_links_both_ways": "passed",
+          "test_graph::test_replacing_and_removing_dependencies": "passed",
+          "test_graph::test_all_dependents_transitive": "passed",
+          "test_graph::test_cycles": "passed",
+          "test_sheet::test_constants_and_text": "passed",
+          "test_sheet::test_names_are_case_insensitive": "passed",
+          "test_sheet::test_bad_names_raise_value_error[AA1]": "passed",
+          "test_sheet::test_bad_names_raise_value_error[A0]": "passed",
+          "test_sheet::test_bad_names_raise_value_error[A1000]": "passed",
+          "test_sheet::test_bad_names_raise_value_error[1A]": "passed",
+          "test_sheet::test_formulas_follow_their_inputs": "passed",
+          "test_sheet::test_set_returns_affected_cells_row_major": "passed",
+          "test_sheet::test_set_after_rewiring_drops_old_dependents": "passed",
+          "test_sheet::test_evaluations_are_incremental": "passed",
+          "test_sheet::test_long_chain_evaluated_once_each": "passed",
+          "test_sheet::test_text_and_errors_in_cells": "passed",
+          "test_sheet::test_cycles_and_their_dependents": "passed",
+          "test_sheet::test_cycle_cells_not_evaluated": "passed",
+          "test_sheet::test_breaking_a_cycle_recovers": "passed",
+          "test_sheet::test_bad_formula_leaves_sheet_unchanged": "passed",
+          "test_sheet::test_clearing_cells": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "........................................                                 [100%]\n40 passed in 1.38s\n"
+      },
+      "n_tests": 40,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c43",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 5,
+        "files": {
+          "sheet/formula.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "sheet/formula.py"
+          },
+          "sheet/graph.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "sheet/graph.py"
+          },
+          "sheet/sheet.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "sheet/sheet.py"
+          },
+          "sheet/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "sheet/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "sheet/__init__.py",
+          "sheet/formula.py",
+          "sheet/graph.py",
+          "sheet/sheet.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 22,
+        "skipped": 0,
+        "errors": 0,
+        "total": 40,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 43.613,
+        "exit_code": 1,
+        "outcomes": {
+          "test_formula::test_arithmetic[1+2*3-7]": "failed",
+          "test_formula::test_arithmetic[(1+2)*3-9]": "failed",
+          "test_formula::test_arithmetic[10-4-3-3]": "failed",
+          "test_formula::test_arithmetic[-2*3--6]": "passed",
+          "test_formula::test_arithmetic[- -4 + +1-5]": "failed",
+          "test_formula::test_number_types": "failed",
+          "test_formula::test_references_and_empty_cells": "failed",
+          "test_formula::test_text_and_division_errors": "failed",
+          "test_formula::test_errors_propagate_left_first": "failed",
+          "test_formula::test_references_set": "failed",
+          "test_formula::test_parse_errors[]": "passed",
+          "test_formula::test_parse_errors[1+]": "failed",
+          "test_formula::test_parse_errors[(1+2]": "failed",
+          "test_formula::test_parse_errors[2 3]": "passed",
+          "test_formula::test_parse_errors[1.]": "passed",
+          "test_formula::test_parse_errors[A1 $ 2]": "passed",
+          "test_formula::test_parse_errors[AA1]": "passed",
+          "test_formula::test_parse_errors[B1000]": "passed",
+          "test_formula::test_parse_errors[A01]": "passed",
+          "test_graph::test_direct_links_both_ways": "passed",
+          "test_graph::test_replacing_and_removing_dependencies": "passed",
+          "test_graph::test_all_dependents_transitive": "passed",
+          "test_graph::test_cycles": "failed",
+          "test_sheet::test_constants_and_text": "passed",
+          "test_sheet::test_names_are_case_insensitive": "passed",
+          "test_sheet::test_bad_names_raise_value_error[AA1]": "passed",
+          "test_sheet::test_bad_names_raise_value_error[A0]": "passed",
+          "test_sheet::test_bad_names_raise_value_error[A1000]": "passed",
+          "test_sheet::test_bad_names_raise_value_error[1A]": "passed",
+          "test_sheet::test_formulas_follow_their_inputs": "failed",
+          "test_sheet::test_set_returns_affected_cells_row_major": "failed",
+          "test_sheet::test_set_after_rewiring_drops_old_dependents": "passed",
+          "test_sheet::test_evaluations_are_incremental": "failed",
+          "test_sheet::test_long_chain_evaluated_once_each": "failed",
+          "test_sheet::test_text_and_errors_in_cells": "failed",
+          "test_sheet::test_cycles_and_their_dependents": "failed",
+          "test_sheet::test_cycle_cells_not_evaluated": "failed",
+          "test_sheet::test_breaking_a_cycle_recovers": "failed",
+          "test_sheet::test_bad_formula_leaves_sheet_unchanged": "failed",
+          "test_sheet::test_clearing_cells": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "t in (+\"\", \"-\"):\n                                         ^^^\nE           TypeError: bad operand type for unary +: 'str'\n\nsheet/formula.py:120: TypeError\n=========================== short test summary info ============================\nFAILED test_formula.py::test_arithmetic[1+2*3-7] - TypeError: bad operand typ...\nFAILED test_formula.py::test_arithmetic[(1+2)*3-9] - TypeError: bad operand t...\nFAILED test_formula.py::test_arithmetic[10-4-3-3] - TypeError: bad operand ty...\nFAILED test_formula.py::test_arithmetic[- -4 + +1-5] - TypeError: bad operand...\nFAILED test_formula.py::test_number_types - TypeError: bad operand type for u...\nFAILED test_formula.py::test_references_and_empty_cells - TypeError: bad oper...\nFAILED test_formula.py::test_text_and_division_errors - TypeError: bad operan...\nFAILED test_formula.py::test_errors_propagate_left_first - TypeError: bad ope...\nFAILED test_formula.py::test_references_set - TypeError: bad operand type for...\nFAILED test_formula.py::test_parse_errors[1+] - TypeError: bad operand type f...\nFAILED test_formula.py::test_parse_errors[(1+2] - TypeError: bad operand type...\nFAILED test_graph.py::test_cycles - TimeoutError: test exceeded 20 s (hidden_...\nFAILED test_sheet.py::test_formulas_follow_their_inputs - TypeError: bad oper...\nFAILED test_sheet.py::test_set_returns_affected_cells_row_major - TypeError: ...\nFAILED test_sheet.py::test_evaluations_are_incremental - TypeError: bad opera...\nFAILED test_sheet.py::test_long_chain_evaluated_once_each - TypeError: bad op...\nFAILED test_sheet.py::test_text_and_errors_in_cells - TypeError: bad operand ...\nFAILED test_sheet.py::test_cycles_and_their_dependents - TypeError: bad opera...\nFAILED test_sheet.py::test_cycle_cells_not_evaluated - TimeoutError: test exc...\nFAILED test_sheet.py::test_breaking_a_cycle_recovers - TypeError: bad operand...\nFAILED test_sheet.py::test_bad_formula_leaves_sheet_unchanged - TypeError: ba...\nFAILED test_sheet.py::test_clearing_cells - TypeError: bad operand type for u...\n22 failed, 18 passed in 43.39s\n"
+      },
+      "n_tests": 40,
+      "pass_rate": 0.45
+    },
+    {
+      "prompt_id": "c49",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "resolve/versions.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "resolve/versions.py"
+          },
+          "resolve/index.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "resolve/index.py"
+          },
+          "resolve/solver.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "resolve/solver.py"
+          },
+          "resolve/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "resolve/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "resolve/__init__.py",
+          "resolve/index.py",
+          "resolve/solver.py",
+          "resolve/versions.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 35,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 35,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 0,
+        "outcomes": {
+          "test_resolve::test_version_parse_compare_and_str": "passed",
+          "test_resolve::test_bad_versions[1.2]": "passed",
+          "test_resolve::test_bad_versions[1.2.3.4]": "passed",
+          "test_resolve::test_bad_versions[01.2.3]": "passed",
+          "test_resolve::test_bad_versions[1.02.3]": "passed",
+          "test_resolve::test_bad_versions[1.2.-3]": "passed",
+          "test_resolve::test_bad_versions[a.b.c]": "passed",
+          "test_resolve::test_bad_versions[]": "passed",
+          "test_resolve::test_bad_versions[1..3]": "passed",
+          "test_resolve::test_range_contains[*-inside0-outside0]": "passed",
+          "test_resolve::test_range_contains[1.2.3-inside1-outside1]": "passed",
+          "test_resolve::test_range_contains[==1.2.3-inside2-outside2]": "passed",
+          "test_resolve::test_range_contains[>=1.0.0, <2.0.0, !=1.5.0-inside3-outside3]": "passed",
+          "test_resolve::test_range_contains[>1.0.0,<=1.2.0-inside4-outside4]": "passed",
+          "test_resolve::test_range_contains[^1.2.3-inside5-outside5]": "passed",
+          "test_resolve::test_range_contains[^0.2.3-inside6-outside6]": "passed",
+          "test_resolve::test_range_contains[^0.0.3-inside7-outside7]": "passed",
+          "test_resolve::test_range_contains[~1.2.3-inside8-outside8]": "passed",
+          "test_resolve::test_range_str_and_errors": "passed",
+          "test_resolve::test_index_versions_newest_first_and_requirements": "passed",
+          "test_resolve::test_index_rejects_duplicates_and_bad_input": "passed",
+          "test_resolve::test_simple_newest_versions": "passed",
+          "test_resolve::test_result_is_versions_and_empty_root": "passed",
+          "test_resolve::test_newer_dependency_constraint_respected": "passed",
+          "test_resolve::test_backtracks_to_older_version": "passed",
+          "test_resolve::test_candidate_rejected_when_dependency_already_selected_conflicts": "passed",
+          "test_resolve::test_result_follows_search_order_not_global_optimum": "passed",
+          "test_resolve::test_selection_order_of_result": "passed",
+          "test_resolve::test_undo_removes_added_names": "passed",
+          "test_resolve::test_bad_root_spec": "passed",
+          "test_resolve::test_explanation_prompt_example": "passed",
+          "test_resolve::test_explanation_unknown_package": "passed",
+          "test_resolve::test_explanation_dependency_conflict_lines": "passed",
+          "test_resolve::test_explanation_is_first_dead_end": "passed",
+          "test_resolve::test_explanation_constraints_in_selection_order": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "...................................                                      [100%]\n35 passed in 0.06s\n"
+      },
+      "n_tests": 35,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c49",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "resolve/versions.py": {
+            "rule": "snapshot_part+expected_basename",
+            "block": 0,
+            "raw": "versions.py"
+          },
+          "resolve/index.py": {
+            "rule": "snapshot_part+expected_basename+fenced_body",
+            "block": 1,
+            "raw": "index.py"
+          },
+          "resolve/solver.py": {
+            "rule": "snapshot_part+expected_basename+fenced_body",
+            "block": 2,
+            "raw": "solver.py"
+          },
+          "resolve/__init__.py": {
+            "rule": "snapshot_part+expected_basename",
+            "block": 3,
+            "raw": "__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "resolve/__init__.py",
+          "resolve/index.py",
+          "resolve/solver.py",
+          "resolve/versions.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 32,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 35,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_resolve::test_version_parse_compare_and_str": "passed",
+          "test_resolve::test_bad_versions[1.2]": "passed",
+          "test_resolve::test_bad_versions[1.2.3.4]": "passed",
+          "test_resolve::test_bad_versions[01.2.3]": "passed",
+          "test_resolve::test_bad_versions[1.02.3]": "passed",
+          "test_resolve::test_bad_versions[1.2.-3]": "passed",
+          "test_resolve::test_bad_versions[a.b.c]": "passed",
+          "test_resolve::test_bad_versions[]": "passed",
+          "test_resolve::test_bad_versions[1..3]": "passed",
+          "test_resolve::test_range_contains[*-inside0-outside0]": "passed",
+          "test_resolve::test_range_contains[1.2.3-inside1-outside1]": "passed",
+          "test_resolve::test_range_contains[==1.2.3-inside2-outside2]": "passed",
+          "test_resolve::test_range_contains[>=1.0.0, <2.0.0, !=1.5.0-inside3-outside3]": "passed",
+          "test_resolve::test_range_contains[>1.0.0,<=1.2.0-inside4-outside4]": "passed",
+          "test_resolve::test_range_contains[^1.2.3-inside5-outside5]": "passed",
+          "test_resolve::test_range_contains[^0.2.3-inside6-outside6]": "passed",
+          "test_resolve::test_range_contains[^0.0.3-inside7-outside7]": "passed",
+          "test_resolve::test_range_contains[~1.2.3-inside8-outside8]": "passed",
+          "test_resolve::test_range_str_and_errors": "passed",
+          "test_resolve::test_index_versions_newest_first_and_requirements": "passed",
+          "test_resolve::test_index_rejects_duplicates_and_bad_input": "passed",
+          "test_resolve::test_simple_newest_versions": "passed",
+          "test_resolve::test_result_is_versions_and_empty_root": "passed",
+          "test_resolve::test_newer_dependency_constraint_respected": "passed",
+          "test_resolve::test_backtracks_to_older_version": "failed",
+          "test_resolve::test_candidate_rejected_when_dependency_already_selected_conflicts": "passed",
+          "test_resolve::test_result_follows_search_order_not_global_optimum": "failed",
+          "test_resolve::test_selection_order_of_result": "passed",
+          "test_resolve::test_undo_removes_added_names": "failed",
+          "test_resolve::test_bad_root_spec": "passed",
+          "test_resolve::test_explanation_prompt_example": "passed",
+          "test_resolve::test_explanation_unknown_package": "passed",
+          "test_resolve::test_explanation_dependency_conflict_lines": "passed",
+          "test_resolve::test_explanation_is_first_dead_end": "passed",
+          "test_resolve::test_explanation_constraints_in_selection_order": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": " version is in the dependency's range\"\n            candidate_reqs = index.requirements(next_pkg, ver)\n            for dep_name, dep_range in candidate_reqs.items():\n                if dep_name in selected:\n                    selected_dep_ver = selected[dep_name]\n                    if not dep_range.contains(selected_dep_ver):\n                        is_acceptable = False\n                        break\n    \n            if not is_acceptable:\n                continue\n    \n            # Candidate is acceptable, try it\n            # Update state\n            new_selected = dict(selected)\n            new_selected[next_pkg] = ver\n    \n            new_selection_order = selection_order + [next_pkg]\n    \n            # Update order: append new dependencies not yet in order, sorted\n            existing_in_order = set(order)\n            new_deps = [d for d in candidate_reqs.keys() if d not in existing_in_order]\n            new_deps_sorted = sorted(new_deps)\n    \n            new_order = order + new_deps_sorted\n    \n            result = solve(new_order, new_selected, new_selection_order)\n            if result is not None:\n                return result\n    \n            # If result is None, backtrack (continue to next candidate)\n            # State is not mutated globally, local copies handle backtracking\n    \n        # If loop finishes, no candidate worked\n>       raise ResolutionError(\n            package=next_pkg,\n            explanation=_build_explanation(index, next_pkg, constraints, candidates, selected),\n        )\nE       resolve.solver.ResolutionError: cannot resolve bad\nE         a 2.0.0 requires bad *\nE         no versions of bad are known\n\nresolve/solver.py:149: ResolutionError\n=========================== short test summary info ============================\nFAILED test_resolve.py::test_backtracks_to_older_version - resolve.solver.Res...\nFAILED test_resolve.py::test_result_follows_search_order_not_global_optimum\nFAILED test_resolve.py::test_undo_removes_added_names - resolve.solver.Resolu...\n3 failed, 32 passed in 0.10s\n"
+      },
+      "n_tests": 35,
+      "pass_rate": 0.9143
+    },
+    {
+      "prompt_id": "c51",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "logagg/parsers.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "logagg/parsers.py"
+          },
+          "logagg/stats.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "logagg/stats.py"
+          },
+          "logagg/cli.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "logagg/cli.py"
+          },
+          "logagg/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "logagg/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "logagg/__init__.py",
+          "logagg/cli.py",
+          "logagg/parsers.py",
+          "logagg/stats.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 37,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 37,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.766,
+        "exit_code": 0,
+        "outcomes": {
+          "test_logagg::test_parse_clf_fields": "passed",
+          "test_logagg::test_both_formats_give_equal_records": "passed",
+          "test_logagg::test_clf_latency_dash_size_and_positive_offset": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 200]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Foo/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36] \"GET /x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"G3T /x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 99 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 200 -5]": "passed",
+          "test_logagg::test_jsonl_offsets_strings_and_optionals": "passed",
+          "test_logagg::test_jsonl_errors[not json]": "passed",
+          "test_logagg::test_jsonl_errors[[1, 2]]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00\", \"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00Z\", \"client\": \"\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00Z\", \"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 700}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00Z\", \"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200, \"latency_ms\": -1}]": "passed",
+          "test_logagg::test_parse_line_forced_format_and_unknown": "passed",
+          "test_logagg::test_read_records_bad_line_numbers_and_blanks": "passed",
+          "test_logagg::test_percentile_nearest_rank": "passed",
+          "test_logagg::test_percentile_errors[values0-50]": "passed",
+          "test_logagg::test_percentile_errors[values1-0]": "passed",
+          "test_logagg::test_percentile_errors[values2-101]": "passed",
+          "test_logagg::test_percentile_errors[values3--5]": "passed",
+          "test_logagg::test_filter_records_window_and_status": "passed",
+          "test_logagg::test_summarize_shape_and_values": "passed",
+          "test_logagg::test_summarize_top_and_empty": "passed",
+          "test_logagg::test_cli_text_report": "passed",
+          "test_logagg::test_cli_json_with_filters": "passed",
+          "test_logagg::test_cli_status_filter_and_no_latency": "passed",
+          "test_logagg::test_cli_forced_format_counts_bad": "passed",
+          "test_logagg::test_cli_usage_errors[extra0]": "passed",
+          "test_logagg::test_cli_usage_errors[extra1]": "passed",
+          "test_logagg::test_cli_usage_errors[extra2]": "passed",
+          "test_logagg::test_cli_missing_file": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....................................                                    [100%]\n37 passed in 0.54s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c51",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "logagg/parsers.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "logagg/parsers.py"
+          },
+          "logagg/stats.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "logagg/stats.py"
+          },
+          "logagg/cli.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "logagg/cli.py"
+          },
+          "logagg/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "logagg/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "logagg/__init__.py",
+          "logagg/cli.py",
+          "logagg/parsers.py",
+          "logagg/stats.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 37,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 37,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.766,
+        "exit_code": 0,
+        "outcomes": {
+          "test_logagg::test_parse_clf_fields": "passed",
+          "test_logagg::test_both_formats_give_equal_records": "passed",
+          "test_logagg::test_clf_latency_dash_size_and_positive_offset": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 200]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Foo/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36] \"GET /x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"G3T /x HTTP/1.0\" 200 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 99 5]": "passed",
+          "test_logagg::test_clf_errors[127.0.0.1 - - [10/Oct/2000:13:55:36 -0700] \"GET /x HTTP/1.0\" 200 -5]": "passed",
+          "test_logagg::test_jsonl_offsets_strings_and_optionals": "passed",
+          "test_logagg::test_jsonl_errors[not json]": "passed",
+          "test_logagg::test_jsonl_errors[[1, 2]]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00\", \"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00Z\", \"client\": \"\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00Z\", \"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 700}]": "passed",
+          "test_logagg::test_jsonl_errors[{\"ts\": \"2026-05-04T12:00:00Z\", \"client\": \"c\", \"method\": \"GET\", \"path\": \"/\", \"status\": 200, \"latency_ms\": -1}]": "passed",
+          "test_logagg::test_parse_line_forced_format_and_unknown": "passed",
+          "test_logagg::test_read_records_bad_line_numbers_and_blanks": "passed",
+          "test_logagg::test_percentile_nearest_rank": "passed",
+          "test_logagg::test_percentile_errors[values0-50]": "passed",
+          "test_logagg::test_percentile_errors[values1-0]": "passed",
+          "test_logagg::test_percentile_errors[values2-101]": "passed",
+          "test_logagg::test_percentile_errors[values3--5]": "passed",
+          "test_logagg::test_filter_records_window_and_status": "passed",
+          "test_logagg::test_summarize_shape_and_values": "passed",
+          "test_logagg::test_summarize_top_and_empty": "passed",
+          "test_logagg::test_cli_text_report": "passed",
+          "test_logagg::test_cli_json_with_filters": "passed",
+          "test_logagg::test_cli_status_filter_and_no_latency": "passed",
+          "test_logagg::test_cli_forced_format_counts_bad": "passed",
+          "test_logagg::test_cli_usage_errors[extra0]": "passed",
+          "test_logagg::test_cli_usage_errors[extra1]": "passed",
+          "test_logagg::test_cli_usage_errors[extra2]": "passed",
+          "test_logagg::test_cli_missing_file": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....................................                                    [100%]\n37 passed in 0.55s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 1.0
+    }
+  ]
+}

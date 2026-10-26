@@ -1,0 +1,1363 @@
+{
+  "kind": "q-e1-arms",
+  "bench": "v1.1",
+  "bench_frozen": true,
+  "manifest_path": "journal/baseline/bench/v1/manifest.yaml",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "prompt_sha256": {
+    "c13": "3ece8935569d93c081bbf57535af52db0200e09f78b65905c3e18f41660c91fd",
+    "c36": "06f02a541ef312445c89cf5713081221b7d34f789e6751e9d301628a1e1ac65a",
+    "c47": "a5af187e9a431933d105fd4def7f8247a9e661d05b06668c7fb5bd780d3d85b7",
+    "c06": "67d9d89575aec2b278cb9c8e10f081233472607ffa067e922baccae9c0e7eaa9",
+    "c06f": "216962990d0bc87667bd12b5202c12a18376a711f31b848753d8bbcf674cd80a",
+    "r06": "47f92b39356e40f87ea0d72c3d330bf8a3dc0d9b01329b2d00626350aaf26e8e",
+    "r23": "afd1c5d58641fdf6e82d03cc61dc5606575fdcd588dfd9b4f9e69848ea05b5de",
+    "r36": "2441aa97296a8f17bdc2f93dc240e536375d0de3d8b7c539f101a24c50b71f29",
+    "r01": "e2cbe71699e8759db7e98a04a8a0d5adde428e9b654733d4faf586efc8e3d734",
+    "r01f": "ae4b9fca749b10d10826e7d932bb73c1c1213fb8f9cd6e10cd5eaf42cd5ec3f1"
+  },
+  "generator": "qwen3-0.6b",
+  "model": "qwen3-0.6b",
+  "backend": "http://localhost:8095/v1",
+  "served_models": [
+    "qwen3-0.6b"
+  ],
+  "arms": [
+    "b"
+  ],
+  "arm_names": {
+    "b": "(b) harness"
+  },
+  "refine_rounds": {},
+  "refine_budget": null,
+  "refine_cap": null,
+  "refine_min_rounds": null,
+  "continue_cap": 3,
+  "max_tokens": 8192,
+  "sampling": "server defaults (no temperature sent)",
+  "prompts_version": "arms-v1",
+  "prompts_sha256": "ab881e9b5c698b0cf7140ec1689512ae01fe4fc250304d37408b9f56ead2dda6",
+  "config": {
+    "components": {
+      "decomposer": "self_critique",
+      "executor": "oracle_loop",
+      "composer": "document",
+      "oracle": "document_oracle"
+    },
+    "options": {
+      "max_oracle_rounds": 8,
+      "summary_max_words": 400,
+      "render": "markdown_with_files",
+      "composer_max_retries": 3,
+      "prompt_token_budget": 16384,
+      "log_prompts": false,
+      "consolidation": false,
+      "token_ceiling": null,
+      "thinking": "off",
+      "thinking_by_step": {},
+      "log_thinking": null,
+      "thinking_log_dir": "runs/thinking",
+      "structured_output": "two_pass",
+      "structured_output_by_step": {}
+    }
+  },
+  "overrides": [
+    "options.structured_output=two_pass"
+  ],
+  "selection": {
+    "subset": "g3",
+    "prompt": null,
+    "domain": null
+  },
+  "runs_per_prompt": 1,
+  "jobs": 5,
+  "intermediates_dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b",
+  "caveat": "per-call and per-prompt wall seconds are inflated by concurrent jobs; use --jobs 1 for wall-time comparisons",
+  "intermediates": {
+    "files": 13,
+    "manifest_sha256": "cbcdb4b94954cf4bb708a10fe1d4a6205ebc976ad610c221fcbc0a4f48c0b686"
+  },
+  "commit": "eb5b1876a1cb6fd30549f0b386d7731018e9700e",
+  "dirty": false,
+  "commit_at_end": null,
+  "label": "smoke06b-v2-b-two_pass",
+  "started_at": "20261025T130341Z",
+  "updated_at": "20261025T131121Z",
+  "results": [
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_c06_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 208.5,
+      "llm": {
+        "calls": 44,
+        "prompt_tokens": 261519,
+        "completion_tokens": 7270,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 44
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 207.91,
+        "by_kind": {
+          "compose": {
+            "count": 8,
+            "p50_s": 3.95,
+            "max_s": 13.1,
+            "prompt_tokens": 79965,
+            "completion_tokens": 1408,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 7.28,
+            "max_s": 7.42,
+            "prompt_tokens": 10488,
+            "completion_tokens": 920,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 4.44,
+            "max_s": 4.44,
+            "prompt_tokens": 772,
+            "completion_tokens": 118,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 32,
+            "p50_s": 3.96,
+            "max_s": 13.22,
+            "prompt_tokens": 170014,
+            "completion_tokens": 4702,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 4.23,
+            "max_s": 4.23,
+            "prompt_tokens": 280,
+            "completion_tokens": 122,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research climate data and statistics for the site": {
+            "count": 2,
+            "p50_s": 9.28,
+            "max_s": 13.1,
+            "prompt_tokens": 19637,
+            "completion_tokens": 578,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Outline the homepage and main pages of the website": {
+            "count": 6,
+            "p50_s": 3.17,
+            "max_s": 4.32,
+            "prompt_tokens": 60328,
+            "completion_tokens": 830,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 7.14,
+            "max_s": 7.42,
+            "prompt_tokens": 11260,
+            "completion_tokens": 1038,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research climate data and statistics for the site": {
+            "count": 16,
+            "p50_s": 3.14,
+            "max_s": 11.93,
+            "prompt_tokens": 70837,
+            "completion_tokens": 1942,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Outline the homepage and main pages of the website": {
+            "count": 16,
+            "p50_s": 4.72,
+            "max_s": 13.22,
+            "prompt_tokens": 99177,
+            "completion_tokens": 2760,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Research climate data and statistics for the site": {
+            "count": 1,
+            "p50_s": 4.23,
+            "max_s": 4.23,
+            "prompt_tokens": 280,
+            "completion_tokens": 122,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: lru')"
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": "c06",
+      "domain": "code",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: c06 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c13"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_c13_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 166.2,
+      "llm": {
+        "calls": 42,
+        "prompt_tokens": 201646,
+        "completion_tokens": 5306,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 42
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 165.75,
+        "by_kind": {
+          "compose": {
+            "count": 8,
+            "p50_s": 4.64,
+            "max_s": 5.99,
+            "prompt_tokens": 77837,
+            "completion_tokens": 691,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 8.05,
+            "max_s": 10.13,
+            "prompt_tokens": 10744,
+            "completion_tokens": 954,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 5.73,
+            "max_s": 5.73,
+            "prompt_tokens": 871,
+            "completion_tokens": 258,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 24,
+            "p50_s": 2.86,
+            "max_s": 17.27,
+            "prompt_tokens": 108181,
+            "completion_tokens": 2858,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "oracle": {
+            "count": 6,
+            "p50_s": 1.93,
+            "max_s": 5.59,
+            "prompt_tokens": 3791,
+            "completion_tokens": 493,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 1.54,
+            "max_s": 1.54,
+            "prompt_tokens": 222,
+            "completion_tokens": 52,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research climate statistics for the site": {
+            "count": 2,
+            "p50_s": 5.34,
+            "max_s": 5.99,
+            "prompt_tokens": 19267,
+            "completion_tokens": 182,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Outline pages": {
+            "count": 6,
+            "p50_s": 4.5,
+            "max_s": 5.31,
+            "prompt_tokens": 58570,
+            "completion_tokens": 509,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 5.98,
+            "max_s": 10.13,
+            "prompt_tokens": 11615,
+            "completion_tokens": 1212,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research climate statistics for the site": {
+            "count": 14,
+            "p50_s": 2.56,
+            "max_s": 6.87,
+            "prompt_tokens": 39239,
+            "completion_tokens": 1567,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Outline pages": {
+            "count": 16,
+            "p50_s": 2.63,
+            "max_s": 17.27,
+            "prompt_tokens": 72733,
+            "completion_tokens": 1784,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 1.54,
+            "max_s": 1.54,
+            "prompt_tokens": 222,
+            "completion_tokens": 52,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: ratelimit.py')"
+    },
+    {
+      "prompt_id": "c36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c36"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_c36_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 161.0,
+      "llm": {
+        "calls": 32,
+        "prompt_tokens": 198136,
+        "completion_tokens": 5130,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 32
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 160.56,
+        "by_kind": {
+          "compose": {
+            "count": 10,
+            "p50_s": 5.84,
+            "max_s": 19.84,
+            "prompt_tokens": 111172,
+            "completion_tokens": 2114,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 7.58,
+            "max_s": 7.74,
+            "prompt_tokens": 13342,
+            "completion_tokens": 938,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 4.39,
+            "max_s": 4.39,
+            "prompt_tokens": 2190,
+            "completion_tokens": 145,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 12,
+            "p50_s": 3.31,
+            "max_s": 11.5,
+            "prompt_tokens": 67093,
+            "completion_tokens": 1495,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "oracle": {
+            "count": 6,
+            "p50_s": 1.73,
+            "max_s": 3.29,
+            "prompt_tokens": 4119,
+            "completion_tokens": 406,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 3.73,
+            "max_s": 3.73,
+            "prompt_tokens": 220,
+            "completion_tokens": 32,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research climate data": {
+            "count": 4,
+            "p50_s": 5.57,
+            "max_s": 19.84,
+            "prompt_tokens": 44471,
+            "completion_tokens": 1113,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Design the website structure": {
+            "count": 6,
+            "p50_s": 5.98,
+            "max_s": 16.35,
+            "prompt_tokens": 66701,
+            "completion_tokens": 1001,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 7.41,
+            "max_s": 7.74,
+            "prompt_tokens": 15532,
+            "completion_tokens": 1083,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research climate data": {
+            "count": 8,
+            "p50_s": 2.12,
+            "max_s": 3.79,
+            "prompt_tokens": 34049,
+            "completion_tokens": 639,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Design the website structure": {
+            "count": 10,
+            "p50_s": 3.49,
+            "max_s": 11.5,
+            "prompt_tokens": 37163,
+            "completion_tokens": 1262,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Research climate data": {
+            "count": 1,
+            "p50_s": 3.73,
+            "max_s": 3.73,
+            "prompt_tokens": 220,
+            "completion_tokens": 32,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: minisql')"
+    },
+    {
+      "prompt_id": "c47",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c47"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_c47_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 174.6,
+      "llm": {
+        "calls": 13,
+        "prompt_tokens": 127934,
+        "completion_tokens": 5797,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 13
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 174.47,
+        "by_kind": {
+          "compose": {
+            "count": 8,
+            "p50_s": 12.0,
+            "max_s": 71.3,
+            "prompt_tokens": 101585,
+            "completion_tokens": 4547,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 8.36,
+            "max_s": 9.22,
+            "prompt_tokens": 13359,
+            "completion_tokens": 934,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 1.17,
+            "max_s": 1.17,
+            "prompt_tokens": 2202,
+            "completion_tokens": 31,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 3.2,
+            "max_s": 3.5,
+            "prompt_tokens": 10788,
+            "completion_tokens": 285,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research Climate Statistics": {
+            "count": 8,
+            "p50_s": 12.0,
+            "max_s": 71.3,
+            "prompt_tokens": 101585,
+            "completion_tokens": 4547,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 7.49,
+            "max_s": 9.22,
+            "prompt_tokens": 15561,
+            "completion_tokens": 965,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research Climate Statistics": {
+            "count": 2,
+            "p50_s": 3.2,
+            "max_s": 3.5,
+            "prompt_tokens": 10788,
+            "completion_tokens": 285,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.4.merge_parts\n  Value error, merge ids must be unique: ['3', '3'] [type=value_error, input_value={'type': 'merge_parts', 'ids': ['3', '3']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r01",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_r01_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 244.1,
+      "llm": {
+        "calls": 27,
+        "prompt_tokens": 178515,
+        "completion_tokens": 14938,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 27
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 243.85,
+        "by_kind": {
+          "compose": {
+            "count": 8,
+            "p50_s": 5.47,
+            "max_s": 7.23,
+            "prompt_tokens": 87852,
+            "completion_tokens": 3047,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 8.75,
+            "max_s": 9.86,
+            "prompt_tokens": 9903,
+            "completion_tokens": 904,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 1.26,
+            "max_s": 1.26,
+            "prompt_tokens": 651,
+            "completion_tokens": 72,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 16,
+            "p50_s": 2.94,
+            "max_s": 131.74,
+            "prompt_tokens": 80109,
+            "completion_tokens": 10915,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/4: Cost and Hosting": {
+            "count": 8,
+            "p50_s": 5.47,
+            "max_s": 7.23,
+            "prompt_tokens": 87852,
+            "completion_tokens": 3047,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 7.64,
+            "max_s": 9.86,
+            "prompt_tokens": 10554,
+            "completion_tokens": 976,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/4: Cost and Hosting": {
+            "count": 16,
+            "p50_s": 2.94,
+            "max_s": 131.74,
+            "prompt_tokens": 80109,
+            "completion_tokens": 10915,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.4.merge_parts\n  Value error, merge ids must be unique: ['ticketing', 'ticketing'] [type=value_error, input_value={'type': 'merge_parts', '...icketing', 'ticketing']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r01f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": "r01",
+      "domain": "report",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: r01 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "r06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r06"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_r06_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 354.3,
+      "llm": {
+        "calls": 54,
+        "prompt_tokens": 258665,
+        "completion_tokens": 16004,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 54
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 353.81,
+        "by_kind": {
+          "compose": {
+            "count": 8,
+            "p50_s": 4.98,
+            "max_s": 13.3,
+            "prompt_tokens": 86277,
+            "completion_tokens": 1884,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 11.14,
+            "max_s": 12.73,
+            "prompt_tokens": 12522,
+            "completion_tokens": 1224,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 10.88,
+            "max_s": 10.88,
+            "prompt_tokens": 1769,
+            "completion_tokens": 463,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 26,
+            "p50_s": 3.61,
+            "max_s": 134.6,
+            "prompt_tokens": 148172,
+            "completion_tokens": 11569,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "oracle": {
+            "count": 16,
+            "p50_s": 1.17,
+            "max_s": 4.69,
+            "prompt_tokens": 9704,
+            "completion_tokens": 802,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 2.91,
+            "max_s": 2.91,
+            "prompt_tokens": 221,
+            "completion_tokens": 62,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/4: Decisions": {
+            "count": 2,
+            "p50_s": 3.79,
+            "max_s": 4.45,
+            "prompt_tokens": 20945,
+            "completion_tokens": 191,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/4: Action items": {
+            "count": 6,
+            "p50_s": 5.99,
+            "max_s": 13.3,
+            "prompt_tokens": 65332,
+            "completion_tokens": 1693,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 10.88,
+            "max_s": 12.73,
+            "prompt_tokens": 14291,
+            "completion_tokens": 1687,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/4: Decisions": {
+            "count": 26,
+            "p50_s": 2.2,
+            "max_s": 6.14,
+            "prompt_tokens": 63725,
+            "completion_tokens": 2192,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/4: Action items": {
+            "count": 16,
+            "p50_s": 3.03,
+            "max_s": 134.6,
+            "prompt_tokens": 94151,
+            "completion_tokens": 10179,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/4: Decisions": {
+            "count": 1,
+            "p50_s": 2.91,
+            "max_s": 2.91,
+            "prompt_tokens": 221,
+            "completion_tokens": 62,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: 4.2')"
+    },
+    {
+      "prompt_id": "r23",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r23"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_r23_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 202.4,
+      "llm": {
+        "calls": 29,
+        "prompt_tokens": 204380,
+        "completion_tokens": 11262,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 29
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 202.14,
+        "by_kind": {
+          "compose": {
+            "count": 10,
+            "p50_s": 7.36,
+            "max_s": 39.18,
+            "prompt_tokens": 111722,
+            "completion_tokens": 5588,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 13.32,
+            "max_s": 18.69,
+            "prompt_tokens": 11015,
+            "completion_tokens": 1233,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 9.3,
+            "max_s": 9.3,
+            "prompt_tokens": 1011,
+            "completion_tokens": 459,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 16,
+            "p50_s": 3.1,
+            "max_s": 10.06,
+            "prompt_tokens": 80632,
+            "completion_tokens": 3982,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/4: Preconditions": {
+            "count": 10,
+            "p50_s": 7.36,
+            "max_s": 39.18,
+            "prompt_tokens": 111722,
+            "completion_tokens": 5588,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 9.3,
+            "max_s": 18.69,
+            "prompt_tokens": 12026,
+            "completion_tokens": 1692,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/4: Preconditions": {
+            "count": 16,
+            "p50_s": 3.1,
+            "max_s": 10.06,
+            "prompt_tokens": 80632,
+            "completion_tokens": 3982,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.4.merge_parts\n  Value error, merge ids must be unique: ['db-prod-02', 'db-prod-02'] [type=value_error, input_value={'type': 'merge_parts', '...prod-02', 'db-prod-02']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r36"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130341Z_smoke06b-v2-b-two_pass_qwen3-0.6b/b_r36_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 293.7,
+      "llm": {
+        "calls": 42,
+        "prompt_tokens": 269649,
+        "completion_tokens": 20828,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 42
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 293.23,
+        "by_kind": {
+          "compose": {
+            "count": 8,
+            "p50_s": 3.23,
+            "max_s": 11.16,
+            "prompt_tokens": 89790,
+            "completion_tokens": 4856,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 30.19,
+            "max_s": 46.65,
+            "prompt_tokens": 13797,
+            "completion_tokens": 3577,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 6.62,
+            "max_s": 6.62,
+            "prompt_tokens": 2388,
+            "completion_tokens": 395,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 30,
+            "p50_s": 1.15,
+            "max_s": 136.23,
+            "prompt_tokens": 163414,
+            "completion_tokens": 11932,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 1.63,
+            "max_s": 1.63,
+            "prompt_tokens": 260,
+            "completion_tokens": 68,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/12: Overview and Goals": {
+            "count": 2,
+            "p50_s": 4.16,
+            "max_s": 5.65,
+            "prompt_tokens": 21616,
+            "completion_tokens": 611,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/12: Requirements": {
+            "count": 6,
+            "p50_s": 3.23,
+            "max_s": 11.16,
+            "prompt_tokens": 68174,
+            "completion_tokens": 4245,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 13.73,
+            "max_s": 46.65,
+            "prompt_tokens": 16185,
+            "completion_tokens": 3972,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/12: Overview and Goals": {
+            "count": 14,
+            "p50_s": 1.57,
+            "max_s": 136.23,
+            "prompt_tokens": 78036,
+            "completion_tokens": 9926,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/12: Requirements": {
+            "count": 16,
+            "p50_s": 1.05,
+            "max_s": 5.63,
+            "prompt_tokens": 85378,
+            "completion_tokens": 2006,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/12: Overview and Goals": {
+            "count": 1,
+            "p50_s": 1.63,
+            "max_s": 1.63,
+            "prompt_tokens": 260,
+            "completion_tokens": 68,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: dispatch_system')"
+    }
+  ],
+  "summary": {
+    "b/code": {
+      "prompts": 5,
+      "errors": 5,
+      "completion_tokens_p50": null,
+      "prompt_tokens_p50": null,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": null,
+      "wall_seconds_sum": 0,
+      "calls_sum": 0,
+      "output_chars_p50": null,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    },
+    "b/report": {
+      "prompts": 5,
+      "errors": 5,
+      "completion_tokens_p50": null,
+      "prompt_tokens_p50": null,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": null,
+      "wall_seconds_sum": 0,
+      "calls_sum": 0,
+      "output_chars_p50": null,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    }
+  },
+  "arm_elapsed_seconds": {
+    "b": 459.9
+  },
+  "errors": [
+    "b c36 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: minisql')",
+    "b c13 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: ratelimit.py')",
+    "b c47 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.4.merge_parts\n  Value error, merge ids must be unique: ['3', '3'] [type=value_error, input_value={'type': 'merge_parts', 'ids': ['3', '3']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b c06 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: lru')",
+    "b c06f r0: not run: c06 failed earlier in the chain",
+    "b r06 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: 4.2')",
+    "b r23 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.4.merge_parts\n  Value error, merge ids must be unique: ['db-prod-02', 'db-prod-02'] [type=value_error, input_value={'type': 'merge_parts', '...prod-02', 'db-prod-02']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b r01 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.4.merge_parts\n  Value error, merge ids must be unique: ['ticketing', 'ticketing'] [type=value_error, input_value={'type': 'merge_parts', '...icketing', 'ticketing']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b r01f r0: not run: r01 failed earlier in the chain",
+    "b r36 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: dispatch_system')"
+  ]
+}

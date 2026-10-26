@@ -1,0 +1,1173 @@
+{
+  "kind": "q-e1-arms",
+  "bench": "v1.1",
+  "bench_frozen": true,
+  "manifest_path": "journal/baseline/bench/v1/manifest.yaml",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "prompt_sha256": {
+    "c13": "3ece8935569d93c081bbf57535af52db0200e09f78b65905c3e18f41660c91fd",
+    "c36": "06f02a541ef312445c89cf5713081221b7d34f789e6751e9d301628a1e1ac65a",
+    "c47": "a5af187e9a431933d105fd4def7f8247a9e661d05b06668c7fb5bd780d3d85b7",
+    "c06": "67d9d89575aec2b278cb9c8e10f081233472607ffa067e922baccae9c0e7eaa9",
+    "c06f": "216962990d0bc87667bd12b5202c12a18376a711f31b848753d8bbcf674cd80a",
+    "r06": "47f92b39356e40f87ea0d72c3d330bf8a3dc0d9b01329b2d00626350aaf26e8e",
+    "r23": "afd1c5d58641fdf6e82d03cc61dc5606575fdcd588dfd9b4f9e69848ea05b5de",
+    "r36": "2441aa97296a8f17bdc2f93dc240e536375d0de3d8b7c539f101a24c50b71f29",
+    "r01": "e2cbe71699e8759db7e98a04a8a0d5adde428e9b654733d4faf586efc8e3d734",
+    "r01f": "ae4b9fca749b10d10826e7d932bb73c1c1213fb8f9cd6e10cd5eaf42cd5ec3f1"
+  },
+  "generator": "qwen3-0.6b",
+  "model": "qwen3-0.6b",
+  "backend": "http://localhost:8095/v1",
+  "served_models": [
+    "qwen3-0.6b"
+  ],
+  "arms": [
+    "b"
+  ],
+  "arm_names": {
+    "b": "(b) harness"
+  },
+  "refine_rounds": {},
+  "refine_budget": null,
+  "refine_cap": null,
+  "refine_min_rounds": null,
+  "continue_cap": 3,
+  "max_tokens": 8192,
+  "sampling": "server defaults (no temperature sent)",
+  "prompts_version": "arms-v1",
+  "prompts_sha256": "ab881e9b5c698b0cf7140ec1689512ae01fe4fc250304d37408b9f56ead2dda6",
+  "config": {
+    "components": {
+      "decomposer": "self_critique",
+      "executor": "oracle_loop",
+      "composer": "document",
+      "oracle": "document_oracle"
+    },
+    "options": {
+      "max_oracle_rounds": 8,
+      "summary_max_words": 400,
+      "render": "markdown_with_files",
+      "composer_max_retries": 3,
+      "prompt_token_budget": 16384,
+      "log_prompts": false,
+      "consolidation": false,
+      "token_ceiling": null,
+      "thinking": "off",
+      "thinking_by_step": {},
+      "log_thinking": null,
+      "thinking_log_dir": "runs/thinking",
+      "structured_output": "json_schema",
+      "structured_output_by_step": {}
+    }
+  },
+  "overrides": [
+    "options.structured_output=json_schema"
+  ],
+  "selection": {
+    "subset": "g3",
+    "prompt": null,
+    "domain": null
+  },
+  "runs_per_prompt": 1,
+  "jobs": 5,
+  "intermediates_dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b",
+  "caveat": "per-call and per-prompt wall seconds are inflated by concurrent jobs; use --jobs 1 for wall-time comparisons",
+  "intermediates": {
+    "files": 9,
+    "manifest_sha256": "52b2f3638bcbe92b20118f89cf305379e2db0456f3b27d5909de565c6d00caaa"
+  },
+  "commit": "7768432b1d414634e036c4ab158af9854ff8fe7d",
+  "dirty": false,
+  "commit_at_end": null,
+  "label": "smoke06b-b-json_schema",
+  "started_at": "20261025T050613Z",
+  "updated_at": "20261025T050727Z",
+  "results": [
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_c06_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 23.6,
+      "llm": {
+        "calls": 10,
+        "prompt_tokens": 57091,
+        "completion_tokens": 991,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 10
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 23.42,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 1.26,
+            "max_s": 2.41,
+            "prompt_tokens": 40805,
+            "completion_tokens": 215,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 3.48,
+            "max_s": 4.02,
+            "prompt_tokens": 8768,
+            "completion_tokens": 332,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 3.0,
+            "max_s": 3.0,
+            "prompt_tokens": 649,
+            "completion_tokens": 199,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 2.79,
+            "max_s": 3.24,
+            "prompt_tokens": 6869,
+            "completion_tokens": 245,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/1: Implement the LRUCache class with the required functionality": {
+            "count": 5,
+            "p50_s": 1.26,
+            "max_s": 2.41,
+            "prompt_tokens": 40805,
+            "completion_tokens": 215,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 3.0,
+            "max_s": 4.02,
+            "prompt_tokens": 9417,
+            "completion_tokens": 531,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/1: Implement the LRUCache class with the required functionality": {
+            "count": 2,
+            "p50_s": 2.79,
+            "max_s": 3.24,
+            "prompt_tokens": 6869,
+            "completion_tokens": 245,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'LRUCache', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": "c06",
+      "domain": "code",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: c06 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c13"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_c13_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 26.7,
+      "llm": {
+        "calls": 14,
+        "prompt_tokens": 71965,
+        "completion_tokens": 1099,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 14
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 26.49,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 1.43,
+            "max_s": 2.76,
+            "prompt_tokens": 40960,
+            "completion_tokens": 211,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 3.07,
+            "max_s": 3.29,
+            "prompt_tokens": 8865,
+            "completion_tokens": 260,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 1.87,
+            "max_s": 1.87,
+            "prompt_tokens": 720,
+            "completion_tokens": 118,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 6,
+            "p50_s": 1.26,
+            "max_s": 5.32,
+            "prompt_tokens": 21420,
+            "completion_tokens": 510,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/1: Implement TokenBucket class with rate, capacity, clock, refill, try_acquire, wait_time, and available methods": {
+            "count": 5,
+            "p50_s": 1.43,
+            "max_s": 2.76,
+            "prompt_tokens": 40960,
+            "completion_tokens": 211,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 2.85,
+            "max_s": 3.29,
+            "prompt_tokens": 9585,
+            "completion_tokens": 378,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/1: Implement TokenBucket class with rate, capacity, clock, refill, try_acquire, wait_time, and available methods": {
+            "count": 6,
+            "p50_s": 1.26,
+            "max_s": 5.32,
+            "prompt_tokens": 21420,
+            "completion_tokens": 510,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'token_bucket', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "c36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c36"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_c36_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 27.9,
+      "llm": {
+        "calls": 12,
+        "prompt_tokens": 80716,
+        "completion_tokens": 1119,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 12
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 27.79,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 1.45,
+            "max_s": 1.76,
+            "prompt_tokens": 47685,
+            "completion_tokens": 210,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 7.07,
+            "max_s": 7.07,
+            "prompt_tokens": 5696,
+            "completion_tokens": 363,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 4.66,
+            "max_s": 4.66,
+            "prompt_tokens": 2264,
+            "completion_tokens": 243,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 5,
+            "p50_s": 1.7,
+            "max_s": 3.24,
+            "prompt_tokens": 25071,
+            "completion_tokens": 303,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/4: Decompose the SQL syntax into tokens": {
+            "count": 5,
+            "p50_s": 1.45,
+            "max_s": 1.76,
+            "prompt_tokens": 47685,
+            "completion_tokens": 210,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 5.86,
+            "max_s": 7.07,
+            "prompt_tokens": 7960,
+            "completion_tokens": 606,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/4: Decompose the SQL syntax into tokens": {
+            "count": 5,
+            "p50_s": 1.7,
+            "max_s": 3.24,
+            "prompt_tokens": 25071,
+            "completion_tokens": 303,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'add_part', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "c47",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c47"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_c47_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 33.9,
+      "llm": {
+        "calls": 14,
+        "prompt_tokens": 90957,
+        "completion_tokens": 1448,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 14
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 33.69,
+        "by_kind": {
+          "compose": {
+            "count": 6,
+            "p50_s": 0.63,
+            "max_s": 2.04,
+            "prompt_tokens": 57885,
+            "completion_tokens": 255,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 6.12,
+            "max_s": 6.12,
+            "prompt_tokens": 5707,
+            "completion_tokens": 314,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 6.18,
+            "max_s": 6.18,
+            "prompt_tokens": 2226,
+            "completion_tokens": 307,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 5,
+            "p50_s": 1.31,
+            "max_s": 5.58,
+            "prompt_tokens": 24883,
+            "completion_tokens": 459,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 2.56,
+            "max_s": 2.56,
+            "prompt_tokens": 256,
+            "completion_tokens": 113,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 2.04,
+            "max_s": 2.04,
+            "prompt_tokens": 9290,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Outline pages": {
+            "count": 5,
+            "p50_s": 0.61,
+            "max_s": 1.6,
+            "prompt_tokens": 48595,
+            "completion_tokens": 236,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 6.15,
+            "max_s": 6.18,
+            "prompt_tokens": 7933,
+            "completion_tokens": 621,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research climate statistics for the site": {
+            "count": 2,
+            "p50_s": 1.07,
+            "max_s": 1.31,
+            "prompt_tokens": 9551,
+            "completion_tokens": 113,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Outline pages": {
+            "count": 3,
+            "p50_s": 4.36,
+            "max_s": 5.58,
+            "prompt_tokens": 15332,
+            "completion_tokens": 346,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 2.56,
+            "max_s": 2.56,
+            "prompt_tokens": 256,
+            "completion_tokens": 113,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'research-climate-...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r01",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_r01_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 24.6,
+      "llm": {
+        "calls": 12,
+        "prompt_tokens": 64173,
+        "completion_tokens": 1401,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 12
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 24.55,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 1.85,
+            "max_s": 2.65,
+            "prompt_tokens": 42565,
+            "completion_tokens": 541,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 6.14,
+            "max_s": 6.14,
+            "prompt_tokens": 4048,
+            "completion_tokens": 402,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 2.16,
+            "max_s": 2.16,
+            "prompt_tokens": 655,
+            "completion_tokens": 92,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 5,
+            "p50_s": 1.41,
+            "max_s": 1.89,
+            "prompt_tokens": 16905,
+            "completion_tokens": 366,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/4: Cost and Hosting": {
+            "count": 5,
+            "p50_s": 1.85,
+            "max_s": 2.65,
+            "prompt_tokens": 42565,
+            "completion_tokens": 541,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 4.15,
+            "max_s": 6.14,
+            "prompt_tokens": 4703,
+            "completion_tokens": 494,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/4: Cost and Hosting": {
+            "count": 5,
+            "p50_s": 1.41,
+            "max_s": 1.89,
+            "prompt_tokens": 16905,
+            "completion_tokens": 366,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(4 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Cost and Hosting'...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Searchability', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Review Culture', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Honest Drawback',...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r01f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": "r01",
+      "domain": "report",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: r01 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "r06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r06"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_r06_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 48.6,
+      "llm": {
+        "calls": 14,
+        "prompt_tokens": 88167,
+        "completion_tokens": 2329,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 14
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 48.49,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 2.06,
+            "max_s": 3.78,
+            "prompt_tokens": 48905,
+            "completion_tokens": 640,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 10.61,
+            "max_s": 10.61,
+            "prompt_tokens": 5185,
+            "completion_tokens": 555,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 3.37,
+            "max_s": 3.37,
+            "prompt_tokens": 1945,
+            "completion_tokens": 197,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 7,
+            "p50_s": 2.06,
+            "max_s": 10.95,
+            "prompt_tokens": 32132,
+            "completion_tokens": 937,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/5: Decide on the release date and the scope for 4.2": {
+            "count": 5,
+            "p50_s": 2.06,
+            "max_s": 3.78,
+            "prompt_tokens": 48905,
+            "completion_tokens": 640,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 6.99,
+            "max_s": 10.61,
+            "prompt_tokens": 7130,
+            "completion_tokens": 752,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/5: Decide on the release date and the scope for 4.2": {
+            "count": 7,
+            "p50_s": 2.06,
+            "max_s": 10.95,
+            "prompt_tokens": 32132,
+            "completion_tokens": 937,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(4 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Decide on the rel...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Implement time-zo...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Merge the regress...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Update the suppor...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r23",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r23"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_r23_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 38.4,
+      "llm": {
+        "calls": 9,
+        "prompt_tokens": 61585,
+        "completion_tokens": 2574,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 9
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 38.33,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 2.0,
+            "max_s": 2.72,
+            "prompt_tokens": 48595,
+            "completion_tokens": 1035,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 15.47,
+            "max_s": 15.47,
+            "prompt_tokens": 4429,
+            "completion_tokens": 778,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 7.67,
+            "max_s": 7.67,
+            "prompt_tokens": 1412,
+            "completion_tokens": 450,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 2.32,
+            "max_s": 3.22,
+            "prompt_tokens": 7149,
+            "completion_tokens": 311,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/8: Preconditions": {
+            "count": 5,
+            "p50_s": 2.0,
+            "max_s": 2.72,
+            "prompt_tokens": 48595,
+            "completion_tokens": 1035,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 11.57,
+            "max_s": 15.47,
+            "prompt_tokens": 5841,
+            "completion_tokens": 1228,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/8: Preconditions": {
+            "count": 2,
+            "p50_s": 2.32,
+            "max_s": 3.22,
+            "prompt_tokens": 7149,
+            "completion_tokens": 311,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(8 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Preconditions', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Set up the databa...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Prepare the backu...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Start the nightly...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.4.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Verify the backup...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.5.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Start the databas...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.6.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Verify the databa...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.7.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Ensure the applic...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    },
+    {
+      "prompt_id": "r36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r36"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T050613Z_smoke06b-b-json_schema_qwen3-0.6b/b_r36_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 47.2,
+      "llm": {
+        "calls": 12,
+        "prompt_tokens": 86023,
+        "completion_tokens": 5106,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 12
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 47.04,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 1.2,
+            "max_s": 1.92,
+            "prompt_tokens": 53240,
+            "completion_tokens": 1337,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 16.4,
+            "max_s": 16.4,
+            "prompt_tokens": 5034,
+            "completion_tokens": 908,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 11.56,
+            "max_s": 11.56,
+            "prompt_tokens": 2147,
+            "completion_tokens": 813,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 5,
+            "p50_s": 2.3,
+            "max_s": 4.78,
+            "prompt_tokens": 25602,
+            "completion_tokens": 2048,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/9: Overview and Goals": {
+            "count": 5,
+            "p50_s": 1.2,
+            "max_s": 1.92,
+            "prompt_tokens": 53240,
+            "completion_tokens": 1337,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 13.98,
+            "max_s": 16.4,
+            "prompt_tokens": 7181,
+            "completion_tokens": 1721,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/9: Overview and Goals": {
+            "count": 5,
+            "p50_s": 2.3,
+            "max_s": 4.78,
+            "prompt_tokens": 25602,
+            "completion_tokens": 2048,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "InstructorRetryException(9 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'overview', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'requirements', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'capacity_estimate...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'high_level_archit...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.4.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'location_ingestio...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.5.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'matching_and_disp...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.6.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'data_model_and_st...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.7.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'apis', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.8.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'rollout_plan', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+    }
+  ],
+  "summary": {
+    "b/code": {
+      "prompts": 5,
+      "errors": 5,
+      "completion_tokens_p50": null,
+      "prompt_tokens_p50": null,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": null,
+      "wall_seconds_sum": 0,
+      "calls_sum": 0,
+      "output_chars_p50": null,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    },
+    "b/report": {
+      "prompts": 5,
+      "errors": 5,
+      "completion_tokens_p50": null,
+      "prompt_tokens_p50": null,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": null,
+      "wall_seconds_sum": 0,
+      "calls_sum": 0,
+      "output_chars_p50": null,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    }
+  },
+  "arm_elapsed_seconds": {
+    "b": 73.9
+  },
+  "errors": [
+    "b c06 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'LRUCache', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b c06f r0: not run: c06 failed earlier in the chain",
+    "b c13 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'token_bucket', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b c36 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'add_part', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b c47 r0: InstructorRetryException(1 validation error for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'research-climate-...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b r06 r0: InstructorRetryException(4 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Decide on the rel...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Implement time-zo...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Merge the regress...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Update the suppor...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b r01 r0: InstructorRetryException(4 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Cost and Hosting'...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Searchability', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Review Culture', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Honest Drawback',...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b r01f r0: not run: r01 failed earlier in the chain",
+    "b r23 r0: InstructorRetryException(8 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Preconditions', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Set up the databa...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Prepare the backu...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Start the nightly...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.4.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Verify the backup...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.5.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Start the databas...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.6.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Verify the databa...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.7.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'Ensure the applic...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+    "b r36 r0: InstructorRetryException(9 validation errors for ComposerResponse\nops.0.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'overview', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.1.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'requirements', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.2.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'capacity_estimate...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.3.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'high_level_archit...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.4.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'location_ingestio...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.5.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'matching_and_disp...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.6.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'data_model_and_st...type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.7.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'apis', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error\nops.8.append_to_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'id': 'rollout_plan', 'type': 'append_to_part'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)"
+  ]
+}

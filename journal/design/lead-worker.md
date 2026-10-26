@@ -295,3 +295,19 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
 - 22:07Z, `journal/baseline/external_harness.py` (the driver) tested on flash-next, like-for-like, one run:
   - c01 12/16; c01f 23/28, continuing c01's session and directory; c13 13/13.
   - The test's run files were deleted. Full runs, both tiers, on the subset × 2, follow.
+- 22:55Z, the user's calls:
+  - **Four single-card gemma servers:** approved, for the next gemma block.
+  - **Proxy records cached tokens:** yes. The server must report them first (vLLM `--enable-prompt-tokens-details`;
+    flash-next's lane does not send `prompt_tokens_details` today). The proxy logs the usage block whole, and the
+    driver now totals `cached_prompt_tokens` when present.
+  - **The speed test, prioritising speed:** `journal/baseline/concurrency_bench.py` replays 24 of OpenCode's
+    recorded longest requests (512 output tokens each) at 3 and 6 concurrent, alternating, after a warm-up. The
+    real-world tier then runs at whichever is faster (`runs/small-models/oc_rest2.sh`).
+    - Rejected: a second hour-long OpenCode run at 3 for the comparison. Slow, and confounded by the turn mix.
+  - **No kill-test decision** ("it's making progress now").
+  - **The large run files** (75 files, 94 MB, none with third-party text) are committed as they are.
+- 22:45Z, vLLM counters, the agent:
+  - During OpenCode's like-for-like run the prefix cache hit about 95 % of prompt tokens (its prompts are
+    append-only: 58 of 59 consecutive calls), with no new preemptions. The 168 came from earlier runs.
+  - The likely bottleneck is generation over about 100K-token contexts, 6 at once. That is what the speed test
+    measures.

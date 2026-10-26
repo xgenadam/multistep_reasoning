@@ -1,0 +1,1039 @@
+{
+  "run_file": "journal/baseline/runs/20261025T075921Z_q02-s1-std-a2_flash-next.json",
+  "run_file_sha256": "1b1e11a86f0073cc29a2110753b5909b79d91a0d6528b65a917d69d91bed7a8e",
+  "bench": "journal/baseline/bench/v1-std",
+  "manifest_sha256": "a8941546a00af52b86435071c68d6875c72234917f6ae560085bebedae134fcd",
+  "commit": "eb5b1876a1cb6fd30549f0b386d7731018e9700e",
+  "dirty": false,
+  "isolation": "netns",
+  "timeout_s": 120,
+  "scored_at": "2026-10-25T13:02:18Z",
+  "references": {
+    "sc01": {
+      "n_tests": 6,
+      "passed": 6,
+      "source": "reference"
+    },
+    "sc03": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc05": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc06": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc07": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc08": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc09": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc10": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc11": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc12": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc13": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc15": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc16": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc17": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc18": {
+      "n_tests": 5,
+      "passed": 5,
+      "source": "reference"
+    },
+    "sc19": {
+      "n_tests": 7,
+      "passed": 7,
+      "source": "reference"
+    },
+    "sc20": {
+      "n_tests": 10,
+      "passed": 10,
+      "source": "reference"
+    },
+    "sc21": {
+      "n_tests": 12,
+      "passed": 12,
+      "source": "reference"
+    }
+  },
+  "skipped_unknown_prompts": [],
+  "results": [
+    {
+      "prompt_id": "sc01",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 6,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.217,
+        "exit_code": 0,
+        "outcomes": {
+          "test_task.TestCases::test_empty_directory": "passed",
+          "test_task.TestCases::test_exclusion_of_subdirectories": "passed",
+          "test_task.TestCases::test_file_integrity_in_zip": "passed",
+          "test_task.TestCases::test_multiple_files_zip": "passed",
+          "test_task.TestCases::test_non_existent_directory": "passed",
+          "test_task.TestCases::test_single_file_zip": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "......                                                                   [100%]\n6 passed in 0.02s\n"
+      },
+      "n_tests": 6,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "sc03",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 4,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.218,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_average_row_label": "passed",
+          "test_task.TestCases::test_averages_calculation": "failed",
+          "test_task.TestCases::test_file_content_rows": "passed",
+          "test_task.TestCases::test_file_creation": "passed",
+          "test_task.TestCases::test_header": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".F...                                                                    [100%]\n=================================== FAILURES ===================================\n_____________________ TestCases.test_averages_calculation ______________________\n\nself = <test_task.TestCases testMethod=test_averages_calculation>\n\n    def test_averages_calculation(self):\n        \"\"\"Test if the averages are calculated correctly.\"\"\"\n        random.seed(0)\n        self.filename = 'test_averages_calculation.csv'\n        path = task_func(self.filename)\n        with open(path, 'r') as file:\n            reader = csv.reader(file)\n            rows = list(reader)\n            ages, heights, weights = zip(*[(float(row[1]), float(row[2]), float(row[3])) for row in rows[1:-1]])\n            expected_averages = [mean(ages), mean(heights), mean(weights)]\n            actual_averages = [float(rows[-1][1]), float(rows[-1][2]), float(rows[-1][3])]\n>           self.assertEqual(actual_averages, expected_averages)\nE           AssertionError: Lists differ: [52.64, 181.37, 80.4] != [52.64, 181.37, 80.353]\nE           \nE           First differing element 2:\nE           80.4\nE           80.353\nE           \nE           - [52.64, 181.37, 80.4]\nE           ?                    ^\nE           \nE           + [52.64, 181.37, 80.353]\nE           ?                    ^^^\n\ntest_task.py:64: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_averages_calculation - AssertionError: L...\n1 failed, 4 passed in 0.04s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.8
+    },
+    {
+      "prompt_id": "sc05",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.267,
+        "exit_code": 0,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "passed",
+          "test_task.TestCases::test_case_2": "passed",
+          "test_task.TestCases::test_case_3": "passed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....                                                                    [100%]\n5 passed in 0.04s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "sc06",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 4,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.267,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_empty_extension": "passed",
+          "test_task.TestCases::test_exception_raised_when_dirs_do_not_exist": "passed",
+          "test_task.TestCases::test_move_no_files": "passed",
+          "test_task.TestCases::test_move_specified_extension_files": "failed",
+          "test_task.TestCases::test_no_files_moved_with_different_extension": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": " for '/fake/source/file1.txt'\n        with patch('os.path.exists') as mock_exists:\n            def side_effect(path):\n                if path in ('/fake/source', '/fake/destination'):\n                    return True  # Both source and destination directories exist\n                elif path == '/fake/destination/file1.txt':\n                    return True  # Simulate that 'file1.txt' exists in the destination directory\n                else:\n                    return False  # Other paths don't exist\n    \n            mock_exists.side_effect = side_effect\n            src_dir = '/fake/source'\n            dest_dir = '/fake/destination'\n            ext = 'txt'\n>           moved_files = task_func(src_dir, dest_dir, ext)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntest_task.py:75: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nsrc_dir = '/fake/source', dest_dir = '/fake/destination', ext = 'txt'\n\n    def task_func(src_dir, dest_dir, ext):\n        \"\"\"\n        Moves files with a specified extension from a source directory to a destination directory.\n    \n        Parameters:\n        src_dir (str): The source directory to search for files.\n        dest_dir (str): The destination directory to move files to.\n        ext (str): The file extension to filter files (e.g., '.txt' or 'txt').\n    \n        Returns:\n        list: A list of the full paths of files that were successfully moved.\n    \n        Raises:\n        FileNotFoundError: If either the source or destination directory does not exist.\n        \"\"\"\n        # Check if source and destination directories exist\n        if not os.path.isdir(src_dir):\n>           raise FileNotFoundError(f\"Source directory does not exist: {src_dir}\")\nE           FileNotFoundError: Source directory does not exist: /fake/source\n\ntask.py:22: FileNotFoundError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_move_specified_extension_files - FileNot...\n1 failed, 4 passed in 0.05s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.8
+    },
+    {
+      "prompt_id": "sc07",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 4,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.217,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_csv_file_creation": "passed",
+          "test_task.TestCases::test_csv_file_header": "passed",
+          "test_task.TestCases::test_csv_file_rows": "passed",
+          "test_task.TestCases::test_file_path_return": "failed",
+          "test_task.TestCases::test_no_hours_data": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "...F.                                                                    [100%]\n=================================== FAILURES ===================================\n_______________________ TestCases.test_file_path_return ________________________\n\nself = <test_task.TestCases testMethod=test_file_path_return>\n\n    def test_file_path_return(self):\n        \"\"\"Test if the correct file path is returned.\"\"\"\n        file_path = task_func(1)\n>       self.assertEqual(file_path, FILE_PATH)\nE       AssertionError: 1 != './output/sensor_data.csv'\n\ntest_task.py:61: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_file_path_return - AssertionError: 1 != ...\n1 failed, 4 passed in 0.03s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.8
+    },
+    {
+      "prompt_id": "sc08",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 3,
+        "failed": 2,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.318,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_backup_file_creation": "failed",
+          "test_task.TestCases::test_csv_writing": "passed",
+          "test_task.TestCases::test_task_func_checks_backup_directory_exists": "failed",
+          "test_task.TestCases::test_task_func_copies_to_backup_directory": "passed",
+          "test_task.TestCases::test_task_func_writes_correct_header": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "        return msg\n        expected = self._call_matcher(_Call((args, kwargs), two=True))\n        actual = self._call_matcher(self.call_args)\n        if actual != expected:\n            cause = expected if isinstance(expected, Exception) else None\n>           raise AssertionError(_error_message()) from cause\nE           AssertionError: expected call not found.\nE           Expected: copy('./output/weather_data.csv', './output/backup/')\nE             Actual: copy('./output/weather_data.csv', './output/backup/weather_data.csv')\n\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py:949: AssertionError\n___________ TestCases.test_task_func_checks_backup_directory_exists ____________\n\nself = <test_task.TestCases testMethod=test_task_func_checks_backup_directory_exists>\nmock_exists = <MagicMock name='exists' id='129760434511680'>\nmock_getcwd = <MagicMock name='getcwd' id='129760434175872'>\n\n    @patch('os.getcwd', return_value=OUTPUT_DIR)\n    @patch('os.path.exists', return_value=True)\n    def test_task_func_checks_backup_directory_exists(self, mock_exists, mock_getcwd):\n        \"\"\"Test checking for the existence of the backup directory.\"\"\"\n        task_func(1)\n        # Normalize paths to ensure consistency, especially regarding trailing slashes\n        expected_call_path = os.path.normpath(os.path.dirname(self.backup_file_path))\n        actual_call_path = os.path.normpath(mock_exists.call_args[0][0])\n>       self.assertEqual(expected_call_path, actual_call_path,\n                         f\"Expected {expected_call_path}, got {actual_call_path}\")\nE       AssertionError: 'output/backup' != 'output'\nE       - output/backup\nE       + output\nE        : Expected output/backup, got output\n\ntest_task.py:61: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_backup_file_creation - AssertionError: e...\nFAILED test_task.py::TestCases::test_task_func_checks_backup_directory_exists\n2 failed, 3 passed in 0.10s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.6
+    },
+    {
+      "prompt_id": "sc09",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 4,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_data_appending": "error",
+          "test_task.TestCases::test_file_content": "error",
+          "test_task.TestCases::test_file_existence": "error",
+          "test_task.TestCases::test_headers_only_once": "error",
+          "test_task.TestCases::test_return_value": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "TestCases testMethod=test_file_existence>\n\n    def test_file_existence(self):\n        # Ensure the file exists after function execution\n        task_func()\n>       self.assertTrue(os.path.isfile(self.file_path))\nE       AssertionError: False is not true\n\ntest_task.py:53: AssertionError\n_______________________ TestCases.test_headers_only_once _______________________\n\nself = <test_task.TestCases testMethod=test_headers_only_once>\n\n    def test_headers_only_once(self):\n        # Ensure headers are not duplicated\n        task_func()  # Run twice to potentially append headers again\n        task_func()\n>       with open(self.file_path, 'r') as f:\n             ^^^^^^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: 'task_func_data/Output.txt'\n\ntest_task.py:76: FileNotFoundError\n_________________________ TestCases.test_return_value __________________________\n\nself = <test_task.TestCases testMethod=test_return_value>\n\n    def tearDown(self):\n        \"\"\"Clean up after tests; remove the file and directory.\"\"\"\n>       os.remove(self.file_path)\nE       FileNotFoundError: [Errno 2] No such file or directory: 'task_func_data/Output.txt'\n\ntest_task.py:45: FileNotFoundError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_data_appending - FileNotFoundError: [Err...\nFAILED test_task.py::TestCases::test_file_content - FileNotFoundError: [Errno...\nFAILED test_task.py::TestCases::test_file_existence - AssertionError: False i...\nFAILED test_task.py::TestCases::test_headers_only_once - FileNotFoundError: [...\nFAILED test_task.py::TestCases::test_return_value - FileNotFoundError: [Errno...\nERROR test_task.py::TestCases::test_data_appending - FileNotFoundError: [Errn...\nERROR test_task.py::TestCases::test_file_content - FileNotFoundError: [Errno ...\nERROR test_task.py::TestCases::test_file_existence - FileNotFoundError: [Errn...\nERROR test_task.py::TestCases::test_headers_only_once - FileNotFoundError: [E...\n5 failed, 4 errors in 0.05s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "sc10",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 2,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.266,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_empty_dict": "passed",
+          "test_task.TestCases::test_files_do_not_exist": "passed",
+          "test_task.TestCases::test_files_with_content": "failed",
+          "test_task.TestCases::test_files_with_no_content": "failed",
+          "test_task.TestCases::test_mixed_case": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "_________________ TestCases.test_files_with_no_content _____________________\n\nself = <test_task.TestCases testMethod=test_files_with_no_content>\n\n    def test_files_with_no_content(self):\n        test_files = {'file1.txt': 'Hello', 'file2.txt': None}\n        for file, content in test_files.items():\n            with open(os.path.join(self.test_dir, file), 'w') as f:\n                if content:\n                    f.write(content)\n        full_paths = {os.path.join(self.test_dir, k): v for k, v in test_files.items()}\n        copied_files = task_func(full_paths, self.target_dir)\n        self.assertEqual(len(copied_files), 1)\n        self.assertTrue(os.path.isfile(copied_files[0]))\n>       self.assertTrue(copied_files[0].startswith(self.target_dir))\nE       AssertionError: False is not true\n\ntest_task.py:64: AssertionError\n__________________________ TestCases.test_mixed_case ___________________________\n\nself = <test_task.TestCases testMethod=test_mixed_case>\n\n    def test_mixed_case(self):\n        test_files = {'file1.txt': 'Hello', 'file2.txt': None, 'file3.txt': 'World'}\n        for file, content in test_files.items():\n            with open(os.path.join(self.test_dir, file), 'w') as f:\n                if content:\n                    f.write(content)\n        full_paths = {os.path.join(self.test_dir, k): v for k, v in test_files.items()}\n        copied_files = task_func(full_paths, self.target_dir)\n        self.assertEqual(len(copied_files), 2)\n        for copied in copied_files:\n            self.assertTrue(os.path.isfile(copied))\n>           self.assertTrue(copied.startswith(self.target_dir))\nE           AssertionError: False is not true\n\ntest_task.py:81: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_files_with_content - AssertionError: Fal...\nFAILED test_task.py::TestCases::test_files_with_no_content - AssertionError: ...\nFAILED test_task.py::TestCases::test_mixed_case - AssertionError: False is no...\n3 failed, 2 passed in 0.04s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.4
+    },
+    {
+      "prompt_id": "sc11",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 2,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.267,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_empty_directory": "passed",
+          "test_task.TestCases::test_exception_handling": "failed",
+          "test_task.TestCases::test_file_creation_and_content": "failed",
+          "test_task.TestCases::test_mixed_file_types": "failed",
+          "test_task.TestCases::test_non_matching_files": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "CSV content in the way csv.writer would write it\n            mock_csv_data = '\\r\\n'.join([','.join(row) for row in self.mock_csv_rows]) + '\\r\\n'\n            with patch('builtins.open', mock_open(read_data=mock_csv_data)) as mock_file:\n                result_files = task_func(self.directory)\n                expected_files = ['Shan.csv', 'Shannon.csv']\n>               self.assertListEqual(result_files, expected_files)\nE               AssertionError: Lists differ: [] != ['Shan.csv', 'Shannon.csv']\nE               \nE               Second list contains 2 additional elements.\nE               First extra element 0:\nE               'Shan.csv'\nE               \nE               - []\nE               + ['Shan.csv', 'Shannon.csv']\n\ntest_task.py:48: AssertionError\n_______________________ TestCases.test_mixed_file_types ________________________\n\nself = <test_task.TestCases testMethod=test_mixed_file_types>\n\n    def test_mixed_file_types(self):\n        with patch('os.listdir', return_value=['Shan-1.csv', 'test.txt', 'Shannon-2.pdf']):\n            mock_csv_data = '\\r\\n'.join([','.join(row) for row in self.mock_csv_rows]) + '\\r\\n'\n            with patch('builtins.open', mock_open(read_data=mock_csv_data)) as mock_file:\n                result_files = task_func(self.directory)\n                expected_files = ['Shan.csv']\n>               self.assertEqual(result_files, expected_files)\nE               AssertionError: Lists differ: [] != ['Shan.csv']\nE               \nE               Second list contains 1 additional elements.\nE               First extra element 0:\nE               'Shan.csv'\nE               \nE               - []\nE               + ['Shan.csv']\n\ntest_task.py:72: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_exception_handling - AssertionError: OSE...\nFAILED test_task.py::TestCases::test_file_creation_and_content - AssertionErr...\nFAILED test_task.py::TestCases::test_mixed_file_types - AssertionError: Lists...\n3 failed, 2 passed in 0.05s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.4
+    },
+    {
+      "prompt_id": "sc12",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "first_line_comment",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 1,
+        "failed": 4,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.366,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "failed",
+          "test_task.TestCases::test_case_2": "failed",
+          "test_task.TestCases::test_case_3": "failed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "ile_class = <MagicMock name='ZipFile' id='124919335629120'>\nmock_makedirs = <MagicMock name='makedirs' id='124919335625136'>\n\n    @patch('os.makedirs')\n    @patch('zipfile.ZipFile')\n    @patch('os.listdir')\n    def test_case_5(self, mock_listdir, mock_zipfile_class, mock_makedirs):\n        # Set up the expected filename and directory\n        test_dir = \"/fake/test_zip_dir\"\n        filename = 'test-456.zip'\n        mock_listdir.return_value = [filename]\n        expected_zip_path = os.path.join(test_dir, filename)\n        # Call the function with the test directory\n        task_func(test_dir)\n        # Assertions to ensure the ZipFile was handled correctly\n>       mock_zipfile_class.assert_called_once_with(expected_zip_path, 'r')\n\ntest_task.py:99: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <MagicMock name='ZipFile' id='124919335629120'>\nargs = ('/fake/test_zip_dir/test-456.zip', 'r'), kwargs = {}\n\n    def assert_called_once_with(self, /, *args, **kwargs):\n        \"\"\"assert that the mock was called exactly once and that that call was\n        with the specified arguments.\"\"\"\n        if not self.call_count == 1:\n            msg = (\"Expected '%s' to be called once. Called %s times.%s\"\n                   % (self._mock_name or 'mock',\n                      self.call_count,\n                      self._calls_repr()))\n>           raise AssertionError(msg)\nE           AssertionError: Expected 'ZipFile' to be called once. Called 0 times.\n\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py:960: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_case_1 - AssertionError: 'ZipFile' does ...\nFAILED test_task.py::TestCases::test_case_2 - AssertionError: Expected 'maked...\nFAILED test_task.py::TestCases::test_case_3 - AssertionError: Expected 'maked...\nFAILED test_task.py::TestCases::test_case_5 - AssertionError: Expected 'ZipFi...\n4 failed, 1 passed in 0.17s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.2
+    },
+    {
+      "prompt_id": "sc13",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 5,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.266,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "failed",
+          "test_task.TestCases::test_case_2": "failed",
+          "test_task.TestCases::test_case_3": "failed",
+          "test_task.TestCases::test_case_4": "failed",
+          "test_task.TestCases::test_case_5": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "t_task.py:65: AssertionError\n____________________________ TestCases.test_case_4 _____________________________\n\nself = <test_task.TestCases testMethod=test_case_4>\n\n    def test_case_4(self):\n        \"\"\"\n        Test Case 4:\n        Test with no existing CSV file and non-empty dictionaries.\n        Expected result: {'goals': 5, 'penalties': 3}\n        \"\"\"\n        goals = {'Team A': 2, 'Team B': 3}\n        penalties = {'Team A': 1, 'Team C': 2}\n        result = task_func(goals, penalties)\n        expected_result = {'goals': 5, 'penalties': 3}\n>       self.assertEqual(result, expected_result, \"Test Case 4 Failed\")\nE       AssertionError: Counter({'goals': {'Team A': 2, 'Team B':[41 chars] 2}}) != {'goals': 5, 'penalties': 3} : Test Case 4 Failed\n\ntest_task.py:76: AssertionError\n____________________________ TestCases.test_case_5 _____________________________\n\nself = <test_task.TestCases testMethod=test_case_5>\n\n    def test_case_5(self):\n        \"\"\"\n        Test Case 5:\n        Test with existing CSV file, non-empty dictionaries, and negative values.\n        \"\"\"\n        goals = {'Team A': -2, 'Team B': 3}\n        penalties = {'Team A': 1, 'Team C': -2}\n        result = task_func(goals, penalties)\n        expected_result = Counter({'goals': 1, 'penalties': -1})\n>       self.assertEqual(result, expected_result, \"Test Case 5 Failed\")\nE       AssertionError: Counter({'goals': {'Team A': -2, 'Team B': 3}, 'penalties':[25 chars]-2}}) != Counter({'goals': 1, 'penalties': -1}) : Test Case 5 Failed\n\ntest_task.py:86: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_case_1 - AssertionError: Counter({'goals...\nFAILED test_task.py::TestCases::test_case_2 - AssertionError: Counter({'goals...\nFAILED test_task.py::TestCases::test_case_3 - AssertionError: Counter({'goals...\nFAILED test_task.py::TestCases::test_case_4 - AssertionError: Counter({'goals...\nFAILED test_task.py::TestCases::test_case_5 - AssertionError: Counter({'goals...\n5 failed in 0.05s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "sc15",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "passed",
+          "test_task.TestCases::test_case_2": "passed",
+          "test_task.TestCases::test_case_3": "passed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....                                                                    [100%]\n5 passed in 0.01s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "sc16",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 2,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.266,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_all_extensions": "failed",
+          "test_task.TestCases::test_empty_source_directory": "failed",
+          "test_task.TestCases::test_exception_handling": "failed",
+          "test_task.TestCases::test_invalid_file_extensions": "passed",
+          "test_task.TestCases::test_successful_transfer": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "id='134167605887584'>\nmock_move = <MagicMock name='move' id='134167605891184'>\n\n    @patch('shutil.move')\n    @patch('glob.glob')\n    def test_empty_source_directory(self, mock_glob, mock_move):\n        mock_glob.return_value = []\n        transferred_files = task_func(self.source_dir, self.dest_dir, ['.txt', '.csv'])\n>       self.assertEqual(transferred_files, [])\nE       AssertionError: Lists differ: ['file1.txt', 'file2.csv'] != []\nE       \nE       First list contains 2 additional elements.\nE       First extra element 0:\nE       'file1.txt'\nE       \nE       - ['file1.txt', 'file2.csv']\nE       + []\n\ntest_task.py:64: AssertionError\n______________________ TestCases.test_exception_handling _______________________\n\nself = <test_task.TestCases testMethod=test_exception_handling>\nmock_glob = <MagicMock name='glob' id='134167605896608'>\nmock_move = <MagicMock name='move' id='134167605900928'>\n\n    @patch('shutil.move')\n    @patch('glob.glob')\n    def test_exception_handling(self, mock_glob, mock_move):\n        mock_glob.return_value = [os.path.join(self.source_dir, 'invalid file name.jpg')]\n        mock_move.side_effect = Exception(\"Permission denied\")\n        with warnings.catch_warnings(record=True) as w:\n            warnings.simplefilter(\"always\")\n            transferred_files = task_func(self.source_dir, self.dest_dir, ['.jpg'])\n>       self.assertEqual(transferred_files, [])\nE       AssertionError: Lists differ: ['file4.jpg', 'invalid file name.jpg'] != []\nE       \nE       First list contains 2 additional elements.\nE       First extra element 0:\nE       'file4.jpg'\nE       \nE       - ['file4.jpg', 'invalid file name.jpg']\nE       + []\n\ntest_task.py:79: AssertionError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_all_extensions - AssertionError: Lists d...\nFAILED test_task.py::TestCases::test_empty_source_directory - AssertionError:...\nFAILED test_task.py::TestCases::test_exception_handling - AssertionError: Lis...\n3 failed, 2 passed in 0.06s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 0.4
+    },
+    {
+      "prompt_id": "sc17",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "passed",
+          "test_task.TestCases::test_case_2": "passed",
+          "test_task.TestCases::test_case_3": "passed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....                                                                    [100%]\n5 passed in 0.02s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "sc18",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 5,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "passed",
+          "test_task.TestCases::test_case_2": "passed",
+          "test_task.TestCases::test_case_3": "passed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".....                                                                    [100%]\n5 passed in 0.01s\n"
+      },
+      "n_tests": 5,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "sc19",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "label_line",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 7,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 0,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "passed",
+          "test_task.TestCases::test_case_2": "passed",
+          "test_task.TestCases::test_case_3": "passed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "passed",
+          "test_task.TestCases::test_case_6": "passed",
+          "test_task.TestCases::test_case_7": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".......                                                                  [100%]\n7 passed in 0.04s\n"
+      },
+      "n_tests": 7,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "sc20",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "lone_python_block",
+            "block": 0,
+            "raw": ""
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 9,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 10,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_case_1": "passed",
+          "test_task.TestCases::test_case_10": "passed",
+          "test_task.TestCases::test_case_2": "passed",
+          "test_task.TestCases::test_case_3": "passed",
+          "test_task.TestCases::test_case_4": "passed",
+          "test_task.TestCases::test_case_5": "passed",
+          "test_task.TestCases::test_case_6": "passed",
+          "test_task.TestCases::test_case_7": "passed",
+          "test_task.TestCases::test_case_8": "passed",
+          "test_task.TestCases::test_case_9": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".........F                                                               [100%]\n=================================== FAILURES ===================================\n____________________________ TestCases.test_case_9 _____________________________\n\nself = <test_task.TestCases testMethod=test_case_9>\n\n    def test_case_9(self):\n        # Test that a non-directory path raises a ValueError.\n        with tempfile.NamedTemporaryFile() as tmpfile:\n            with self.assertRaises(ValueError):\n>               task_func(tmpfile.name)\n\ntest_task.py:110: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntask.py:28: in task_func\n    for item in dir_path.iterdir():\n                ^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def iterdir(self):\n        \"\"\"Yield path objects of the directory contents.\n    \n        The children are yielded in arbitrary order, and the\n        special entries '.' and '..' are not included.\n        \"\"\"\n>       for name in os.listdir(self):\n                    ^^^^^^^^^^^^^^^^\nE       NotADirectoryError: [Errno 20] Not a directory: '/tmp/hidden-tests-9cymi6ik/tmpilm5l3bc'\n\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py:1056: NotADirectoryError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_case_9 - NotADirectoryError: [Errno 20] ...\n1 failed, 9 passed in 0.06s\n"
+      },
+      "n_tests": 10,
+      "pass_rate": 0.9
+    },
+    {
+      "prompt_id": "sc21",
+      "arm": "a2",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "text",
+        "blocks": 1,
+        "files": {
+          "task.py": {
+            "rule": "first_line_comment",
+            "block": 0,
+            "raw": "task.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "unwrapped_markdown": false,
+        "extracted": [
+          "task.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 3,
+        "failed": 9,
+        "skipped": 0,
+        "errors": 0,
+        "total": 12,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_task.TestCases::test_deduplicate_predicates": "failed",
+          "test_task.TestCases::test_dir_is_dir": "failed",
+          "test_task.TestCases::test_dir_is_not_file": "failed",
+          "test_task.TestCases::test_empty_predicates": "passed",
+          "test_task.TestCases::test_file_is_file": "failed",
+          "test_task.TestCases::test_file_is_not_dir": "failed",
+          "test_task.TestCases::test_has_no_special_char": "failed",
+          "test_task.TestCases::test_has_numbers": "failed",
+          "test_task.TestCases::test_has_special_char": "failed",
+          "test_task.TestCases::test_invalid_predicates": "passed",
+          "test_task.TestCases::test_multiple_predicates": "failed",
+          "test_task.TestCases::test_nonexistent_directory_error": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "ises:\n            ValueError: If no valid predicates are provided.\n            FileNotFoundError: If the specified directory does not exist or is not a directory.\n        \"\"\"\n        # Check if directory exists and is a directory\n        path = Path(dir_path)\n        if not path.exists():\n            raise FileNotFoundError(f\"The specified directory does not exist: {dir_path}\")\n        if not path.is_dir():\n            raise FileNotFoundError(f\"The specified path is not a directory: {dir_path}\")\n    \n        # Filter out non-callable predicates and deduplicate based on identity (id)\n        # This handles cases where the exact same callable object is passed multiple times.\n        unique_predicates = []\n        seen_ids = set()\n        for pred in predicates:\n            if callable(pred):\n                pred_id = id(pred)\n                if pred_id not in seen_ids:\n                    seen_ids.add(pred_id)\n                    unique_predicates.append(pred)\n    \n        # Check if there are any valid predicates\n        if not unique_predicates:\n>           raise ValueError(\"No valid predicates are provided.\")\nE           ValueError: No valid predicates are provided.\n\ntask.py:42: ValueError\n=========================== short test summary info ============================\nFAILED test_task.py::TestCases::test_deduplicate_predicates - ValueError: No ...\nFAILED test_task.py::TestCases::test_dir_is_dir - ValueError: No valid predic...\nFAILED test_task.py::TestCases::test_dir_is_not_file - ValueError: No valid p...\nFAILED test_task.py::TestCases::test_file_is_file - ValueError: No valid pred...\nFAILED test_task.py::TestCases::test_file_is_not_dir - ValueError: No valid p...\nFAILED test_task.py::TestCases::test_has_no_special_char - ValueError: No val...\nFAILED test_task.py::TestCases::test_has_numbers - ValueError: No valid predi...\nFAILED test_task.py::TestCases::test_has_special_char - ValueError: No valid ...\nFAILED test_task.py::TestCases::test_multiple_predicates - ValueError: No val...\n9 failed, 3 passed in 0.07s\n"
+      },
+      "n_tests": 12,
+      "pass_rate": 0.25
+    }
+  ]
+}

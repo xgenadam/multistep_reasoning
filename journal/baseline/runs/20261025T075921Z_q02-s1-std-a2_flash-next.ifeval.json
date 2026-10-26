@@ -1,0 +1,420 @@
+{
+  "run_file": "journal/baseline/runs/20261025T075921Z_q02-s1-std-a2_flash-next.json",
+  "generator": "flash-next",
+  "checker": "google-research instruction_following_eval (bench/v1-std/ifeval_checker/SOURCE.md)",
+  "results": [
+    {
+      "prompt_id": "sr01",
+      "arm": "a2",
+      "run": 0,
+      "key": 2943,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "keywords:frequency": true,
+          "change_case:english_lowercase": true,
+          "length_constraints:number_paragraphs": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "keywords:frequency": true,
+          "change_case:english_lowercase": true,
+          "length_constraints:number_paragraphs": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr02",
+      "arm": "a2",
+      "run": 0,
+      "key": 3203,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "startend:end_checker": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "startend:end_checker": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr03",
+      "arm": "a2",
+      "run": 0,
+      "key": 334,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "startend:quotation": true,
+          "detectable_format:number_bullet_lists": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "startend:quotation": true,
+          "detectable_format:number_bullet_lists": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr04",
+      "arm": "a2",
+      "run": 0,
+      "key": 2292,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "keywords:frequency": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "keywords:frequency": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr05",
+      "arm": "a2",
+      "run": 0,
+      "key": 3710,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:number_highlighted_sections": true,
+          "detectable_format:title": true,
+          "detectable_content:postscript": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:number_highlighted_sections": true,
+          "detectable_format:title": true,
+          "detectable_content:postscript": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr06",
+      "arm": "a2",
+      "run": 0,
+      "key": 3565,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "keywords:forbidden_words": true,
+          "length_constraints:number_paragraphs": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "keywords:forbidden_words": true,
+          "length_constraints:number_paragraphs": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr07",
+      "arm": "a2",
+      "run": 0,
+      "key": 3091,
+      "error": null,
+      "strict": {
+        "all": false,
+        "per_instruction": {
+          "keywords:frequency": false
+        }
+      },
+      "loose": {
+        "all": false,
+        "per_instruction": {
+          "keywords:frequency": false
+        }
+      }
+    },
+    {
+      "prompt_id": "sr08",
+      "arm": "a2",
+      "run": 0,
+      "key": 2482,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "combination:repeat_prompt": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "combination:repeat_prompt": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr09",
+      "arm": "a2",
+      "run": 0,
+      "key": 3513,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "change_case:capital_word_frequency": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "change_case:capital_word_frequency": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr10",
+      "arm": "a2",
+      "run": 0,
+      "key": 2807,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:title": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:title": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr11",
+      "arm": "a2",
+      "run": 0,
+      "key": 2035,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:number_highlighted_sections": true,
+          "startend:quotation": true,
+          "length_constraints:number_sentences": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:number_highlighted_sections": true,
+          "startend:quotation": true,
+          "length_constraints:number_sentences": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr12",
+      "arm": "a2",
+      "run": 0,
+      "key": 3680,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "keywords:frequency": true,
+          "detectable_format:number_highlighted_sections": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "keywords:frequency": true,
+          "detectable_format:number_highlighted_sections": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr13",
+      "arm": "a2",
+      "run": 0,
+      "key": 1551,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:title": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "detectable_format:title": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr14",
+      "arm": "a2",
+      "run": 0,
+      "key": 2386,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "length_constraints:number_paragraphs": true,
+          "keywords:frequency": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "length_constraints:number_paragraphs": true,
+          "keywords:frequency": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr15",
+      "arm": "a2",
+      "run": 0,
+      "key": 1561,
+      "error": null,
+      "strict": {
+        "all": false,
+        "per_instruction": {
+          "combination:repeat_prompt": false,
+          "detectable_format:title": true
+        }
+      },
+      "loose": {
+        "all": false,
+        "per_instruction": {
+          "combination:repeat_prompt": false,
+          "detectable_format:title": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr16",
+      "arm": "a2",
+      "run": 0,
+      "key": 1259,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "language:response_language": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "language:response_language": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr17",
+      "arm": "a2",
+      "run": 0,
+      "key": 2247,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "change_case:english_capital": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "change_case:english_capital": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr18",
+      "arm": "a2",
+      "run": 0,
+      "key": 1593,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "change_case:english_lowercase": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "change_case:english_lowercase": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr19",
+      "arm": "a2",
+      "run": 0,
+      "key": 2532,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "startend:quotation": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "startend:quotation": true
+        }
+      }
+    },
+    {
+      "prompt_id": "sr20",
+      "arm": "a2",
+      "run": 0,
+      "key": 1281,
+      "error": null,
+      "strict": {
+        "all": true,
+        "per_instruction": {
+          "combination:repeat_prompt": true,
+          "keywords:existence": true
+        }
+      },
+      "loose": {
+        "all": true,
+        "per_instruction": {
+          "combination:repeat_prompt": true,
+          "keywords:existence": true
+        }
+      }
+    }
+  ],
+  "summary": {
+    "a2": {
+      "prompts": 20,
+      "prompt_level_strict": 0.9,
+      "instruction_level_strict": 0.9375,
+      "prompt_level_loose": 0.9,
+      "instruction_level_loose": 0.9375
+    }
+  }
+}

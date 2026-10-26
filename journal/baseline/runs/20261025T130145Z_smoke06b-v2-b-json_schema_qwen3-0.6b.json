@@ -1,0 +1,2014 @@
+{
+  "kind": "q-e1-arms",
+  "bench": "v1.1",
+  "bench_frozen": true,
+  "manifest_path": "journal/baseline/bench/v1/manifest.yaml",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "prompt_sha256": {
+    "c13": "3ece8935569d93c081bbf57535af52db0200e09f78b65905c3e18f41660c91fd",
+    "c36": "06f02a541ef312445c89cf5713081221b7d34f789e6751e9d301628a1e1ac65a",
+    "c47": "a5af187e9a431933d105fd4def7f8247a9e661d05b06668c7fb5bd780d3d85b7",
+    "c06": "67d9d89575aec2b278cb9c8e10f081233472607ffa067e922baccae9c0e7eaa9",
+    "c06f": "216962990d0bc87667bd12b5202c12a18376a711f31b848753d8bbcf674cd80a",
+    "r06": "47f92b39356e40f87ea0d72c3d330bf8a3dc0d9b01329b2d00626350aaf26e8e",
+    "r23": "afd1c5d58641fdf6e82d03cc61dc5606575fdcd588dfd9b4f9e69848ea05b5de",
+    "r36": "2441aa97296a8f17bdc2f93dc240e536375d0de3d8b7c539f101a24c50b71f29",
+    "r01": "e2cbe71699e8759db7e98a04a8a0d5adde428e9b654733d4faf586efc8e3d734",
+    "r01f": "ae4b9fca749b10d10826e7d932bb73c1c1213fb8f9cd6e10cd5eaf42cd5ec3f1"
+  },
+  "generator": "qwen3-0.6b",
+  "model": "qwen3-0.6b",
+  "backend": "http://localhost:8095/v1",
+  "served_models": [
+    "qwen3-0.6b"
+  ],
+  "arms": [
+    "b"
+  ],
+  "arm_names": {
+    "b": "(b) harness"
+  },
+  "refine_rounds": {},
+  "refine_budget": null,
+  "refine_cap": null,
+  "refine_min_rounds": null,
+  "continue_cap": 3,
+  "max_tokens": 8192,
+  "sampling": "server defaults (no temperature sent)",
+  "prompts_version": "arms-v1",
+  "prompts_sha256": "ab881e9b5c698b0cf7140ec1689512ae01fe4fc250304d37408b9f56ead2dda6",
+  "config": {
+    "components": {
+      "decomposer": "self_critique",
+      "executor": "oracle_loop",
+      "composer": "document",
+      "oracle": "document_oracle"
+    },
+    "options": {
+      "max_oracle_rounds": 8,
+      "summary_max_words": 400,
+      "render": "markdown_with_files",
+      "composer_max_retries": 3,
+      "prompt_token_budget": 16384,
+      "log_prompts": false,
+      "consolidation": false,
+      "token_ceiling": null,
+      "thinking": "off",
+      "thinking_by_step": {},
+      "log_thinking": null,
+      "thinking_log_dir": "runs/thinking",
+      "structured_output": "json_schema",
+      "structured_output_by_step": {}
+    }
+  },
+  "overrides": [
+    "options.structured_output=json_schema"
+  ],
+  "selection": {
+    "subset": "g3",
+    "prompt": null,
+    "domain": null
+  },
+  "runs_per_prompt": 1,
+  "jobs": 5,
+  "intermediates_dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b",
+  "caveat": "per-call and per-prompt wall seconds are inflated by concurrent jobs; use --jobs 1 for wall-time comparisons",
+  "intermediates": {
+    "files": 17,
+    "manifest_sha256": "bddb106792bd1644c259e175671f609da28991219101e1a3713281961ca65f99"
+  },
+  "commit": "eb5b1876a1cb6fd30549f0b386d7731018e9700e",
+  "dirty": false,
+  "commit_at_end": null,
+  "label": "smoke06b-v2-b-json_schema",
+  "started_at": "20261025T130145Z",
+  "updated_at": "20261025T130340Z",
+  "results": [
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_c06_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 47.5,
+      "llm": {
+        "calls": 7,
+        "prompt_tokens": 36456,
+        "completion_tokens": 2016,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 7
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 47.27,
+        "by_kind": {
+          "compose": {
+            "count": 3,
+            "p50_s": 8.23,
+            "max_s": 19.68,
+            "prompt_tokens": 23831,
+            "completion_tokens": 1375,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 2.2,
+            "max_s": 2.4,
+            "prompt_tokens": 8726,
+            "completion_tokens": 242,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 4.3,
+            "max_s": 4.3,
+            "prompt_tokens": 601,
+            "completion_tokens": 205,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 1,
+            "p50_s": 3.66,
+            "max_s": 3.66,
+            "prompt_tokens": 3298,
+            "completion_tokens": 194,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/1: Implement the LRUCache class": {
+            "count": 3,
+            "p50_s": 8.23,
+            "max_s": 19.68,
+            "prompt_tokens": 23831,
+            "completion_tokens": 1375,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 2.4,
+            "max_s": 4.3,
+            "prompt_tokens": 9327,
+            "completion_tokens": 447,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/1: Implement the LRUCache class": {
+            "count": 1,
+            "p50_s": 3.66,
+            "max_s": 3.66,
+            "prompt_tokens": 3298,
+            "completion_tokens": 194,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError(\"composer failed after 3 retries: sub-task result was not kept in part 'LRUCache'\")"
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c06",
+        "c06f"
+      ],
+      "follows": "c06",
+      "domain": "code",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: c06 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c13"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_c13_r0_t0",
+        "files": 3
+      },
+      "wall_seconds": 59.5,
+      "llm": {
+        "calls": 14,
+        "prompt_tokens": 72852,
+        "completion_tokens": 2764,
+        "streamed_calls": 3,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 14
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 59.07,
+        "by_kind": {
+          "compose": {
+            "count": 7,
+            "p50_s": 4.78,
+            "max_s": 10.81,
+            "prompt_tokens": 56504,
+            "completion_tokens": 1879,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 4.34,
+            "max_s": 4.34,
+            "prompt_tokens": 4385,
+            "completion_tokens": 254,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 0.74,
+            "max_s": 0.74,
+            "prompt_tokens": 844,
+            "completion_tokens": 41,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 3,
+            "p50_s": 2.74,
+            "max_s": 2.97,
+            "prompt_tokens": 10479,
+            "completion_tokens": 380,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 2,
+            "p50_s": 3.09,
+            "max_s": 3.34,
+            "prompt_tokens": 640,
+            "completion_tokens": 210,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research": {
+            "count": 3,
+            "p50_s": 9.14,
+            "max_s": 10.81,
+            "prompt_tokens": 23932,
+            "completion_tokens": 666,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Outline": {
+            "count": 1,
+            "p50_s": 1.93,
+            "max_s": 1.93,
+            "prompt_tokens": 8054,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 3/3: Draft": {
+            "count": 3,
+            "p50_s": 4.78,
+            "max_s": 9.52,
+            "prompt_tokens": 24518,
+            "completion_tokens": 1194,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 2.54,
+            "max_s": 4.34,
+            "prompt_tokens": 5229,
+            "completion_tokens": 295,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research": {
+            "count": 1,
+            "p50_s": 2.97,
+            "max_s": 2.97,
+            "prompt_tokens": 3389,
+            "completion_tokens": 153,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Outline": {
+            "count": 1,
+            "p50_s": 1.43,
+            "max_s": 1.43,
+            "prompt_tokens": 3515,
+            "completion_tokens": 64,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 3/3: Draft": {
+            "count": 1,
+            "p50_s": 2.74,
+            "max_s": 2.74,
+            "prompt_tokens": 3575,
+            "completion_tokens": 163,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Research": {
+            "count": 1,
+            "p50_s": 2.84,
+            "max_s": 2.84,
+            "prompt_tokens": 270,
+            "completion_tokens": 91,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 2/3: Outline": {
+            "count": 1,
+            "p50_s": 3.34,
+            "max_s": 3.34,
+            "prompt_tokens": 370,
+            "completion_tokens": 119,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError(\"composer failed after 3 retries: sub-task result was not kept in part 'ratelimit'\")"
+    },
+    {
+      "prompt_id": "c36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c36"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_c36_r0_t0",
+        "files": 4
+      },
+      "wall_seconds": 38.4,
+      "llm": {
+        "calls": 11,
+        "prompt_tokens": 51976,
+        "completion_tokens": 1409,
+        "streamed_calls": 4,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 11
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 38.14,
+        "by_kind": {
+          "compose": {
+            "count": 3,
+            "p50_s": 2.06,
+            "max_s": 2.56,
+            "prompt_tokens": 28300,
+            "completion_tokens": 57,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 5.57,
+            "max_s": 5.57,
+            "prompt_tokens": 5696,
+            "completion_tokens": 323,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 5.36,
+            "max_s": 5.36,
+            "prompt_tokens": 2224,
+            "completion_tokens": 243,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 3,
+            "p50_s": 2.73,
+            "max_s": 3.12,
+            "prompt_tokens": 14525,
+            "completion_tokens": 405,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 3,
+            "p50_s": 4.88,
+            "max_s": 5.11,
+            "prompt_tokens": 1231,
+            "completion_tokens": 381,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 2.06,
+            "max_s": 2.06,
+            "prompt_tokens": 9342,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Outline pages": {
+            "count": 1,
+            "p50_s": 1.38,
+            "max_s": 1.38,
+            "prompt_tokens": 9466,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 3/3: Draft homepage copy": {
+            "count": 1,
+            "p50_s": 2.56,
+            "max_s": 2.56,
+            "prompt_tokens": 9492,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 5.46,
+            "max_s": 5.57,
+            "prompt_tokens": 7920,
+            "completion_tokens": 566,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 3.12,
+            "max_s": 3.12,
+            "prompt_tokens": 4712,
+            "completion_tokens": 145,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Outline pages": {
+            "count": 1,
+            "p50_s": 2.39,
+            "max_s": 2.39,
+            "prompt_tokens": 4892,
+            "completion_tokens": 129,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 3/3: Draft homepage copy": {
+            "count": 1,
+            "p50_s": 2.73,
+            "max_s": 2.73,
+            "prompt_tokens": 4921,
+            "completion_tokens": 131,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 4.88,
+            "max_s": 4.88,
+            "prompt_tokens": 352,
+            "completion_tokens": 132,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 2/3: Outline pages": {
+            "count": 1,
+            "p50_s": 5.11,
+            "max_s": 5.11,
+            "prompt_tokens": 425,
+            "completion_tokens": 124,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 3/3: Draft homepage copy": {
+            "count": 1,
+            "p50_s": 2.98,
+            "max_s": 2.98,
+            "prompt_tokens": 454,
+            "completion_tokens": 125,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [
+        {
+          "index": 1,
+          "kind": "decompose",
+          "stream": false,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 5.565975396995782,
+          "first_token_s": 5.565975396995782,
+          "chunks": 1,
+          "prompt_tokens": 5696,
+          "completion_tokens": 323,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Initial decomposition (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 9,
+          "kind": "decompose_critique",
+          "stream": true,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 5.360622151994903,
+          "first_token_s": 1.0529128259950085,
+          "chunks": 242,
+          "prompt_tokens": 2224,
+          "completion_tokens": 243,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Critique decomposition",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 15,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 1/3: Research climate statistics for the site",
+          "seconds": 3.1195627490014886,
+          "first_token_s": 3.1195627490014886,
+          "chunks": 1,
+          "prompt_tokens": 4712,
+          "completion_tokens": 145,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Execute Research climate statistics for the site (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 18,
+          "kind": "compose",
+          "stream": false,
+          "phase": "Composing after 1/3: Research climate statistics for the site",
+          "seconds": 2.0564532069984125,
+          "first_token_s": 2.0564532069984125,
+          "chunks": 1,
+          "prompt_tokens": 9342,
+          "completion_tokens": 19,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Compose document ops (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 20,
+          "kind": "summary",
+          "stream": true,
+          "phase": "Updating summary after 1/3: Research climate statistics for the site",
+          "seconds": 4.881966095003008,
+          "first_token_s": 0.7623123110024608,
+          "chunks": 134,
+          "prompt_tokens": 352,
+          "completion_tokens": 132,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Rolling summary",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 25,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 2/3: Outline pages",
+          "seconds": 2.386592668997764,
+          "first_token_s": 2.386592668997764,
+          "chunks": 1,
+          "prompt_tokens": 4892,
+          "completion_tokens": 129,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Execute Outline pages (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 28,
+          "kind": "compose",
+          "stream": false,
+          "phase": "Composing after 2/3: Outline pages",
+          "seconds": 1.3828602270004922,
+          "first_token_s": 1.3828602270004922,
+          "chunks": 1,
+          "prompt_tokens": 9466,
+          "completion_tokens": 19,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Compose document ops (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 29,
+          "kind": "summary",
+          "stream": true,
+          "phase": "Updating summary after 2/3: Outline pages",
+          "seconds": 5.105950014003611,
+          "first_token_s": 0.7396919809980318,
+          "chunks": 126,
+          "prompt_tokens": 425,
+          "completion_tokens": 124,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Rolling summary",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 35,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 3/3: Draft homepage copy",
+          "seconds": 2.7347783540026285,
+          "first_token_s": 2.7347783540026285,
+          "chunks": 1,
+          "prompt_tokens": 4921,
+          "completion_tokens": 131,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Execute Draft homepage copy (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 41,
+          "kind": "compose",
+          "stream": false,
+          "phase": "Composing after 3/3: Draft homepage copy",
+          "seconds": 2.562621691999084,
+          "first_token_s": 2.562621691999084,
+          "chunks": 1,
+          "prompt_tokens": 9492,
+          "completion_tokens": 19,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Compose document ops (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 43,
+          "kind": "summary",
+          "stream": true,
+          "phase": "Updating summary after 3/3: Draft homepage copy",
+          "seconds": 2.9817108460047166,
+          "first_token_s": 0.7533129080038634,
+          "chunks": 127,
+          "prompt_tokens": 454,
+          "completion_tokens": 125,
+          "finish_reason": "stop",
+          "turn": "b:c36#r0:t0",
+          "step": "Rolling summary",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        }
+      ],
+      "document": {
+        "part_count": 3,
+        "part_kinds": {
+          "section": 3
+        },
+        "body_h2_headings": 0,
+        "part_titles": [
+          "Research climate statistics for the site",
+          "Outline pages",
+          "Draft homepage copy"
+        ],
+        "summary_chars": 686,
+        "content_chars": 667,
+        "top_dup_pairs": [
+          {
+            "a": "outline-pages",
+            "b": "draft-homepage-copy",
+            "jaccard": 0.583
+          },
+          {
+            "a": "research-climate-statistics-for-the-site",
+            "b": "outline-pages",
+            "jaccard": 0.0
+          },
+          {
+            "a": "research-climate-statistics-for-the-site",
+            "b": "draft-homepage-copy",
+            "jaccard": 0.0
+          }
+        ],
+        "max_dup_jaccard": 0.583,
+        "op_counts": {
+          "add_part": 3
+        },
+        "turn_op_counts": {
+          "add_part": 3
+        },
+        "non_empty": true
+      },
+      "sub_tasks": {
+        "exec_entries": 3,
+        "exec_status_counts": {
+          "completed": 3
+        },
+        "sub_task_statuses": [
+          "completed",
+          "completed",
+          "completed"
+        ],
+        "final_sub_task_count": 3,
+        "completion_tokens": 1581,
+        "estimated_calls": 4,
+        "token_ceiling": null,
+        "json_calls": {
+          "decompose": {
+            "mode": "json_schema",
+            "calls": 1,
+            "attempts": 1,
+            "failed": 0
+          },
+          "executor_turn": {
+            "mode": "json_schema",
+            "calls": 3,
+            "attempts": 3,
+            "failed": 0
+          },
+          "compose": {
+            "mode": "json_schema",
+            "calls": 3,
+            "attempts": 3,
+            "failed": 0
+          }
+        }
+      },
+      "output": {
+        "text": "## Research climate statistics for the site\n\n[\n  {\n    \"name\": \"ListPartsTool\",\n    \"tool_calls\": [],\n    \"thinking\": null,\n    \"tool_calls\": [],\n    \"result\": []\n  },\n  {\n    \"name\": \"ReadPartTool\",\n    \"tool_calls\": [],\n    \"thinking\": null,\n    \"tool_calls\": [],\n    \"result\": []\n  },\n  {\n    \"name\": \"SummaryTool\",\n    \"tool_calls\": [],\n    \"thinking\": null,\n    \"result\": []\n  }\n\n## Outline pages\n\n{\n  \"research-climate-statistics-for-the-site\": {\n    \"kind\": \"section\",\n    \"title\": \"Research climate statistics for the site\",\n    \"char_count\": 338\n  }\n}\n\n## Draft homepage copy\n\n{ \"research-climate-statistics-for-the-site\": { \"id\": \"research-climate-statistics-for-the-site\", \"kind\": \"section\", \"title\": \"Research climate statistics for the site\" } }",
+        "snapshot": {
+          "title": null,
+          "parts": [
+            {
+              "id": "research-climate-statistics-for-the-site",
+              "kind": "section",
+              "title": "Research climate statistics for the site",
+              "body": "[\n  {\n    \"name\": \"ListPartsTool\",\n    \"tool_calls\": [],\n    \"thinking\": null,\n    \"tool_calls\": [],\n    \"result\": []\n  },\n  {\n    \"name\": \"ReadPartTool\",\n    \"tool_calls\": [],\n    \"thinking\": null,\n    \"tool_calls\": [],\n    \"result\": []\n  },\n  {\n    \"name\": \"SummaryTool\",\n    \"tool_calls\": [],\n    \"thinking\": null,\n    \"result\": []\n  }",
+              "origin_task": "Research climate statistics for the site"
+            },
+            {
+              "id": "outline-pages",
+              "kind": "section",
+              "title": "Outline pages",
+              "body": "{\n  \"research-climate-statistics-for-the-site\": {\n    \"kind\": \"section\",\n    \"title\": \"Research climate statistics for the site\",\n    \"char_count\": 338\n  }\n}",
+              "origin_task": "Outline pages"
+            },
+            {
+              "id": "draft-homepage-copy",
+              "kind": "section",
+              "title": "Draft homepage copy",
+              "body": "{ \"research-climate-statistics-for-the-site\": { \"id\": \"research-climate-statistics-for-the-site\", \"kind\": \"section\", \"title\": \"Research climate statistics for the site\" } }",
+              "origin_task": "Draft homepage copy"
+            }
+          ],
+          "summary": "The document now contains a research section titled \"Research climate statistics for the site,\" with three sub-tasks applied: a ListPartsTool, a ReadPartTool, and a SummaryTool, which have been executed successfully. The research section includes comprehensive information about climate statistics for a specific site, detailing the process of collecting and analyzing data, and highlighting the importance of accurate statistics for decision-making. The content covers the findings from the sub-tasks, ensuring a thorough understanding of the topic. The summary is concise, covering the key aspects of the research, and is designed to provide clarity and relevance to the user's needs.",
+          "render_mode": "markdown_with_files",
+          "op_log_len": 3
+        },
+        "chars": 758
+      },
+      "error": null
+    },
+    {
+      "prompt_id": "c47",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "c47"
+      ],
+      "follows": null,
+      "domain": "code",
+      "stratum": "code-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_c47_r0_t0",
+        "files": 3
+      },
+      "wall_seconds": 30.4,
+      "llm": {
+        "calls": 9,
+        "prompt_tokens": 42563,
+        "completion_tokens": 1132,
+        "streamed_calls": 3,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 9
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 30.07,
+        "by_kind": {
+          "compose": {
+            "count": 2,
+            "p50_s": 1.65,
+            "max_s": 2.05,
+            "prompt_tokens": 18561,
+            "completion_tokens": 38,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 2,
+            "p50_s": 4.21,
+            "max_s": 5.09,
+            "prompt_tokens": 11795,
+            "completion_tokens": 386,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 6.77,
+            "max_s": 6.77,
+            "prompt_tokens": 2105,
+            "completion_tokens": 341,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 3.22,
+            "max_s": 3.66,
+            "prompt_tokens": 9531,
+            "completion_tokens": 209,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 2,
+            "p50_s": 2.56,
+            "max_s": 3.42,
+            "prompt_tokens": 571,
+            "completion_tokens": 158,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/2: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 2.05,
+            "max_s": 2.05,
+            "prompt_tokens": 9218,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/2: Outline pages": {
+            "count": 1,
+            "p50_s": 1.25,
+            "max_s": 1.25,
+            "prompt_tokens": 9343,
+            "completion_tokens": 19,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 3,
+            "p50_s": 5.09,
+            "max_s": 6.77,
+            "prompt_tokens": 13900,
+            "completion_tokens": 727,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/2: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 2.79,
+            "max_s": 2.79,
+            "prompt_tokens": 4713,
+            "completion_tokens": 95,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/2: Outline pages": {
+            "count": 1,
+            "p50_s": 3.66,
+            "max_s": 3.66,
+            "prompt_tokens": 4818,
+            "completion_tokens": 114,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/2: Research climate statistics for the site": {
+            "count": 1,
+            "p50_s": 1.71,
+            "max_s": 1.71,
+            "prompt_tokens": 231,
+            "completion_tokens": 57,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 2/2: Outline pages": {
+            "count": 1,
+            "p50_s": 3.42,
+            "max_s": 3.42,
+            "prompt_tokens": 340,
+            "completion_tokens": 101,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [
+        {
+          "index": 2,
+          "kind": "decompose",
+          "stream": false,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 3.3362843280046945,
+          "first_token_s": 3.3362843280046945,
+          "chunks": 1,
+          "prompt_tokens": 5707,
+          "completion_tokens": 193,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Initial decomposition (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 6,
+          "kind": "decompose_critique",
+          "stream": true,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 6.7746223810027,
+          "first_token_s": 0.5839375229988946,
+          "chunks": 343,
+          "prompt_tokens": 2105,
+          "completion_tokens": 341,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Critique decomposition",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 14,
+          "kind": "decompose",
+          "stream": false,
+          "phase": "Decomposing the request into sub-tasks\u2026",
+          "seconds": 5.086870080995141,
+          "first_token_s": 5.086870080995141,
+          "chunks": 1,
+          "prompt_tokens": 6088,
+          "completion_tokens": 193,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Regenerate decomposition (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 19,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 1/2: Research climate statistics for the site",
+          "seconds": 2.7863657150010113,
+          "first_token_s": 2.7863657150010113,
+          "chunks": 1,
+          "prompt_tokens": 4713,
+          "completion_tokens": 95,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Execute Research climate statistics for the site (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 23,
+          "kind": "compose",
+          "stream": false,
+          "phase": "Composing after 1/2: Research climate statistics for the site",
+          "seconds": 2.0462268340052105,
+          "first_token_s": 2.0462268340052105,
+          "chunks": 1,
+          "prompt_tokens": 9218,
+          "completion_tokens": 19,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Compose document ops (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 24,
+          "kind": "summary",
+          "stream": true,
+          "phase": "Updating summary after 1/2: Research climate statistics for the site",
+          "seconds": 1.706175061997783,
+          "first_token_s": 0.7281027819990413,
+          "chunks": 59,
+          "prompt_tokens": 231,
+          "completion_tokens": 57,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Rolling summary",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 26,
+          "kind": "executor_turn",
+          "stream": false,
+          "phase": "Executing 2/2: Outline pages",
+          "seconds": 3.6634887399995932,
+          "first_token_s": 3.6634887399995932,
+          "chunks": 1,
+          "prompt_tokens": 4818,
+          "completion_tokens": 114,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Execute Outline pages (turn 1)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 30,
+          "kind": "compose",
+          "stream": false,
+          "phase": "Composing after 2/2: Outline pages",
+          "seconds": 1.250206825992791,
+          "first_token_s": 1.250206825992791,
+          "chunks": 1,
+          "prompt_tokens": 9343,
+          "completion_tokens": 19,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Compose document ops (JSON)",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        },
+        {
+          "index": 31,
+          "kind": "summary",
+          "stream": true,
+          "phase": "Updating summary after 2/2: Outline pages",
+          "seconds": 3.4190397829952417,
+          "first_token_s": 0.7434381169950939,
+          "chunks": 103,
+          "prompt_tokens": 340,
+          "completion_tokens": 101,
+          "finish_reason": "stop",
+          "turn": "b:c47#r0:t0",
+          "step": "Rolling summary",
+          "label_source": "phase",
+          "usage_reported": true,
+          "error": null,
+          "thinking": false,
+          "reasoning_tokens": null,
+          "reasoning_chars": 0,
+          "reasoning_excerpt": ""
+        }
+      ],
+      "document": {
+        "part_count": 2,
+        "part_kinds": {
+          "section": 2
+        },
+        "body_h2_headings": 0,
+        "part_titles": [
+          "Research climate statistics for the site",
+          "Outline pages"
+        ],
+        "summary_chars": 565,
+        "content_chars": 206,
+        "top_dup_pairs": [
+          {
+            "a": "research-climate-statistics-for-the-site",
+            "b": "outline-pages",
+            "jaccard": 0.0
+          }
+        ],
+        "max_dup_jaccard": 0.0,
+        "op_counts": {
+          "add_part": 2
+        },
+        "turn_op_counts": {
+          "add_part": 2
+        },
+        "non_empty": true
+      },
+      "sub_tasks": {
+        "exec_entries": 2,
+        "exec_status_counts": {
+          "completed": 2
+        },
+        "sub_task_statuses": [
+          "completed",
+          "completed"
+        ],
+        "final_sub_task_count": 2,
+        "completion_tokens": 1212,
+        "estimated_calls": 3,
+        "token_ceiling": null,
+        "json_calls": {
+          "decompose": {
+            "mode": "json_schema",
+            "calls": 2,
+            "attempts": 2,
+            "failed": 0
+          },
+          "executor_turn": {
+            "mode": "json_schema",
+            "calls": 2,
+            "attempts": 2,
+            "failed": 0
+          },
+          "compose": {
+            "mode": "json_schema",
+            "calls": 2,
+            "attempts": 2,
+            "failed": 0
+          }
+        }
+      },
+      "output": {
+        "text": "## Research climate statistics for the site\n\n[{\"name\":\"ListPartsTool\", \"parts\":[]}]\n\n## Outline pages\n\n{\"research-climate-statistics-for-the-site\": {\"id\": \"research-climate-statistics-for-the-site\", \"kind\": \"section\", \"title\": \"Research climate statistics for the site\"}}",
+        "snapshot": {
+          "title": null,
+          "parts": [
+            {
+              "id": "research-climate-statistics-for-the-site",
+              "kind": "section",
+              "title": "Research climate statistics for the site",
+              "body": "[{\"name\":\"ListPartsTool\", \"parts\":[]}]",
+              "origin_task": "Research climate statistics for the site"
+            },
+            {
+              "id": "outline-pages",
+              "kind": "section",
+              "title": "Outline pages",
+              "body": "{\"research-climate-statistics-for-the-site\": {\"id\": \"research-climate-statistics-for-the-site\", \"kind\": \"section\", \"title\": \"Research climate statistics for the site\"}}",
+              "origin_task": "Outline pages"
+            }
+          ],
+          "summary": "The document now contains two sections: \"Research climate statistics for the site\" and \"Outline pages\". The first section details the research on climate data for the site, outlining the use of the \"ListPartsTool\" tool to gather and organize relevant information. It provides a foundation for further analysis and reporting. The second section includes an outline of the document, which serves as a structure for future content development. Together, these sections form a comprehensive outline that supports the research and analysis related to climate statistics.",
+          "render_mode": "markdown_with_files",
+          "op_log_len": 2
+        },
+        "chars": 271
+      },
+      "error": null
+    },
+    {
+      "prompt_id": "r01",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_r01_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 22.0,
+      "llm": {
+        "calls": 6,
+        "prompt_tokens": 30957,
+        "completion_tokens": 1467,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 6
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 21.83,
+        "by_kind": {
+          "compose": {
+            "count": 3,
+            "p50_s": 3.77,
+            "max_s": 4.21,
+            "prompt_tokens": 23177,
+            "completion_tokens": 850,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 6.63,
+            "max_s": 6.63,
+            "prompt_tokens": 4048,
+            "completion_tokens": 415,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 1.05,
+            "max_s": 1.05,
+            "prompt_tokens": 668,
+            "completion_tokens": 62,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 1,
+            "p50_s": 2.41,
+            "max_s": 2.41,
+            "prompt_tokens": 3064,
+            "completion_tokens": 140,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/4: Cost and Hosting": {
+            "count": 3,
+            "p50_s": 3.77,
+            "max_s": 4.21,
+            "prompt_tokens": 23177,
+            "completion_tokens": 850,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 3.84,
+            "max_s": 6.63,
+            "prompt_tokens": 4716,
+            "completion_tokens": 477,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/4: Cost and Hosting": {
+            "count": 1,
+            "p50_s": 2.41,
+            "max_s": 2.41,
+            "prompt_tokens": 3064,
+            "completion_tokens": 140,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError(\"composer failed after 3 retries: sub-task result was not kept in part 'Searchability'\")"
+    },
+    {
+      "prompt_id": "r01f",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r01",
+        "r01f"
+      ],
+      "follows": "r01",
+      "domain": "report",
+      "wall_seconds": 0.0,
+      "llm": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "streamed_calls": 0,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {},
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 0,
+        "by_kind": {},
+        "by_phase": {}
+      },
+      "calls": [],
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "not run: r01 failed earlier in the chain"
+    },
+    {
+      "prompt_id": "r06",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r06"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_r06_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 44.1,
+      "llm": {
+        "calls": 10,
+        "prompt_tokens": 61306,
+        "completion_tokens": 1764,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 10
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 43.72,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 3.03,
+            "max_s": 6.14,
+            "prompt_tokens": 45348,
+            "completion_tokens": 691,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 6.06,
+            "max_s": 6.06,
+            "prompt_tokens": 5185,
+            "completion_tokens": 316,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 7.23,
+            "max_s": 7.23,
+            "prompt_tokens": 1706,
+            "completion_tokens": 369,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 4.66,
+            "max_s": 4.7,
+            "prompt_tokens": 8626,
+            "completion_tokens": 257,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 2.94,
+            "max_s": 2.94,
+            "prompt_tokens": 441,
+            "completion_tokens": 131,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/3: Decisions": {
+            "count": 2,
+            "p50_s": 5.45,
+            "max_s": 6.14,
+            "prompt_tokens": 17758,
+            "completion_tokens": 282,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/3: Action items": {
+            "count": 3,
+            "p50_s": 2.66,
+            "max_s": 3.03,
+            "prompt_tokens": 27590,
+            "completion_tokens": 409,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 6.65,
+            "max_s": 7.23,
+            "prompt_tokens": 6891,
+            "completion_tokens": 685,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/3: Decisions": {
+            "count": 1,
+            "p50_s": 4.7,
+            "max_s": 4.7,
+            "prompt_tokens": 4220,
+            "completion_tokens": 147,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/3: Action items": {
+            "count": 1,
+            "p50_s": 4.62,
+            "max_s": 4.62,
+            "prompt_tokens": 4406,
+            "completion_tokens": 110,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/3: Decisions": {
+            "count": 1,
+            "p50_s": 2.94,
+            "max_s": 2.94,
+            "prompt_tokens": 441,
+            "completion_tokens": 131,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: 4.2_release_date')"
+    },
+    {
+      "prompt_id": "r23",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r23"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-short",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_r23_r0_t0",
+        "files": 2
+      },
+      "wall_seconds": 58.3,
+      "llm": {
+        "calls": 11,
+        "prompt_tokens": 60559,
+        "completion_tokens": 4571,
+        "streamed_calls": 2,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 11
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 57.97,
+        "by_kind": {
+          "compose": {
+            "count": 5,
+            "p50_s": 3.28,
+            "max_s": 7.09,
+            "prompt_tokens": 43475,
+            "completion_tokens": 2154,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 17.19,
+            "max_s": 17.19,
+            "prompt_tokens": 4429,
+            "completion_tokens": 883,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 7.61,
+            "max_s": 7.61,
+            "prompt_tokens": 1517,
+            "completion_tokens": 425,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 3,
+            "p50_s": 0.61,
+            "max_s": 9.54,
+            "prompt_tokens": 10828,
+            "completion_tokens": 998,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "summary": {
+            "count": 1,
+            "p50_s": 1.6,
+            "max_s": 1.6,
+            "prompt_tokens": 310,
+            "completion_tokens": 111,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/9: Preconditions": {
+            "count": 2,
+            "p50_s": 2.49,
+            "max_s": 3.28,
+            "prompt_tokens": 16594,
+            "completion_tokens": 357,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Composing after 2/9: Verify PostgreSQL Service Status": {
+            "count": 3,
+            "p50_s": 6.98,
+            "max_s": 7.09,
+            "prompt_tokens": 26881,
+            "completion_tokens": 1797,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 12.4,
+            "max_s": 17.19,
+            "prompt_tokens": 5946,
+            "completion_tokens": 1308,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/9: Preconditions": {
+            "count": 1,
+            "p50_s": 9.54,
+            "max_s": 9.54,
+            "prompt_tokens": 3439,
+            "completion_tokens": 788,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 2/9: Verify PostgreSQL Service Status": {
+            "count": 2,
+            "p50_s": 0.61,
+            "max_s": 0.61,
+            "prompt_tokens": 7389,
+            "completion_tokens": 210,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Updating summary after 1/9: Preconditions": {
+            "count": 1,
+            "p50_s": 1.6,
+            "max_s": 1.6,
+            "prompt_tokens": 310,
+            "completion_tokens": 111,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: part id already exists: app-01')"
+    },
+    {
+      "prompt_id": "r36",
+      "arm": "b",
+      "run": 0,
+      "chain": [
+        "r36"
+      ],
+      "follows": null,
+      "domain": "report",
+      "stratum": "report-long",
+      "intermediates": {
+        "dir": "/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/intermediates/20261025T130145Z_smoke06b-v2-b-json_schema_qwen3-0.6b/b_r36_r0_t0",
+        "files": 1
+      },
+      "wall_seconds": 77.1,
+      "llm": {
+        "calls": 7,
+        "prompt_tokens": 41648,
+        "completion_tokens": 10813,
+        "streamed_calls": 1,
+        "calls_without_usage": 0,
+        "tokens_partial": false,
+        "label_sources": {
+          "phase": 7
+        },
+        "calls_raised": 0,
+        "thinking_calls": 0,
+        "calls_without_switch": 0,
+        "reasoning_tokens": 0,
+        "reasoning_chars": 0,
+        "wall_seconds_sum_calls": 76.9,
+        "by_kind": {
+          "compose": {
+            "count": 3,
+            "p50_s": 1.96,
+            "max_s": 2.18,
+            "prompt_tokens": 26370,
+            "completion_tokens": 1217,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose": {
+            "count": 1,
+            "p50_s": 14.04,
+            "max_s": 14.04,
+            "prompt_tokens": 5034,
+            "completion_tokens": 885,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "decompose_critique": {
+            "count": 1,
+            "p50_s": 7.05,
+            "max_s": 7.05,
+            "prompt_tokens": 2124,
+            "completion_tokens": 490,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "executor_turn": {
+            "count": 2,
+            "p50_s": 24.97,
+            "max_s": 47.74,
+            "prompt_tokens": 8120,
+            "completion_tokens": 8221,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        },
+        "by_phase": {
+          "Composing after 1/9: Overview and Goals": {
+            "count": 3,
+            "p50_s": 1.96,
+            "max_s": 2.18,
+            "prompt_tokens": 26370,
+            "completion_tokens": 1217,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Decomposing the request into sub-tasks\u2026": {
+            "count": 2,
+            "p50_s": 10.55,
+            "max_s": 14.04,
+            "prompt_tokens": 7158,
+            "completion_tokens": 1375,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          },
+          "Executing 1/9: Overview and Goals": {
+            "count": 2,
+            "p50_s": 24.97,
+            "max_s": 47.74,
+            "prompt_tokens": 8120,
+            "completion_tokens": 8221,
+            "calls_without_usage": 0,
+            "reasoning_tokens": 0,
+            "reasoning_chars": 0
+          }
+        }
+      },
+      "calls": [],
+      "document": null,
+      "sub_tasks": null,
+      "output": {
+        "text": "",
+        "snapshot": null,
+        "chars": 0
+      },
+      "error": "DocumentApplyError('composer failed after 3 retries: unknown part id: Requirements')"
+    }
+  ],
+  "summary": {
+    "b/code": {
+      "prompts": 5,
+      "errors": 3,
+      "completion_tokens_p50": 1270.5,
+      "prompt_tokens_p50": 47269.5,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": 34.4,
+      "wall_seconds_sum": 68.8,
+      "calls_sum": 20,
+      "output_chars_p50": 514.5,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    },
+    "b/report": {
+      "prompts": 5,
+      "errors": 5,
+      "completion_tokens_p50": null,
+      "prompt_tokens_p50": null,
+      "reasoning_tokens_sum": 0,
+      "wall_seconds_p50": null,
+      "wall_seconds_sum": 0,
+      "calls_sum": 0,
+      "output_chars_p50": null,
+      "continuations_sum": 0,
+      "capped_sum": 0
+    }
+  },
+  "arm_elapsed_seconds": {
+    "b": 115.5
+  },
+  "errors": [
+    "b r06 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: 4.2_release_date')",
+    "b c06 r0: DocumentApplyError(\"composer failed after 3 retries: sub-task result was not kept in part 'LRUCache'\")",
+    "b c06f r0: not run: c06 failed earlier in the chain",
+    "b c13 r0: DocumentApplyError(\"composer failed after 3 retries: sub-task result was not kept in part 'ratelimit'\")",
+    "b r01 r0: DocumentApplyError(\"composer failed after 3 retries: sub-task result was not kept in part 'Searchability'\")",
+    "b r01f r0: not run: r01 failed earlier in the chain",
+    "b r23 r0: DocumentApplyError('composer failed after 3 retries: part id already exists: app-01')",
+    "b r36 r0: DocumentApplyError('composer failed after 3 retries: unknown part id: Requirements')"
+  ]
+}

@@ -1,0 +1,2533 @@
+{
+  "run_file": "journal/baseline/runs/20261026T022852Z_work-S_gemma-4-e4b.json",
+  "run_file_sha256": "6116713a911a91e0966915f1615158b903698bdbb357f744d5298c75004c4959",
+  "bench": "journal/baseline/bench/v1",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "commit": "5a379fe6746635367f99ec45c2398199d079a390",
+  "dirty": false,
+  "isolation": "netns",
+  "timeout_s": 120,
+  "scored_at": "2026-10-26T03:36:09Z",
+  "references": {
+    "c01": {
+      "n_tests": 16,
+      "passed": 16,
+      "source": "reference"
+    },
+    "c01f": {
+      "n_tests": 28,
+      "passed": 28,
+      "source": "reference"
+    },
+    "c03": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c06": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c06f": {
+      "n_tests": 37,
+      "passed": 37,
+      "source": "reference"
+    },
+    "c07": {
+      "n_tests": 21,
+      "passed": 21,
+      "source": "reference"
+    },
+    "c08": {
+      "n_tests": 16,
+      "passed": 16,
+      "source": "reference"
+    },
+    "c12": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c13": {
+      "n_tests": 13,
+      "passed": 13,
+      "source": "reference"
+    },
+    "c15": {
+      "n_tests": 13,
+      "passed": 13,
+      "source": "reference"
+    },
+    "c18": {
+      "n_tests": 22,
+      "passed": 22,
+      "source": "reference"
+    },
+    "c23": {
+      "n_tests": 14,
+      "passed": 14,
+      "source": "reference"
+    },
+    "c27": {
+      "n_tests": 14,
+      "passed": 14,
+      "source": "reference"
+    },
+    "c28": {
+      "n_tests": 14,
+      "passed": 14,
+      "source": "reference"
+    },
+    "c30": {
+      "n_tests": 20,
+      "passed": 20,
+      "source": "reference"
+    },
+    "c38": {
+      "n_tests": 38,
+      "passed": 38,
+      "source": "reference"
+    },
+    "c40": {
+      "n_tests": 33,
+      "passed": 33,
+      "source": "reference"
+    },
+    "c43": {
+      "n_tests": 40,
+      "passed": 40,
+      "source": "reference"
+    },
+    "c49": {
+      "n_tests": 35,
+      "passed": 35,
+      "source": "reference"
+    },
+    "c51": {
+      "n_tests": 37,
+      "passed": 37,
+      "source": "reference"
+    }
+  },
+  "skipped_unknown_prompts": [],
+  "results": [
+    {
+      "prompt_id": "c01",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "wordcount.py",
+            "replaced_block": 0,
+            "by_block": 1
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 5,
+        "failed": 11,
+        "skipped": 0,
+        "errors": 0,
+        "total": 16,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.817,
+        "exit_code": 1,
+        "outcomes": {
+          "test_wordcount::test_single_file_exact_output": "failed",
+          "test_wordcount::test_no_total_row_for_one_file": "passed",
+          "test_wordcount::test_two_files_with_total_in_argument_order": "failed",
+          "test_wordcount::test_columns_widen_for_large_numbers": "failed",
+          "test_wordcount::test_path_shown_as_given": "failed",
+          "test_wordcount::test_last_line_without_newline_counts": "failed",
+          "test_wordcount::test_empty_file": "passed",
+          "test_wordcount::test_chars_are_code_points_not_bytes": "failed",
+          "test_wordcount::test_crlf_counts_two_chars": "failed",
+          "test_wordcount::test_words_split_on_any_whitespace": "failed",
+          "test_wordcount::test_missing_file_reported_others_counted": "failed",
+          "test_wordcount::test_missing_file_leaves_one_row_without_total": "failed",
+          "test_wordcount::test_all_missing_prints_nothing": "passed",
+          "test_wordcount::test_directory_is_not_readable": "passed",
+          "test_wordcount::test_no_arguments_is_usage_error": "failed",
+          "test_wordcount::test_no_trailing_spaces": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "s  word...    4  a.txt']\nE         \nE         At index 0 diff: 'lineswordscharsfile' != 'lines  words  chars  file'\nE         Use -v to get more diff\n\ntest_wordcount.py:118: AssertionError\n_______________________ test_no_arguments_is_usage_error _______________________\n\ntmp_path = PosixPath('/tmp/hidden-tests-2t79js7y/pytest-of-root/pytest-0/test_no_arguments_is_usage_err0')\n\n    def test_no_arguments_is_usage_error(tmp_path):\n        res = run(tmp_path)\n        assert res.returncode == 2\n>       assert 'usage' in res.stderr.lower()\nE       AssertionError: assert 'usage' in ''\nE        +  where '' = <built-in method lower of str object at 0x1564cb0>()\nE        +    where <built-in method lower of str object at 0x1564cb0> = ''.lower\nE        +      where '' = CompletedProcess(args=['/mnt/myraid/workspace/my_projects/multi_step_reasoning_grok/.venv/bin/python', '/tmp/hidden-tests-2t79js7y/work/wordcount.py'], returncode=2, stdout='usage: python wordcount.py FILE [FILE ...]\\n', stderr='').stderr\n\ntest_wordcount.py:141: AssertionError\n=========================== short test summary info ============================\nFAILED test_wordcount.py::test_single_file_exact_output - AssertionError: ass...\nFAILED test_wordcount.py::test_two_files_with_total_in_argument_order - Asser...\nFAILED test_wordcount.py::test_columns_widen_for_large_numbers - AssertionErr...\nFAILED test_wordcount.py::test_path_shown_as_given - AssertionError: assert '...\nFAILED test_wordcount.py::test_last_line_without_newline_counts - AssertionEr...\nFAILED test_wordcount.py::test_chars_are_code_points_not_bytes - AssertionErr...\nFAILED test_wordcount.py::test_crlf_counts_two_chars - AssertionError: assert...\nFAILED test_wordcount.py::test_words_split_on_any_whitespace - AssertionError...\nFAILED test_wordcount.py::test_missing_file_reported_others_counted - Asserti...\nFAILED test_wordcount.py::test_missing_file_leaves_one_row_without_total - As...\nFAILED test_wordcount.py::test_no_arguments_is_usage_error - AssertionError: ...\n11 failed, 5 passed in 0.59s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 0.3125
+    },
+    {
+      "prompt_id": "c01",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 15,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 16,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.72,
+        "exit_code": 1,
+        "outcomes": {
+          "test_wordcount::test_single_file_exact_output": "passed",
+          "test_wordcount::test_no_total_row_for_one_file": "passed",
+          "test_wordcount::test_two_files_with_total_in_argument_order": "passed",
+          "test_wordcount::test_columns_widen_for_large_numbers": "passed",
+          "test_wordcount::test_path_shown_as_given": "passed",
+          "test_wordcount::test_last_line_without_newline_counts": "passed",
+          "test_wordcount::test_empty_file": "passed",
+          "test_wordcount::test_chars_are_code_points_not_bytes": "passed",
+          "test_wordcount::test_crlf_counts_two_chars": "failed",
+          "test_wordcount::test_words_split_on_any_whitespace": "passed",
+          "test_wordcount::test_missing_file_reported_others_counted": "passed",
+          "test_wordcount::test_missing_file_leaves_one_row_without_total": "passed",
+          "test_wordcount::test_all_missing_prints_nothing": "passed",
+          "test_wordcount::test_directory_is_not_readable": "passed",
+          "test_wordcount::test_no_arguments_is_usage_error": "passed",
+          "test_wordcount::test_no_trailing_spaces": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "........F.......                                                         [100%]\n=================================== FAILURES ===================================\n__________________________ test_crlf_counts_two_chars __________________________\n\ntmp_path = PosixPath('/tmp/hidden-tests-_droud_t/pytest-of-root/pytest-0/test_crlf_counts_two_chars0')\n\n    def test_crlf_counts_two_chars(tmp_path):\n        (tmp_path / 'w.txt').write_bytes(b'a b\\r\\nc\\r\\n')\n        out = run(tmp_path, 'w.txt').stdout.splitlines()\n>       assert out[1] == '    2      3      8  w.txt'\nE       AssertionError: assert '    2      3      6  w.txt' == '    2      3      8  w.txt'\nE         \nE         -     2      3      8  w.txt\nE         ?                   ^\nE         +     2      3      6  w.txt\nE         ?                   ^\n\ntest_wordcount.py:91: AssertionError\n=========================== short test summary info ============================\nFAILED test_wordcount.py::test_crlf_counts_two_chars - AssertionError: assert...\n1 failed, 15 passed in 0.49s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 0.9375
+    },
+    {
+      "prompt_id": "c01f",
+      "arm": "b",
+      "run": 0,
+      "run_error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0.update_part\n  Value error, Provide exactly one of body or body_source [type=value_error, input_value={'type': 'update_part', '...urce': 'current_result'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error)",
+      "extraction": {
+        "source": "none",
+        "blocks": 0,
+        "files": {},
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "wordcount.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": []
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 28,
+        "skipped": 0,
+        "errors": 0,
+        "total": 28,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.218,
+        "exit_code": 1,
+        "outcomes": {
+          "test_wordcount_json_stdin::test_stdin_in_table": "failed",
+          "test_wordcount_json_stdin::test_stdin_mixed_with_files_and_total": "failed",
+          "test_wordcount_json_stdin::test_stdin_has_no_newline_translation": "failed",
+          "test_wordcount_json_stdin::test_stdin_is_utf8": "failed",
+          "test_wordcount_json_stdin::test_json_single_file_has_total": "failed",
+          "test_wordcount_json_stdin::test_json_several_files_in_order": "failed",
+          "test_wordcount_json_stdin::test_json_flag_between_files": "failed",
+          "test_wordcount_json_stdin::test_json_counts_are_integers": "failed",
+          "test_wordcount_json_stdin::test_json_with_stdin": "failed",
+          "test_wordcount_json_stdin::test_json_with_missing_file": "failed",
+          "test_wordcount_json_stdin::test_json_all_missing_still_prints": "failed",
+          "test_wordcount_json_stdin::test_json_without_files_is_usage_error": "failed",
+          "test_wordcount_unchanged::test_single_file_exact_output": "failed",
+          "test_wordcount_unchanged::test_no_total_row_for_one_file": "failed",
+          "test_wordcount_unchanged::test_two_files_with_total_in_argument_order": "failed",
+          "test_wordcount_unchanged::test_columns_widen_for_large_numbers": "failed",
+          "test_wordcount_unchanged::test_path_shown_as_given": "failed",
+          "test_wordcount_unchanged::test_last_line_without_newline_counts": "failed",
+          "test_wordcount_unchanged::test_empty_file": "failed",
+          "test_wordcount_unchanged::test_chars_are_code_points_not_bytes": "failed",
+          "test_wordcount_unchanged::test_crlf_counts_two_chars": "failed",
+          "test_wordcount_unchanged::test_words_split_on_any_whitespace": "failed",
+          "test_wordcount_unchanged::test_missing_file_reported_others_counted": "failed",
+          "test_wordcount_unchanged::test_missing_file_leaves_one_row_without_total": "failed",
+          "test_wordcount_unchanged::test_all_missing_prints_nothing": "failed",
+          "test_wordcount_unchanged::test_directory_is_not_readable": "failed",
+          "test_wordcount_unchanged::test_no_arguments_is_usage_error": "failed",
+          "test_wordcount_unchanged::test_no_trailing_spaces": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "wline_translation - ...\nFAILED test_wordcount_json_stdin.py::test_stdin_is_utf8 - IndexError: list in...\nFAILED test_wordcount_json_stdin.py::test_json_single_file_has_total - assert...\nFAILED test_wordcount_json_stdin.py::test_json_several_files_in_order - json....\nFAILED test_wordcount_json_stdin.py::test_json_flag_between_files - json.deco...\nFAILED test_wordcount_json_stdin.py::test_json_counts_are_integers - json.dec...\nFAILED test_wordcount_json_stdin.py::test_json_with_stdin - json.decoder.JSON...\nFAILED test_wordcount_json_stdin.py::test_json_with_missing_file - assert 2 == 1\nFAILED test_wordcount_json_stdin.py::test_json_all_missing_still_prints - ass...\nFAILED test_wordcount_json_stdin.py::test_json_without_files_is_usage_error\nFAILED test_wordcount_unchanged.py::test_single_file_exact_output - assert 2 ...\nFAILED test_wordcount_unchanged.py::test_no_total_row_for_one_file - Assertio...\nFAILED test_wordcount_unchanged.py::test_two_files_with_total_in_argument_order\nFAILED test_wordcount_unchanged.py::test_columns_widen_for_large_numbers - As...\nFAILED test_wordcount_unchanged.py::test_path_shown_as_given - IndexError: li...\nFAILED test_wordcount_unchanged.py::test_last_line_without_newline_counts - I...\nFAILED test_wordcount_unchanged.py::test_empty_file - assert 2 == 0\nFAILED test_wordcount_unchanged.py::test_chars_are_code_points_not_bytes - In...\nFAILED test_wordcount_unchanged.py::test_crlf_counts_two_chars - IndexError: ...\nFAILED test_wordcount_unchanged.py::test_words_split_on_any_whitespace - Inde...\nFAILED test_wordcount_unchanged.py::test_missing_file_reported_others_counted\nFAILED test_wordcount_unchanged.py::test_missing_file_leaves_one_row_without_total\nFAILED test_wordcount_unchanged.py::test_all_missing_prints_nothing - assert ...\nFAILED test_wordcount_unchanged.py::test_directory_is_not_readable - assert 2...\nFAILED test_wordcount_unchanged.py::test_no_arguments_is_usage_error - assert...\nFAILED test_wordcount_unchanged.py::test_no_trailing_spaces - AssertionError:...\n28 failed in 1.01s\n"
+      },
+      "n_tests": 28,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c01f",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "wordcount.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "wordcount.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "wordcount.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 10,
+        "failed": 18,
+        "skipped": 0,
+        "errors": 0,
+        "total": 28,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 1.268,
+        "exit_code": 1,
+        "outcomes": {
+          "test_wordcount_json_stdin::test_stdin_in_table": "failed",
+          "test_wordcount_json_stdin::test_stdin_mixed_with_files_and_total": "failed",
+          "test_wordcount_json_stdin::test_stdin_has_no_newline_translation": "failed",
+          "test_wordcount_json_stdin::test_stdin_is_utf8": "failed",
+          "test_wordcount_json_stdin::test_json_single_file_has_total": "passed",
+          "test_wordcount_json_stdin::test_json_several_files_in_order": "passed",
+          "test_wordcount_json_stdin::test_json_flag_between_files": "failed",
+          "test_wordcount_json_stdin::test_json_counts_are_integers": "passed",
+          "test_wordcount_json_stdin::test_json_with_stdin": "passed",
+          "test_wordcount_json_stdin::test_json_with_missing_file": "passed",
+          "test_wordcount_json_stdin::test_json_all_missing_still_prints": "passed",
+          "test_wordcount_json_stdin::test_json_without_files_is_usage_error": "passed",
+          "test_wordcount_unchanged::test_single_file_exact_output": "failed",
+          "test_wordcount_unchanged::test_no_total_row_for_one_file": "failed",
+          "test_wordcount_unchanged::test_two_files_with_total_in_argument_order": "failed",
+          "test_wordcount_unchanged::test_columns_widen_for_large_numbers": "failed",
+          "test_wordcount_unchanged::test_path_shown_as_given": "failed",
+          "test_wordcount_unchanged::test_last_line_without_newline_counts": "failed",
+          "test_wordcount_unchanged::test_empty_file": "failed",
+          "test_wordcount_unchanged::test_chars_are_code_points_not_bytes": "failed",
+          "test_wordcount_unchanged::test_crlf_counts_two_chars": "failed",
+          "test_wordcount_unchanged::test_words_split_on_any_whitespace": "failed",
+          "test_wordcount_unchanged::test_missing_file_reported_others_counted": "failed",
+          "test_wordcount_unchanged::test_missing_file_leaves_one_row_without_total": "failed",
+          "test_wordcount_unchanged::test_all_missing_prints_nothing": "passed",
+          "test_wordcount_unchanged::test_directory_is_not_readable": "passed",
+          "test_wordcount_unchanged::test_no_arguments_is_usage_error": "passed",
+          "test_wordcount_unchanged::test_no_trailing_spaces": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "est_no_trailing_spaces(tmp_path):\n        write(tmp_path, 'a.txt', 'a\\n')\n        write(tmp_path, 'long-name.txt', 'b c d\\n')\n        out = run(tmp_path, 'a.txt', 'long-name.txt').stdout\n>       assert out.endswith('\\n')\nE       AssertionError: assert False\nE        +  where False = <built-in method endswith of str object at 0x1564cb0>('\\n')\nE        +    where <built-in method endswith of str object at 0x1564cb0> = ''.endswith\n\ntest_wordcount_unchanged.py:149: AssertionError\n=========================== short test summary info ============================\nFAILED test_wordcount_json_stdin.py::test_stdin_in_table - AssertionError: as...\nFAILED test_wordcount_json_stdin.py::test_stdin_mixed_with_files_and_total - ...\nFAILED test_wordcount_json_stdin.py::test_stdin_has_no_newline_translation - ...\nFAILED test_wordcount_json_stdin.py::test_stdin_is_utf8 - IndexError: list in...\nFAILED test_wordcount_json_stdin.py::test_json_flag_between_files - json.deco...\nFAILED test_wordcount_unchanged.py::test_single_file_exact_output - Assertion...\nFAILED test_wordcount_unchanged.py::test_no_total_row_for_one_file - Assertio...\nFAILED test_wordcount_unchanged.py::test_two_files_with_total_in_argument_order\nFAILED test_wordcount_unchanged.py::test_columns_widen_for_large_numbers - As...\nFAILED test_wordcount_unchanged.py::test_path_shown_as_given - IndexError: li...\nFAILED test_wordcount_unchanged.py::test_last_line_without_newline_counts - I...\nFAILED test_wordcount_unchanged.py::test_empty_file - IndexError: list index ...\nFAILED test_wordcount_unchanged.py::test_chars_are_code_points_not_bytes - In...\nFAILED test_wordcount_unchanged.py::test_crlf_counts_two_chars - IndexError: ...\nFAILED test_wordcount_unchanged.py::test_words_split_on_any_whitespace - Inde...\nFAILED test_wordcount_unchanged.py::test_missing_file_reported_others_counted\nFAILED test_wordcount_unchanged.py::test_missing_file_leaves_one_row_without_total\nFAILED test_wordcount_unchanged.py::test_no_trailing_spaces - AssertionError:...\n18 failed, 10 passed in 1.10s\n"
+      },
+      "n_tests": 28,
+      "pass_rate": 0.3571
+    },
+    {
+      "prompt_id": "c03",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "logscan.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "logscan.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "logscan.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 11,
+        "failed": 7,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.868,
+        "exit_code": 1,
+        "outcomes": {
+          "test_logscan::test_exact_level_in_file_order": "failed",
+          "test_logscan::test_level_word_in_message_does_not_count": "passed",
+          "test_logscan::test_info_lines": "passed",
+          "test_logscan::test_level_argument_is_case_insensitive": "failed",
+          "test_logscan::test_at_least_includes_higher_levels": "failed",
+          "test_logscan::test_at_least_info_is_every_levelled_line": "failed",
+          "test_logscan::test_at_least_error_is_error_only": "passed",
+          "test_logscan::test_limit_stops_printing_but_count_is_total": "passed",
+          "test_logscan::test_limit_zero": "failed",
+          "test_logscan::test_limit_larger_than_matches": "failed",
+          "test_logscan::test_no_match_exits_zero": "passed",
+          "test_logscan::test_lines_kept_exactly_and_last_line_gets_newline": "passed",
+          "test_logscan::test_short_lines_have_no_level": "failed",
+          "test_logscan::test_missing_file": "passed",
+          "test_logscan::test_usage_errors[args0]": "passed",
+          "test_logscan::test_usage_errors[args1]": "passed",
+          "test_logscan::test_usage_errors[args2]": "passed",
+          "test_logscan::test_usage_errors[args3]": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "E         ?       ^\n\ntest_logscan.py:89: AssertionError\n________________________ test_limit_larger_than_matches ________________________\n\nlog = PosixPath('/tmp/hidden-tests-3r74brjs/pytest-of-root/pytest-0/test_limit_larger_than_matches0')\n\n    def test_limit_larger_than_matches(log):\n        res = run(log, 'app.log', 'WARN', '--limit', '10')\n>       assert res.stdout == lines('02', '09')\nE       AssertionError: assert '2026-03-14 0...memory high\\n' == '2026-03-14 0...memory high\\n'\nE         \nE         Skipping 47 identical leading characters in diff, use -v to show\nE         + 14 09:00:06 warn lowercase level is not a level\nE         - 14 09:00:09 WARN memory high\nE         + 2026-03-14 09:00:09 WARN memory high\nE         ? ++++++++\n\ntest_logscan.py:94: AssertionError\n________________________ test_short_lines_have_no_level ________________________\n\ntmp_path = PosixPath('/tmp/hidden-tests-3r74brjs/pytest-of-root/pytest-0/test_short_lines_have_no_level0')\n\n    def test_short_lines_have_no_level(tmp_path):\n        (tmp_path / 'x.log').write_text('ERROR\\nWARN ERROR\\n\\n2026-01-01 00:00:00 ERROR\\n')\n        res = run(tmp_path, 'x.log', 'ERROR')\n>       assert res.stdout == '2026-01-01 00:00:00 ERROR\\n'\nE       AssertionError: assert '' == '2026-01-01 00:00:00 ERROR\\n'\nE         \nE         - 2026-01-01 00:00:00 ERROR\n\ntest_logscan.py:117: AssertionError\n=========================== short test summary info ============================\nFAILED test_logscan.py::test_exact_level_in_file_order - AssertionError: asse...\nFAILED test_logscan.py::test_level_argument_is_case_insensitive - AssertionEr...\nFAILED test_logscan.py::test_at_least_includes_higher_levels - AssertionError...\nFAILED test_logscan.py::test_at_least_info_is_every_levelled_line - Assertion...\nFAILED test_logscan.py::test_limit_zero - AssertionError: assert 'count=5\\n' ...\nFAILED test_logscan.py::test_limit_larger_than_matches - AssertionError: asse...\nFAILED test_logscan.py::test_short_lines_have_no_level - AssertionError: asse...\n7 failed, 11 passed in 0.67s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 0.6111
+    },
+    {
+      "prompt_id": "c03",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "logscan.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "logscan.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "logscan.py",
+            "replaced_block": 0,
+            "by_block": 1
+          },
+          {
+            "path": "logscan.py",
+            "replaced_block": 1,
+            "by_block": 2
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "logscan.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 11,
+        "failed": 7,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.867,
+        "exit_code": 1,
+        "outcomes": {
+          "test_logscan::test_exact_level_in_file_order": "failed",
+          "test_logscan::test_level_word_in_message_does_not_count": "passed",
+          "test_logscan::test_info_lines": "passed",
+          "test_logscan::test_level_argument_is_case_insensitive": "failed",
+          "test_logscan::test_at_least_includes_higher_levels": "failed",
+          "test_logscan::test_at_least_info_is_every_levelled_line": "failed",
+          "test_logscan::test_at_least_error_is_error_only": "passed",
+          "test_logscan::test_limit_stops_printing_but_count_is_total": "passed",
+          "test_logscan::test_limit_zero": "failed",
+          "test_logscan::test_limit_larger_than_matches": "failed",
+          "test_logscan::test_no_match_exits_zero": "passed",
+          "test_logscan::test_lines_kept_exactly_and_last_line_gets_newline": "failed",
+          "test_logscan::test_short_lines_have_no_level": "passed",
+          "test_logscan::test_missing_file": "passed",
+          "test_logscan::test_usage_errors[args0]": "passed",
+          "test_logscan::test_usage_errors[args1]": "passed",
+          "test_logscan::test_usage_errors[args2]": "passed",
+          "test_logscan::test_usage_errors[args3]": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "  res = run(log, 'app.log', 'WARN', '--limit', '10')\n>       assert res.stdout == lines('02', '09')\nE       AssertionError: assert '2026-03-14 0...memory high\\n' == '2026-03-14 0...memory high\\n'\nE         \nE         Skipping 47 identical leading characters in diff, use -v to show\nE         + 14 09:00:06 warn lowercase level is not a level\nE         - 14 09:00:09 WARN memory high\nE         + 2026-03-14 09:00:09 WARN memory high\nE         ? ++++++++\n\ntest_logscan.py:94: AssertionError\n______________ test_lines_kept_exactly_and_last_line_gets_newline ______________\n\ntmp_path = PosixPath('/tmp/hidden-tests-fi28gc7j/pytest-of-root/pytest-0/test_lines_kept_exactly_and_la0')\n\n    def test_lines_kept_exactly_and_last_line_gets_newline(tmp_path):\n        text = '2026-01-01 00:00:00   WARN   spaced   out  \\n2026-01-01 00:00:01\\tWARN\\ttabs'\n        (tmp_path / 'x.log').write_text(text)\n        res = run(tmp_path, 'x.log', 'WARN')\n>       assert res.stdout == ('2026-01-01 00:00:00   WARN   spaced   out  \\n'\n                              '2026-01-01 00:00:01\\tWARN\\ttabs\\n')\nE       AssertionError: assert '2026-01-01 0...1\\tWARN\\ttabs' == '2026-01-01 0...tWARN\\ttabs\\n'\nE         \nE         Skipping 62 identical leading characters in diff, use -v to show\nE         - 1\tWARN\ttabs\nE         ?  \t    \t    -\nE         + 1\tWARN\ttabs\n\ntest_logscan.py:109: AssertionError\n=========================== short test summary info ============================\nFAILED test_logscan.py::test_exact_level_in_file_order - AssertionError: asse...\nFAILED test_logscan.py::test_level_argument_is_case_insensitive - AssertionEr...\nFAILED test_logscan.py::test_at_least_includes_higher_levels - AssertionError...\nFAILED test_logscan.py::test_at_least_info_is_every_levelled_line - Assertion...\nFAILED test_logscan.py::test_limit_zero - AssertionError: assert 'count=1\\n' ...\nFAILED test_logscan.py::test_limit_larger_than_matches - AssertionError: asse...\nFAILED test_logscan.py::test_lines_kept_exactly_and_last_line_gets_newline - ...\n7 failed, 11 passed in 0.66s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 0.6111
+    },
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.216,
+        "exit_code": 0,
+        "outcomes": {
+          "test_lru::test_capacity_below_one_raises[0]": "passed",
+          "test_lru::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru::test_get_returns_value_and_default": "passed",
+          "test_lru::test_put_returns_none_until_full": "passed",
+          "test_lru::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru::test_get_refreshes_recency": "passed",
+          "test_lru::test_missing_get_changes_nothing": "passed",
+          "test_lru::test_update_existing_key_never_evicts": "passed",
+          "test_lru::test_update_refreshes_recency": "passed",
+          "test_lru::test_contains_does_not_touch_recency": "passed",
+          "test_lru::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru::test_capacity_one": "passed",
+          "test_lru::test_none_values_are_stored": "passed",
+          "test_lru::test_resize_down_evicts_in_order": "passed",
+          "test_lru::test_resize_up_keeps_everything": "passed",
+          "test_lru::test_resize_below_one_raises[0]": "passed",
+          "test_lru::test_resize_below_one_raises[-3]": "passed",
+          "test_lru::test_long_sequence_matches_model": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.04s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 14,
+        "failed": 4,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.267,
+        "exit_code": 1,
+        "outcomes": {
+          "test_lru::test_capacity_below_one_raises[0]": "passed",
+          "test_lru::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru::test_get_returns_value_and_default": "passed",
+          "test_lru::test_put_returns_none_until_full": "passed",
+          "test_lru::test_put_evicts_least_recent_and_returns_it": "failed",
+          "test_lru::test_get_refreshes_recency": "failed",
+          "test_lru::test_missing_get_changes_nothing": "passed",
+          "test_lru::test_update_existing_key_never_evicts": "passed",
+          "test_lru::test_update_refreshes_recency": "passed",
+          "test_lru::test_contains_does_not_touch_recency": "passed",
+          "test_lru::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru::test_capacity_one": "failed",
+          "test_lru::test_none_values_are_stored": "passed",
+          "test_lru::test_resize_down_evicts_in_order": "passed",
+          "test_lru::test_resize_up_keeps_everything": "passed",
+          "test_lru::test_resize_below_one_raises[0]": "passed",
+          "test_lru::test_resize_below_one_raises[-3]": "passed",
+          "test_lru::test_long_sequence_matches_model": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "iff\n\ntest_lru.py:44: AssertionError\n______________________________ test_capacity_one _______________________________\n\n    def test_capacity_one():\n        cache = LRUCache(1)\n        assert cache.put('a', 1) is None\n        assert cache.put('b', 2) == 'a'\n>       assert cache.keys() == ['b']\nE       AssertionError: assert [] == ['b']\nE         \nE         Right contains one more item: 'b'\nE         Use -v to get more diff\n\ntest_lru.py:88: AssertionError\n_______________________ test_long_sequence_matches_model _______________________\n\n    def test_long_sequence_matches_model():\n        import random\n        rng = random.Random(6)\n        cache, model = LRUCache(5), []\n        for _ in range(2000):\n            k = rng.randrange(9)\n            if rng.random() < 0.5:\n                evicted = cache.put(k, k * 10)\n                if k in model:\n                    model.remove(k)\n                    expected = None\n                elif len(model) == 5:\n                    expected = model.pop(0)\n                else:\n                    expected = None\n                model.append(k)\n                assert evicted == expected\n            else:\n                got = cache.get(k)\n                if k in model:\n                    model.remove(k)\n                    model.append(k)\n                    assert got == k * 10\n                else:\n                    assert got is None\n>           assert cache.keys() == model\nE           assert [0, 1, 8, 4] == [0, 1, 8, 4, 3]\nE             \nE             Right contains one more item: 3\nE             Use -v to get more diff\n\ntest_lru.py:148: AssertionError\n=========================== short test summary info ============================\nFAILED test_lru.py::test_put_evicts_least_recent_and_returns_it - AssertionEr...\nFAILED test_lru.py::test_get_refreshes_recency - AssertionError: assert ['c',...\nFAILED test_lru.py::test_capacity_one - AssertionError: assert [] == ['b']\nFAILED test_lru.py::test_long_sequence_matches_model - assert [0, 1, 8, 4] ==...\n4 failed, 14 passed in 0.07s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 0.7778
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 20,
+        "failed": 17,
+        "skipped": 0,
+        "errors": 0,
+        "total": 37,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_lru_ttl::test_ttl_must_be_positive[0]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-1]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-0.5]": "passed",
+          "test_lru_ttl::test_default_clock_works_without_ttl": "failed",
+          "test_lru_ttl::test_expires_exactly_at_ttl": "passed",
+          "test_lru_ttl::test_get_does_not_extend_life": "passed",
+          "test_lru_ttl::test_put_restarts_the_clock": "passed",
+          "test_lru_ttl::test_expired_entries_are_invisible": "failed",
+          "test_lru_ttl::test_expired_entries_do_not_count_towards_capacity": "failed",
+          "test_lru_ttl::test_put_returns_only_a_live_evicted_key": "failed",
+          "test_lru_ttl::test_put_of_an_expired_key_is_a_new_key": "failed",
+          "test_lru_ttl::test_lru_order_among_live_entries": "failed",
+          "test_lru_ttl::test_stats_counts": "failed",
+          "test_lru_ttl::test_expirations_count_without_being_looked_at": "failed",
+          "test_lru_ttl::test_replaced_or_evicted_entries_never_expire": "failed",
+          "test_lru_ttl::test_stats_is_a_fresh_dict_with_four_int_keys": "failed",
+          "test_lru_ttl::test_resize_skips_expired_entries": "failed",
+          "test_lru_ttl::test_no_ttl_never_expires": "failed",
+          "test_lru_ttl::test_time_is_read_only_through_the_clock": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru_unchanged::test_get_returns_value_and_default": "passed",
+          "test_lru_unchanged::test_put_returns_none_until_full": "passed",
+          "test_lru_unchanged::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru_unchanged::test_get_refreshes_recency": "failed",
+          "test_lru_unchanged::test_missing_get_changes_nothing": "passed",
+          "test_lru_unchanged::test_update_existing_key_never_evicts": "failed",
+          "test_lru_unchanged::test_update_refreshes_recency": "passed",
+          "test_lru_unchanged::test_contains_does_not_touch_recency": "passed",
+          "test_lru_unchanged::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru_unchanged::test_capacity_one": "passed",
+          "test_lru_unchanged::test_none_values_are_stored": "passed",
+          "test_lru_unchanged::test_resize_down_evicts_in_order": "failed",
+          "test_lru_unchanged::test_resize_up_keeps_everything": "failed",
+          "test_lru_unchanged::test_resize_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_resize_below_one_raises[-3]": "passed",
+          "test_lru_unchanged::test_long_sequence_matches_model": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "cted = None\n                model.append(k)\n                assert evicted == expected\n            else:\n                got = cache.get(k)\n                if k in model:\n                    model.remove(k)\n                    model.append(k)\n                    assert got == k * 10\n                else:\n                    assert got is None\n>           assert cache.keys() == model\nE           assert [1, 4, 5, 0] == [1, 5, 0, 4]\nE             \nE             At index 1 diff: 4 != 5\nE             Use -v to get more diff\n\ntest_lru_unchanged.py:148: AssertionError\n=========================== short test summary info ============================\nFAILED test_lru_ttl.py::test_default_clock_works_without_ttl - TypeError: 'di...\nFAILED test_lru_ttl.py::test_expired_entries_are_invisible - assert 2 == 1\nFAILED test_lru_ttl.py::test_expired_entries_do_not_count_towards_capacity - ...\nFAILED test_lru_ttl.py::test_put_returns_only_a_live_evicted_key - TypeError:...\nFAILED test_lru_ttl.py::test_put_of_an_expired_key_is_a_new_key - AssertionEr...\nFAILED test_lru_ttl.py::test_lru_order_among_live_entries - AssertionError: a...\nFAILED test_lru_ttl.py::test_stats_counts - TypeError: 'dict' object is not c...\nFAILED test_lru_ttl.py::test_expirations_count_without_being_looked_at - Type...\nFAILED test_lru_ttl.py::test_replaced_or_evicted_entries_never_expire - TypeE...\nFAILED test_lru_ttl.py::test_stats_is_a_fresh_dict_with_four_int_keys - TypeE...\nFAILED test_lru_ttl.py::test_resize_skips_expired_entries - AssertionError: a...\nFAILED test_lru_ttl.py::test_no_ttl_never_expires - TypeError: 'dict' object ...\nFAILED test_lru_unchanged.py::test_get_refreshes_recency - AssertionError: as...\nFAILED test_lru_unchanged.py::test_update_existing_key_never_evicts - Asserti...\nFAILED test_lru_unchanged.py::test_resize_down_evicts_in_order - AssertionErr...\nFAILED test_lru_unchanged.py::test_resize_up_keeps_everything - assert 0 == []\nFAILED test_lru_unchanged.py::test_long_sequence_matches_model - assert [1, 4...\n17 failed, 20 passed in 0.14s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.5405
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 2,
+        "total": 2,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.415,
+        "exit_code": 2,
+        "outcomes": {
+          "test_lru_ttl": "collection_error",
+          "test_lru_unchanged": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_lru_ttl.py _______________________\nImportError while importing test module '/tmp/hidden-tests-bhqu5u2t/work/test_lru_ttl.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_lru_ttl.py:3: in <module>\n    from lru import LRUCache\nE   ImportError: cannot import name 'LRUCache' from 'lru' (/tmp/hidden-tests-bhqu5u2t/work/lru.py)\n____________________ ERROR collecting test_lru_unchanged.py ____________________\nImportError while importing test module '/tmp/hidden-tests-bhqu5u2t/work/test_lru_unchanged.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_lru_unchanged.py:3: in <module>\n    from lru import LRUCache\nE   ImportError: cannot import name 'LRUCache' from 'lru' (/tmp/hidden-tests-bhqu5u2t/work/lru.py)\n=========================== short test summary info ============================\nERROR test_lru_ttl.py\nERROR test_lru_unchanged.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.25s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c07",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {},
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "ini.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": []
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_ini": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_________________________ ERROR collecting test_ini.py _________________________\nImportError while importing test module '/tmp/hidden-tests-jo3vpe18/work/test_ini.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_ini.py:5: in <module>\n    from ini import ParseError, parse\nE   ModuleNotFoundError: No module named 'ini'\n=========================== short test summary info ============================\nERROR test_ini.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.11s\n"
+      },
+      "n_tests": 21,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c07",
+      "arm": "b",
+      "run": 1,
+      "run_error": "InstructorRetryException(1 validation error for ComposerResponse\n  Invalid JSON: lone leading surrogate in hex escape at line 9 column 2274 [type=json_invalid, input_value='{\\n  \"need_part_ids\": [\\...f file.\"\\n    }\\n  ]\\n}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/json_invalid)",
+      "extraction": {
+        "source": "none",
+        "blocks": 0,
+        "files": {},
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "ini.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": []
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_ini": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_________________________ ERROR collecting test_ini.py _________________________\nImportError while importing test module '/tmp/hidden-tests-mjawmptg/work/test_ini.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_ini.py:5: in <module>\n    from ini import ParseError, parse\nE   ModuleNotFoundError: No module named 'ini'\n=========================== short test summary info ============================\nERROR test_ini.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.11s\n"
+      },
+      "n_tests": 21,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c08",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "semver.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "semver.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "semver.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_semver": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_semver.py ________________________\nImportError while importing test module '/tmp/hidden-tests-r1c6qcwj/work/test_semver.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_semver.py:5: in <module>\n    from semver import Version, satisfies\nE   ImportError: cannot import name 'Version' from 'semver' (/tmp/hidden-tests-r1c6qcwj/work/semver.py)\n=========================== short test summary info ============================\nERROR test_semver.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c08",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "semver.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "semver.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "semver.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 1,
+        "failed": 15,
+        "skipped": 0,
+        "errors": 0,
+        "total": 16,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_semver::test_parse_parts": "failed",
+          "test_semver::test_str_round_trips": "failed",
+          "test_semver::test_parse_rejects_invalid": "failed",
+          "test_semver::test_spec_precedence_chain": "failed",
+          "test_semver::test_numeric_parts_compare_numerically": "passed",
+          "test_semver::test_prerelease_identifier_rules": "failed",
+          "test_semver::test_build_ignored_for_equality_and_hash": "failed",
+          "test_semver::test_comparison_with_other_types": "failed",
+          "test_semver::test_sorting_random_shuffle": "failed",
+          "test_semver::test_bump": "failed",
+          "test_semver::test_satisfies_comparators": "failed",
+          "test_semver::test_caret": "failed",
+          "test_semver::test_tilde": "failed",
+          "test_semver::test_prerelease_uses_plain_precedence": "failed",
+          "test_semver::test_build_metadata_in_ranges": "failed",
+          "test_semver::test_satisfies_errors": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "__________\n\n    def test_satisfies_errors():\n        for spec in ['', '   ', '>=', '^', '>=1.2.x', '~v1', '>>1.0.0', '1.2-rc', '=>1.0.0']:\n            with pytest.raises(ValueError):\n>               satisfies('1.0.0', spec)\n\ntest_semver.py:133: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nversion = '1.0.0', spec = ''\n\n    def satisfies(version: Version, spec: str) -> bool:\n        \"\"\"Checks if the version satisfies all comparators in the spec.\"\"\"\n        # Implementation deferred to the next step.\n>       raise NotImplementedError(\"satisfies function not implemented yet.\")\nE       NotImplementedError: satisfies function not implemented yet.\n\nsemver.py:172: NotImplementedError\n=========================== short test summary info ============================\nFAILED test_semver.py::test_parse_parts - ValueError: Invalid build identifie...\nFAILED test_semver.py::test_str_round_trips - ValueError: Invalid build ident...\nFAILED test_semver.py::test_parse_rejects_invalid - Failed: DID NOT RAISE Val...\nFAILED test_semver.py::test_spec_precedence_chain - RecursionError: maximum r...\nFAILED test_semver.py::test_prerelease_identifier_rules - AssertionError: ass...\nFAILED test_semver.py::test_build_ignored_for_equality_and_hash - ValueError:...\nFAILED test_semver.py::test_comparison_with_other_types - RecursionError: max...\nFAILED test_semver.py::test_sorting_random_shuffle - AssertionError: assert [...\nFAILED test_semver.py::test_bump - ValueError: Invalid build identifiers in: ...\nFAILED test_semver.py::test_satisfies_comparators - NotImplementedError: sati...\nFAILED test_semver.py::test_caret - NotImplementedError: satisfies function n...\nFAILED test_semver.py::test_tilde - NotImplementedError: satisfies function n...\nFAILED test_semver.py::test_prerelease_uses_plain_precedence - NotImplemented...\nFAILED test_semver.py::test_build_metadata_in_ranges - NotImplementedError: s...\nFAILED test_semver.py::test_satisfies_errors - NotImplementedError: satisfies...\n15 failed, 1 passed in 0.14s\n"
+      },
+      "n_tests": 16,
+      "pass_rate": 0.0625
+    },
+    {
+      "prompt_id": "c12",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "bizdays.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "bizdays.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "bizdays.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 3,
+        "failed": 15,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_bizdays::test_is_business_day_defaults": "passed",
+          "test_bizdays::test_is_business_day_holidays_and_weekend": "passed",
+          "test_bizdays::test_between_monday_to_monday": "failed",
+          "test_bizdays::test_between_flags": "failed",
+          "test_bizdays::test_between_same_day": "failed",
+          "test_bizdays::test_between_adjacent_days_exclusive": "failed",
+          "test_bizdays::test_between_start_after_end_raises": "passed",
+          "test_bizdays::test_between_holidays": "failed",
+          "test_bizdays::test_between_duplicate_holidays_count_once": "failed",
+          "test_bizdays::test_between_custom_weekend": "failed",
+          "test_bizdays::test_long_span": "failed",
+          "test_bizdays::test_between_matches_brute_force": "failed",
+          "test_bizdays::test_add_forward_skips_weekend": "failed",
+          "test_bizdays::test_add_backward": "failed",
+          "test_bizdays::test_add_zero_rolls_forward": "failed",
+          "test_bizdays::test_add_with_holidays_and_weekend": "failed",
+          "test_bizdays::test_add_matches_between": "failed",
+          "test_bizdays::test_invalid_weekend_raises": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "s=1)\n                                ^^^^^^^^^\nE               NameError: name 'timedelta' is not defined\n\nbizdays.py:176: NameError\n_________________________ test_invalid_weekend_raises __________________________\n\n    def test_invalid_weekend_raises():\n        for weekend in [range(7), (7,), (-1,), (5, 6, 0, 1, 2, 3, 4)]:\n            for call in (lambda w: is_business_day(MON, weekend=w),\n                         lambda w: business_days_between(MON, MON + D, weekend=w),\n                         lambda w: add_business_days(MON, 1, weekend=w)):\n>               with pytest.raises(ValueError):\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^\nE               Failed: DID NOT RAISE ValueError\n\ntest_bizdays.py:145: Failed\n=========================== short test summary info ============================\nFAILED test_bizdays.py::test_between_monday_to_monday - NameError: name 'time...\nFAILED test_bizdays.py::test_between_flags - NameError: name 'timedelta' is n...\nFAILED test_bizdays.py::test_between_same_day - NameError: name 'timedelta' i...\nFAILED test_bizdays.py::test_between_adjacent_days_exclusive - NameError: nam...\nFAILED test_bizdays.py::test_between_holidays - NameError: name 'timedelta' i...\nFAILED test_bizdays.py::test_between_duplicate_holidays_count_once - NameErro...\nFAILED test_bizdays.py::test_between_custom_weekend - NameError: name 'timede...\nFAILED test_bizdays.py::test_long_span - NameError: name 'timedelta' is not d...\nFAILED test_bizdays.py::test_between_matches_brute_force - NameError: name 't...\nFAILED test_bizdays.py::test_add_forward_skips_weekend - NameError: name 'tim...\nFAILED test_bizdays.py::test_add_backward - NameError: name 'timedelta' is no...\nFAILED test_bizdays.py::test_add_zero_rolls_forward - NameError: name 'timede...\nFAILED test_bizdays.py::test_add_with_holidays_and_weekend - NameError: name ...\nFAILED test_bizdays.py::test_add_matches_between - NameError: name 'timedelta...\nFAILED test_bizdays.py::test_invalid_weekend_raises - Failed: DID NOT RAISE V...\n15 failed, 3 passed in 0.14s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 0.1667
+    },
+    {
+      "prompt_id": "c12",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "bizdays.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "bizdays.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "bizdays.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 17,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.416,
+        "exit_code": 1,
+        "outcomes": {
+          "test_bizdays::test_is_business_day_defaults": "passed",
+          "test_bizdays::test_is_business_day_holidays_and_weekend": "passed",
+          "test_bizdays::test_between_monday_to_monday": "passed",
+          "test_bizdays::test_between_flags": "passed",
+          "test_bizdays::test_between_same_day": "passed",
+          "test_bizdays::test_between_adjacent_days_exclusive": "passed",
+          "test_bizdays::test_between_start_after_end_raises": "passed",
+          "test_bizdays::test_between_holidays": "passed",
+          "test_bizdays::test_between_duplicate_holidays_count_once": "passed",
+          "test_bizdays::test_between_custom_weekend": "passed",
+          "test_bizdays::test_long_span": "passed",
+          "test_bizdays::test_between_matches_brute_force": "passed",
+          "test_bizdays::test_add_forward_skips_weekend": "passed",
+          "test_bizdays::test_add_backward": "passed",
+          "test_bizdays::test_add_zero_rolls_forward": "passed",
+          "test_bizdays::test_add_with_holidays_and_weekend": "passed",
+          "test_bizdays::test_add_matches_between": "passed",
+          "test_bizdays::test_invalid_weekend_raises": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".................F                                                       [100%]\n=================================== FAILURES ===================================\n_________________________ test_invalid_weekend_raises __________________________\n\n    def test_invalid_weekend_raises():\n        for weekend in [range(7), (7,), (-1,), (5, 6, 0, 1, 2, 3, 4)]:\n            for call in (lambda w: is_business_day(MON, weekend=w),\n                         lambda w: business_days_between(MON, MON + D, weekend=w),\n                         lambda w: add_business_days(MON, 1, weekend=w)):\n>               with pytest.raises(ValueError):\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^\nE               Failed: DID NOT RAISE ValueError\n\ntest_bizdays.py:145: Failed\n=========================== short test summary info ============================\nFAILED test_bizdays.py::test_invalid_weekend_raises - Failed: DID NOT RAISE V...\n1 failed, 17 passed in 0.23s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 0.9444
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ratelimit.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "ratelimit.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ratelimit.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 0,
+        "outcomes": {
+          "test_ratelimit::test_invalid_rate_or_capacity": "passed",
+          "test_ratelimit::test_starts_full_and_reads_injected_clock": "passed",
+          "test_ratelimit::test_default_clock_works": "passed",
+          "test_ratelimit::test_refill_is_continuous_and_fractional": "passed",
+          "test_ratelimit::test_refill_capped_at_capacity": "passed",
+          "test_ratelimit::test_failed_acquire_removes_nothing": "passed",
+          "test_ratelimit::test_wait_time": "passed",
+          "test_ratelimit::test_wait_time_then_acquire_succeeds": "passed",
+          "test_ratelimit::test_wait_time_returns_float": "passed",
+          "test_ratelimit::test_bad_n": "passed",
+          "test_ratelimit::test_clock_going_backwards": "passed",
+          "test_ratelimit::test_steady_rate_over_many_steps": "passed",
+          "test_ratelimit::test_float_rate_and_capacity": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............                                                            [100%]\n13 passed in 0.04s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ratelimit.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "ratelimit.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ratelimit.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 11,
+        "failed": 2,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_ratelimit::test_invalid_rate_or_capacity": "passed",
+          "test_ratelimit::test_starts_full_and_reads_injected_clock": "passed",
+          "test_ratelimit::test_default_clock_works": "passed",
+          "test_ratelimit::test_refill_is_continuous_and_fractional": "passed",
+          "test_ratelimit::test_refill_capped_at_capacity": "failed",
+          "test_ratelimit::test_failed_acquire_removes_nothing": "passed",
+          "test_ratelimit::test_wait_time": "passed",
+          "test_ratelimit::test_wait_time_then_acquire_succeeds": "passed",
+          "test_ratelimit::test_wait_time_returns_float": "passed",
+          "test_ratelimit::test_bad_n": "passed",
+          "test_ratelimit::test_clock_going_backwards": "passed",
+          "test_ratelimit::test_steady_rate_over_many_steps": "passed",
+          "test_ratelimit::test_float_rate_and_capacity": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "   def test_refill_capped_at_capacity(clock):\n        b = TokenBucket(2, 4, clock)\n        assert b.try_acquire(3)\n        clock.advance(100)\n        assert b.available() == pytest.approx(4)\n        assert b.try_acquire(4) is True\n>       assert b.try_acquire(0.5) is False\n               ^^^^^^^^^^^^^^^^^^\n\ntest_ratelimit.py:60: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <ratelimit.TokenBucket object at 0x7d381103a720>, n = 0.5\n\n    def try_acquire(self, n: int = 1) -> bool:\n        \"\"\"Attempt to acquire n tokens. Returns True if successful, False otherwise.\n        \"\"\"\n        if not isinstance(n, int) or n <= 0 or n > self.capacity:\n>           raise ValueError(\"Request size n must be greater than 0 and at most capacity.\")\nE           ValueError: Request size n must be greater than 0 and at most capacity.\n\nratelimit.py:98: ValueError\n_________________________ test_float_rate_and_capacity _________________________\n\nclock = <test_ratelimit.Clock object at 0x7d381103bfb0>\n\n    def test_float_rate_and_capacity(clock):\n        b = TokenBucket(0.5, 1.5, clock)\n>       assert b.try_acquire(1.5)\n               ^^^^^^^^^^^^^^^^^^\n\ntest_ratelimit.py:136: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <ratelimit.TokenBucket object at 0x7d381103bf50>, n = 1.5\n\n    def try_acquire(self, n: int = 1) -> bool:\n        \"\"\"Attempt to acquire n tokens. Returns True if successful, False otherwise.\n        \"\"\"\n        if not isinstance(n, int) or n <= 0 or n > self.capacity:\n>           raise ValueError(\"Request size n must be greater than 0 and at most capacity.\")\nE           ValueError: Request size n must be greater than 0 and at most capacity.\n\nratelimit.py:98: ValueError\n=========================== short test summary info ============================\nFAILED test_ratelimit.py::test_refill_capped_at_capacity - ValueError: Reques...\nFAILED test_ratelimit.py::test_float_rate_and_capacity - ValueError: Request ...\n2 failed, 11 passed in 0.06s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 0.8462
+    },
+    {
+      "prompt_id": "c15",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "linediff.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "linediff.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "linediff.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 12,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 20.413,
+        "exit_code": 1,
+        "outcomes": {
+          "test_linediff::test_example_from_the_spec": "passed",
+          "test_linediff::test_identical_and_empty": "passed",
+          "test_linediff::test_deletions_before_insertions_in_a_block": "passed",
+          "test_linediff::test_equal_lines_matched_as_soon_as_met": "passed",
+          "test_linediff::test_insertion_when_it_keeps_more_in_common": "passed",
+          "test_linediff::test_tie_prefers_deletion": "passed",
+          "test_linediff::test_lines_compared_exactly": "passed",
+          "test_linediff::test_lines_starting_with_prefix_characters": "passed",
+          "test_linediff::test_inputs_not_modified": "passed",
+          "test_linediff::test_returns_list_of_str": "passed",
+          "test_linediff::test_random_matches_rule": "passed",
+          "test_linediff::test_random_reconstructs_and_is_minimal": "passed",
+          "test_linediff::test_large_inputs": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "............F                                                            [100%]\n=================================== FAILURES ===================================\n______________________________ test_large_inputs _______________________________\n\n    def test_large_inputs():\n        rng = random.Random(17)\n        a = [f'line {rng.randrange(300)}' for _ in range(2000)]\n        b = [x if rng.random() < 0.85 else f'new {rng.randrange(300)}' for x in a]\n        b = b[:1000] + [f'extra {k}' for k in range(50)] + b[1000:]\n>       script = diff(a, b)\n                 ^^^^^^^^^^\n\ntest_linediff.py:114: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nlinediff.py:60: in diff\n    lcs_skip_b = lcs_length(a[i:], b[j+1:])\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^\nlinediff.py:22: in lcs_length\n    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nsignum = 14\nframe = <frame at 0x785e5263cd00, file '/tmp/hidden-tests-6uvdg9i9/work/linediff.py', line 22, code lcs_length>\n\n    def _expire(signum, frame):\n>       raise TimeoutError(f'test exceeded {LIMIT:g} s (hidden_tests per-test timeout)')\nE       TimeoutError: test exceeded 20 s (hidden_tests per-test timeout)\n\n../plugin/_hidden_test_timeout.py:10: TimeoutError\n=========================== short test summary info ============================\nFAILED test_linediff.py::test_large_inputs - TimeoutError: test exceeded 20 s...\n1 failed, 12 passed in 20.11s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 0.9231
+    },
+    {
+      "prompt_id": "c15",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {},
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "linediff.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": []
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_linediff": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n______________________ ERROR collecting test_linediff.py _______________________\nImportError while importing test module '/tmp/hidden-tests-2k0i_y8k/work/test_linediff.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_linediff.py:4: in <module>\n    from linediff import diff\nE   ModuleNotFoundError: No module named 'linediff'\n=========================== short test summary info ============================\nERROR test_linediff.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.11s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c18",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "slug.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "slug.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "slug.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 20,
+        "failed": 2,
+        "skipped": 0,
+        "errors": 0,
+        "total": 22,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.215,
+        "exit_code": 1,
+        "outcomes": {
+          "test_slug::test_basic_transformations[Hello, World!-hello-world]": "passed",
+          "test_slug::test_basic_transformations[  Leading and trailing  -leading-and-trailing]": "passed",
+          "test_slug::test_basic_transformations[Don't Stop-dont-stop]": "passed",
+          "test_slug::test_basic_transformations[It\\u2019s here-its-here]": "passed",
+          "test_slug::test_basic_transformations[Cr\\xe8me Br\\xfbl\\xe9e-creme-brulee]": "passed",
+          "test_slug::test_basic_transformations[\\ufb01nal \\u2163-final-iv]": "passed",
+          "test_slug::test_basic_transformations[a--b__c  d-a-b-c-d]": "passed",
+          "test_slug::test_basic_transformations[Version 2.0 (beta)-version-2-0-beta]": "passed",
+          "test_slug::test_basic_transformations[\\u65e5\\u672c\\u8a9e title-title]": "passed",
+          "test_slug::test_empty_becomes_untitled[]": "passed",
+          "test_slug::test_empty_becomes_untitled[!!!]": "passed",
+          "test_slug::test_empty_becomes_untitled[\\u65e5\\u672c\\u8a9e]": "passed",
+          "test_slug::test_empty_becomes_untitled[']": "passed",
+          "test_slug::test_cut_at_word_boundary": "failed",
+          "test_slug::test_long_first_word_is_hard_cut": "passed",
+          "test_slug::test_max_len_default_is_50": "passed",
+          "test_slug::test_max_len_below_one_raises": "passed",
+          "test_slug::test_unique_suffixes": "passed",
+          "test_slug::test_untitled_is_made_unique_too": "passed",
+          "test_slug::test_suffix_respects_max_len": "passed",
+          "test_slug::test_suffix_shortens_from_full_base": "failed",
+          "test_slug::test_existing_not_modified": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............F......F.                                                   [100%]\n=================================== FAILURES ===================================\n__________________________ test_cut_at_word_boundary ___________________________\n\n    def test_cut_at_word_boundary():\n        assert slugify('the quick brown fox', max_len=12) == 'the-quick'\n>       assert slugify('the quick brown fox', max_len=15) == 'the-quick-brown'\nE       AssertionError: assert 'the-quick' == 'the-quick-brown'\nE         \nE         - the-quick-brown\nE         ?          ------\nE         + the-quick\n\ntest_slug.py:28: AssertionError\n_____________________ test_suffix_shortens_from_full_base ______________________\n\n    def test_suffix_shortens_from_full_base():\n        # base is 'alpha-beta-gamma'; max_len 14 gives 'alpha-beta'; with '-2' the\n        # base must fit in 12 characters, which is still 'alpha-beta'.\n        assert slugify('alpha beta gamma', max_len=14, existing={'alpha-beta'}) == 'alpha-beta-2'\n        # with '-10' (3 chars) the base must fit in 11: still 'alpha-beta'\n        taken = {'alpha-beta'} | {f'alpha-beta-{n}' for n in range(2, 10)}\n>       assert slugify('alpha beta gamma', max_len=13, existing=taken) == 'alpha-beta-10'\nE       AssertionError: assert 'alpha-10' == 'alpha-beta-10'\nE         \nE         - alpha-beta-10\nE         ?       -----\nE         + alpha-10\n\ntest_slug.py:71: AssertionError\n=========================== short test summary info ============================\nFAILED test_slug.py::test_cut_at_word_boundary - AssertionError: assert 'the-...\nFAILED test_slug.py::test_suffix_shortens_from_full_base - AssertionError: as...\n2 failed, 20 passed in 0.05s\n"
+      },
+      "n_tests": 22,
+      "pass_rate": 0.9091
+    },
+    {
+      "prompt_id": "c18",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "slug.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "slug.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "slug.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 17,
+        "failed": 5,
+        "skipped": 0,
+        "errors": 0,
+        "total": 22,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_slug::test_basic_transformations[Hello, World!-hello-world]": "passed",
+          "test_slug::test_basic_transformations[  Leading and trailing  -leading-and-trailing]": "passed",
+          "test_slug::test_basic_transformations[Don't Stop-dont-stop]": "passed",
+          "test_slug::test_basic_transformations[It\\u2019s here-its-here]": "passed",
+          "test_slug::test_basic_transformations[Cr\\xe8me Br\\xfbl\\xe9e-creme-brulee]": "passed",
+          "test_slug::test_basic_transformations[\\ufb01nal \\u2163-final-iv]": "passed",
+          "test_slug::test_basic_transformations[a--b__c  d-a-b-c-d]": "passed",
+          "test_slug::test_basic_transformations[Version 2.0 (beta)-version-2-0-beta]": "passed",
+          "test_slug::test_basic_transformations[\\u65e5\\u672c\\u8a9e title-title]": "passed",
+          "test_slug::test_empty_becomes_untitled[]": "passed",
+          "test_slug::test_empty_becomes_untitled[!!!]": "passed",
+          "test_slug::test_empty_becomes_untitled[\\u65e5\\u672c\\u8a9e]": "passed",
+          "test_slug::test_empty_becomes_untitled[']": "passed",
+          "test_slug::test_cut_at_word_boundary": "failed",
+          "test_slug::test_long_first_word_is_hard_cut": "passed",
+          "test_slug::test_max_len_default_is_50": "failed",
+          "test_slug::test_max_len_below_one_raises": "passed",
+          "test_slug::test_unique_suffixes": "passed",
+          "test_slug::test_untitled_is_made_unique_too": "failed",
+          "test_slug::test_suffix_respects_max_len": "failed",
+          "test_slug::test_suffix_shortens_from_full_base": "failed",
+          "test_slug::test_existing_not_modified": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "o show\nE         - d-word-word\nE         + d-word-word-\nE         ?            +\n\ntest_slug.py:39: AssertionError\n_______________________ test_untitled_is_made_unique_too _______________________\n\n    def test_untitled_is_made_unique_too():\n>       assert slugify('???', existing=['untitled']) == 'untitled-2'\nE       AssertionError: assert 'untitled' == 'untitled-2'\nE         \nE         - untitled-2\nE         ?         --\nE         + untitled\n\ntest_slug.py:54: AssertionError\n_________________________ test_suffix_respects_max_len _________________________\n\n    def test_suffix_respects_max_len():\n        existing = {'the-quick'}\n>       assert slugify('the quick brown fox', max_len=12, existing=existing) == 'the-quick-2'\nE       AssertionError: assert 'the-quick-br' == 'the-quick-2'\nE         \nE         - the-quick-2\nE         ?           ^\nE         + the-quick-br\nE         ?           ^^\n\ntest_slug.py:59: AssertionError\n_____________________ test_suffix_shortens_from_full_base ______________________\n\n    def test_suffix_shortens_from_full_base():\n        # base is 'alpha-beta-gamma'; max_len 14 gives 'alpha-beta'; with '-2' the\n        # base must fit in 12 characters, which is still 'alpha-beta'.\n>       assert slugify('alpha beta gamma', max_len=14, existing={'alpha-beta'}) == 'alpha-beta-2'\nE       AssertionError: assert 'alpha-beta-gamma' == 'alpha-beta-2'\nE         \nE         - alpha-beta-2\nE         ?            ^\nE         + alpha-beta-gamma\nE         ?            ^^^^^\n\ntest_slug.py:68: AssertionError\n=========================== short test summary info ============================\nFAILED test_slug.py::test_cut_at_word_boundary - AssertionError: assert 'the-...\nFAILED test_slug.py::test_max_len_default_is_50 - AssertionError: assert 'wor...\nFAILED test_slug.py::test_untitled_is_made_unique_too - AssertionError: asser...\nFAILED test_slug.py::test_suffix_respects_max_len - AssertionError: assert 't...\nFAILED test_slug.py::test_suffix_shortens_from_full_base - AssertionError: as...\n5 failed, 17 passed in 0.06s\n"
+      },
+      "n_tests": 22,
+      "pass_rate": 0.7727
+    },
+    {
+      "prompt_id": "c23",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 5,
+        "files": {
+          "trie.py": {
+            "rule": "snapshot_part",
+            "block": 4,
+            "raw": "trie.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "trie.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 2,
+        "failed": 12,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_trie::test_orders_by_weight_descending": "failed",
+          "test_trie::test_ties_alphabetical_by_casefold_keeping_spelling": "failed",
+          "test_trie::test_prefix_is_case_insensitive": "failed",
+          "test_trie::test_casefold_not_just_lower": "failed",
+          "test_trie::test_k_limits_results": "failed",
+          "test_trie::test_empty_prefix_matches_everything": "failed",
+          "test_trie::test_word_is_its_own_prefix_and_no_match": "failed",
+          "test_trie::test_readd_replaces_spelling_and_weight": "failed",
+          "test_trie::test_default_weight_is_one": "failed",
+          "test_trie::test_add_empty_raises": "passed",
+          "test_trie::test_delete_case_insensitive": "failed",
+          "test_trie::test_delete_missing_and_prefix_only": "failed",
+          "test_trie::test_delete_keeps_longer_and_shorter_words": "failed",
+          "test_trie::test_contains_and_len": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "esults.append((current_node.weight, cf_word))\n    \n            for char, child_node in current_node.children.items():\n                collect_words(child_node, path_chars + [char])\n    \n        # Start collection from the prefix node. The path starts with the prefix characters.\n        collect_words(node, list(cf_prefix))\n    \n        # 3. Sort the results\n        # Sorting criteria: 1. Highest weight (descending). 2. Alphabetically by casefolded form (ascending).\n        # We sort by (-weight, cf_word) to achieve descending weight and ascending alphabet.\n        sorted_results = sorted(results, key=lambda x: (-x[0], x[1]))\n    \n        # 4. Return the top k, using the original spelling\n        final_list = []\n        for weight, cf_word in sorted_results[:k]:\n            # Retrieve the original spelling from the internal map\n>           original_word = self._word_spellings[cf_word]\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE           KeyError: 'innerinner'\n\ntrie.py:126: KeyError\n=========================== short test summary info ============================\nFAILED test_trie.py::test_orders_by_weight_descending - KeyError: 'cartcart'\nFAILED test_trie.py::test_ties_alphabetical_by_casefold_keeping_spelling - Ke...\nFAILED test_trie.py::test_prefix_is_case_insensitive - KeyError: 'pyramidpyra...\nFAILED test_trie.py::test_casefold_not_just_lower - KeyError: 'strassestrasse'\nFAILED test_trie.py::test_k_limits_results - KeyError: 'w19w19'\nFAILED test_trie.py::test_empty_prefix_matches_everything - KeyError: 'cc'\nFAILED test_trie.py::test_word_is_its_own_prefix_and_no_match - KeyError: 'te...\nFAILED test_trie.py::test_readd_replaces_spelling_and_weight - KeyError: 'hel...\nFAILED test_trie.py::test_default_weight_is_one - KeyError: 'alphaalpha'\nFAILED test_trie.py::test_delete_case_insensitive - KeyError: 'helphelp'\nFAILED test_trie.py::test_delete_missing_and_prefix_only - KeyError: 'teamteam'\nFAILED test_trie.py::test_delete_keeps_longer_and_shorter_words - KeyError: '...\n12 failed, 2 passed in 0.11s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.1429
+    },
+    {
+      "prompt_id": "c23",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "trie.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "trie.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "trie.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_trie": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n________________________ ERROR collecting test_trie.py _________________________\ntest_trie.py:3: in <module>\n    from trie import Autocomplete\ntrie.py:1: in <module>\n    class TrieNode:\ntrie.py:17: in TrieNode\n    self.word: str | None = None\n    ^^^^\nE   NameError: name 'self' is not defined\n=========================== short test summary info ============================\nERROR test_trie.py - NameError: name 'self' is not defined\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.11s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c27",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 5,
+        "files": {
+          "search.py": {
+            "rule": "snapshot_part",
+            "block": 4,
+            "raw": "search.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "search.py",
+            "replaced_block": 0,
+            "by_block": 2
+          },
+          {
+            "path": "search.py",
+            "replaced_block": 2,
+            "by_block": 3
+          },
+          {
+            "path": "search.py",
+            "replaced_block": 3,
+            "by_block": 4
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "search.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_search": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_search.py ________________________\nImportError while importing test module '/tmp/hidden-tests-mu7yme90/work/test_search.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_search.py:6: in <module>\n    from search import (count, first_index, insertion_point, isqrt, last_index, rotation_offset,\nE   ImportError: cannot import name 'count' from 'search' (/tmp/hidden-tests-mu7yme90/work/search.py)\n=========================== short test summary info ============================\nERROR test_search.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c27",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "search.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "search.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "search.py",
+            "replaced_block": 0,
+            "by_block": 1
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "search.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_search": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_search.py ________________________\nImportError while importing test module '/tmp/hidden-tests-cspelw62/work/test_search.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_search.py:6: in <module>\n    from search import (count, first_index, insertion_point, isqrt, last_index, rotation_offset,\nE   ImportError: cannot import name 'count' from 'search' (/tmp/hidden-tests-cspelw62/work/search.py)\n=========================== short test summary info ============================\nERROR test_search.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c28",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 2,
+        "files": {
+          "events.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "events.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "events.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 11,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 14,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_events::test_on_and_emit_in_order_with_args": "passed",
+          "test_events::test_emit_without_listeners": "passed",
+          "test_events::test_events_are_separate": "passed",
+          "test_events::test_same_listener_twice": "passed",
+          "test_events::test_once_runs_once": "passed",
+          "test_events::test_once_removed_before_call_reentrant": "failed",
+          "test_events::test_off_removes_earliest_registration": "passed",
+          "test_events::test_off_once_registration_and_unknown": "passed",
+          "test_events::test_off_all": "passed",
+          "test_events::test_listener_added_during_emit_not_called": "passed",
+          "test_events::test_listener_removed_during_emit_not_called": "failed",
+          "test_events::test_errors_collected_after_all_listeners": "passed",
+          "test_events::test_failing_once_listener_is_still_removed": "failed",
+          "test_events::test_listeners_returns_a_copy": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "list(self._registrations[event])\n        call_count = 0\n        errors_recorded: List[Tuple[Callable, Exception]] = []\n    \n        for i, reg in enumerate(listeners_to_call):\n            listener = reg['listener']\n    \n            # Check if registration is still active (important for 'once' removal logic if emission is recursive)\n            # Note: Since we are iterating over a copy, we only need to worry about external changes or 'once' flags.\n            # If 'once' is true, we remove it *after* it runs if it hasn't been removed by another mechanism.\n    \n            try:\n                listener(*args, **kwargs)\n                call_count += 1\n    \n                # Handle 'once' removal immediately after successful execution\n                if reg['once']:\n                    # Find the exact registration object in the main list and remove it\n                    # We must search for the object corresponding to this call_index/registration\n                    try:\n                        self._registrations[event].remove(reg)\n                    except ValueError:\n                        # Already removed, which shouldn't happen if logic is clean, but safe guard\n                        pass\n    \n            except Exception as e:\n                call_count += 1 # Call was made, even if it failed\n                errors_recorded.append((listener, e))\n                # Continue to the next listener\n    \n        if errors_recorded:\n            # Raise EmitError with all recorded failures\n            error_instance = EmitError()\n            error_instance.errors = errors_recorded\n>           raise error_instance\nE           events.EmitError\n\nevents.py:96: EmitError\n=========================== short test summary info ============================\nFAILED test_events.py::test_once_removed_before_call_reentrant - events.EmitE...\nFAILED test_events.py::test_listener_removed_during_emit_not_called - Asserti...\nFAILED test_events.py::test_failing_once_listener_is_still_removed - events.E...\n3 failed, 11 passed in 0.07s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.7857
+    },
+    {
+      "prompt_id": "c28",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "events.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "events.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "events.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_events": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_events.py ________________________\ntest_events.py:3: in <module>\n    from events import EmitError, Emitter\nevents.py:1: in <module>\n    events.py\n    ^^^^^^\nE   NameError: name 'events' is not defined\n=========================== short test summary info ============================\nERROR test_events.py - NameError: name 'events' is not defined\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.11s\n"
+      },
+      "n_tests": 14,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c30",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "money.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "money.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "money.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 2,
+        "outcomes": {
+          "test_money": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n________________________ ERROR collecting test_money.py ________________________\ntest_money.py:5: in <module>\n    from money import allocate, format_money, split_even, to_cents\nmoney.py:1: in <module>\n    money.py\n    ^^^^^\nE   NameError: name 'money' is not defined\n=========================== short test summary info ============================\nERROR test_money.py - NameError: name 'money' is not defined\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.10s\n"
+      },
+      "n_tests": 20,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c30",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "money.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "money.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "money.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 10,
+        "failed": 10,
+        "skipped": 0,
+        "errors": 0,
+        "total": 20,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.266,
+        "exit_code": 1,
+        "outcomes": {
+          "test_money::test_to_cents_bankers_rounding[2.675-2.68]": "passed",
+          "test_money::test_to_cents_bankers_rounding[2.665-2.66]": "passed",
+          "test_money::test_to_cents_bankers_rounding[0.125-0.12]": "passed",
+          "test_money::test_to_cents_bankers_rounding[0.135-0.14]": "passed",
+          "test_money::test_to_cents_bankers_rounding[-2.675--2.68]": "passed",
+          "test_money::test_to_cents_bankers_rounding[5-5.00]": "passed",
+          "test_money::test_to_cents_bankers_rounding[x6-1.00]": "passed",
+          "test_money::test_to_cents_bankers_rounding[  3.1 -3.10]": "passed",
+          "test_money::test_to_cents_bankers_rounding[1e2-100.00]": "passed",
+          "test_money::test_to_cents_type_and_value_errors": "passed",
+          "test_money::test_allocate_examples": "failed",
+          "test_money::test_allocate_largest_remainder_not_position": "failed",
+          "test_money::test_allocate_ties_go_to_earlier_parts": "failed",
+          "test_money::test_allocate_zero_ratio_and_decimal_ratios": "failed",
+          "test_money::test_allocate_negative_amount": "failed",
+          "test_money::test_allocate_rounds_amount_first": "failed",
+          "test_money::test_allocate_always_sums_exactly": "failed",
+          "test_money::test_allocate_errors": "failed",
+          "test_money::test_split_even": "failed",
+          "test_money::test_format_money": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "____________\n\n    def test_format_money():\n        cases = [\n            ('-1234567.891', '-1,234,567.89'), ('0', '0.00'), ('-0.001', '0.00'),\n            ('999.995', '1,000.00'), (12, '12.00'), ('1000', '1,000.00'), ('-5.5', '-5.50'),\n        ]\n        for x, expected in cases:\n>           assert format_money(x) == expected, x\n                   ^^^^^^^^^^^^^^^\n\ntest_money.py:96: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\namount = '-1234567.891'\n\n    def format_money(amount: Decimal) -> str:\n        \"\"\"\n        Formats a Decimal amount with comma separators and exactly two decimal places.\n    \n        Args:\n            amount: The amount (must be a Decimal).\n    \n        Returns:\n            A string representation of the formatted currency (e.g., \"1,234.56\").\n        \"\"\"\n        # Ensure the amount is quantized to two places for reliable formatting\n>       quantized_amount = amount.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_EVEN)\n                           ^^^^^^^^^^^^^^^\nE       AttributeError: 'str' object has no attribute 'quantize'\n\nmoney.py:155: AttributeError\n=========================== short test summary info ============================\nFAILED test_money.py::test_allocate_examples - TypeError: '<' not supported b...\nFAILED test_money.py::test_allocate_largest_remainder_not_position - TypeErro...\nFAILED test_money.py::test_allocate_ties_go_to_earlier_parts - TypeError: '<'...\nFAILED test_money.py::test_allocate_zero_ratio_and_decimal_ratios - TypeError...\nFAILED test_money.py::test_allocate_negative_amount - TypeError: '<' not supp...\nFAILED test_money.py::test_allocate_rounds_amount_first - TypeError: '<' not ...\nFAILED test_money.py::test_allocate_always_sums_exactly - NameError: name 'RO...\nFAILED test_money.py::test_allocate_errors - decimal.InvalidOperation: [<clas...\nFAILED test_money.py::test_split_even - TypeError: '<' not supported between ...\nFAILED test_money.py::test_format_money - AttributeError: 'str' object has no...\n10 failed, 10 passed in 0.09s\n"
+      },
+      "n_tests": 20,
+      "pass_rate": 0.5
+    },
+    {
+      "prompt_id": "c38",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 5,
+        "files": {
+          "fsm/machine.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "fsm/machine.py"
+          },
+          "fsm/__init__.py": {
+            "rule": "snapshot_part+expected_basename",
+            "block": 3,
+            "raw": "__init__.py"
+          },
+          "vending.py": {
+            "rule": "snapshot_part",
+            "block": 4,
+            "raw": "vending.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "fsm/machine.py",
+            "replaced_block": 0,
+            "by_block": 1
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "fsm/__init__.py",
+          "fsm/machine.py",
+          "vending.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 2,
+        "total": 2,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.316,
+        "exit_code": 2,
+        "outcomes": {
+          "test_fsm": "collection_error",
+          "test_vending": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_________________________ ERROR collecting test_fsm.py _________________________\nImportError while importing test module '/tmp/hidden-tests-mj8pt4qu/work/test_fsm.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_fsm.py:3: in <module>\n    from fsm import (Event, GuardRejected, InvalidTransition, Machine, MachineError, State,\nfsm/__init__.py:1: in <module>\n    from .machine import Machine, State, Transition, Event, MachineError, InvalidTransition, GuardRejected\nE   ImportError: cannot import name 'Machine' from 'fsm.machine' (/tmp/hidden-tests-mj8pt4qu/work/fsm/machine.py)\n_______________________ ERROR collecting test_vending.py _______________________\nImportError while importing test module '/tmp/hidden-tests-mj8pt4qu/work/test_vending.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_vending.py:3: in <module>\n    import fsm\nfsm/__init__.py:1: in <module>\n    from .machine import Machine, State, Transition, Event, MachineError, InvalidTransition, GuardRejected\nE   ImportError: cannot import name 'Machine' from 'fsm.machine' (/tmp/hidden-tests-mj8pt4qu/work/fsm/machine.py)\n=========================== short test summary info ============================\nERROR test_fsm.py\nERROR test_vending.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.15s\n"
+      },
+      "n_tests": 38,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c38",
+      "arm": "b",
+      "run": 1,
+      "run_error": "InstructorRetryException(1 validation error for ComposerResponse\nops.0\n  Input tag 'ReplaceInPart' found using 'type' does not match any of the expected tags: 'add_part', 'append_to_part', 'replace_in_part', 'insert_in_part', 'update_part', 'merge_parts', 'move_part', 'delete_part' [type=union_tag_invalid, input_value={'type': 'ReplaceInPart',...' fires.\\n        pass\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/union_tag_invalid)",
+      "extraction": {
+        "source": "none",
+        "blocks": 0,
+        "files": {},
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "fsm/__init__.py",
+          "fsm/machine.py",
+          "vending.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": []
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 2,
+        "total": 2,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_fsm": "collection_error",
+          "test_vending": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_________________________ ERROR collecting test_fsm.py _________________________\nImportError while importing test module '/tmp/hidden-tests-mk6x4p8v/work/test_fsm.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_fsm.py:3: in <module>\n    from fsm import (Event, GuardRejected, InvalidTransition, Machine, MachineError, State,\nE   ModuleNotFoundError: No module named 'fsm'\n_______________________ ERROR collecting test_vending.py _______________________\nImportError while importing test module '/tmp/hidden-tests-mk6x4p8v/work/test_vending.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_vending.py:3: in <module>\n    import fsm\nE   ModuleNotFoundError: No module named 'fsm'\n=========================== short test summary info ============================\nERROR test_fsm.py\nERROR test_vending.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.14s\n"
+      },
+      "n_tests": 38,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c40",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "library/fines.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "library/fines.py"
+          },
+          "library/loans.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "library/loans.py"
+          },
+          "library/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "library/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "library/catalog.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": [
+          "library/__init__.py",
+          "library/fines.py",
+          "library/loans.py"
+        ]
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 2,
+        "total": 2,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_loans": "collection_error",
+          "test_policy_catalog": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n________________________ ERROR collecting test_loans.py ________________________\nImportError while importing test module '/tmp/hidden-tests-37_d5_b_/work/test_loans.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_loans.py:5: in <module>\n    from library import (Blocked, Catalog, DuplicateLoan, Library, LimitReached, Loan, LoanError,\nlibrary/__init__.py:2: in <module>\n    from .catalog import Catalog, Book, Member\nE   ModuleNotFoundError: No module named 'library.catalog'\n___________________ ERROR collecting test_policy_catalog.py ____________________\nImportError while importing test module '/tmp/hidden-tests-37_d5_b_/work/test_policy_catalog.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_policy_catalog.py:5: in <module>\n    from library import POLICY, Book, Catalog, Policy, due_date, fine_for, HOLD_PICKUP_DAYS\nlibrary/__init__.py:2: in <module>\n    from .catalog import Catalog, Book, Member\nE   ModuleNotFoundError: No module named 'library.catalog'\n=========================== short test summary info ============================\nERROR test_loans.py\nERROR test_policy_catalog.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.14s\n"
+      },
+      "n_tests": 33,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c40",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "library/fines.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "library/fines.py"
+          },
+          "library/catalog.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "library/catalog.py"
+          },
+          "library/loans.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "library/loans.py"
+          },
+          "library/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "library/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "library/__init__.py",
+          "library/catalog.py",
+          "library/fines.py",
+          "library/loans.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 30,
+        "failed": 3,
+        "skipped": 0,
+        "errors": 0,
+        "total": 33,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 1,
+        "outcomes": {
+          "test_loans::test_checkout_creates_numbered_loans": "passed",
+          "test_loans::test_checkout_due_date_skips_sunday": "passed",
+          "test_loans::test_unknown_ids_raise_key_error": "failed",
+          "test_loans::test_not_available_when_all_copies_out": "passed",
+          "test_loans::test_duplicate_and_limit": "passed",
+          "test_loans::test_fine_blocks_until_paid_and_blocked_comes_first": "passed",
+          "test_loans::test_checkin_fine_grace_and_double_checkin": "passed",
+          "test_loans::test_pay_errors": "passed",
+          "test_loans::test_renew_counts_from_old_due_and_runs_out": "passed",
+          "test_loans::test_renew_allowed_on_due_day_refused_after": "passed",
+          "test_loans::test_renew_refused_when_held_and_returned_is_loan_error": "passed",
+          "test_loans::test_loans_and_overdue_sorted": "passed",
+          "test_loans::test_place_hold_rules_and_positions": "passed",
+          "test_loans::test_checkin_sets_copy_aside_for_first_hold": "failed",
+          "test_loans::test_expired_holds_chain_by_deadline_not_by_usage": "failed",
+          "test_loans::test_cancel_ready_hold_passes_copy_from_today": "passed",
+          "test_loans::test_checkout_removes_waiting_hold_when_copies_added": "passed",
+          "test_policy_catalog::test_policy_table": "passed",
+          "test_policy_catalog::test_due_date[start0-21-expected0]": "passed",
+          "test_policy_catalog::test_due_date[start1-14-expected1]": "passed",
+          "test_policy_catalog::test_due_date[start2-1-expected2]": "passed",
+          "test_policy_catalog::test_fine_for[standard-0-0]": "passed",
+          "test_policy_catalog::test_fine_for[standard--5-0]": "passed",
+          "test_policy_catalog::test_fine_for[standard-1-25]": "passed",
+          "test_policy_catalog::test_fine_for[student-2-0]": "passed",
+          "test_policy_catalog::test_fine_for[student-3-30]": "passed",
+          "test_policy_catalog::test_fine_for[standard-60-1000]": "passed",
+          "test_policy_catalog::test_fine_for[student-51-500]": "passed",
+          "test_policy_catalog::test_fine_for[staff-30-0]": "passed",
+          "test_policy_catalog::test_fine_for_unknown_kind": "passed",
+          "test_policy_catalog::test_catalog_add_and_errors": "passed",
+          "test_policy_catalog::test_add_copies": "passed",
+          "test_policy_catalog::test_search_ignores_case_and_sorts": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n\nlibrary/loans.py:322: LoanError\n_________________ test_checkin_sets_copy_aside_for_first_hold __________________\n\nlib = <library.loans.Library object at 0x70efd3702c30>\nclock = <test_loans.Clock object at 0x70efd3702db0>\n\n    def test_checkin_sets_copy_aside_for_first_hold(lib, clock):\n        loan = lib.checkout('ann', 'B1')\n        lib.place_hold('bob', 'B1')\n        lib.place_hold('cat', 'B1')\n        clock.advance(5)\n        lib.checkin(loan.loan_id)\n        assert lib.available('B1') == 0\n        assert lib.hold_status('bob', 'B1') == ('ready', date(2026, 3, 10))\n>       assert lib.hold_status('cat', 'B1') == ('waiting', 2)\nE       AssertionError: assert ('waiting', 1) == ('waiting', 2)\nE         \nE         At index 1 diff: 1 != 2\nE         Use -v to get more diff\n\ntest_loans.py:205: AssertionError\n______________ test_expired_holds_chain_by_deadline_not_by_usage _______________\n\nlib = <library.loans.Library object at 0x70efd3702c90>\nclock = <test_loans.Clock object at 0x70efd3703500>\n\n    def test_expired_holds_chain_by_deadline_not_by_usage(lib, clock):\n        loan = lib.checkout('ann', 'B1')\n        for m in ('bob', 'cat', 'dan'):\n            lib.place_hold(m, 'B1')\n        lib.checkin(loan.loan_id)  # 03-02: bob ready until 03-05\n        clock.today = date(2026, 3, 12)  # nobody used the library meanwhile\n        # bob expires 03-06 -> cat ready until 03-09; cat expires 03-10 -> dan until 03-13\n>       assert lib.holds('B1') == ['dan']\nE       AssertionError: assert ['cat', 'dan'] == ['dan']\nE         \nE         At index 0 diff: 'cat' != 'dan'\nE         Left contains one more item: 'dan'\nE         Use -v to get more diff\n\ntest_loans.py:223: AssertionError\n=========================== short test summary info ============================\nFAILED test_loans.py::test_unknown_ids_raise_key_error - library.loans.LoanEr...\nFAILED test_loans.py::test_checkin_sets_copy_aside_for_first_hold - Assertion...\nFAILED test_loans.py::test_expired_holds_chain_by_deadline_not_by_usage - Ass...\n3 failed, 30 passed in 0.11s\n"
+      },
+      "n_tests": 33,
+      "pass_rate": 0.9091
+    },
+    {
+      "prompt_id": "c43",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 8,
+        "files": {
+          "sheet/formula.py": {
+            "rule": "snapshot_part",
+            "block": 5,
+            "raw": "sheet/formula.py"
+          },
+          "sheet/graph.py": {
+            "rule": "snapshot_part",
+            "block": 6,
+            "raw": "sheet/graph.py"
+          },
+          "sheet/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 4,
+            "raw": "sheet/__init__.py"
+          },
+          "sheet/sheet.py": {
+            "rule": "snapshot_part",
+            "block": 7,
+            "raw": "sheet/sheet.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "sheet/formula.py",
+            "replaced_block": 0,
+            "by_block": 5
+          },
+          {
+            "path": "sheet/graph.py",
+            "replaced_block": 2,
+            "by_block": 6
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "sheet/__init__.py",
+          "sheet/formula.py",
+          "sheet/graph.py",
+          "sheet/sheet.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 3,
+        "total": 3,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.365,
+        "exit_code": 2,
+        "outcomes": {
+          "test_formula": "collection_error",
+          "test_graph": "collection_error",
+          "test_sheet": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_formula.py _______________________\ntest_formula.py:3: in <module>\n    from sheet import ErrorValue, FormulaError, evaluate, parse_formula, references\nsheet/__init__.py:1: in <module>\n    from .sheet import Sheet\nsheet/sheet.py:1: in <module>\n    sheet/__init__.py\n    ^^^^^\nE   NameError: name 'sheet' is not defined\n________________________ ERROR collecting test_graph.py ________________________\ntest_graph.py:1: in <module>\n    from sheet import DependencyGraph\nsheet/__init__.py:1: in <module>\n    from .sheet import Sheet\nsheet/sheet.py:1: in <module>\n    sheet/__init__.py\n    ^^^^^\nE   NameError: name 'sheet' is not defined\n________________________ ERROR collecting test_sheet.py ________________________\ntest_sheet.py:3: in <module>\n    from sheet import ErrorValue, FormulaError, Sheet\nsheet/__init__.py:1: in <module>\n    from .sheet import Sheet\nsheet/sheet.py:1: in <module>\n    sheet/__init__.py\n    ^^^^^\nE   NameError: name 'sheet' is not defined\n=========================== short test summary info ============================\nERROR test_formula.py - NameError: name 'sheet' is not defined\nERROR test_graph.py - NameError: name 'sheet' is not defined\nERROR test_sheet.py - NameError: name 'sheet' is not defined\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 0.16s\n"
+      },
+      "n_tests": 40,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c43",
+      "arm": "b",
+      "run": 1,
+      "run_error": "InstructorRetryException(1 validation error for ComposerResponse\n  Invalid JSON: lone leading surrogate in hex escape at line 6 column 3821 [type=json_invalid, input_value='{\\n  \"ops\": [\\n    {\\n  ...0]))\\\\n\"\\n    }\\n  ]\\n}', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/json_invalid)",
+      "extraction": {
+        "source": "none",
+        "blocks": 0,
+        "files": {},
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "sheet/__init__.py",
+          "sheet/formula.py",
+          "sheet/graph.py",
+          "sheet/sheet.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": []
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 3,
+        "total": 3,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_formula": "collection_error",
+          "test_graph": "collection_error",
+          "test_sheet": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "st module '/tmp/hidden-tests-i0c_j66b/work/test_formula.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_formula.py:3: in <module>\n    from sheet import ErrorValue, FormulaError, evaluate, parse_formula, references\nE   ModuleNotFoundError: No module named 'sheet'\n________________________ ERROR collecting test_graph.py ________________________\nImportError while importing test module '/tmp/hidden-tests-i0c_j66b/work/test_graph.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_graph.py:1: in <module>\n    from sheet import DependencyGraph\nE   ModuleNotFoundError: No module named 'sheet'\n________________________ ERROR collecting test_sheet.py ________________________\nImportError while importing test module '/tmp/hidden-tests-i0c_j66b/work/test_sheet.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_sheet.py:3: in <module>\n    from sheet import ErrorValue, FormulaError, Sheet\nE   ModuleNotFoundError: No module named 'sheet'\n=========================== short test summary info ============================\nERROR test_formula.py\nERROR test_graph.py\nERROR test_sheet.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 0.15s\n"
+      },
+      "n_tests": 40,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c49",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 5,
+        "files": {
+          "resolve/versions.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "resolve/versions.py"
+          },
+          "resolve/solver.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "resolve/solver.py"
+          },
+          "resolve/__init__.py": {
+            "rule": "snapshot_part+expected_basename",
+            "block": 4,
+            "raw": "__init__.py"
+          }
+        },
+        "duplicates": [
+          {
+            "path": "resolve/versions.py",
+            "replaced_block": 0,
+            "by_block": 1
+          }
+        ],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "resolve/index.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": [
+          "resolve/__init__.py",
+          "resolve/solver.py",
+          "resolve/versions.py"
+        ]
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.316,
+        "exit_code": 2,
+        "outcomes": {
+          "test_resolve": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_resolve.py _______________________\nImportError while importing test module '/tmp/hidden-tests-lkelsxlr/work/test_resolve.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_resolve.py:3: in <module>\n    from resolve import PackageIndex, Range, ResolutionError, Version, resolve\nresolve/__init__.py:2: in <module>\n    from .index import PackageIndex\nE   ModuleNotFoundError: No module named 'resolve.index'\n=========================== short test summary info ============================\nERROR test_resolve.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 35,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c49",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "resolve/versions.py": {
+            "rule": "snapshot_part+expected_basename",
+            "block": 0,
+            "raw": "versions.py"
+          },
+          "resolve/index.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "resolve/index.py"
+          },
+          "resolve/solver.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "resolve/solver.py"
+          },
+          "resolve/__init__.py": {
+            "rule": "snapshot_part+expected_basename",
+            "block": 3,
+            "raw": "__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "resolve/__init__.py",
+          "resolve/index.py",
+          "resolve/solver.py",
+          "resolve/versions.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 17,
+        "failed": 18,
+        "skipped": 0,
+        "errors": 0,
+        "total": 35,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.366,
+        "exit_code": 1,
+        "outcomes": {
+          "test_resolve::test_version_parse_compare_and_str": "passed",
+          "test_resolve::test_bad_versions[1.2]": "passed",
+          "test_resolve::test_bad_versions[1.2.3.4]": "passed",
+          "test_resolve::test_bad_versions[01.2.3]": "passed",
+          "test_resolve::test_bad_versions[1.02.3]": "passed",
+          "test_resolve::test_bad_versions[1.2.-3]": "passed",
+          "test_resolve::test_bad_versions[a.b.c]": "passed",
+          "test_resolve::test_bad_versions[]": "passed",
+          "test_resolve::test_bad_versions[1..3]": "passed",
+          "test_resolve::test_range_contains[*-inside0-outside0]": "passed",
+          "test_resolve::test_range_contains[1.2.3-inside1-outside1]": "failed",
+          "test_resolve::test_range_contains[==1.2.3-inside2-outside2]": "passed",
+          "test_resolve::test_range_contains[>=1.0.0, <2.0.0, !=1.5.0-inside3-outside3]": "passed",
+          "test_resolve::test_range_contains[>1.0.0,<=1.2.0-inside4-outside4]": "passed",
+          "test_resolve::test_range_contains[^1.2.3-inside5-outside5]": "passed",
+          "test_resolve::test_range_contains[^0.2.3-inside6-outside6]": "passed",
+          "test_resolve::test_range_contains[^0.0.3-inside7-outside7]": "passed",
+          "test_resolve::test_range_contains[~1.2.3-inside8-outside8]": "passed",
+          "test_resolve::test_range_str_and_errors": "failed",
+          "test_resolve::test_index_versions_newest_first_and_requirements": "failed",
+          "test_resolve::test_index_rejects_duplicates_and_bad_input": "failed",
+          "test_resolve::test_simple_newest_versions": "failed",
+          "test_resolve::test_result_is_versions_and_empty_root": "failed",
+          "test_resolve::test_newer_dependency_constraint_respected": "failed",
+          "test_resolve::test_backtracks_to_older_version": "failed",
+          "test_resolve::test_candidate_rejected_when_dependency_already_selected_conflicts": "failed",
+          "test_resolve::test_result_follows_search_order_not_global_optimum": "failed",
+          "test_resolve::test_selection_order_of_result": "failed",
+          "test_resolve::test_undo_removes_added_names": "failed",
+          "test_resolve::test_bad_root_spec": "failed",
+          "test_resolve::test_explanation_prompt_example": "failed",
+          "test_resolve::test_explanation_unknown_package": "failed",
+          "test_resolve::test_explanation_dependency_conflict_lines": "failed",
+          "test_resolve::test_explanation_is_first_dead_end": "failed",
+          "test_resolve::test_explanation_constraints_in_selection_order": "failed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "lidated_requirements: Dict[str, Range] = {}\n                for dep_name, spec in requires_dict.items():\n                    try:\n                        validated_requirements[dep_name] = Range(spec)\n                    except ValueError as e:\n                        raise ValueError(f\"Bad dependency specification '{spec}' for {name}@{version_str} in dictionary data: {e}\")\n    \n>               index._packages[name][version_str] = validated_requirements\n                ^^^^^^^^^^^^^^^^^^^^^\nE               KeyError: 'p'\n\nresolve/index.py:60: KeyError\n=========================== short test summary info ============================\nFAILED test_resolve.py::test_range_contains[1.2.3-inside1-outside1] - ValueEr...\nFAILED test_resolve.py::test_range_str_and_errors - Failed: DID NOT RAISE Val...\nFAILED test_resolve.py::test_index_versions_newest_first_and_requirements - A...\nFAILED test_resolve.py::test_index_rejects_duplicates_and_bad_input - Failed:...\nFAILED test_resolve.py::test_simple_newest_versions - KeyError: 'app'\nFAILED test_resolve.py::test_result_is_versions_and_empty_root - KeyError: 'a'\nFAILED test_resolve.py::test_newer_dependency_constraint_respected - KeyError...\nFAILED test_resolve.py::test_backtracks_to_older_version - KeyError: 'a'\nFAILED test_resolve.py::test_candidate_rejected_when_dependency_already_selected_conflicts\nFAILED test_resolve.py::test_result_follows_search_order_not_global_optimum\nFAILED test_resolve.py::test_selection_order_of_result - KeyError: 'b'\nFAILED test_resolve.py::test_undo_removes_added_names - KeyError: 'a'\nFAILED test_resolve.py::test_bad_root_spec - KeyError: 'a'\nFAILED test_resolve.py::test_explanation_prompt_example - KeyError: 'app'\nFAILED test_resolve.py::test_explanation_unknown_package - KeyError: 'app'\nFAILED test_resolve.py::test_explanation_dependency_conflict_lines - KeyError...\nFAILED test_resolve.py::test_explanation_is_first_dead_end - KeyError: 'a'\nFAILED test_resolve.py::test_explanation_constraints_in_selection_order - Key...\n18 failed, 17 passed in 0.17s\n"
+      },
+      "n_tests": 35,
+      "pass_rate": 0.4857
+    },
+    {
+      "prompt_id": "c51",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "logagg/parsers.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "logagg/parsers.py"
+          },
+          "logagg/stats.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "logagg/stats.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "logagg/__init__.py",
+          "logagg/cli.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": [
+          "logagg/parsers.py",
+          "logagg/stats.py"
+        ]
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_logagg": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_logagg.py ________________________\nImportError while importing test module '/tmp/hidden-tests-unkh8nwz/work/test_logagg.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_logagg.py:9: in <module>\n    from logagg import (ParseError, Record, filter_records, parse_clf, parse_jsonl, parse_line,\nE   ImportError: cannot import name 'ParseError' from 'logagg' (unknown location)\n=========================== short test summary info ============================\nERROR test_logagg.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.0
+    },
+    {
+      "prompt_id": "c51",
+      "arm": "b",
+      "run": 1,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 3,
+        "files": {
+          "logagg/parsers.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "logagg/parsers.py"
+          },
+          "logagg/stats.py": {
+            "rule": "snapshot_part",
+            "block": 1,
+            "raw": "logagg/stats.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [
+          "logagg/__init__.py",
+          "logagg/cli.py"
+        ],
+        "unclosed_fence": false,
+        "extracted": [
+          "logagg/parsers.py",
+          "logagg/stats.py"
+        ]
+      },
+      "extraction_ok": false,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_logagg": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_______________________ ERROR collecting test_logagg.py ________________________\nImportError while importing test module '/tmp/hidden-tests-8ycgilnw/work/test_logagg.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/dev/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_logagg.py:9: in <module>\n    from logagg import (ParseError, Record, filter_records, parse_clf, parse_jsonl, parse_line,\nE   ImportError: cannot import name 'ParseError' from 'logagg' (unknown location)\n=========================== short test summary info ============================\nERROR test_logagg.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.0
+    }
+  ]
+}

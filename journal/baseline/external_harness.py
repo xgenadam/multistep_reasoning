@@ -88,6 +88,9 @@ def proxy_stats(label: str) -> dict:
     return {'calls': len(rows), 'prompt_tokens': sum(u.get('prompt_tokens') or 0 for u in usage),
             'completion_tokens': sum(u.get('completion_tokens') or 0 for u in usage),
             'calls_without_usage': sum(1 for u in usage if not u),
+            # cached prompt tokens, when the server reports them (vLLM --enable-prompt-tokens-details)
+            'cached_prompt_tokens': sum(((u.get('prompt_tokens_details') or {}).get('cached_tokens') or 0) for u in usage),
+            'calls_reporting_cache': sum(1 for u in usage if (u.get('prompt_tokens_details') or {}).get('cached_tokens') is not None),
             'tool_calls': sum(len((r.get('response') or {}).get('tool_calls') or []) for r in rows),
             'finish_length': sum(1 for r in rows if (r.get('response') or {}).get('finish_reason') == 'length'),
             'proxy_log': str(path.relative_to(REPO_ROOT))}

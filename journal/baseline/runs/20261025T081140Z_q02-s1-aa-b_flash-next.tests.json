@@ -1,0 +1,409 @@
+{
+  "run_file": "journal/baseline/runs/20261025T081140Z_q02-s1-aa-b_flash-next.json",
+  "run_file_sha256": "c0d1a6cfea33e2bbdffdd37f92749febc95006bca1c50d9828c78bf14d4c2c26",
+  "bench": "journal/baseline/bench/v1",
+  "manifest_sha256": "705e6d0d3fc539e93a6a2659697abf6a044d7e221798f49a437ccd6b14fe7cea",
+  "commit": "eb5b1876a1cb6fd30549f0b386d7731018e9700e",
+  "dirty": false,
+  "isolation": "netns",
+  "timeout_s": 120,
+  "scored_at": "2026-10-25T13:02:04Z",
+  "references": {
+    "c06": {
+      "n_tests": 18,
+      "passed": 18,
+      "source": "reference"
+    },
+    "c06f": {
+      "n_tests": 37,
+      "passed": 37,
+      "source": "reference"
+    },
+    "c13": {
+      "n_tests": 13,
+      "passed": 13,
+      "source": "reference"
+    },
+    "c36": {
+      "n_tests": 38,
+      "passed": 38,
+      "source": "reference"
+    },
+    "c47": {
+      "n_tests": 40,
+      "passed": 40,
+      "source": "reference"
+    }
+  },
+  "skipped_unknown_prompts": [],
+  "results": [
+    {
+      "prompt_id": "c06",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 18,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.216,
+        "exit_code": 0,
+        "outcomes": {
+          "test_lru::test_capacity_below_one_raises[0]": "passed",
+          "test_lru::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru::test_get_returns_value_and_default": "passed",
+          "test_lru::test_put_returns_none_until_full": "passed",
+          "test_lru::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru::test_get_refreshes_recency": "passed",
+          "test_lru::test_missing_get_changes_nothing": "passed",
+          "test_lru::test_update_existing_key_never_evicts": "passed",
+          "test_lru::test_update_refreshes_recency": "passed",
+          "test_lru::test_contains_does_not_touch_recency": "passed",
+          "test_lru::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru::test_capacity_one": "passed",
+          "test_lru::test_none_values_are_stored": "passed",
+          "test_lru::test_resize_down_evicts_in_order": "passed",
+          "test_lru::test_resize_up_keeps_everything": "passed",
+          "test_lru::test_resize_below_one_raises[0]": "passed",
+          "test_lru::test_resize_below_one_raises[-3]": "passed",
+          "test_lru::test_long_sequence_matches_model": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..................                                                       [100%]\n18 passed in 0.04s\n"
+      },
+      "n_tests": 18,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c06f",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "lru.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "lru.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "lru.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 36,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 37,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.266,
+        "exit_code": 1,
+        "outcomes": {
+          "test_lru_ttl::test_ttl_must_be_positive[0]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-1]": "passed",
+          "test_lru_ttl::test_ttl_must_be_positive[-0.5]": "passed",
+          "test_lru_ttl::test_default_clock_works_without_ttl": "passed",
+          "test_lru_ttl::test_expires_exactly_at_ttl": "passed",
+          "test_lru_ttl::test_get_does_not_extend_life": "passed",
+          "test_lru_ttl::test_put_restarts_the_clock": "passed",
+          "test_lru_ttl::test_expired_entries_are_invisible": "passed",
+          "test_lru_ttl::test_expired_entries_do_not_count_towards_capacity": "passed",
+          "test_lru_ttl::test_put_returns_only_a_live_evicted_key": "passed",
+          "test_lru_ttl::test_put_of_an_expired_key_is_a_new_key": "failed",
+          "test_lru_ttl::test_lru_order_among_live_entries": "passed",
+          "test_lru_ttl::test_stats_counts": "passed",
+          "test_lru_ttl::test_expirations_count_without_being_looked_at": "passed",
+          "test_lru_ttl::test_replaced_or_evicted_entries_never_expire": "passed",
+          "test_lru_ttl::test_stats_is_a_fresh_dict_with_four_int_keys": "passed",
+          "test_lru_ttl::test_resize_skips_expired_entries": "passed",
+          "test_lru_ttl::test_no_ttl_never_expires": "passed",
+          "test_lru_ttl::test_time_is_read_only_through_the_clock": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_capacity_below_one_raises[-1]": "passed",
+          "test_lru_unchanged::test_get_returns_value_and_default": "passed",
+          "test_lru_unchanged::test_put_returns_none_until_full": "passed",
+          "test_lru_unchanged::test_put_evicts_least_recent_and_returns_it": "passed",
+          "test_lru_unchanged::test_get_refreshes_recency": "passed",
+          "test_lru_unchanged::test_missing_get_changes_nothing": "passed",
+          "test_lru_unchanged::test_update_existing_key_never_evicts": "passed",
+          "test_lru_unchanged::test_update_refreshes_recency": "passed",
+          "test_lru_unchanged::test_contains_does_not_touch_recency": "passed",
+          "test_lru_unchanged::test_keys_oldest_first_and_is_a_list": "passed",
+          "test_lru_unchanged::test_capacity_one": "passed",
+          "test_lru_unchanged::test_none_values_are_stored": "passed",
+          "test_lru_unchanged::test_resize_down_evicts_in_order": "passed",
+          "test_lru_unchanged::test_resize_up_keeps_everything": "passed",
+          "test_lru_unchanged::test_resize_below_one_raises[0]": "passed",
+          "test_lru_unchanged::test_resize_below_one_raises[-3]": "passed",
+          "test_lru_unchanged::test_long_sequence_matches_model": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "..........F..........................                                    [100%]\n=================================== FAILURES ===================================\n___________________ test_put_of_an_expired_key_is_a_new_key ____________________\n\nclock = <test_lru_ttl.Clock object at 0x744c62605ca0>\n\n    def test_put_of_an_expired_key_is_a_new_key(clock):\n        cache = LRUCache(2, ttl=5, clock=clock)\n        cache.put('a', 1)\n        cache.put('b', 2)\n        clock.advance(5)  # both expired\n        assert cache.put('a', 10) is None\n        assert cache.keys() == ['a']\n        assert cache.get('a') == 10\n>       assert cache.stats()['expirations'] == 2\nE       assert 1 == 2\n\ntest_lru_ttl.py:107: AssertionError\n=========================== short test summary info ============================\nFAILED test_lru_ttl.py::test_put_of_an_expired_key_is_a_new_key - assert 1 == 2\n1 failed, 36 passed in 0.09s\n"
+      },
+      "n_tests": 37,
+      "pass_rate": 0.973
+    },
+    {
+      "prompt_id": "c13",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 1,
+        "files": {
+          "ratelimit.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "ratelimit.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "ratelimit.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "total": 13,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.216,
+        "exit_code": 0,
+        "outcomes": {
+          "test_ratelimit::test_invalid_rate_or_capacity": "passed",
+          "test_ratelimit::test_starts_full_and_reads_injected_clock": "passed",
+          "test_ratelimit::test_default_clock_works": "passed",
+          "test_ratelimit::test_refill_is_continuous_and_fractional": "passed",
+          "test_ratelimit::test_refill_capped_at_capacity": "passed",
+          "test_ratelimit::test_failed_acquire_removes_nothing": "passed",
+          "test_ratelimit::test_wait_time": "passed",
+          "test_ratelimit::test_wait_time_then_acquire_succeeds": "passed",
+          "test_ratelimit::test_wait_time_returns_float": "passed",
+          "test_ratelimit::test_bad_n": "passed",
+          "test_ratelimit::test_clock_going_backwards": "passed",
+          "test_ratelimit::test_steady_rate_over_many_steps": "passed",
+          "test_ratelimit::test_float_rate_and_capacity": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".............                                                            [100%]\n13 passed in 0.04s\n"
+      },
+      "n_tests": 13,
+      "pass_rate": 1.0
+    },
+    {
+      "prompt_id": "c36",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "minisql/tokens.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 0,
+            "raw": "minisql/tokens.py"
+          },
+          "minisql/parser.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "minisql/parser.py"
+          },
+          "minisql/execute.py": {
+            "rule": "snapshot_part",
+            "block": 2,
+            "raw": "minisql/execute.py"
+          },
+          "minisql/__init__.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 3,
+            "raw": "minisql/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "minisql/__init__.py",
+          "minisql/execute.py",
+          "minisql/parser.py",
+          "minisql/tokens.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 37,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "total": 38,
+        "collection_error": false,
+        "timed_out": false,
+        "seconds": 0.265,
+        "exit_code": 1,
+        "outcomes": {
+          "test_minisql::test_tokenize_kinds_values_and_positions": "passed",
+          "test_minisql::test_tokenize_number_types_and_symbols": "passed",
+          "test_minisql::test_tokenize_errors_carry_position[SELECT * FROM t WHERE a = 'oops-26]": "passed",
+          "test_minisql::test_tokenize_errors_carry_position[SELECT a; FROM t-8]": "passed",
+          "test_minisql::test_tokenize_errors_carry_position[SELECT * FROM t WHERE a = 1.-27]": "passed",
+          "test_minisql::test_parse_clauses": "passed",
+          "test_minisql::test_parse_precedence_and_associativity": "passed",
+          "test_minisql::test_parse_parentheses_and_literals": "passed",
+          "test_minisql::test_parse_errors[SELECT FROM t-7]": "passed",
+          "test_minisql::test_parse_errors[SELECT a FROM t WHERE a-23]": "failed",
+          "test_minisql::test_parse_errors[SELECT a FROM t LIMIT 2 WHERE a = 1-24]": "passed",
+          "test_minisql::test_parse_errors[SELECT a FROM t LIMIT -1-22]": "passed",
+          "test_minisql::test_parse_errors[SELECT a FROM t LIMIT 1.5-22]": "passed",
+          "test_minisql::test_parse_errors[SELECT a, a FROM t-10]": "passed",
+          "test_minisql::test_parse_errors[SELECT a FROM t WHERE (a = 1-28]": "passed",
+          "test_minisql::test_parse_errors[SELECT a FROM t ORDER a-22]": "passed",
+          "test_minisql::test_select_star_copies_rows": "passed",
+          "test_minisql::test_projection_order_and_missing_columns": "passed",
+          "test_minisql::test_unknown_table_raises": "passed",
+          "test_minisql::test_keywords_case_insensitive_names_case_sensitive": "passed",
+          "test_minisql::test_where_filters[age > 30-expected0]": "passed",
+          "test_minisql::test_where_filters[age <= 27-expected1]": "passed",
+          "test_minisql::test_where_filters[age != 27-expected2]": "passed",
+          "test_minisql::test_where_filters[age = 27 OR age = 41-expected3]": "passed",
+          "test_minisql::test_where_filters[city = 'Oslo' AND active = TRUE-expected4]": "passed",
+          "test_minisql::test_where_filters[NOT active = TRUE-expected5]": "passed",
+          "test_minisql::test_where_filters[age IS NULL-expected6]": "passed",
+          "test_minisql::test_where_filters[city IS NOT NULL AND age IS NOT NULL-expected7]": "passed",
+          "test_minisql::test_where_filters[name < 'C'-expected8]": "passed",
+          "test_minisql::test_null_comparisons_are_unknown_even_under_not": "passed",
+          "test_minisql::test_three_valued_and_or": "passed",
+          "test_minisql::test_mixed_kind_equality_and_ordering": "passed",
+          "test_minisql::test_int_and_float_are_one_kind": "passed",
+          "test_minisql::test_order_by_nulls_first_ascending_last_descending": "passed",
+          "test_minisql::test_order_by_is_stable_and_multi_key": "passed",
+          "test_minisql::test_order_by_column_not_selected_then_limit": "passed",
+          "test_minisql::test_order_by_mixed_kinds_raises": "passed",
+          "test_minisql::test_empty_table_and_inputs_untouched": "passed"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": ".........F............................                                   [100%]\n=================================== FAILURES ===================================\n________________ test_parse_errors[SELECT a FROM t WHERE a-23] _________________\n\nsql = 'SELECT a FROM t WHERE a', pos = 23\n\n    @pytest.mark.parametrize('sql, pos', [\n        ('SELECT FROM t', 7),\n        ('SELECT a FROM t WHERE a', 23),\n        ('SELECT a FROM t LIMIT 2 WHERE a = 1', 24),\n        ('SELECT a FROM t LIMIT -1', 22),\n        ('SELECT a FROM t LIMIT 1.5', 22),\n        ('SELECT a, a FROM t', 10),\n        ('SELECT a FROM t WHERE (a = 1', 28),\n        ('SELECT a FROM t ORDER a', 22),\n    ])\n    def test_parse_errors(sql, pos):\n        with pytest.raises(SQLSyntaxError) as info:\n            parse(sql)\n>       assert info.value.pos == pos\nE       AssertionError: assert 0 == 23\nE        +  where 0 = SQLSyntaxError('Syntax error at 0: Expected operator or IS after operand').pos\nE        +    where SQLSyntaxError('Syntax error at 0: Expected operator or IS after operand') = <ExceptionInfo SQLSyntaxError('Syntax error at 0: Expected operator or IS after operand') tblen=7>.value\n\ntest_minisql.py:96: AssertionError\n=========================== short test summary info ============================\nFAILED test_minisql.py::test_parse_errors[SELECT a FROM t WHERE a-23] - Asser...\n1 failed, 37 passed in 0.09s\n"
+      },
+      "n_tests": 38,
+      "pass_rate": 0.9737
+    },
+    {
+      "prompt_id": "c47",
+      "arm": "b",
+      "run": 0,
+      "run_error": null,
+      "extraction": {
+        "source": "snapshot",
+        "blocks": 4,
+        "files": {
+          "js/scanner.py": {
+            "rule": "snapshot_part",
+            "block": 0,
+            "raw": "js/scanner.py"
+          },
+          "js/parser.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 1,
+            "raw": "js/parser.py"
+          },
+          "js/dump.py": {
+            "rule": "snapshot_part+fenced_body",
+            "block": 2,
+            "raw": "js/dump.py"
+          },
+          "js/__init__.py": {
+            "rule": "snapshot_part",
+            "block": 3,
+            "raw": "js/__init__.py"
+          }
+        },
+        "duplicates": [],
+        "unlabelled": [],
+        "ignored": [],
+        "missing": [],
+        "unclosed_fence": false,
+        "extracted": [
+          "js/__init__.py",
+          "js/dump.py",
+          "js/parser.py",
+          "js/scanner.py"
+        ]
+      },
+      "extraction_ok": true,
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 1,
+        "total": 1,
+        "collection_error": true,
+        "timed_out": false,
+        "seconds": 0.315,
+        "exit_code": 2,
+        "outcomes": {
+          "test_js": "collection_error"
+        },
+        "overridden": [],
+        "rejected": [],
+        "isolation": "netns",
+        "output_tail": "\n==================================== ERRORS ====================================\n_________________________ ERROR collecting test_js.py __________________________\ntest_js.py:6: in <module>\n    from js import JSONError, Token, dumps, loads, tokenize\njs/__init__.py:1: in <module>\n    js/__init__.py\n    ^^\nE   NameError: name 'js' is not defined\n=========================== short test summary info ============================\nERROR test_js.py - NameError: name 'js' is not defined\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.12s\n"
+      },
+      "n_tests": 40,
+      "pass_rate": 0.0
+    }
+  ]
+}
