@@ -247,3 +247,26 @@ more than about 0.1 on this subset before it counts. The leaders may need a thir
 **First sign, in HW's c03:** with one sub-task, the composer still retypes the whole file under `names` and breaks
 it (an unterminated f-string). Whole-file plans may need the composer to keep the file as written. That is a
 question for the AAR.
+
+## Round 1 (full pipeline, 20 prompts × 2, gemma, traced), 2026-10-26 05:00Z
+
+**Setup:** H at 5d6bf02; HW, S, FS and DS at c7472bd. `names` + fallback, relaxed budgets. Run files (1.7–2.8 MB each, over rule 8, untracked pending the user's trim-or-commit call) are
+`journal/baseline/runs/*_work-<variant>_gemma-4-e4b.json`.
+
+| Variant | Mean (2 runs) | Run 0 / run 1 | All pass | Extraction incomplete | Errors | vs H better / worse | Wall |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| HW, hand-written whole-file | **0.401** | 0.332 / 0.470 | 3 | 9 of 40 | 0 | 9 / 7 | 52 min |
+| S, simple, no critique | 0.340 | 0.320 / 0.360 | 2 | 10 | 4 | 8 / 6 | 67 min |
+| H, self_critique (baseline) | 0.307 | 0.259 / 0.354 | 2 | 11 | 1 | — | 71 min |
+| DS, gemma per request | 0.287 | 0.212 / 0.362 | 1 | 12 | 3 | 8 / 8 | 77 min |
+| FS, gemma frozen | 0.197 | 0.267 / 0.127 | 1 | 13 | 5 | 4 / 12 | 80 min |
+| a, single call (one run) | 0.572 | | | | | | |
+
+- **HW leads by 0.094 over H, at the noise floor (about 0.1).** It is also the fastest arm: one sub-task per file means
+  fewer compose and executor calls. It is still far below a.
+- **Gemma writing its own planner instructions does not help:** FS loses to H, worst of all, and DS ties H. That
+  matches round 0: its instructions keep or worsen the split.
+- **The critique adds nothing:** S is at or above H.
+- **No variant comes near a single call on gemma.** The decomposer is not the whole problem. The composer
+  (retyping, breaking files) and extraction (9–13 of 40 incomplete everywhere) are the next suspects, for the AAR.
+- **Box:** GPU1 reached the watchdog's warn level, 83 °C, twice at 03:36–03:37 (fan 80 %, 248 W). No trip.
