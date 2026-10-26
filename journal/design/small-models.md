@@ -105,3 +105,10 @@ Gemma's template takes `enable_thinking` (default off); checked live: thinking o
   The fallback alone rescues turns (36 errors to 7) but not scores (0.037 to 0.057): it appends fragments verbatim.
   The rule change is what moves b (0.219), still well under a. b-names' partial 0.312 (48 prompts) fell on the last
   22, the longer ones. b-off is still to run (cancelled for the container restart; runs after it).
+- 02:20Z, b-off (corrected quoting, after the container restart; worktree dc1f102): mean pass 0.156, 1 error, 2
+  fallbacks, extraction incomplete on 15 of 70. Order on all 70: a 0.355 > b-names 0.219 > b-off 0.156 > b-verbfb
+  0.057 > b 0.037.
+  - **Reading:** with no keep rule, fewer turns break the scorer's extraction (15 against 26), but the composer loses
+    or breaks more work than under `names`. Some check is better than none. `names` stays the working rule.
+  - **The second gemma instance survived the driver's closing `pkill`**, thanks to the symlinked model path. Cards 2–3
+    stayed loaded, and round 1's FS started on cards 0–1 by itself.
