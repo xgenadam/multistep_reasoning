@@ -186,3 +186,30 @@ level"):
 **Second gemma instance:** cards 2–3, port 8102 (`INSTANCE=b` in `generator-server.sh`), loading the model through
 the symlink `~/models/small-gemma-4-E4B-it-GGUF-inst-b`. The running b-off driver ends with a per-model-path
 `pkill -f`, which would otherwise kill this instance too.
+
+## Round 0 (plans only), gemma, 2026-10-26 01:02Z
+
+**Setup:** 20 prompts × 2 reps per variant, no errors, no fallbacks
+(`runs/20261026T010235Z_plan-screen_round0-gemma.json`).
+
+| Variant | Median sub-tasks | Median per expected file | One sub-task per file | Range |
+| --- | --- | --- | --- | --- |
+| H (self_critique) | 5 | 4 | 1 of 40 | 3–8 |
+| S (simple, no critique) | 5 | 4 | 2 of 40 | 3–8 |
+| FS (gemma, frozen) | 6 | 5 | 0 of 40 | 3–9 |
+| DS (gemma, per request) | 5.5 | 5 | 3 of 40 | 3–13 |
+
+**Findings:**
+- **The critique and its forced regeneration do not drive the fragmenting:** S fragments as H does.
+- **Gemma, writing its own instructions, keeps the staged plan or makes it worse,** frozen or per request. Its c01
+  instructions split wordcount.py into "core counting", "argument parsing" and "output formatting" tasks.
+
+**What the screen can and cannot say:** it was to drop malformed or fragmenting variants, but every variant fragments
+and none is malformed. So none is dropped on plans alone. The full pipeline (round 1) decides whether fragmenting is
+what costs b the score.
+
+**Variants added for round 1 (the agent):**
+- **FT (flash-next, frozen), to test whether a stronger writer avoids the split.** It is written in the flash-next block.
+- **HW, a hand-written "one sub-task per file, each delivering the whole file" variant of S.** This is the "whole
+  files per sub-task" option deferred under D-031, now a control. If HW beats S, the split matters. If FT beats FS,
+  the writer matters.
