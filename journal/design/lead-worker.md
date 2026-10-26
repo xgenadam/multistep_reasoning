@@ -237,3 +237,25 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
   - HW brings extraction failures to flash-next (6 against 0).
   - The whole-file rule is not a universal fix. What helps depends on the model, which E-1 should keep in mind.
   - HW's two runs differ by 0.22, so part of the gap may be noise.
+- 21:41Z, flash-next's single call at the same relaxed settings on the subset (arm a, × 2, `--jobs 6`):
+
+  | Arm | Mean | Long | Short | Extraction incomplete |
+  | --- | --- | --- | --- | --- |
+  | a | 0.436 | 0.071 | 0.557 | 16 of 40 |
+  | H | **0.862** | 0.917 | 0.844 | 0 |
+  | HW | 0.727 | 0.637 | 0.757 | 6 |
+
+  - **H beats a on 16 prompts and loses on 1.** The relaxed budgets did not lift the single call: Q-02's a, at 8K,
+    scored 0.622 on these prompts.
+  - **14 of a's 40 replies are not answers.** Under 500 characters each, every one ends "stop", and they begin
+    "I'll start by exploring the existing project structure…". Flash-next acts as an agent expecting tools, and
+    stops.
+  - Q-02's a has the same failure, in 32 of 140 replies. That weakens the single-call baseline in Q-02 too, and is
+    worth a Q-02 note.
+  - **Even on the 26 turns a did answer, H wins:** 0.924 against 0.671.
+- 21:40Z, `integration_replay.py` (build step 1), arm C, tested on flash-next's H for c13, c06 and c06f, two runs
+  each:
+  - all 6 replayed, follow-ups starting from their parents' replayed documents;
+  - scored c06 18/18, 18/18; c06f 34/37, 30/37; c13 13/13, 13/13.
+  - The agent first wrote it as `journal/baseline/replay.py`, which overwrote the 0-03 op-log forensics tool of
+    that name. It was restored from git at once, unchanged, and the new tool has its own name.
