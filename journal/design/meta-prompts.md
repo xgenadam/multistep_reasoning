@@ -213,3 +213,9 @@ what costs b the score.
 - **HW, a hand-written "one sub-task per file, each delivering the whole file" variant of S.** This is the "whole
   files per sub-task" option deferred under D-031, now a control. If HW beats S, the split matters. If FT beats FS,
   the writer matters.
+- 01:33Z, HW screened (`runs/20261026T013319Z_plan-screen_round0-gemma-HW.json`): median 1 sub-task (per file 1),
+  one sub-task per file in 31 of 40 plans, no errors.
+  - **Gemma follows the instruction closely.** The fragmenting comes from what it is told (and from what it tells
+    itself, in FS and DS), not from something it cannot help.
+  - **Whether whole-file plans score better is round 1's question.** A one-sub-task plan for a one-file program is
+    close to a single call with the harness's overhead around it.

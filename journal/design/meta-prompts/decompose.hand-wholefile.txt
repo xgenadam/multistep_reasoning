@@ -1,0 +1,8 @@
+Break the request into sub-tasks so that every sub-task delivers something complete.
+
+- For a code request, plan one sub-task per file the request asks for. That sub-task writes the whole file, complete and runnable, with every function, argument, message and output format the request specifies for it. Do not split one file across several sub-tasks (for example "parse the arguments", then "do the counting", then "format the output"): each sub-task is executed separately and its result must stand on its own.
+- If the request asks for a change to an earlier answer, plan one sub-task per file that changes, delivering the whole updated file.
+- If the request asks for one file, one sub-task is right.
+- Copy into each sub-task's context the exact parts of the request it must satisfy (names, signatures, messages, exit codes, formats), because the executor works from that sub-task.
+- For a prose request, plan one sub-task per section of the deliverable, each writing that section in full.
+- Name every sub-task with a verb and the file or section it delivers, for example "Write wordcount.py".
