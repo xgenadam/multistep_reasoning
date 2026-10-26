@@ -303,3 +303,30 @@ Next most common: wrong part kinds, files merged into one part, and newlines los
 breaks extraction.
 
 Sonnet calibration: 5 turns, two composer, one sub_task_work, one plan, one scorer_extraction (pending).
+- 06:00Z, the Sonnet calibration: 5 turns, blind to flash-next's verdicts, the same questions and trace. Every quote
+  checked: 20 of 20. Rows are in `runs/aar/<run stem>/sonnet.jsonl`.
+
+  | Turn | Sonnet | flash-next |
+  | --- | --- | --- |
+  | H c08 r0 | sub_task_work (+ composer) | composer (+ sub_task_work) |
+  | H c01f r0 | sub_task_work | sub_task_work |
+  | HW c08 r0 | plan | plan |
+  | HW c43 r0 | sub_task_work (+ scorer_extraction) | scorer_extraction |
+  | HW c13 r1 | composer | composer |
+
+  - **Agreement:** 3 of 5 on the primary category. The two disagreements overlap through the secondaries.
+  - **Bias:** flash-next blames the later, visible stage (composer, extraction) where Sonnet traces back to broken
+    executor code. Sonnet found syntax errors, wrong argument orders and stubs in the executor output.
+  - **Use:** flash-next's counts are usable at the level of category families. It under-counts `sub_task_work`.
+- **What the six reviewers' turns show, together:**
+  1. **The harness accepts code that does not parse:** HW c43's `formula.py` is a SyntaxError. The `names` keep rule
+     parses only parts with a literal body. A part added with `body_source="current_result"` is never parsed.
+  2. **The composer rewrites correct code and is accepted:** in HW c13 it dropped a `_refill()` call, failing 2 of
+     13 tests. `names` allows retyping.
+  3. **Code parts render without a path line or fence** (HW c08, c43), so extraction fails.
+  4. **Even under HW, 9 of 40 plans split a single file** (HW c08 is one).
+- **The fix these point to, one variant (pending the user):**
+  - a whole-file result is added as written (no retyping);
+  - every `.py` part is parsed, whatever its source; a failure sends the sub-task back to the executor, not to the
+    composer;
+  - file parts render with their path line and a fence.
