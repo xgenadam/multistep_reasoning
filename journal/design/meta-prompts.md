@@ -276,3 +276,30 @@ question for the AAR.
   - It does use what it was told about the pipeline, and says each sub-task must be self-contained because the
     executor does not see the other plans.
   - **Both writers, small and strong, reach for staged decomposition.** HW's whole-file rule is the outlier.
+
+## AAR, flash-next on the losing turns of H and HW (2026-10-26 05:45Z)
+
+**Setup:** `aar.py build --lost-only` against relaxed-a, then `review --jobs 6`, thinking off. Rows are in
+`runs/aar/<run stem>/flash-next.jsonl` (ignored).
+
+**Diagnoses:**
+- H: 28 reviews, 18 with checked evidence.
+- HW: 25 reviews, 21 with checked evidence.
+- Most of the 14 that failed the check had 2 of 3 quotes verified, so the check is strict rather than catching
+  inventions.
+- Every diagnosis says "high" confidence, so the self-rating carries no information.
+
+| Category | H | HW |
+| --- | --- | --- |
+| composer | 8 | 12 |
+| sub_task_work | 8 | 6 |
+| plan | 1 | 2 |
+| scorer_extraction | 1 | 1 |
+
+**Reading:** with whole-file plans (HW), the composer becomes the main failure. Its most common proposed fix is for the
+composer to keep a sub-task's whole-file result as written (`body_source="current_result"`, `kind="file"`) instead of
+retyping it. That is the "skip the composer when there is nothing to compose" option, now backed on quality grounds.
+Next most common: wrong part kinds, files merged into one part, and newlines lost between parts at render, which last
+breaks extraction.
+
+Sonnet calibration: 5 turns, two composer, one sub_task_work, one plan, one scorer_extraction (pending).
