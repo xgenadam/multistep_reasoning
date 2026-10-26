@@ -26,7 +26,9 @@ import argparse
 import json
 import re
 import sys
+import threading
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -285,9 +287,9 @@ def cmd_review(args) -> int:
     out = d / f'{args.label}.jsonl'
     done = {json.loads(l)['turn'] for l in out.read_text().splitlines() if l.strip()} if out.exists() else set()
     extra = {'chat_template_kwargs': {'enable_thinking': args.thinking}}
-    for slug in slugs:
-        if slug in done:
-            continue
+    lock = threading.Lock()
+
+    def one(slug: str) -> None:
         trace = (d / f'{slug}.md').read_text()
         row = {'turn': slug, 'reviewer': args.label, 'model': args.model}
         try:
@@ -303,10 +305,14 @@ def cmd_review(args) -> int:
             row['check'] = check_evidence(diagnosis, trace) if diagnosis else {'valid': False}
         except Exception as exc:  # noqa: BLE001 - one failed review is a row
             row.update(error=repr(exc), check={'valid': False})
-        with out.open('a') as f:
-            f.write(json.dumps(row) + '\n')
-        print(f"{slug}: {(row.get('diagnosis') or {}).get('category', row.get('error', 'unparsed'))}"
-              f" valid={row['check'].get('valid')}")
+        with lock:
+            with out.open('a') as f:
+                f.write(json.dumps(row) + '\n')
+            print(f"{slug}: {(row.get('diagnosis') or {}).get('category', row.get('error', 'unparsed'))}"
+                  f" valid={row['check'].get('valid')}", flush=True)
+
+    with ThreadPoolExecutor(args.jobs) as ex:
+        list(ex.map(one, [s for s in slugs if s not in done]))
     return 0
 
 
@@ -349,6 +355,7 @@ def main(argv=None) -> int:
     r.add_argument('--prompts', nargs='*', default=[])
     r.add_argument('--max-tokens', type=int, default=16384)
     r.add_argument('--thinking', action='store_true')
+    r.add_argument('--jobs', type=int, default=4)
     s = sub.add_parser('summary')
     s.add_argument('run_file')
     args = ap.parse_args(argv)
