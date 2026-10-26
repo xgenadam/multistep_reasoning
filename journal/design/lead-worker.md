@@ -120,6 +120,16 @@ logged for analysis.
 
 Re-run a unit with feedback (first), then add, skip or reorder the remaining units, then finish early, each capped.
 
+### Later: mixing models across roles (the user, 2026-10-26: "worth experimenting with later")
+
+For now every role in a run uses one model. Mixing is a later experiment, for example:
+- a strong lead over small workers (flash-next leading gemma), or the reverse;
+- a small model for cheap roles (summaries, mechanical review) under a strong planner.
+
+It asks something different from the current study: what each role needs, not what one model can do. It needs both
+models served at once. Flash-next takes all four cards today, so it needs flash-next on fewer cards, or a smaller
+strong model.
+
 ## Experiments
 
 ### E-1: integration replay (first)
@@ -180,6 +190,8 @@ Live runs on the long multi-file prompts, both models, same-model pairs.
 - 2026-10-26, the user: experiment on both models with a narrow first experiment; one piece at a time.
 - 2026-10-26, the user: the same model for every agent in a run, no mixing.
   - Consequence: E-1 has no cross-model lead arm, and flash-next gets traced H and HW runs of its own to replay.
+  - Mixing models across roles is kept as a later experiment (the user: "worth experimenting with later"); see
+    "Later: mixing models across roles".
 - 2026-10-26, the agent: E-1 replays recorded results instead of running executors.
   - Why: inputs are held fixed, so only the integration differs, and it is cheap.
   - Rejected: live runs first, where executor noise (per-prompt |r0 − r1| ≈ 0.25) would swamp the integration
