@@ -259,3 +259,32 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
   - scored c06 18/18, 18/18; c06f 34/37, 30/37; c13 13/13, 13/13.
   - The agent first wrote it as `journal/baseline/replay.py`, which overwrote the 0-03 op-log forensics tool of
     that name. It was restored from git at once, unchanged, and the new tool has its own name.
+
+## The established-harness comparison: OpenCode (the user, 2026-10-26)
+
+- **Why OpenCode:** the user proposed comparing against established harnesses. DeepSeek's full harness was rejected
+  by the user ("so many tools that would make the comparison unfair"), and OpenCode chosen ("ok, opencode it is").
+- **Version:** v1.19.3, the official image `ghcr.io/anomalyco/opencode@sha256:6ebc13097f2381301220abe9d1b2a54f50cd1603a910dc1c66e93d8f2c4e8ebb`.
+  - Released 2026-10-16. The newest, v1.19.4, was 4 days old and was skipped.
+- **Isolation:**
+  - OpenCode runs on an internal podman network (`oc-internal`) with no route out (`api.github.com` does not resolve).
+  - Its only peer is `oc-proxy` (`journal/baseline/llm_proxy.py`, standard library only, in
+    `python:3.12-slim@sha256:a0f5…6704`), attached to both `oc-internal` and the bridge, forwarding to the model
+    server.
+  - Nothing of OpenCode is committed.
+- **Recording:**
+  - The proxy logs every request and reply per run, labelled by the base URL's first path segment
+    (`http://oc-proxy:9000/<label>/v1`), with token counts (`include_usage` added to streamed calls).
+  - That makes its traces and costs comparable to ours, since our call recording does not see a third-party
+    harness's calls.
+- **Tools, two tiers:**
+  - **Like-for-like:** OpenCode's own `build` agent and system prompt, with `bash`, `webfetch`, `websearch`, `task`,
+    `external_directory`, `lsp`, `skill` and `question` denied. Verified from the requests: the model is offered
+    `edit, glob, grep, read, todowrite, write` only. `todowrite` (its planning checklist) is kept, as the nearest
+    thing to our planner.
+  - **Real-world:** `bash` allowed, in a derived image with Python 3.12 added (the official image is Alpine, with
+    no python3).
+- **Smoke test, flash-next, c13, like-for-like:**
+  - 6 calls, the first OpenCode's own conversation-title call;
+  - 17 s;
+  - `ratelimit.py` written; 13 of 13 hidden tests.
