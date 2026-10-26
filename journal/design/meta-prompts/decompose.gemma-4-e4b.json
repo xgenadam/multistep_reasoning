@@ -1,0 +1,15 @@
+{
+ "writer": "gemma-4-e4b",
+ "model": "gemma-4-e4b",
+ "base_url": "http://localhost:8100/v1",
+ "written_at": "2026-10-26T00:11:00Z",
+ "meta_prompt_sha256": "b960b4240483a4d2ea09812f2c1c0878bde9685b7017c0ef0d27927beebf4843",
+ "instructions_sha256": "b040e83480d5f480a128cc3dedf4a656b832dc63bfbb30384a43122acd72e829",
+ "attempts": [
+  {
+   "attempt": 1,
+   "chars": 3238,
+   "problem": null
+  }
+ ]
+}

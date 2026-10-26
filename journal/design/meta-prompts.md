@@ -150,3 +150,10 @@ level"):
   - **Dynamic calls** are counted as their own kind, `decompose_meta`.
 - 2026-10-26, the agent, noted for the executor and composer stage: the executor's system prompt rule 5 ("Your result
   is the deliverable for THIS sub-task only, not the whole document") is another hand-written push towards fragments.
+- 2026-10-26 00:11Z: FS written (`meta-prompts/decompose.gemma-4-e4b.txt`, first attempt, 3,238 characters).
+  - **First read, the agent's, before any run:** gemma asks for "the smallest logical, independent, and executable
+    steps possible", for "design must precede implementation", and for a "ruthlessly narrow" objective per sub-task.
+    The meta prompt says that files are extracted and tested, but nothing in its instructions mentions files,
+    interfaces or whole-file deliverables.
+  - It names the schema's classes (`DecomposeThinkingStep`, `DecompositionPause`) rather than the `meta_type` values.
+  - If anything, FS should fragment more than H. The tournament will show.
