@@ -120,3 +120,19 @@ level"):
 - 2026-10-25, the user: meta-prompts as competing variants H / FS / FT / DS, frozen and dynamic. Kept as new components
   beside the old ones, so the old way stays for comparison or improvement.
 - 2026-10-25, the agent: DT dropped. flash-next and gemma cannot be served at once on four cards.
+- 2026-10-26 00:20Z, the agent, found while building the AAR:
+  - **The decomposer is `self_critique`, the default.** Its critique prompt states a "Critical Rule" (any request with
+    more than one logical action must be split) and a "Strong Rule" (3–5 sub-tasks for any request containing 'write'
+    or 'create').
+  - **`should_regenerate` forces a regeneration of every plan under 3 sub-tasks,** and the regeneration prompt asks
+    for 3–5. So a one- or two-sub-task plan can never survive, whatever the base prompt's "Use 1 sub-task if …" says.
+  - **For gemma it never fired:** all 139 of its plans in b-names and b-verbfb had 3 or more sub-tasks (mostly 4–6;
+    27 of 70 over the base prompt's 5).
+  - **Consequence for the meta arms:** they replace these rules too (the critique and regeneration prompts and the
+    count threshold), or the hand-written rules override what the model writes.
+- 2026-10-26, the agent: `aar.py` built.
+  - `build` writes condensed Markdown traces per turn (`--lost-only` keeps the turns below the first `--compare`).
+  - `review` asks any OpenAI-compatible server, using JSON mode rather than a schema, so the reviewer may write its
+    own field order.
+  - `summary` reports categories per reviewer and agreement between reviewers.
+  - A diagnosis counts only when it gives a quote and every quote is in the trace, whitespace-insensitive.
