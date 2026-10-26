@@ -103,6 +103,24 @@ logged for analysis.
 - **Cap:** about 2 exchanges per merge, and a few questions per unit.
 - **Logs:** every exchange is stored in full in the trace. The lead's context holds only a one-line summary it
   writes per exchange, so its window does not blow up (the user).
+- **The collaboration log is a first-class record** (the user, 2026-10-26: "do we log the collaborations? we
+  should be"):
+  - **One file per exchange,** under the turn's intermediates: `collab/NN_<unit>_<direction>.json`, where
+    direction is worker→lead (during execution) or lead→worker (during the merge).
+  - **Each holds:**
+    - the unit and step;
+    - who opened it, and why (question, fix request, confirmation);
+    - every message in order, in full;
+    - the call indices of the model calls behind each message, linking to `calls/`;
+    - the outcome: answered, fix delivered and merged, or declined;
+    - the lead's one-line summary;
+    - any note it pinned as a result.
+  - **Written whether or not `--trace-calls` is on.** Exchanges are small, and they are the data for judging the
+    collaboration.
+  - **Shown in the trace viewer** inline at the step where it happened, and included in the AAR's condensed trace.
+    The lead's search reads these same files.
+  - **Pinned notes get their own log:** what was pinned, when, by which exchange, and every prompt it was later
+    added to.
 - **Search:** the lead can search past collaborations (TF-IDF over the summaries and logs, local, no new
   dependencies) and read one in full, to find commonality instead of reinventing (the user).
 - **Pinned notes:** decisions the lead chooses to carry forward ("helpers live in `utils.py`"). They go into later
