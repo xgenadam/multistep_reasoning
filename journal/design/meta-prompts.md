@@ -219,3 +219,31 @@ what costs b the score.
     itself, in FS and DS), not from something it cannot help.
   - **Whether whole-file plans score better is round 1's question.** A one-sub-task plan for a one-file program is
     close to a single call with the harness's overhead around it.
+
+## H on the subset, and the noise floor (2026-10-26 01:26Z)
+
+**The run:** `20261026T001500Z_work-H_gemma-4-e4b.json`, at commit 5d6bf02 (the decomposition prompt without the climate example, D-031),
+`names` + fallback, relaxed budgets, traced.
+
+| Arm, same 20 prompts | Mean pass |
+| --- | --- |
+| H (mean of 2 runs) | 0.307 |
+| b-names (old prompt) | 0.265 |
+| a | 0.572 |
+| a1 | 0.572 |
+
+1 of 40 turns errored, and extraction was incomplete on 11 of 40.
+
+**Noise:** H's two runs scored 0.259 and 0.354; per prompt, \|r0 − r1\| averages 0.25. A variant needs to beat H by
+more than about 0.1 on this subset before it counts. The leaders may need a third run.
+
+**Round 1 schedule (the agent):**
+- Instance 2 runs HW, then S.
+- Instance 1 runs FS, then DS, once b-off ends.
+- FT follows the flash-next block.
+
+**Why HW goes first:** it is the clearest test of whether fragmenting is what costs b.
+
+**First sign, in HW's c03:** with one sub-task, the composer still retypes the whole file under `names` and breaks
+it (an unterminated f-string). Whole-file plans may need the composer to keep the file as written. That is a
+question for the AAR.
