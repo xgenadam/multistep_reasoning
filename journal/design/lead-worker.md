@@ -217,3 +217,23 @@ Live runs on the long multi-file prompts, both models, same-model pairs.
 - 2026-10-26, the agent: the agent's earlier claim that "the composer destroys work" was too strong. The direct
   scoring shows it rescues format in 13 of 21 turns and damages content in 4. The design keeps the rescue (now
   mechanical) and removes the rewriting.
+
+## Inputs for E-1 on flash-next: its own traced H and HW (2026-10-26 21:22Z)
+
+**Setup:** the 20-prompt subset × 2, worktree c7472bd, `names` + fallback, relaxed budgets, `--jobs 6` on `:8090`.
+
+| Arm | Mean | Run 0 / run 1 | All pass | Extraction incomplete | Errors |
+| --- | --- | --- | --- | --- | --- |
+| H | **0.862** | 0.894 / 0.831 | 26 of 40 | 0 | 0 |
+| HW | 0.727 | 0.619 / 0.835 | 19 of 40 | 6 | 0 |
+
+The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
+
+- **The harness at these settings gains about 0.15 on flash-next.** Three things changed at once (relaxed budgets,
+  `names` + fallback, the decomposition prompt without the climate example), so the cause is not yet separable. A
+  single call at the relaxed budgets on the subset is the missing comparison.
+- **HW helps gemma (0.401 against 0.307) but hurts flash-next (0.727 against 0.862):** HW better on 5 prompts, worse
+  on 9.
+  - HW brings extraction failures to flash-next (6 against 0).
+  - The whole-file rule is not a universal fix. What helps depends on the model, which E-1 should keep in mind.
+  - HW's two runs differ by 0.22, so part of the gap may be noise.
