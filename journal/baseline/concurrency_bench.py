@@ -29,7 +29,7 @@ def load(pattern: str, n: int) -> list[dict]:
             r = json.loads(line)
             q = r.get('request')
             if q and q.get('messages') and len(q['messages']) > 4:
-                reqs.append((r.get('response') or {}).get('usage', {}).get('prompt_tokens') or 0, q)
+                reqs.append((((r.get('response') or {}).get('usage') or {}).get('prompt_tokens') or 0, q))
     reqs.sort(key=lambda x: -x[0])
     return [q for _, q in reqs[:n]]
 

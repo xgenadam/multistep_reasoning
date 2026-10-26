@@ -330,3 +330,26 @@ Sonnet calibration: 5 turns, two composer, one sub_task_work, one plan, one scor
   - every `.py` part is parsed, whatever its source; a failure sends the sub-task back to the executor, not to the
     composer;
   - file parts render with their path line and a fence.
+
+## Dropped for now, kept for a possible revisit (2026-10-26 23:45Z, the user: "drop them, but note it for later")
+
+**What was dropped:**
+- FT's gemma runs: flash-next's frozen planner instructions for gemma, `meta-prompts/decompose.flash-next.txt`.
+  Neither the plans-only screen nor round 1 ran.
+- The later knockout rounds: the best variants on more prompts, then the winner on all 70.
+
+**Why:** the lead–worker redesign (`lead-worker.md`) supersedes the question they answered, "which planner prompt
+is best". The planner becomes the lead, and lazy decomposition replaces the fixed up-front split.
+
+**State at the time:**
+
+| Item | Where |
+| --- | --- |
+| HEAD | `8f76e0e` |
+| Variants H, HW, S, FS, DS | ran at `5d6bf02` (H) and `c7472bd` (the rest; worktree `runs/work-c7472bd`) |
+| FT's instructions | committed in `f72c8b4` |
+| Round 0 and round 1 results | `fd0b077` (round 0), `e2a970f` (round 1), and this note's sections above |
+
+**To revisit:** run `plan_screen.py` with `--variant FT=meta:frozen:journal/design/meta-prompts/decompose.flash-next.txt`
+on gemma. Then `work.sh FT <worktree at c7472bd> --set components.decomposer=meta --set options.meta_prompt=frozen
+--set options.meta_prompt_file=journal/design/meta-prompts/decompose.flash-next.txt`.
