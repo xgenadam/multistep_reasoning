@@ -138,6 +138,21 @@ logged for analysis.
 
 Re-run a unit with feedback (first), then add, skip or reorder the remaining units, then finish early, each capped.
 
+### Later: routing (the user, 2026-10-26: "this is going to turn into a routing problem")
+
+Which harness, or which variant of one, to use depends on the request and on the model. Tuning per model is a topic
+of its own (the user).
+
+The evidence so far, on the 20-prompt subset:
+
+| Model | Long prompts | Short prompts |
+| --- | --- | --- |
+| flash-next | H best (0.917; OpenCode 0.790; single call 0.071) | OpenCode 0.862, H 0.844, HW 0.757 |
+| gemma | every harness variant at or under 0.14; single call 0.096 | single call best |
+
+A router could start as rules read off such tables (request features such as files asked for, length and follow-up;
+the model), and later be learned from the run logs and AAR rows. It needs the per-variant traces we already keep.
+
 ### Later: mixing models across roles (the user, 2026-10-26: "worth experimenting with later")
 
 For now every role in a run uses one model. Mixing is a later experiment, for example:
