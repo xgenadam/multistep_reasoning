@@ -270,3 +270,9 @@ question for the AAR.
 - **No variant comes near a single call on gemma.** The decomposer is not the whole problem. The composer
   (retyping, breaking files) and extraction (9–13 of 40 incomplete everywhere) are the next suspects, for the AAR.
 - **Box:** GPU1 reached the watchdog's warn level, 83 °C, twice at 03:36–03:37 (fan 80 %, 248 W). No trip.
+- 05:20Z, FT written by flash-next (`meta-prompts/decompose.flash-next.txt`, first attempt, 4,121 characters).
+  - **First read, the agent's:** it asks for the same staged split as gemma's. "Interface First" sets up signatures,
+    then "Implementation Modules" (data processing, core algorithm, output formatting), then a task for `main`.
+  - It does use what it was told about the pipeline, and says each sub-task must be self-contained because the
+    executor does not see the other plans.
+  - **Both writers, small and strong, reach for staged decomposition.** HW's whole-file rule is the outlier.

@@ -1,0 +1,15 @@
+{
+ "writer": "flash-next",
+ "model": "qwen3.8-flash-next",
+ "base_url": "http://localhost:8090/v1",
+ "written_at": "2026-10-26T05:07:07Z",
+ "meta_prompt_sha256": "b960b4240483a4d2ea09812f2c1c0878bde9685b7017c0ef0d27927beebf4843",
+ "instructions_sha256": "9ea8b22e29a93daf8d0a875edd0811b12ff6dd62c31977bd9452aff4e553d79f",
+ "attempts": [
+  {
+   "attempt": 1,
+   "chars": 4121,
+   "problem": null
+  }
+ ]
+}
