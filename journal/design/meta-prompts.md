@@ -157,3 +157,32 @@ level"):
     interfaces or whole-file deliverables.
   - It names the schema's classes (`DecomposeThinkingStep`, `DecompositionPause`) rather than the `meta_type` values.
   - If anything, FS should fragment more than H. The tournament will show.
+
+## The working subset (2026-10-26, the agent; the user approved the loop optimisations: "i approve")
+
+**The 20 prompts:**
+
+| Group | Prompts |
+| --- | --- |
+| Long | c38, c40, c43, c49, c51 |
+| Short, b lost to a | c03, c07, c08, c18, c23, c28, c30 |
+| Short, b at or above a | c12, c13, c15, c27 |
+| Chains (parent and follow-up) | c01 → c01f, c06 → c06f |
+
+**How they were chosen:**
+- **Source:** gemma's three single-call runs (a at 8K, a relaxed, a1 relaxed) and b-names.
+- **Rule 1, room both ways:** the single-call mean is between 0.15 and 0.85 (39 prompts qualify).
+- **Rule 2, a mix:** both b's losses and b's wins are in, so a variant that only fixes one kind still shows up.
+- **Rule 3, longer prompts:** the long ones are in, where b collapsed (0.0 on all eight).
+- **Rule 4, chains:** a follow-up runs with its parent.
+
+**Each runs twice.** Single-call scores on one prompt swing widely between runs (c11 spans 0 to 1.0 over three runs;
+11 of the 39 span 0.75 or more), so per-prompt differences need repeats.
+
+**Rejected:**
+- All 70 once: too noisy per prompt, and 3.5× the cost.
+- Picking by b's losses only: would favour any change that helps where b fails, even at a cost elsewhere.
+
+**Second gemma instance:** cards 2–3, port 8102 (`INSTANCE=b` in `generator-server.sh`), loading the model through
+the symlink `~/models/small-gemma-4-E4B-it-GGUF-inst-b`. The running b-off driver ends with a per-model-path
+`pkill -f`, which would otherwise kill this instance too.

@@ -89,12 +89,20 @@ case "$GEN" in
   *) echo "unknown generator '$GEN' (flash-next|qwen3.8-27b|qwen3.6-35b-a3b|qwen3-0.6b|qwen3-1.7b|qwen3.5-2b|granite-4.2-3b|qwen3.5-4b|gemma-4-e4b|qwen3.5-9b|stop)" >&2; exit 2 ;;
 esac
 
+# A second instance of a llama.cpp generator (the user, 2026-10-26: use both card pairs): INSTANCE=b gives it its own
+# container (gen_<generator>_b, stopped with `stop <generator>_b`) and INSTANCE_PORT; INSTANCE_MODEL_REL (a symlink
+# beside the model's directory) gives it a different model path, so a driver's per-model `pkill -f` cannot hit it.
+if [ -n "${INSTANCE:-}" ]; then
+  [ "$GEN" != flash-next ] || { echo "INSTANCE is for llama.cpp generators" >&2; exit 2; }
+  PORT="${INSTANCE_PORT:?INSTANCE needs INSTANCE_PORT}"; MODEL_REL="${INSTANCE_MODEL_REL:-$MODEL_REL}"
+fi
+
 show_models() { echo "/v1/models: $(curl -s -m 10 "http://localhost:$PORT/v1/models")"
   curl -s -m 10 "http://localhost:$PORT/v1/models" | grep -q "\"$SERVED\"" || { echo "served name $SERVED not listed" >&2; exit 4; }; }
 
 if [ "$GEN" != flash-next ]; then
   PARALLEL="${PARALLEL:-5}"; SLOT_CTX="${SLOT_CTX:-65536}"
-  export NAME="gen_$GEN" GPUS="${GPUS:-all}" PARALLEL CTX=$(( PARALLEL * SLOT_CTX )) KV="${KV:-f16}" SPLIT="${SPLIT:-$DEF_SPLIT}"
+  export NAME="gen_$GEN${INSTANCE:+_$INSTANCE}" GPUS="${GPUS:-all}" PARALLEL CTX=$(( PARALLEL * SLOT_CTX )) KV="${KV:-f16}" SPLIT="${SPLIT:-$DEF_SPLIT}"
   export DRY_RUN="${DRY_RUN:-0}"; [ -n "${TS:-}" ] && export TS   # unset: an even split over GPUS
   export EXTRA="--reasoning-format deepseek --chat-template-kwargs {\"enable_thinking\":false}${EXTRA:+ $EXTRA}"
   echo "generator $GEN: port=$PORT served=$SERVED slots=$PARALLEL x $SLOT_CTX ctx=$CTX kv=$KV split=$SPLIT gpus=$GPUS"
