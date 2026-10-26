@@ -288,3 +288,10 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
   - 6 calls, the first OpenCode's own conversation-title call;
   - 17 s;
   - `ratelimit.py` written; 13 of 13 hidden tests.
+- 22:05Z, the real-world tier's image `opencode-python:1.19.3` (`journal/baseline/ext/opencode-python.Dockerfile`):
+  the pinned OpenCode image plus Alpine 3.24.2's python3 3.14.8, py3-pytest 9.0.3 and bash 5.3.9.
+  - The agent's own runs use Python 3.14. The prompts ask for the 3.12 standard library, and hidden tests run on
+    3.12, as for every arm.
+- 22:07Z, `journal/baseline/external_harness.py` (the driver) tested on flash-next, like-for-like, one run:
+  - c01 12/16; c01f 23/28, continuing c01's session and directory; c13 13/13.
+  - The test's run files were deleted. Full runs, both tiers, on the subset × 2, follow.
