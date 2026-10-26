@@ -49,6 +49,12 @@ class OptionsConfig(BaseModel):
     # its own part instead of failing the turn. Off by default (the harness's
     # default behaviour is frozen until Q-02's verdict).
     compose_fallback: bool = False
+    # Meta-prompt decomposition (components.decomposer: meta; journal/design/
+    # meta-prompts.md): frozen reads the planner's instructions from
+    # meta_prompt_file, written once by a model; dynamic has the model write
+    # them for each request at run time.
+    meta_prompt: Literal['frozen', 'dynamic'] = 'frozen'
+    meta_prompt_file: str | None = None
     prompt_token_budget: int = 16384
     log_prompts: bool = False
     # 0-06: run a consolidation pass (merge/delete/move only) after the final

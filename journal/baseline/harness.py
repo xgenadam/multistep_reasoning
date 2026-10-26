@@ -126,7 +126,8 @@ PHASE_KINDS: tuple[tuple[str, str | None], ...] = (
 )
 # llm_step labels that split a phase into two kinds of call.
 STEP_KINDS: dict[str, dict[str, str]] = {
-    'decompose': {'Critique decomposition': 'decompose_critique'},
+    'decompose': {'Critique decomposition': 'decompose_critique',
+                  'Write planner instructions (meta)': 'decompose_meta'},
     'executor_turn': {'Oracle ask': 'oracle'},
 }
 # The summary call that consolidation triggers (part of D-007's marginal cost).

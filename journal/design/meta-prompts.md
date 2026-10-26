@@ -136,3 +136,17 @@ level"):
     own field order.
   - `summary` reports categories per reviewer and agreement between reviewers.
   - A diagnosis counts only when it gives a quote and every quote is in the trace, whitespace-insensitive.
+- 2026-10-26, the agent: `decomposer: meta` built (`task_decomposition/meta_decomposition.py`).
+  - **Options:** `options.meta_prompt: frozen|dynamic`, and `options.meta_prompt_file` for frozen.
+  - **The fixed frame:** the request, then the written instructions, then the schema.
+  - **The meta prompt** describes the pipeline as it runs today: what an executor sees, what the composer does, what
+    the checks reject, how answers are scored.
+  - **No critique or forced regeneration,** for the reason above. The H arm keeps them. A plain `decomposer: simple` run
+    (the hand-written prompt, no critique) separates "the critique's rules" from "who wrote the prompt" if the meta
+    arms win.
+  - **Checks on written instructions:** too short, or restating the schema, means asked again, then refused.
+  - **Frozen files** come from `journal/baseline/write_meta_prompt.py`, as
+    `journal/design/meta-prompts/decompose.<writer>.txt` plus a `.json` of provenance.
+  - **Dynamic calls** are counted as their own kind, `decompose_meta`.
+- 2026-10-26, the agent, noted for the executor and composer stage: the executor's system prompt rule 5 ("Your result
+  is the deliverable for THIS sub-task only, not the whole document") is another hand-written push towards fragments.

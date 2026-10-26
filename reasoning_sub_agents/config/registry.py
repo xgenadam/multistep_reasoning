@@ -52,6 +52,17 @@ def _decomposer_self_critique(ctx: BuildContext) -> Any:
     )
 
 
+def _decomposer_meta(ctx: BuildContext) -> Any:
+    from ..task_decomposition.meta_decomposition import MetaPromptDecomposer
+
+    return MetaPromptDecomposer(
+        llm_client=ctx.llm_client,
+        prompt_token_budget=ctx.options.prompt_token_budget,
+        mode=ctx.options.meta_prompt,
+        instructions_file=ctx.options.meta_prompt_file,
+    )
+
+
 def _executor_simple(ctx: BuildContext) -> Any:
     from ..executor.simple_executor import SimpleAgentExecutor
 
@@ -125,6 +136,14 @@ REGISTRY: dict[Role, dict[str, ComponentSpec]] = {
             requires=frozenset(),
             forbids=frozenset(),
             factory=_decomposer_self_critique,
+        ),
+        'meta': ComponentSpec(
+            name='meta',
+            role='decomposer',
+            provides=frozenset(),
+            requires=frozenset(),
+            forbids=frozenset(),
+            factory=_decomposer_meta,
         ),
     },
     'executor': {
