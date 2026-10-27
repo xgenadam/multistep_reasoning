@@ -53,12 +53,12 @@ def permissions(tier: str) -> dict:
     return {**{k: 'allow' for k in allow}, **{k: 'deny' for k in deny}}
 
 
-def config(label: str, model: str, tier: str, steps: int, context: int, output: int) -> dict:
+def config(label: str, model: str, tier: str, steps: int, context: int, output: int, proxy: str = 'oc-proxy') -> dict:
     return {
         '$schema': 'https://opencode.ai/config.json', 'autoupdate': False, 'share': 'disabled',
         'provider': {'local': {
             'npm': '@ai-sdk/openai-compatible', 'name': 'local model via logging proxy',
-            'options': {'baseURL': f'http://oc-proxy:9000/{label}/v1', 'apiKey': 'sk-local'},
+            'options': {'baseURL': f'http://{proxy}:9000/{label}/v1', 'apiKey': 'sk-local'},
             'models': {model: {'name': model, 'limit': {'context': context, 'output': output}}}}},
         'agent': {'build': {'steps': steps, 'permission': permissions(tier)}},
     }
@@ -93,14 +93,18 @@ def proxy_stats(label: str) -> dict:
             'calls_reporting_cache': sum(1 for u in usage if (u.get('prompt_tokens_details') or {}).get('cached_tokens') is not None),
             'tool_calls': sum(len((r.get('response') or {}).get('tool_calls') or []) for r in rows),
             'finish_length': sum(1 for r in rows if (r.get('response') or {}).get('finish_reason') == 'length'),
-            'proxy_log': str(path.relative_to(REPO_ROOT))}
+            'proxy_log': str(path.relative_to(REPO_ROOT)),
+            # the last reply's text: a model that answers in prose instead of calling the file tools
+            # leaves no files, but its answer is here (scored separately, see --text-fallback)
+            'final_reply': next((((r.get('response') or {}).get('content') or '') for r in reversed(rows)
+                                 if ((r.get('response') or {}).get('content') or '').strip()), '')}
 
 
-def run_prompt(chain_dir: Path, label: str, prompt: str, args, first: bool) -> dict:
+def run_prompt(chain_dir: Path, label: str, prompt: str, args, first: bool, proxy: str = 'oc-proxy') -> dict:
     cfg = chain_dir / 'cfg'
     cfg.mkdir(exist_ok=True)
     (cfg / 'opencode.json').write_text(json.dumps(
-        config(label, args.model, args.tier, args.steps, args.context, args.output), indent=1))
+        config(label, args.model, args.tier, args.steps, args.context, args.output, proxy), indent=1))
     name = f'oc_{label}'
     cmd = ['docker', 'run', '--rm', '--name', name, '--network', 'oc-internal',
            '-v', f'{chain_dir / "work"}:/work', '-v', f'{cfg}:/cfg:ro', '-v', f'{chain_dir / "data"}:/data',
@@ -133,6 +137,10 @@ def main(argv=None) -> int:
     ap.add_argument('--timeout', type=int, default=3600)
     ap.add_argument('--context', type=int, default=131072)
     ap.add_argument('--output', type=int, default=32768)
+    ap.add_argument('--text-fallback', action='store_true',
+                    help='also write a run file scoring the final reply where no files were left')
+    ap.add_argument('--proxy', action='append', default=None,
+                    help='logging proxy container(s), one per model server; chains are spread over them (default oc-proxy)')
     args = ap.parse_args(argv)
 
     manifest = {p['id']: p for p in yaml.safe_load((BENCH / 'manifest.yaml').read_text())['prompts']}
@@ -163,15 +171,19 @@ def main(argv=None) -> int:
     jobs = [(root, run) for root in roots for run in range(args.runs)]
     results, lock = [], threading.Lock()
 
+    proxies = args.proxy or ['oc-proxy']
+
     def work(job):
         root, run = job
+        proxy = proxies[jobs.index(job) % len(proxies)]
         chain_dir = base / f'{root}_r{run}'
         for sub in ('work', 'data', 'turns'):
             (chain_dir / sub).mkdir(parents=True, exist_ok=True)
         ids = chain(root)
         for i, pid in enumerate(ids):
             label = f'{args.label}_{started}_{pid}_r{run}'
-            outcome = run_prompt(chain_dir, label, (BENCH / 'prompts' / f'{pid}.md').read_text(), args, first=(i == 0))
+            outcome = run_prompt(chain_dir, label, (BENCH / 'prompts' / f'{pid}.md').read_text(), args, first=(i == 0),
+                                 proxy=proxy)
             snap = chain_dir / 'turns' / pid
             shutil.copytree(chain_dir / 'work', snap, dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns(*SKIP_DIRS))
@@ -180,7 +192,7 @@ def main(argv=None) -> int:
                    'follows': manifest[pid].get('follows'), 'domain': manifest[pid]['domain'],
                    'error': outcome['error'], 'wall_seconds': outcome['wall_seconds'], 'exit': outcome['exit'],
                    'files': names, 'output': {'text': text, 'chars': len(text)}, 'llm': proxy_stats(label),
-                   'chain_dir': str(chain_dir.relative_to(REPO_ROOT))}
+                   'chain_dir': str(chain_dir.relative_to(REPO_ROOT)), 'proxy': proxy}
             with lock:
                 results.append(row)
                 print(f"{pid} r{run}: {len(names)} files, {row['llm']['calls']} calls, {outcome['wall_seconds']}s"
@@ -198,9 +210,22 @@ def main(argv=None) -> int:
         'bench': 'v1', 'bench_frozen': True, 'manifest_path': str(BENCH.relative_to(REPO_ROOT) / 'manifest.yaml'),
         'manifest_sha256': hashlib.sha256(manifest_text.encode()).hexdigest(),
         'generator': args.generator, 'model': args.model, 'started_at': started, 'runs_per_prompt': args.runs,
-        'jobs': args.jobs, 'network': 'oc-internal (no route out) via oc-proxy',
+        'jobs': args.jobs, 'network': 'oc-internal (no route out) via ' + ', '.join(proxies),
         'results': sorted(results, key=lambda r: (r['prompt_id'], r['run']))}, indent=1))
     print(f'wrote {out}')
+    if args.text_fallback:
+        # Scored as its own run file: files when the harness left any, else the final reply's text.
+        data = json.loads(out.read_text())
+        for r in data['results']:
+            if not r['files']:
+                r['output'] = {'text': r['llm']['final_reply'], 'chars': len(r['llm']['final_reply'])}
+                r['answer_from'] = 'final_reply'
+            else:
+                r['answer_from'] = 'files'
+        data['scoring'] = 'files, else the final reply (not the harness contract; for comparison)'
+        alt = out.with_name(out.stem.replace(f'_ext-{args.label}_', f'_ext-{args.label}-textfb_') + '.json')
+        alt.write_text(json.dumps(data, indent=1))
+        print(f'wrote {alt}')
     return 0
 
 
