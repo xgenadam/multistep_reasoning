@@ -446,3 +446,24 @@ On the same prompts: single call 0.572 (one run), our HW 0.401, our H 0.307.
   simpler loop). Flash-next: OpenCode 0.844 / 0.962 against single 0.436. Gemma: 0.094 / 0.162 against 0.572.
 - **Next for gemma:** test a deliberately simple loop (write, one review, fix) against its single call, alongside
   E-1.
+
+## The simple loop on gemma: self-refine wins (2026-10-27 01:47Z)
+
+**Setup:** arm a2 (draft, critique, revise; `--refine-rounds 1` and `2`) and arm a (single call), the subset × 2,
+relaxed budgets, worktree c7472bd, one gemma server each.
+
+| Arm | Mean | Run 0 / run 1 | Long | Short | vs a, better / worse | Median completion per turn |
+| --- | --- | --- | --- | --- | --- | --- |
+| a2, 1 round | **0.678** | 0.639 / 0.718 | 0.358 | **0.785** | **14 / 5** | 5.6K |
+| a2, 2 rounds | 0.666 | 0.660 / 0.671 | **0.381** | 0.761 | 14 / 5 | 8.0K |
+| a, single call | 0.514 | 0.559 / 0.469 | 0.226 | 0.610 | — | 2.2K |
+| HW | 0.401 | | 0.062 | 0.514 | 6 / 11 | 11.3K |
+| H | 0.307 | | 0.071 | 0.385 | 4 / 13 | 21.4K |
+
+- **One review round lifts gemma by 0.16, beyond the noise, and cheaply.** A second round adds nothing.
+- **This confirms the user's hypothesis for gemma: a simpler loop works best for the small model.**
+- **Routing, first rule:** small model → self-refine; strong model → decomposition harness (flash-next H 0.862
+  against a 0.436).
+- **For the lead design:** the lead's review-and-fix step is self-refine's critique applied per unit. Build it up
+  from the loop that works for gemma.
+- **Correction:** gemma's single call on the subset is 0.514 over 2 runs, not the 0.572 of one run quoted earlier.
