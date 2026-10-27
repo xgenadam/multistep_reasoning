@@ -418,3 +418,31 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
   - The real-run comparison favoured 3 because the two tiers did different work.
   - **Decision (the agent):** keep 6 for flash-next batch runs, as in AGENTS.md's table. 3 only helps where one
     sequential loop's latency matters more than total throughput.
+
+## OpenCode on gemma (2026-10-27 01:17Z)
+
+**Setup:** four single-card gemma servers (8100, 8102, 8103, 8104), one logging proxy each, `--jobs 16`, the subset
+× 2.
+
+**What happened:** gemma is offered OpenCode's tools on every call, but mostly answers in prose: the code as a path
+line plus a fence, then it stops. No files are written. llama.cpp's template does support gemma's tool tokens, so this
+is the model's choice, not a parsing failure.
+
+**Scoring:** each tier is scored twice. Files only is the harness's contract. Files-else-final-reply
+(`--text-fallback`) is shown only for comparison.
+
+| Arm | Mean | Long | Short | Turns with no files | Tool calls | Median prompt tokens per turn |
+| --- | --- | --- | --- | --- | --- | --- |
+| OpenCode like-for-like, files | **0.094** | 0.040 | 0.111 | 30 of 40 | 34 | 6K |
+| OpenCode like-for-like, files else reply | 0.504 | 0.104 | 0.637 | | | |
+| OpenCode real-world, files | **0.162** | 0.164 | 0.161 | 25 of 40 | 73 | 7K |
+| OpenCode real-world, files else reply | 0.510 | 0.272 | 0.589 | | | |
+
+On the same prompts: single call 0.572 (one run), our HW 0.401, our H 0.307.
+
+- **OpenCode as designed fails on gemma (0.09–0.16):** the agent loop needs a model that drives tools.
+- **Taken from its reply text, it is about a single call (≈ 0.50 against 0.572).** The loop adds nothing for gemma.
+- **This supports the user's hypothesis** (stronger models gain from planning and looping; a small model wants a
+  simpler loop). Flash-next: OpenCode 0.844 / 0.962 against single 0.436. Gemma: 0.094 / 0.162 against 0.572.
+- **Next for gemma:** test a deliberately simple loop (write, one review, fix) against its single call, alongside
+  E-1.
