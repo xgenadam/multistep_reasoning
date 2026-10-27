@@ -406,3 +406,15 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
   - Without the cold round, 3 and 6 are level.
   - The replies were mostly short, so the benchmark barely measured long decoding. It is being rerun with
     `--ignore-eos` (always 512 tokens) and 3 repeats per level.
+- 00:20Z, the benchmark rerun (`--ignore-eos`, 512 tokens per request, 24 longest recorded OpenCode requests, 3
+  repeats per level, alternating), `runs/small-models/speed_bench2.log`:
+
+  | Concurrent | Completion tok/s by round | Mean | Median request |
+  | --- | --- | --- | --- |
+  | 3 | 224, 236, 223 | 228 | 6.5 s |
+  | 6 | 287, 281, 289 | **286** | 10 s |
+
+  - **6 gives about 25 % more decode throughput.** Each request is slower (10 s against 6.5 s), but more run at once.
+  - The real-run comparison favoured 3 because the two tiers did different work.
+  - **Decision (the agent):** keep 6 for flash-next batch runs, as in AGENTS.md's table. 3 only helps where one
+    sequential loop's latency matters more than total throughput.
