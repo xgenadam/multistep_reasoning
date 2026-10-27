@@ -138,6 +138,49 @@ logged for analysis.
 
 Re-run a unit with feedback (first), then add, skip or reorder the remaining units, then finish early, each capped.
 
+### Later: recursive decomposition and exploration rounds (the user, 2026-10-27)
+
+- **Recursive decomposition:** a unit may be split, its parts split again, and so on, with caps. This generalises
+  lazy decomposition from one level to a tree.
+- **Preliminary exploration rounds:** before planning, the lead explores. It reads the request closely, lists
+  ambiguities, sketches interfaces, and perhaps asks a worker for a quick probe. Then it plans from what it found.
+- The user: "early days for our harness … we can really tweak the crap out of it … a bit of a rabbit hole".
+
+### Hypothesis: stronger models gain more because they plan better (the user, 2026-10-27)
+
+- "More powerful models benefit due to being better planners. Because they can look ahead more they come up with
+  better plans. For smaller models it might be that a simpler loop works best."
+- **Consistent with the data so far:**
+  - flash-next gains about 0.43 from the harness (H 0.862 against a 0.436);
+  - gemma loses about 0.17 (best variant HW 0.401 against a 0.572);
+  - gemma does best with the simplest plan (HW, one unit per file).
+- **Testable:**
+  - compare plan quality across models on the same requests (AAR `plan` diagnoses, and plans-only screens scored
+    against outcomes);
+  - try a deliberately simple loop for gemma: one unit, then review and fix.
+
+### Later: learned planning and execution policies per model, not fine-tuning (the user, 2026-10-27)
+
+- **What:** a genetic algorithm or reinforcement learning (Q-learning style) over the harness's decisions, tuned per
+  model. The model's weights are untouched; the policy around it is learned.
+- **Shape, a first sketch:**
+  - **State:** request features (files asked for, length, follow-up, domain) and pipeline state (units done, review
+    verdicts, retries used, tokens spent).
+  - **Actions:** answer directly; plan coarse or fine; split, re-run or merge a unit; ask a worker; pick a variant
+    (the routing question as an action).
+  - **Reward:** hidden-test pass rate, minus a cost term in tokens.
+  - **Learning:** a genetic algorithm over configuration "genomes" (prompts, thresholds, caps, variant choices) is
+    the simplest start, since every run file is already an evaluation. Tabular or approximate Q-learning over the
+    actions is the step after.
+- **Feasibility:**
+  - every traced run is already a logged episode (states, actions, outcomes);
+  - the replay mode (`integration_replay.py`) makes integration-level actions cheap to evaluate offline.
+- **Risks:**
+  - overfitting the bench: hold out prompts;
+  - noise: per-prompt |r0 − r1| is about 0.25, so rewards are noisy, and averaging over repeats or fixed sampling
+    helps;
+  - cost: an episode is a full turn.
+
 ### Later: routing (the user, 2026-10-26: "this is going to turn into a routing problem")
 
 Which harness, or which variant of one, to use depends on the request and on the model. Tuning per model is a topic
