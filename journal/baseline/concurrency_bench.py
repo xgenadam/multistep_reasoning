@@ -61,11 +61,14 @@ def main(argv=None) -> int:
     ap.add_argument('--n', type=int, default=24)
     ap.add_argument('--max-tokens', type=int, default=512)
     ap.add_argument('--repeats', type=int, default=2)
+    ap.add_argument('--ignore-eos', action='store_true', help='vLLM: always generate --max-tokens, to measure decode')
     args = ap.parse_args(argv)
     bodies = []
     for q in load(args.logs, args.n):
         b = {k: v for k, v in q.items() if k not in ('stream', 'stream_options')}
         b.update(model=args.model, max_tokens=args.max_tokens, stream=False)
+        if args.ignore_eos:
+            b['ignore_eos'] = True
         b.pop('max_completion_tokens', None)
         bodies.append(b)
     print(f'{len(bodies)} requests; warm-up at {max(args.levels)}', flush=True)

@@ -369,3 +369,40 @@ The same prompts in Q-02 (8K budget, `verbatim`): b 0.710, a 0.622.
     append-only: 58 of 59 consecutive calls), with no new preemptions. The 168 came from earlier runs.
   - The likely bottleneck is generation over about 100K-token contexts, 6 at once. That is what the speed test
     measures.
+
+## OpenCode on flash-next: the results (2026-10-26/27)
+
+**Setup:** the 20-prompt subset × 2, relaxed budgets where ours have them. Run files are
+`journal/baseline/runs/*_ext-fn-oc-{like,real}_flash-next.json`.
+
+| Arm | Mean | Run 0 / run 1 | Long | Short | Extraction incomplete | Median prompt / completion tokens per turn |
+| --- | --- | --- | --- | --- | --- | --- |
+| OpenCode real-world (runs code), `--jobs 3` | **0.962** | 0.961 / 0.963 | 0.901 | **0.982** | 0 | 640K / 15.2K |
+| Our harness H | 0.862 | 0.894 / 0.831 | **0.917** | 0.844 | 0 | **89K** / 13.3K |
+| OpenCode like-for-like (file tools), `--jobs 6` | 0.844 | 0.863 / 0.825 | 0.790 | 0.862 | 0 | 222K / 7.7K |
+| Our harness HW | 0.727 | | 0.637 | 0.757 | 6 | |
+| Single call | 0.436 | | 0.071 | 0.557 | 16 | |
+
+- **Like-for-like:** our H matches OpenCode overall (within noise) and leads on long prompts, on about 40 % of its
+  prompt tokens. OpenCode re-sends the whole conversation each call; prefix caching makes that cheaper but not free.
+- **With code execution,** OpenCode reaches 0.962 at about 7× H's prompt tokens. Execution is the largest single
+  gap, and it is already on the roadmap (the workers' sandboxed execution tool).
+- **Throughput by concurrency, from the proxy logs** (a confounded comparison, since the tiers did different work):
+
+  | Tier | Jobs | Makespan | Completion tok/s | Prompt tok/s |
+  | --- | --- | --- | --- | --- |
+  | Like-for-like | 6 | 53 min | 120 | 5.3K |
+  | Real-world | 3 | 48 min | 204 | 11.6K |
+
+- **The controlled replay benchmark,** 24 recorded long requests, round by round:
+
+  | Round | Concurrent | Completion tok/s |
+  | --- | --- | --- |
+  | 1 | 3 | 27, cold (its prompts were still uncached despite the warm-up) |
+  | 2 | 6 | 159 |
+  | 3 | 6 | 221 |
+  | 4 | 3 | 212 |
+
+  - Without the cold round, 3 and 6 are level.
+  - The replies were mostly short, so the benchmark barely measured long decoding. It is being rerun with
+    `--ignore-eos` (always 512 tokens) and 3 repeats per level.
